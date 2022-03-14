@@ -100,4 +100,23 @@ class UserPrivilege(models.Model):
         return "user id: %s === privilege id: %s"%(self.user.id, self.privilege.id)
 
 
+class WebConfig(models.Model):
+    pagename = models.CharField(max_length=255)
+    path = models.TextField()
+    paramname = models.CharField(max_length=255)
+    paramvalue = models.TextField()
+    adminuser = models.ForeignKey(User, db_column='adminuser_id', on_delete=models.CASCADE)
+    inserted = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
+    
+
+    class Meta:
+        verbose_name = "Website Configuration Information"
+        db_table = 'webconfig'
+
+    def __unicode__(self):
+        return "page path: %s"%(self.page)
+
+
+
 

@@ -17,6 +17,9 @@ from django.template import loader
 import os, sys, re, time, datetime
 
 from gallery.models import Gallery, Event, Artist, Artwork
+from login.models import User, Session, WebConfig
+from login.views import getcarouselinfo
+
 
 
 # @login_required(login_url='/login/show/')
@@ -30,7 +33,7 @@ def index(request):
     chunksize = 5 * 3
     lastctr = int(page) * chunksize
     galleries = Gallery.objects.all()
-    startctr = lastctr - (chunksize - 1)
+    startctr = lastctr - chunksize
     if lastctr > galleries.__len__():
         lastctr = galleries.__len__()
     gallerieslist = galleries[startctr:lastctr]
@@ -74,6 +77,8 @@ def index(request):
         gurl = g.galleryurl
         galleriesdict[gname] = [gloc, gimg, gurl]
     context['galleries5'] = galleriesdict
+    carouselentries = getcarouselinfo()
+    context['carousel'] = carouselentries
     template = loader.get_template('gallery.html')
     return HttpResponse(template.render(context, request))
 

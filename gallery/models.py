@@ -10,12 +10,14 @@ class Gallery(models.Model):
     website = models.TextField()
     coverimage = models.TextField()
     slug = models.CharField(max_length=255, blank=True, default='')
+    priority = models.IntegerField(default=0)
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Galleries Information Table"
         db_table = 'galleries'
+        ordering = ('-priority',)
 
     def __unicode__(self):
         return "%s"%(self.galleryname)
@@ -31,12 +33,14 @@ class Event(models.Model):
     eventperiod = models.CharField(max_length=255, blank=True, default='')
     artworkscount = models.IntegerField()
     gallery = models.ForeignKey(Gallery, blank=False, null=False, on_delete=models.CASCADE)
+    priority = models.IntegerField(default=0)
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Events Information Table"
         db_table = 'events'
+        ordering = ('-priority',)
 
     def __unicode__(self):
         return "%s"%(self.eventname)
@@ -55,12 +59,14 @@ class Artist(models.Model):
     squareimage = models.TextField()
     largeimage = models.TextField()
     edges = models.TextField()
+    priority = models.IntegerField(default=0)
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Artists Information Table"
         db_table = 'artists'
+        ordering = ('-priority',)
 
     def __unicode__(self):
         return "%s"%(self.artistname)
@@ -85,6 +91,7 @@ class Artwork(models.Model):
     provenance = models.TextField()
     literature = models.TextField()
     exhibitions = models.TextField()
+    priority = models.IntegerField(default=0)
     image1 = models.TextField()
     image2 = models.TextField()
     image3 = models.TextField()
@@ -96,6 +103,7 @@ class Artwork(models.Model):
     class Meta:
         verbose_name = "Artworks Information Table"
         db_table = 'artworks'
+        ordering = ('-priority',)
 
     def __unicode__(self):
         return "%s"%(self.artworkname)
