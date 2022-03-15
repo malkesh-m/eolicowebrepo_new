@@ -17,22 +17,18 @@ from django.template import loader
 
 import os, sys, re, time, datetime
 from gallery.models import Gallery, Event, Artist, Artwork
-from login.models import User, Session, WebConfig
+from login.models import User, Session, WebConfig, Carousel
+
 
 def getcarouselinfo():
     entrieslist = []
     countqset = WebConfig.objects.filter(paramname="carousel entries count")
     entriescount = countqset[0].paramvalue
-    for e in range(1, int(entriescount) + 1):
-        imgparamname = "carousel image %s"%e
-        imgq = WebConfig.objects.get(paramname=imgparamname)
-        imgpath = imgq.paramvalue
-        titleparamname = "carousel title %s"%e
-        titleq = WebConfig.objects.get(paramname=titleparamname)
-        title = titleq.paramvalue
-        textparamname = "carousel text %s"%e
-        textq = WebConfig.objects.get(paramname=textparamname)
-        text = textq.paramvalue
+    carouselqset = Carousel.objects.all()
+    for e in range(0, int(entriescount)):
+        imgpath = carouselqset[e].imagepath
+        title = carouselqset[e].title
+        text = carouselqset[e].textvalue
         d = {'img' : imgpath, 'title' : title, 'text' : text}
         entrieslist.append(d)
     return entrieslist

@@ -9,6 +9,7 @@ class Gallery(models.Model):
     galleryurl = models.TextField()
     website = models.TextField()
     coverimage = models.TextField()
+    gallerytype = models.CharField(max_length=255, null=False, blank=False)
     slug = models.CharField(max_length=255, blank=True, default='')
     priority = models.IntegerField(default=0)
     inserted = models.DateTimeField(auto_now_add=True)

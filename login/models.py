@@ -118,5 +118,21 @@ class WebConfig(models.Model):
         return "page path: %s"%(self.page)
 
 
+class Carousel(models.Model):
+    title = models.CharField(max_length=255, null=False, blank=False)
+    textvalue = models.TextField()
+    imagepath = models.TextField()
+    priority = models.IntegerField(default=0)
+    inserted = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Website Carousel Information"
+        db_table = 'carousel'
+        ordering = ('-edited', '-priority',)
+
+    def __unicode__(self):
+        return "Title: %s"%(self.title)
+
 
 

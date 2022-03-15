@@ -17,7 +17,7 @@ from django.template import loader
 import os, sys, re, time, datetime
 
 from gallery.models import Gallery, Event, Artist, Artwork
-from login.models import User, Session, WebConfig
+from login.models import User, Session, WebConfig, Carousel
 from login.views import getcarouselinfo
 
 
@@ -27,60 +27,109 @@ def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     page = "1"
-    if request.method == 'POST':
-        if 'page' in request.POST.keys():
-            page = str(request.POST['page'])
-    chunksize = 5 * 3
-    lastctr = int(page) * chunksize
-    galleries = Gallery.objects.all()
-    startctr = lastctr - chunksize
-    if lastctr > galleries.__len__():
-        lastctr = galleries.__len__()
-    gallerieslist = galleries[startctr:lastctr]
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            page = str(request.GET['page'])
+    chunksize = 5
+    # Find out the distinct gallery types available
+    gtypesqset = Gallery.objects.order_by().values_list('gallerytype').distinct()
+    lastctr1 = int(page) * chunksize
+    lastctr2 = int(page) * chunksize
+    lastctr3 = int(page) * chunksize
+    lastctr4 = int(page) * chunksize
+    lastctr5 = int(page) * chunksize
+    #print(gtypesqset)
+    galleries1 = Gallery.objects.filter(gallerytype=gtypesqset[0][0])
+    galleries2 = Gallery.objects.filter(gallerytype=gtypesqset[1][0])
+    galleries3 = Gallery.objects.filter(gallerytype=gtypesqset[2][0])
+    galleries4 = Gallery.objects.filter(gallerytype=gtypesqset[3][0])
+    galleries5 = Gallery.objects.filter(gallerytype=gtypesqset[4][0])
+    startctr1 = lastctr1 - chunksize
+    startctr2 = lastctr2 - chunksize
+    startctr3 = lastctr3 - chunksize
+    startctr4 = lastctr4 - chunksize
+    startctr5 = lastctr5 - chunksize
+    if lastctr1 > galleries1.__len__():
+        lastctr1 = galleries1.__len__()
+    if lastctr2 > galleries2.__len__():
+        lastctr2 = galleries2.__len__()
+    if lastctr3 > galleries3.__len__():
+        lastctr3 = galleries3.__len__()
+    if lastctr4 > galleries4.__len__():
+        lastctr4 = galleries4.__len__()
+    if lastctr5 > galleries5.__len__():
+        lastctr5 = galleries5.__len__()
+    gallerieslist1 = galleries1[startctr1:lastctr1]
+    gallerieslist2 = galleries2[startctr2:lastctr2]
+    gallerieslist3 = galleries3[startctr3:lastctr3]
+    gallerieslist4 = galleries4[startctr4:lastctr4]
+    gallerieslist5 = galleries5[startctr5:lastctr5]
     galleriesdict = {}
-    for g in gallerieslist[0:3]:
+    for g in gallerieslist1[startctr1:lastctr1]:
         gname = g.galleryname
         gloc = g.location
         gimg = g.coverimage
         gurl = g.galleryurl
-        galleriesdict[gname] = [gloc, gimg, gurl]
+        gid = g.id
+        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context = {'galleries1' : galleriesdict}
     galleriesdict = {}
-    for g in gallerieslist[3:6]:
+    for g in gallerieslist2[startctr2:lastctr2]:
         gname = g.galleryname
         gloc = g.location
         gimg = g.coverimage
         gurl = g.galleryurl
-        galleriesdict[gname] = [gloc, gimg, gurl]
+        gid = g.id
+        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[1][0]]
     context['galleries2'] = galleriesdict
     galleriesdict = {}
-    for g in gallerieslist[6:9]:
+    for g in gallerieslist3[startctr3:lastctr3]:
         gname = g.galleryname
         gloc = g.location
         gimg = g.coverimage
         gurl = g.galleryurl
-        galleriesdict[gname] = [gloc, gimg, gurl]
+        gid = g.id
+        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[2][0]]
     context['galleries3'] = galleriesdict
     galleriesdict = {}
-    for g in gallerieslist[9:12]:
+    for g in gallerieslist4[startctr4:lastctr4]:
         gname = g.galleryname
         gloc = g.location
         gimg = g.coverimage
         gurl = g.galleryurl
-        galleriesdict[gname] = [gloc, gimg, gurl]
+        gid = g.id
+        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[3][0]]
     context['galleries4'] = galleriesdict
     galleriesdict = {}
-    for g in gallerieslist[12:15]:
+    for g in gallerieslist5[startctr5:lastctr5]:
         gname = g.galleryname
         gloc = g.location
         gimg = g.coverimage
         gurl = g.galleryurl
-        galleriesdict[gname] = [gloc, gimg, gurl]
+        gid = g.id
+        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[4][0]]
     context['galleries5'] = galleriesdict
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
+    context['gallerytypes'] = [gtypesqset[0][0], gtypesqset[1][0], gtypesqset[2][0], gtypesqset[3][0], gtypesqset[4][0]]
     template = loader.get_template('gallery.html')
     return HttpResponse(template.render(context, request))
+
+
+def details(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    if request.method == 'GET':
+        if 'q' in request.GET.keys():
+            gid = str(request.GET['q'])
+    context = {}
+    template = loader.get_template('gallery_details.html')
+    return HttpResponse(template.render(context, request))
+
+
+
+
+    
 
 
 
