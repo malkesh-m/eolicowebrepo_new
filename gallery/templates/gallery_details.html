@@ -133,18 +133,18 @@
     <div class="card-body">
       
       <div class="tab-content">
-        <div class="tab-pane" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
+        <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
 			<div class="container">
 				<div class="row gl-ov-row">
 					<div class="col-md-7">
-						<h2>Tamayo: Figurative Work on Paper</h2>
-						<h4>December 10, 2021 – January 30, 2022</h4>
-						<h6>Santa Fe</h6>
-						<p>This exhibition at Hecho a Mano consists of lithographs, etchings and Mixografia created between 1959 and 1980.</p>
-						<a href="" class="btn btn-slider" >Read More</a>
+						<h2>{{latestevent.eventname}}</h2>
+						<h4>{{latestevent.eventperiod}}</h4>
+						<h6>{{latestevent.eventlocation}}</h6>
+						<p>{{latestevent.eventinfo}}</p>
+						<!-- <a href="" class="btn btn-slider" >Read More</a> -->
 					</div>
 					<div class="col-md-5">
-						<img src="/static/images/men-01.jpg" class="img-fluid"/>
+						<img src="{{latestevent.eventimage}}" class="img-fluid"/>
 					</div>
 				</div>
 				<div class="row gal-tab-row">
@@ -161,25 +161,28 @@
 				   <div class="col-lg-12">
 					   <div class="section-heading text-center">
 							<h3>All Events</h3>
-							<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
 							<hr>
 					   </div>
 				   </div>
 				   <div class="col-lg-12">
 					 <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
+			{% for evobj in previousevents %}
                             <div class="item">
                                 <div class="thumb">
                                     <a href="#"><img src="/static/images/men-01.jpg" alt=""></a>
                                 </div>
                                 <div class="down-content">
 									<a href="#">
-										<h4>Cathy Tabbakh: Hello!</h4>
-										<span>Court Tree Collective</span>
-										<span>Feb 8 to May 15</span>
+										<h4>{{evobj.eventname}}</h4>
+										<span>{{evobj.eventinfo}}</span>
+										<span>{{evobj.eventperiod}}</span>
 									</a>
                                 </div>
                             </div>
+			{% endfor %}
+			<!--
                             <div class="item">
                                 <div class="thumb">
                                     <a href="#"><img src="/static/images/men-02.jpg" alt=""></a>
@@ -190,26 +193,8 @@
 									<span>Feb 11 to Apr 15</span>
 								</div>
                             </div>
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="#"><img src="/static/images/men-03.jpg" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<h4>Cathy Tabbakh: Hello!</h4>
-									<span>Court Tree Collective</span>
-									<span>Feb 8 to May 15</span>
-								</div>
-                            </div>
-                            <div class="item">
-                                <div class="thumb">
-                                    <img src="/static/images/men-04.jpg" alt="">
-                                </div>
-                                <div class="down-content">
-                                    <h4>Finding Balance</h4>
-                                    <span>Kristin Hjellegjerde Gallery</span>
-									<span>Feb 10 to Mar 15</span>
-                                </div>
-                            </div>
+			-->
+                            
                         </div>
                     </div>
 				   </div>
@@ -218,39 +203,19 @@
 					<div class="col-md-12">
 						<div class="section-heading text-center">
 							<h3>Artists</h3>
-							<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
 							<hr>
 					   </div>
 					</div>
 					<div class="col-md-12">
 						<div class="art-list">
 							<div class="list-item">
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
+							{% for artist in artists %}
+								<p><a href="{{artist.artisturl}}">{{artist.artistname}}</a></p>
+							{% endfor %}
+							{% if artists|length == 0%}
+							<span>There are no artists listed for the featured event.</span>
+							{% endif %}
 							</div>
 						</div>
 					</div>
@@ -261,14 +226,15 @@
           <div class="container">
 			<div class="row gl-ov-row">
 				<div class="col-md-7">
-					<h2>Tamayo: Figurative Work on Paper</h2>
-					<h4>December 10, 2021 – January 30, 2022</h4>
-					<h6>Santa Fe</h6>
-					<p>This exhibition at Hecho a Mano consists of lithographs, etchings and Mixografia created between 1959 and 1980.</p>
-					<a href="" class="btn btn-slider" >Read More</a>
+					<h2>{{latestevent.eventname}}</h2>
+					<h4>{{latestevent.eventperiod}}</h4>
+					<h6>{{latestevent.eventlocation}}</h6>
+					<p>{{latestevent.eventinfo}}</p>
+					<!-- <a href="" class="btn btn-slider" >Read More</a> -->
 				</div>
 				<div class="col-md-5">
-					<img src="/static/images/men-04.jpg" class="img-fluid"/>
+					<!-- <img src="/static/images/men-04.jpg" class="img-fluid"/> -->
+					<img src="{{latestevent.eventimage}}" class="img-fluid"/>
 				</div>
 			</div>
 			<div class="row gal-tab-row pst-ev">
@@ -281,82 +247,25 @@
 				   </div>
 			</div>
 			<div class="row">
+                                  {% for evobj in previousevents %}
 				  <div class="col-md-4">
 					<div class="item gl-dt-item">
 						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+							<a href="#"><img src="{{evobj.eventimage}}" alt="" class="img-fluid"></a>
 						</div>
 						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
+							<h4>{{evobj.eventname}}</h4>
+							<span>{{evobj.eventinfo}}</span>
+							<span>{{evobj.eventperiod}}</span>
 						</div>
 					</div>
 				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
+				  {% endfor %}
+				  
 			  </div>
 		  </div>
         </div>
-        <div class="tab-pane fade show active" id="ViewingRooms" role="tabpanel" aria-labelledby="ViewingRooms-tab">
+        <div class="tab-pane fade" id="ViewingRooms" role="tabpanel" aria-labelledby="ViewingRooms-tab">
           <div class="row viewing-rooms">
 			   <div class="col-lg-12">
 				   <div class="section-heading">
@@ -448,38 +357,18 @@
 				<div class="col-md-12">
 					<div class="section-heading ">
 						<h3>Artists</h3>
-						<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+						<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
 				   </div>
 				</div>
 					<div class="col-md-12">
 						<div class="art-list">
 							<div class="list-item">
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
-								<p><a href="">Leopoldo Mendez</a></p>
+							{% for artist in allartists %}
+								<p><a href="{{artist.artisturl}}">{{artist.artistname}}</a></p>
+							{% endfor %}
+							{% if allartists|length == 0%}
+							<span>There are no artists listed for the featured event.</span>
+							{% endif %}
 							</div>
 						</div>
 					</div>

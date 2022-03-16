@@ -119,10 +119,62 @@ def index(request):
 def details(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
+    gid = None
     if request.method == 'GET':
         if 'q' in request.GET.keys():
             gid = str(request.GET['q'])
+    if not gid:
+        return HttpResponse("Invalid Request: Request is missing gid")
+    try:
+        galleryobj = Gallery.objects.get(id=gid)
+    except:
+        return HttpResponse("Could not identify a gallery with Id %s"%gid)
+    # Get latest events for this gallery. Also order by 'priority'.
     context = {}
+    eventsqset = Event.objects.filter(gallery=galleryobj).order_by('-eventstartdate', 'priority')
+    latestevent = {}
+    if eventsqset.__len__() > 0:
+        latestevent['eventname'] = eventsqset[0].eventname
+        latestevent['eventurl'] = eventsqset[0].eventurl
+        latestevent['eventinfo'] = eventsqset[0].eventinfo
+        latestevent['eventtype'] = eventsqset[0].eventtype
+        latestevent['eventstatus'] = eventsqset[0].eventstatus
+        latestevent['eventperiod'] = eventsqset[0].eventperiod
+        latestevent['eventimage'] = eventsqset[0].eventimage
+        latestevent['eventlocation'] = eventsqset[0].eventlocation
+    context['latestevent'] = latestevent
+    previousevents = []
+    if eventsqset.__len__() > 1:
+        for eqset in eventsqset[1:]:
+            pevent = {}
+            pevent['eventname'] = eqset.eventname
+            pevent['eventurl'] = eqset.eventurl
+            pevent['eventinfo'] = eqset.eventinfo
+            pevent['eventtype'] = eqset.eventtype
+            pevent['eventstatus'] = eqset.eventstatus
+            pevent['eventperiod'] = eqset.eventperiod
+            pevent['eventimage'] = eqset.eventimage
+            pevent['eventlocation'] = eqset.eventlocation
+            previousevents.append(pevent)
+    context['previousevents'] = previousevents
+    # Showing 20 artists from the latest featured event only.
+    artistsqset = Artist.objects.filter(event=eventsqset[0]).order_by('-edited', 'priority')
+    artistslist = []
+    max_len = 20
+    if artistsqset.__len__() < max_len:
+        max_len = artistsqset.__len__()
+    for artist in artistsqset[:max_len]:
+        adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl}
+        artistslist.append(adict)
+    context['artists'] = artistslist
+    allartists = []
+    # Find all artists belonging to this gallery
+    for evobj in eventsqset:
+        artistsqset = Artist.objects.filter(event=evobj).order_by('-edited', 'priority')
+        for artist in artistsqset:
+            adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl}
+            allartists.append(adict)
+    context['allartists'] = artistslist
     template = loader.get_template('gallery_details.html')
     return HttpResponse(template.render(context, request))
 
