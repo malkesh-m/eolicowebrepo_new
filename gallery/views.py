@@ -125,6 +125,7 @@ def details(request):
             gid = str(request.GET['q'])
     if not gid:
         return HttpResponse("Invalid Request: Request is missing gid")
+    galleryobj = None
     try:
         galleryobj = Gallery.objects.get(id=gid)
     except:
@@ -133,6 +134,7 @@ def details(request):
     context = {}
     eventsqset = Event.objects.filter(gallery=galleryobj).order_by('-eventstartdate', 'priority')
     latestevent = {}
+    eventsprioritylist = []
     if eventsqset.__len__() > 0:
         latestevent['eventname'] = eventsqset[0].eventname
         latestevent['eventurl'] = eventsqset[0].eventurl
@@ -142,6 +144,7 @@ def details(request):
         latestevent['eventperiod'] = eventsqset[0].eventperiod
         latestevent['eventimage'] = eventsqset[0].eventimage
         latestevent['eventlocation'] = eventsqset[0].eventlocation
+        eventsprioritylist.append(eventsqset[0].eventname)
     context['latestevent'] = latestevent
     previousevents = []
     if eventsqset.__len__() > 1:
@@ -156,6 +159,7 @@ def details(request):
             pevent['eventimage'] = eqset.eventimage
             pevent['eventlocation'] = eqset.eventlocation
             previousevents.append(pevent)
+            eventsprioritylist.append(eqset.eventname)
     context['previousevents'] = previousevents
     # Showing 20 artists from the latest featured event only.
     artistsqset = Artist.objects.filter(event=eventsqset[0]).order_by('-edited', 'priority')
@@ -175,6 +179,20 @@ def details(request):
             adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl}
             allartists.append(adict)
     context['allartists'] = artistslist
+    # Find all artworks belonging to the gallery in an eventwise manner. Artworks will be listed as per 'priority' values.
+    # This, along with 'eventsprioritylist' values will list artworks in an eventwise manner, with top priority events on top.
+    allartworks = {} # Event names as keys and list of artworks as values.
+    artworksqset = Artwork.objects.filter(gallery=galleryobj).order_by('-edited', '-priority')
+    for ename in eventsprioritylist:
+        allartworks[ename] = []
+    for awork in artworksqset:
+        evname = awork.event.eventname
+        l = allartworks[evname]
+        d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+        l.append(d)
+        allartworks[evname] = l
+    context['allartworks'] = allartworks
+    context['eventsprioritylist'] = eventsprioritylist
     template = loader.get_template('gallery_details.html')
     return HttpResponse(template.render(context, request))
 

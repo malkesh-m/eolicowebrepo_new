@@ -5,5 +5,6 @@ from gallery import views
 
 urlpatterns = [
     path('index/', views.index, name='index'),
+    path('details/', views.details, name='details'),
 ]
 
