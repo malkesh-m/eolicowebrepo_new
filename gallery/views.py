@@ -123,6 +123,9 @@ def details(request):
     if request.method == 'GET':
         if 'q' in request.GET.keys():
             gid = str(request.GET['q'])
+        page = "1"
+        if 'page' in request.GET.keys():
+            page = str(request.GET['page'])
     if not gid:
         return HttpResponse("Invalid Request: Request is missing gid")
     galleryobj = None
@@ -130,8 +133,14 @@ def details(request):
         galleryobj = Gallery.objects.get(id=gid)
     except:
         return HttpResponse("Could not identify a gallery with Id %s"%gid)
-    # Get latest events for this gallery. Also order by 'priority'.
     context = {}
+    # Get gallery information
+    galleryname = galleryobj.galleryname
+    glocation = galleryobj.location
+    gurl = galleryobj.galleryurl
+    gimage = galleryobj.coverimage
+    context['gallery'] = {'galleryname' : galleryname, 'gallerylocation' : glocation, 'galleryurl' : gurl, 'galleryimage' : gimage}
+    # Get latest events for this gallery. Also order by 'priority'.
     eventsqset = Event.objects.filter(gallery=galleryobj).order_by('-eventstartdate', 'priority')
     latestevent = {}
     eventsprioritylist = []
@@ -171,27 +180,62 @@ def details(request):
         adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl}
         artistslist.append(adict)
     context['artists'] = artistslist
-    allartists = []
+    nationalities = []
+    natqset = Artist.objects.filter(event=eventsqset[0]).order_by().values_list('nationality').distinct()
+    for nat in natqset:
+        nationalities.append(nat[0])
+    context['nationalities'] = nationalities
     # Find all artists belonging to this gallery
+    allartists = []
     for evobj in eventsqset:
         artistsqset = Artist.objects.filter(event=evobj).order_by('-edited', 'priority')
         for artist in artistsqset:
-            adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl}
+            adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl, 'artistid' : artist.id}
             allartists.append(adict)
     context['allartists'] = artistslist
     # Find all artworks belonging to the gallery in an eventwise manner. Artworks will be listed as per 'priority' values.
     # This, along with 'eventsprioritylist' values will list artworks in an eventwise manner, with top priority events on top.
-    allartworks = {} # Event names as keys and list of artworks as values.
+    artcollen = 4
+    artrowlen = 7
+    startctr = int(page) * artcollen * artrowlen - (artcollen * artrowlen)
+    endctr = startctr + (artcollen * artrowlen)
+    allartworks1, allartworks2, allartworks3, allartworks4 = {}, {}, {}, {} # Event names as keys and list of artworks as values.
     artworksqset = Artwork.objects.filter(gallery=galleryobj).order_by('-edited', '-priority')
     for ename in eventsprioritylist:
-        allartworks[ename] = []
-    for awork in artworksqset:
+        allartworks1[ename] = []
+        allartworks2[ename] = []
+        allartworks3[ename] = []
+        allartworks4[ename] = []
+    ctr = 1
+    for awork in artworksqset[startctr:endctr]:
         evname = awork.event.eventname
-        l = allartworks[evname]
-        d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
-        l.append(d)
-        allartworks[evname] = l
-    context['allartworks'] = allartworks
+        if ctr % 4 == 0:
+            l = allartworks4[evname]
+            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+            l.append(d)
+            allartworks4[evname] = l
+        elif ctr % 3 == 0:
+            l = allartworks3[evname]
+            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+            l.append(d)
+            allartworks3[evname] = l
+        elif ctr % 2 == 0:
+            l = allartworks2[evname]
+            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+            l.append(d)
+            allartworks2[evname] = l
+        elif ctr % 1 == 0:
+            l = allartworks1[evname]
+            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+            l.append(d)
+            allartworks1[evname] = l
+        ctr += 1
+        if ctr > 1 and ctr % 4 == 1: # Basically, if ctr=5, then reset to 1.
+            ctr = 1
+    context['allartworks1'] = allartworks1
+    context['allartworks2'] = allartworks2
+    context['allartworks3'] = allartworks3
+    context['allartworks4'] = allartworks4
     context['eventsprioritylist'] = eventsprioritylist
     template = loader.get_template('gallery_details.html')
     return HttpResponse(template.render(context, request))
