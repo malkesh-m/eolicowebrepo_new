@@ -24,6 +24,83 @@
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
+    <script type='text/javascript'>
+      function filter(ftype, fval){
+	const artworks = {
+		{% for evname, valueslist in allartworks.items %}
+		  "{{ evname }}" : [ 
+			{% for val in valueslist %}
+			   { 
+			     {% for k, v in val.items %}
+			     "{{k}}" : "{{v}}",
+			     {% endfor %} 
+			   }, 
+			{% endfor %}
+		  ],
+		{% endfor %}
+	};
+        targetdiv = document.getElementById('allworks');
+    	s = "";
+	for(evname in artworks){
+	  l = artworks[evname];
+	  for(var j=0; j < 4; j++){
+	  s += "<div class='column'>";
+          var last = 7;
+          if(l.length < last){
+	    last = l.length;
+	  }
+	  for(var i=0; i < last; i++){
+	    e = l[i];
+	    if(ftype == "Artists" && fval.toLowerCase() == e.artistname.toLowerCase()){
+	    s += "<div class='img-box'>";
+	    s += "<img src='" + e.image + "' style='width:100%'>";
+	    s += "<h4>" + e.artworkname + "</h4>";
+	    s += "<h6>" + e.medium + "</h6>";
+	    s += "<p>" + e.description + "</p>";
+	    s += "</div>";
+	    }
+	    if(ftype == "Medium" && e.description.toLowerCase().includes(fval.toLowerCase())){
+	    s += "<div class='img-box'>";
+	    s += "<img src='" + e.image + "' style='width:100%'>";
+	    s += "<h4>" + e.artworkname + "</h4>";
+	    s += "<h6>" + e.medium + "</h6>";
+	    s += "<p>" + e.description + "</p>";
+	    s += "</div>";
+	    }
+	    if(ftype == "Material" && e.medium.toLowerCase().includes(fval.toLowerCase())){
+	    s += "<div class='img-box'>";
+	    s += "<img src='" + e.image + "' style='width:100%'>";
+	    s += "<h4>" + e.artworkname + "</h4>";
+	    s += "<h6>" + e.medium + "</h6>";
+	    s += "<p>" + e.description + "</p>";
+	    s += "</div>";
+	    }
+	    if(ftype == "Nationality" && e.artistnationality.toLowerCase().includes(fval.toLowerCase())){
+	    s += "<div class='img-box'>";
+	    s += "<img src='" + e.image + "' style='width:100%'>";
+	    s += "<h4>" + e.artworkname + "</h4>";
+	    s += "<h6>" + e.medium + "</h6>";
+	    s += "<p>" + e.description + "</p>";
+	    s += "</div>";
+	    }
+	    if(ftype == "Period"){
+		if(e.artistbirthyear > 1800 && e.artistbirthyear < 1900){
+	     	s += "<div class='img-box'>";
+	    	s += "<img src='" + e.image + "' style='width:100%'>";
+	    	s += "<h4>" + e.artworkname + "</h4>";
+	    	s += "<h6>" + e.medium + "</h6>";
+	    	s += "<p>" + e.description + "</p>";
+	    	s += "</div>";
+		}
+	    }
+	  } // end for i
+	  s += "</div>";
+	  } // end for j
+	} // for evname
+	targetdiv.innerHTML = s;
+      }
+    </script>
+
     </head>
     
     <body>
@@ -54,9 +131,9 @@
                         <ul class="nav">
                             <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
 			    <li class="scroll-to-section"><a href="#">About</a></li>
-                            <li class="scroll-to-section"><a href="#">Viewing Rooms</a></li>
+                            <li class="scroll-to-section"><a href="/viewingroom/index/">Viewing Rooms</a></li>
                             <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
-                            <li class="scroll-to-section"><a href="#">Museums</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
                             <li class="scroll-to-section"><a href="#">Contact</a></li>
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
@@ -113,9 +190,9 @@
             <li class="nav-item">
               <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="false">Events</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" id="ViewingRooms-tab" data-toggle="tab" href="#ViewingRooms" role="tab" aria-controls="ViewingRooms" aria-selected="false">Viewing Rooms</a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Works</a>
             </li>
@@ -265,7 +342,7 @@
 			  </div>
 		  </div>
         </div>
-        <div class="tab-pane fade" id="ViewingRooms" role="tabpanel" aria-labelledby="ViewingRooms-tab">
+        <!-- <div class="tab-pane fade" id="ViewingRooms" role="tabpanel" aria-labelledby="ViewingRooms-tab">
           <div class="row viewing-rooms">
 			   <div class="col-lg-12">
 				   <div class="section-heading">
@@ -348,7 +425,7 @@
 					</div>
 				  </div>
 			</div>
-        </div>
+        </div> -->
         <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
           <div id="mySidebar" class="sidebar">
 			<div class="fixed-sidbr-header">
@@ -365,12 +442,11 @@
 					<div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
 						{% for artist in artists %}
 						 <div class="form-check">
-						  <label class="form-check-label" for="Artists{{artist.artistid}}">
-							<input type="checkbox" class="form-check-input" id="Artists{{artist.artistid}}" name="option{{artist.artistid}}" value="{{artist.artistid}}" >{{artist.artistname}}
+						  <label class="form-check-label" for="Artist{{artist.artistid}}">
+							<input type="checkbox" class="form-check-input" id="Artist{{artist.artistid}}" name="option{{artist.artistid}}" value="{{artist.artistid}}" onclick="javascript:filter('Artists', '{{artist.artistname}}');">{{artist.artistname}}
 						  </label>
 						</div>
 						{% endfor %}
-						
 					</div>
 					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
 						<a class="card-title">
@@ -380,17 +456,17 @@
 					<div id="collapseTwo" class="card-body collapse" data-parent="#accordion" >
 						<div class="form-check">
 						  <label class="form-check-label" for="Unique">
-							<input type="checkbox" class="form-check-input" id="Unique" name="option1" value="something" >Unique
+							<input type="checkbox" class="form-check-input" id="Unique" name="option1" value="unique"  onclick="javascript:filter('Rarity', 'unique');">Unique
 						  </label>
 						</div>
 						<div class="form-check">
 						  <label class="form-check-label" for="LimitedEdition">
-							<input type="checkbox" class="form-check-input" id="LimitedEdition" name="option1" value="something" >Limited Edition
+							<input type="checkbox" class="form-check-input" id="LimitedEdition" name="option1" value="limited edition" onclick="javascript:filter('Rarity', 'limited edition');">Limited Edition
 						  </label>
 						</div>
 						<div class="form-check">
 						  <label class="form-check-label" for="OpenEdition">
-							<input type="checkbox" class="form-check-input" id="OpenEdition" name="option1" value="something" >Open Edition
+							<input type="checkbox" class="form-check-input" id="OpenEdition" name="option1" value="open edition" onclick="javascript:filter('Rarity', 'open edition');">Open Edition
 						  </label>
 						</div>
 					</div>
@@ -403,32 +479,32 @@
 						<div class="card-body">
 							<div class="form-check">
 							  <label class="form-check-label" for="Photography">
-								<input type="checkbox" class="form-check-input" id="Photography" name="option1" value="photography" >Photography
+								<input type="checkbox" class="form-check-input" id="Photography" name="option1" value="photography" onclick="javascript:filter('Medium', 'photography');">Photography
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Painting">
-								<input type="checkbox" class="form-check-input" id="Painting" name="option2" value="painting" >Painting
+								<input type="checkbox" class="form-check-input" id="Painting" name="option2" value="painting" onclick="javascript:filter('Medium', 'painting');">Painting
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Sculpture">
-								<input type="checkbox" class="form-check-input" id="Sculpture" name="option3" value="sculpture" >Sculpture
+								<input type="checkbox" class="form-check-input" id="Sculpture" name="option3" value="sculpture" onclick="javascript:filter('Medium', 'sculpture');">Sculpture
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="WorksOnPaper">
-								<input type="checkbox" class="form-check-input" id="WorksOnPaper" name="option4" value="worksonpaper" >Works On Paper
+								<input type="checkbox" class="form-check-input" id="WorksOnPaper" name="option4" value="worksonpaper" onclick="javascript:filter('Medium', 'works on paper');">Works On Paper
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Prints">
-								<input type="checkbox" class="form-check-input" id="Prints" name="option5" value="prints" >Prints
+								<input type="checkbox" class="form-check-input" id="Prints" name="option5" value="prints" onclick="javascript:filter('Medium', 'prints');">Prints
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Installation">
-								<input type="checkbox" class="form-check-input" id="Installation" name="option6" value="installation" >Installation
+								<input type="checkbox" class="form-check-input" id="Installation" name="option6" value="installation" onclick="javascript:filter('Medium', 'installation');">Installation
 							  </label>
 							</div>
 						</div>
@@ -442,17 +518,17 @@
 						<div class="card-body">
 							<div class="form-check">
 							  <label class="form-check-label" for="SmallSize">
-								<input type="checkbox" class="form-check-input" id="SmallSize" name="option1" value="small" >Small (under 40cm)
+								<input type="checkbox" class="form-check-input" id="SmallSize" name="option1" value="small" onclick="javascript:filter('Size', 'small');">Small (under 40cm)
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Medium">
-								<input type="checkbox" class="form-check-input" id="Medium" name="option2" value="medium" >Medium (40 – 100cm)
+								<input type="checkbox" class="form-check-input" id="Medium" name="option2" value="medium" onclick="javascript:filter('Size', 'medium');">Medium (40 – 100cm)
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Large">
-								<input type="checkbox" class="form-check-input" id="Large" name="option3" value="large" >Large (over 100cm)
+								<input type="checkbox" class="form-check-input" id="Large" name="option3" value="large" onclick="javascript:filter('Size', 'large');">Large (over 100cm)
 							  </label>
 							</div>
 						</div>
@@ -466,167 +542,167 @@
 						<div class="card-body">
 							<div class="form-check">
 							  <label class="form-check-label" for="Acrylic">
-								<input type="checkbox" class="form-check-input" id="Acrylic" name="option1" value="acrylic" >Acrylic
+								<input type="checkbox" class="form-check-input" id="Acrylic" name="option1" value="acrylic" onclick="javascript:filter('Material', 'acrylic');">Acrylic
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Aluminum">
-								<input type="checkbox" class="form-check-input" id="Aluminum" name="option1" value="aluminum" >Aluminum
+								<input type="checkbox" class="form-check-input" id="Aluminum" name="option1" value="aluminum" onclick="javascript:filter('Material', 'aluminium');">Aluminum
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Artpaper">
-								<input type="checkbox" class="form-check-input" id="Artpaper" name="option1" value="art paper" >Art paper
+								<input type="checkbox" class="form-check-input" id="Artpaper" name="option1" value="art paper" onclick="javascript:filter('Material', 'art paper');">Art paper
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Bronze">
-								<input type="checkbox" class="form-check-input" id="Bronze" name="option1" value="bronze" >Bronze
+								<input type="checkbox" class="form-check-input" id="Bronze" name="option1" value="bronze" onclick="javascript:filter('Material', 'bronze');">Bronze
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="C-print">
-								<input type="checkbox" class="form-check-input" id="C-print" name="option1" value="c-print" >C-print
+								<input type="checkbox" class="form-check-input" id="C-print" name="option1" value="c-print" onclick="javascript:filter('Material', 'c-print');">C-print
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Canvas">
-								<input type="checkbox" class="form-check-input" id="Canvas" name="option1" value="canvas" >Canvas
+								<input type="checkbox" class="form-check-input" id="Canvas" name="option1" value="canvas" onclick="javascript:filter('Material', 'canvas');">Canvas
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Cardboard">
-								<input type="checkbox" class="form-check-input" id="Cardboard" name="option1" value="cardboard" >Cardboard
+								<input type="checkbox" class="form-check-input" id="Cardboard" name="option1" value="cardboard" onclick="javascript:filter('Material', 'cardboard');">Cardboard
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Ceramic">
-								<input type="checkbox" class="form-check-input" id="Ceramic" name="option1" value="ceramic" >Ceramic
+								<input type="checkbox" class="form-check-input" id="Ceramic" name="option1" value="ceramic" onclick="javascript:filter('Material', 'ceramic');">Ceramic
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Charcoal">
-								<input type="checkbox" class="form-check-input" id="Charcoal" name="option1" value="charcoal" >Charcoal
+								<input type="checkbox" class="form-check-input" id="Charcoal" name="option1" value="charcoal" onclick="javascript:filter('Material', 'charcoal');">Charcoal
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Collage">
-								<input type="checkbox" class="form-check-input" id="Collage" name="option1" value="collage" >Collage
+								<input type="checkbox" class="form-check-input" id="Collage" name="option1" value="collage" onclick="javascript:filter('Material', 'collage');">Collage
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Copper">
-								<input type="checkbox" class="form-check-input" id="Copper" name="option1" value="copper" >Copper
+								<input type="checkbox" class="form-check-input" id="Copper" name="option1" value="copper" onclick="javascript:filter('Material', 'copper');">Copper
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Cotton">
-								<input type="checkbox" class="form-check-input" id="Cotton" name="option1" value="cotton" >Cotton
+								<input type="checkbox" class="form-check-input" id="Cotton" name="option1" value="cotton" onclick="javascript:filter('Material', 'cotton');">Cotton
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Digital">
-								<input type="checkbox" class="form-check-input" id="Digital" name="option1" value="digital" >Digital
+								<input type="checkbox" class="form-check-input" id="Digital" name="option1" value="digital" onclick="javascript:filter('Material', 'digital');">Digital
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Enamel">
-								<input type="checkbox" class="form-check-input" id="Enamel" name="option1" value="enamel" >Enamel
+								<input type="checkbox" class="form-check-input" id="Enamel" name="option1" value="enamel" onclick="javascript:filter('Material', 'enamel');">Enamel
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Glass">
-								<input type="checkbox" class="form-check-input" id="Glass" name="option1" value="glass" >Glass
+								<input type="checkbox" class="form-check-input" id="Glass" name="option1" value="glass" onclick="javascript:filter('Material', 'glass');">Glass
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Gouache">
-								<input type="checkbox" class="form-check-input" id="Gouache" name="option1" value="gouache" >Gouache
+								<input type="checkbox" class="form-check-input" id="Gouache" name="option1" value="gouache" onclick="javascript:filter('Material', 'gouache');">Gouache
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Ink">
-								<input type="checkbox" class="form-check-input" id="Ink" name="option1" value="ink" >Ink
+								<input type="checkbox" class="form-check-input" id="Ink" name="option1" value="ink" onclick="javascript:filter('Material', 'ink');">Ink
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Inkjet">
-								<input type="checkbox" class="form-check-input" id="Inkjet" name="option1" value="inkjet" >Inkjet
+								<input type="checkbox" class="form-check-input" id="Inkjet" name="option1" value="inkjet" onclick="javascript:filter('Material', 'inkjet');">Inkjet
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Linen">
-								<input type="checkbox" class="form-check-input" id="Linen" name="option1" value="linen" >Linen
+								<input type="checkbox" class="form-check-input" id="Linen" name="option1" value="linen" onclick="javascript:filter('Material', 'linen');">Linen
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="MixedMedia">
-								<input type="checkbox" class="form-check-input" id="MixedMedia" name="option1" value="mixedmedia" >Mixed Media
+								<input type="checkbox" class="form-check-input" id="MixedMedia" name="option1" value="mixedmedia" onclick="javascript:filter('Material', 'mixed media');">Mixed Media
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Oil">
-								<input type="checkbox" class="form-check-input" id="Oil" name="option1" value="oil" >Oil
+								<input type="checkbox" class="form-check-input" id="Oil" name="option1" value="oil" onclick="javascript:filter('Material', 'oil');">Oil
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Paint">
-								<input type="checkbox" class="form-check-input" id="Paint" name="option1" value="paint" >Paint
+								<input type="checkbox" class="form-check-input" id="Paint" name="option1" value="paint" onclick="javascript:filter('Material', 'paint');">Paint
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Panel">
-								<input type="checkbox" class="form-check-input" id="Panel" name="option1" value="panel" >Panel
+								<input type="checkbox" class="form-check-input" id="Panel" name="option1" value="panel" onclick="javascript:filter('Material', 'panel');">Panel
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Paper">
-								<input type="checkbox" class="form-check-input" id="Paper" name="option1" value="paper" >Paper
+								<input type="checkbox" class="form-check-input" id="Paper" name="option1" value="paper" onclick="javascript:filter('Material', 'paper');">Paper
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Pigment">
-								<input type="checkbox" class="form-check-input" id="Pigment" name="option1" value="pigment" >Pigment
+								<input type="checkbox" class="form-check-input" id="Pigment" name="option1" value="pigment" onclick="javascript:filter('Material', 'pigment');">Pigment
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Polaroid">
-								<input type="checkbox" class="form-check-input" id="Polaroid" name="option1" value="polaroid" >Polaroid
+								<input type="checkbox" class="form-check-input" id="Polaroid" name="option1" value="polaroid" onclick="javascript:filter('Material', 'polaroid');">Polaroid
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Gelatin">
-								<input type="checkbox" class="form-check-input" id="Gelatin" name="option1" value="gelatin" >Gelatin
+								<input type="checkbox" class="form-check-input" id="Gelatin" name="option1" value="gelatin" onclick="javascript:filter('Material', 'gelatin');">Gelatin
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="SprayPaint">
-								<input type="checkbox" class="form-check-input" id="SprayPaint" name="option1" value="spraypaint" >Spray Paint
+								<input type="checkbox" class="form-check-input" id="SprayPaint" name="option1" value="spraypaint" onclick="javascript:filter('Material', 'spray paint');">Spray Paint
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Stone">
-								<input type="checkbox" class="form-check-input" id="Stone" name="option1" value="stone" >Stone
+								<input type="checkbox" class="form-check-input" id="Stone" name="option1" value="stone" onclick="javascript:filter('Material', 'stone');">Stone
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Vinyl">
-								<input type="checkbox" class="form-check-input" id="Vinyl" name="option1" value="vinyl" >Vinyl
+								<input type="checkbox" class="form-check-input" id="Vinyl" name="option1" value="vinyl" onclick="javascript:filter('Material', 'vinyl');">Vinyl
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Wash">
-								<input type="checkbox" class="form-check-input" id="Wash" name="option1" value="wash" >Wash
+								<input type="checkbox" class="form-check-input" id="Wash" name="option1" value="wash" onclick="javascript:filter('Material', 'wash');">Wash
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="WaterColor">
-								<input type="checkbox" class="form-check-input" id="WaterColor" name="option1" value="watercolor" >Water Color
+								<input type="checkbox" class="form-check-input" id="WaterColor" name="option1" value="watercolor" onclick="javascript:filter('Material', 'watercolor');">Water Color
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Wire">
-								<input type="checkbox" class="form-check-input" id="Wire" name="option1" value="wire" >Wire
+								<input type="checkbox" class="form-check-input" id="Wire" name="option1" value="wire" onclick="javascript:filter('Material', 'wire');">Wire
 							  </label>
 							</div>
 							<div class="form-check">
@@ -646,7 +722,7 @@
 							{% for nat in nationalities %}
 							<div class="form-check">
 							  <label class="form-check-label" for="{{nat}}">
-								<input type="checkbox" class="form-check-input" id="nat{{ forloop.counter }}" name="option1" value="{{nat}}" >{{nat}}
+								<input type="checkbox" class="form-check-input" id="nat{{ forloop.counter }}" name="option1" value="{{nat}}" onclick="javascript:filter('Nationality', '{{nat}}');">{{nat}}
 							  </label>
 							</div>
 							{% endfor %}
@@ -661,62 +737,62 @@
 						<div class="card-body">
 							<div class="form-check">
 							  <label class="form-check-label" for="time-2020">
-								<input type="checkbox" class="form-check-input" id="time-2020" name="option1" value="2020" >2020s
+								<input type="checkbox" class="form-check-input" id="time-2020" name="option1" value="2020" onclick="javascript:filter('Period', '2020s');">2020s
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="time-2010">
-								<input type="checkbox" class="form-check-input" id="time-2010" name="option1" value="2010" >2010s
+								<input type="checkbox" class="form-check-input" id="time-2010" name="option1" value="2010" onclick="javascript:filter('Period', '2010s');">2010s
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="time-2000">
-								<input type="checkbox" class="form-check-input" id="time-2000" name="option1" value="2000" >2000s
+								<input type="checkbox" class="form-check-input" id="time-2000" name="option1" value="2000" onclick="javascript:filter('Period', '2000s');">2000s
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="time-1990">
-								<input type="checkbox" class="form-check-input" id="time-1990" name="option1" value="1990" >1990s
+								<input type="checkbox" class="form-check-input" id="time-1990" name="option1" value="1990" onclick="javascript:filter('Period', '1990s');">1990s
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="time-1980">
-								<input type="checkbox" class="form-check-input" id="time-1980" name="option1" value="1980" >1980s
+								<input type="checkbox" class="form-check-input" id="time-1980" name="option1" value="1980" onclick="javascript:filter('Period', '1980s');">1980s
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="time-1970">
-								<input type="checkbox" class="form-check-input" id="time-1970" name="option1" value="1970" >1970s
+								<input type="checkbox" class="form-check-input" id="time-1970" name="option1" value="1970" onclick="javascript:filter('Period', '1970s');">1970s
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="time-1960">
-								<input type="checkbox" class="form-check-input" id="time-1960" name="option1" value="1960" >1960s
+								<input type="checkbox" class="form-check-input" id="time-1960" name="option1" value="1960" onclick="javascript:filter('Period', '1960s');">1960s
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="early-20th">
-								<input type="checkbox" class="form-check-input" id="early-20th" name="option1" value="early-20th" >Early 20th Century
+								<input type="checkbox" class="form-check-input" id="early-20th" name="option1" value="early-20th" onclick="javascript:filter('Period', 'early 20th');">Early 20th Century
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="late-19th">
-								<input type="checkbox" class="form-check-input" id="late-19th" name="option1" value="late-19th" >Late 19th Century
+								<input type="checkbox" class="form-check-input" id="late-19th" name="option1" value="late-19th" onclick="javascript:filter('Period', 'late 19th');">Late 19th Century
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="mid-19th">
-								<input type="checkbox" class="form-check-input" id="mid-19th" name="option1" value="mid-19th" >Mid 19th Century
+								<input type="checkbox" class="form-check-input" id="mid-19th" name="option1" value="mid-19th" onclick="javascript:filter('Period', 'mid 19th');">Mid 19th Century
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="early-19th">
-								<input type="checkbox" class="form-check-input" id="early-19th" name="option1" value="early-19th" >Early 19th Century
+								<input type="checkbox" class="form-check-input" id="early-19th" name="option1" value="early-19th" onclick="javascript:filter('Period', 'early 19th');">Early 19th Century
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="18th-earlier">
-								<input type="checkbox" class="form-check-input" id="18th-earlier" name="option1" value="18th-earlier" >18th Century and Earlier
+								<input type="checkbox" class="form-check-input" id="18th-earlier" name="option1" value="18th-earlier" onclick="javascript:filter('Period', '18th');">18th Century and Earlier
 							  </label>
 							</div>
 						</div>
@@ -730,17 +806,17 @@
 						<div class="card-body">
 							<div class="form-check">
 							  <label class="form-check-label" for="Color-red">
-								<input type="checkbox" class="form-check-input" id="Color-red" name="option1" value="red" >Red <span class="color-span" style="background:red;"></span>
+								<input type="checkbox" class="form-check-input" id="Color-red" name="option1" value="red" onclick="javascript:filter('Color', 'red');">Red <span class="color-span" style="background:red;"></span>
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Color-blue">
-								<input type="checkbox" class="form-check-input" id="Color-blue" name="option1" value="blue" >Blue <span class="color-span" style="background:blue;"></span>
+								<input type="checkbox" class="form-check-input" id="Color-blue" name="option1" value="blue" onclick="javascript:filter('Color', 'blue');">Blue <span class="color-span" style="background:blue;"></span>
 							  </label>
 							</div>
 							<div class="form-check">
 							  <label class="form-check-label" for="Color-green">
-								<input type="checkbox" class="form-check-input" id="Color-green" name="option1" value="green" >Green <span class="color-span" style="background:green;"></span>
+								<input type="checkbox" class="form-check-input" id="Color-green" name="option1" value="green" onclick="javascript:filter('Color', 'green');">Green <span class="color-span" style="background:green;"></span>
 							  </label>
 							</div>
 						</div>
@@ -759,7 +835,7 @@
 						</select>
 					  </div>
 				  </div>
-				<div class="row">
+				<div class="row" id='allworks'>
 			  <div class="column">
                                 {% for evname, artworkslist in allartworks1.items %}
                                 {% for artwork in artworkslist %}

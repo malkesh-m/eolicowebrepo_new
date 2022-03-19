@@ -199,16 +199,21 @@ def details(request):
     artrowlen = 7
     startctr = int(page) * artcollen * artrowlen - (artcollen * artrowlen)
     endctr = startctr + (artcollen * artrowlen)
-    allartworks1, allartworks2, allartworks3, allartworks4 = {}, {}, {}, {} # Event names as keys and list of artworks as values.
+    allartworks1, allartworks2, allartworks3, allartworks4, allartworks = {}, {}, {}, {}, {} # Event names as keys and list of artworks as values.
     artworksqset = Artwork.objects.filter(gallery=galleryobj).order_by('-edited', '-priority')
     for ename in eventsprioritylist:
         allartworks1[ename] = []
         allartworks2[ename] = []
         allartworks3[ename] = []
         allartworks4[ename] = []
+        allartworks[ename] = []
     ctr = 1
     for awork in artworksqset[startctr:endctr]:
         evname = awork.event.eventname
+        l0 = allartworks[evname]
+        d0 = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+        l0.append(d0)
+        allartworks[evname] = l0
         if ctr % 4 == 0:
             l = allartworks4[evname]
             d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
@@ -236,6 +241,7 @@ def details(request):
     context['allartworks2'] = allartworks2
     context['allartworks3'] = allartworks3
     context['allartworks4'] = allartworks4
+    context['allartworks'] = allartworks
     context['eventsprioritylist'] = eventsprioritylist
     template = loader.get_template('gallery_details.html')
     return HttpResponse(template.render(context, request))
