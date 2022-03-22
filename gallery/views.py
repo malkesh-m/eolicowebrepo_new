@@ -200,6 +200,7 @@ def details(request):
     startctr = int(page) * artcollen * artrowlen - (artcollen * artrowlen)
     endctr = startctr + (artcollen * artrowlen)
     allartworks1, allartworks2, allartworks3, allartworks4, allartworks = {}, {}, {}, {}, {} # Event names as keys and list of artworks as values.
+    filterartists = {}
     artworksqset = Artwork.objects.filter(gallery=galleryobj).order_by('-edited', '-priority')
     for ename in eventsprioritylist:
         allartworks1[ename] = []
@@ -212,6 +213,7 @@ def details(request):
         evname = awork.event.eventname
         l0 = allartworks[evname]
         d0 = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+        filterartists[str(awork.artistname)] = 1
         l0.append(d0)
         allartworks[evname] = l0
         if ctr % 4 == 0:
@@ -235,13 +237,14 @@ def details(request):
             l.append(d)
             allartworks1[evname] = l
         ctr += 1
-        if ctr > 1 and ctr % 4 == 1: # Basically, if ctr=5, then reset to 1.
+        if ctr > 1 and ctr % 4 == 1: # Basically, if ctr==5, then reset to 1.
             ctr = 1
     context['allartworks1'] = allartworks1
     context['allartworks2'] = allartworks2
     context['allartworks3'] = allartworks3
     context['allartworks4'] = allartworks4
     context['allartworks'] = allartworks
+    context['filterartists'] = filterartists
     context['eventsprioritylist'] = eventsprioritylist
     template = loader.get_template('gallery_details.html')
     return HttpResponse(template.render(context, request))

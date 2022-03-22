@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <title>Eolico</title>
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <link rel="stylesheet" href="/static/css/owl-carousel.css">
+
+    <link rel="stylesheet" href="/static/css/lightbox.css">
+    <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
+	<style>
+		
+ 
+	</style>
+<!--
+
+TemplateMo 571 Hexashop
+
+https://templatemo.com/tm-571-hexashop
+
+-->
+
+    <script type='text/javascript'>
+	function dofilter1(selectid){
+	  alert("hi");
+	}
+	
+	function initialize(){
+	  document.getElementById('location').addEventListener("change", dofilter1);
+ 	  document.getElementById('speciality').addEventListener("change", dofilter1);
+	}
+
+	function dofilter(selectid){
+	  alert("hi");
+	  const museumsdict = {
+	    {% for mtype, museumslist in museumsfull.items %}
+		"{{mtype}}" : Array(
+		  {% for museum in museumslist %}
+			Array( "{{museum.museumname}}", "{{museum.location}}", "{{museum.coverimage}}", "{{museum.museumurl}}", "{{museum.description}}", "{{museum.mid}}" ),
+		  {% endfor %}
+		),
+	    {% endfor %}
+	  };
+	  sectiontag = document.getElementById("museums");
+	  selecttag = document.getElementById(selectid);
+	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
+	  alert(selectedoption);
+          html = "";
+ 	  if(selectid == "location"){
+	    for(mtype in museumsdict){
+		museumslist = museumsdict[mtype];
+		starter = 0;
+		for(var i=0; i < museumslist.length; i++){
+		  if(selectedoption != "1"){
+		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
+		    if(starter == 0){
+            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
+		  }
+		}// if selectedoption != 1
+		else{
+		    if(starter == 0){
+            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";  
+		}
+		} // for museumslist loop ends
+		html += "</div></div></div></div></div>";
+	    } 
+	  }
+	  if(selectid == "speciality"){
+	    for(mtype in museumsdict){
+		if(mtype.toLowerCase() == selectedoption.toLowerCase()){
+		  museumslist = museumsdict[mtype];
+		  starter = 0;
+		for(var i=0; i < museumslist.length; i++){
+		  if(selectedoption != "1"){
+		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
+		    if(starter == 0){
+            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
+		  }
+		} // if selectedoption != 1
+		else{
+		    if(starter == 0){
+            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";       
+		}
+		}  // for museumslist ends
+		html += "</div></div></div></div></div>";
+		}
+	    }
+	  }
+	  sectiontag.innerHTML = html;
+	}
+    </script>
+    </head>
+    
+    <body onload="javascript:initialize();">
+    
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>  
+    <!-- ***** Preloader End ***** -->
+    
+    
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <img src="/static/images/logo1.png">
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li class="scroll-to-section"><a href="/login/index/" class="active">Home</a></li>
+							<li class="scroll-to-section"><a href="#">About</a></li>
+                            <li class="scroll-to-section"><a href="#">Viewing Rooms</a></li>
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            <li class="scroll-to-section"><a href="#">Contact</a></li>
+                            <!--<li class="submenu">
+                                <a href="javascript:;">Pages</a>
+                                <ul>
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="products.html">Products</a></li>
+                                    <li><a href="single-product.html">Single Product</a></li>
+                                    <li><a href="contact.html">Contact Us</a></li>
+                                </ul>
+                            </li>-->
+                            
+                            
+                        </ul>        
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+    <!-- ***** Main Banner Area Start ***** -->
+    
+	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
+		{% for d in carousel %}
+                
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="#">Explore</a></div></div>
+		
+	    	{% endfor %}
+		
+	</div>
+    <!-- ***** Main Banner Area End ***** -->
+	<section class="section gal-section" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Browse Institutions</h2>
+						<hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<div class="container">
+            <div class="row">
+                <div class="col-md-4">
+					<div class="demo">
+					  <select style="display:none" name="location" placeholder="Select" id='location' onChange="javascript:dofilter1('location');">
+						<option value="1">All Locations</option>
+						{% for loc in locations %}
+						<option value="{{loc}}">{{loc}}</option>
+						{% endfor %}
+					  </select>
+					</div>
+				</div>
+                <div class="col-md-4">
+					<div class="demo">
+					  <select style="display:none" name="speciality" placeholder="Select" id='speciality' onChange="javascript:dofilter1('speciality');">
+						<option value="1">All Specialties</option>
+						{% for mtype in specialities %}
+						<option value="{{mtype}}">{{mtype}}</option>
+						{% endfor %}
+					  </select>
+					</div>
+				</div>
+                <div class="col-md-4">
+					<!-- <div class="demo">
+					  <select style="display:none"  placeholder="Select" id='gallery' onchange='javascript:dofilter('gallery');'>
+						<option value="1">All Galleries</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+					  </select>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</section>
+	{% for mtype, museumslist in allmuseums.items %}
+	<section class="section gal-section" id="museums">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>{{mtype}}</h2>
+                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+						<hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+			    {% for museum in museumslist %}
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="/museum/details/?mid={{museum.mid}}"><img src="{{museum.coverimage}}" alt=""></a>
+                                </div>
+                                <div class="down-content">
+									<a href="/museum/details/?mid={{museum.mid}}">
+										<h4>{{museum.museumname}}</h4>
+										<span>{{museum.location}}</span>
+										<a class="btn btn-slider" href="/museum/follow/?mid={{museum.mid}}">Follow</a>
+									</a>
+                                </div>
+                            </div>
+			    {% endfor %}
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+	{% endfor %}
+   
+    
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="first-item">
+                        <div class="logo">
+                            <img src="/static/images/logo-white.png" alt="">
+                        </div>
+                        <ul>
+                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
+                            <li><a href="#">demo@company.com</a></li>
+                            <li><a href="#">010-020-0340</a></li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="col-lg-3">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Featured shows</a></li>
+                        <li><a href="#">Market News</a></li>
+                        <li><a href="#">Current Fairs</a></li>
+                        <li><a href="#">Trending Artists</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Galleries</a></li>
+                        <li><a href="#">Museums</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="#">FAQ's</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
+                       
+                        <ul>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+
+    <!-- jQuery -->
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!-- Plugins -->
+    <script src="/static/js/owl-carousel.js"></script>
+    <script src="/static/js/accordions.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <script src="/static/js/scrollreveal.min.js"></script>
+    <script src="/static/js/waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/imgfix.min.js"></script> 
+    <script src="/static/js/slick.js"></script> 
+    <script src="/static/js/lightbox.js"></script> 
+    <script src="/static/js/isotope.js"></script> 
+    <script src="/static/js/jquery.dropdown.min.js"></script> 
+    
+    <!-- Global Init -->
+    <script src="/static/js/custom.js"></script>
+	
+	<script>
+	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+	$('.demo').dropdown({
+		limitCount: 1,
+		input:'<input type="text" maxLength="20" placeholder="Search">'
+	});
+		$('#Top-owl-carousel').owlCarousel({
+			loop:false,
+			rewind: true,
+			margin:1,
+			nav:true,
+			autoplay:true,
+			autoplayTimeout:8000,
+			responsive:{
+				0:{
+					items:1
+				},
+				600:{
+					items:1
+				},
+				1000:{
+					items:1
+				}
+			}
+		})
+	</script>
+    <script>
+		
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function(){
+            selectedClass = $(this).attr("data-rel");
+            $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("."+selectedClass).fadeOut();
+            setTimeout(function() {
+              $("."+selectedClass).fadeIn();
+              $("#portfolio").fadeTo(50, 1);
+            }, 500);
+                
+            });
+        });
+
+    </script>
+
+  </body>
+</html>

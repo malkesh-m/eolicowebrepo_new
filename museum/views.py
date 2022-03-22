@@ -19,7 +19,7 @@ import os, sys, re, time, datetime
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
 from login.views import getcarouselinfo
-from museum.models import Museum, MuseumEvent, MuseumPieces
+from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 
 def index(request):
     if request.method != 'GET':
@@ -28,32 +28,104 @@ def index(request):
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
-    chunksize = 5
-    rows = 10
-    startctr = int(page) * rows - rows + 1
-    endctr = int(page) * rows + 1
-    latestmuseum = {}
-    museumsqset = Museum.objects.all().order_by('-edited', '-priority')
+    chunksize = 9
+    rows = 5
+    rowstartctr = int(page) * rows - rows
+    rowendctr = int(page) * rows
     mtypesqset = Museum.objects.order_by().values_list('museumtype').distinct()
-    if endctr > mtypesqset.__len__():
-        endctr = mtypesqset.__len__()
+    startctr = (int(page) * rows * chunksize) - (rows * chunksize) + 1
+    endctr = int(page) * rows * chunksize
+    """
+    startctr1 = int(page) * chunksize - chunksize
+    startctr2 = int(page) * chunksize - chunksize
+    startctr3 = int(page) * chunksize - chunksize
+    startctr4 = int(page) * chunksize - chunksize
+    startctr5 = int(page) * chunksize - chunksize
+    endctr1 = int(page) * chunksize
+    endctr2 = int(page) * chunksize
+    endctr3 = int(page) * chunksize
+    endctr4 = int(page) * chunksize
+    endctr5 = int(page) * chunksize
+    """
+    latestmuseum = {}
+    locationsqset = Museum.objects.order_by().values_list('location').distinct()
+    mtypesqset = Museum.objects.order_by().values_list('museumtype').distinct()
+    museumqset = Museum.objects.all().order_by('-edited', '-priority')
+    #museumsqset1 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows][0]).order_by('-edited', '-priority')
+    #museumsqset2 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 1][0]).order_by('-edited', '-priority')
+    #museumsqset3 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 2][0]).order_by('-edited', '-priority')
+    #museumsqset4 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 3][0]).order_by('-edited', '-priority')
+    #museumsqset5 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 4][0]).order_by('-edited', '-priority')
+    if rowendctr > mtypesqset.__len__():
+        rowendctr = mtypesqset.__len__()
     museumtypes = []
     allmuseums = {}
+    locationslist = []
+    galleries = []
     context = {}
-    for mtype in mtypesqset[startctr:endctr]:
+    allmtypes = []
+    museumsfull = {}
+    for mtype in mtypesqset[rowstartctr:rowendctr]:
         museumtypes.append(mtype[0])
         allmuseums[mtype[0]] = []
-    for m in museumsqset[1:]:
-        l = allmuseums[m.museumtype]
+    for mtype in mtypesqset:
+        allmtypes.append(mtype[0])
+        museumsfull[mtype[0]] = []
+    for loc in locationsqset:
+        locationslist.append(loc[0])
+    """
+    if endctr1 > museumsqset1.__len__():
+        endctr1 = museumsqset1.__len__()
+    if endctr2 > museumsqset2.__len__():
+        endctr2 = museumsqset2.__len__()
+    if endctr3 > museumsqset3.__len__():
+        endctr3 = museumsqset3.__len__()
+    if endctr4 > museumsqset4.__len__():
+        endctr4 = museumsqset4.__len__()
+    if endctr5 > museumsqset5.__len__():
+        endctr5 = museumsqset5.__len__()
+    museumslist1 = museumsqset1[startctr1:endctr1]
+    museumslist2 = museumsqset2[startctr2:endctr2]
+    museumslist3 = museumsqset3[startctr3:endctr3]
+    museumslist4 = museumsqset4[startctr4:endctr4]
+    museumslist5 = museumsqset5[startctr5:endctr5]
+    """
+    for m in museumqset[startctr:endctr]:
+        if m.museumtype in allmuseums.keys():
+            l = allmuseums[m.museumtype]
+        else:
+            l = []
+            allmuseums[m.museumtype] = l
         if l.__len__() < chunksize:
+            m.description = m.description.replace("\n", "").replace("\r", "")
             d = {'museumname' : m.museumname, 'location' : m.location, 'description' : m.description, 'museumurl' : m.museumurl, 'coverimage' : m.coverimage, 'mid' : m.id}
             l.append(d)
             allmuseums[m.museumtype] = l
         else:
             continue
     context['allmuseums'] = allmuseums
-    latestmuseum = {'museumname' : museumsqset[0].museumname, 'location' : museumsqset[0].location, 'description' : museumsqset[0].description, 'museumurl' : museumsqset[0].museumurl, 'coverimage' : museumsqset[0].coverimage, 'mid' : museumsqset[0].id}
+    for m in museumqset:
+        if m.museumtype in museumsfull.keys():
+            l = museumsfull[m.museumtype]
+        else:
+            l = []
+            museumsfull[m.museumtype] = l
+        if l.__len__() < chunksize:
+            m.description = m.description.replace("\n", "").replace("\r", "")
+            d = {'museumname' : m.museumname, 'location' : m.location, 'description' : m.description, 'museumurl' : m.museumurl, 'coverimage' : m.coverimage, 'mid' : m.id}
+            l.append(d)
+            museumsfull[m.museumtype] = l
+        else:
+            continue
+    if museumqset.__len__() > 0:
+        museumqset[0].description = museumqset[0].description.replace("\n", "").replace("\r", "")
+        latestmuseum = {'museumname' : museumqset[0].museumname, 'location' : museumqset[0].location, 'description' : museumqset[0].description, 'museumurl' : museumqset[0].museumurl, 'coverimage' : museumqset[0].coverimage, 'mid' : museumqset[0].id}
     context['latestmuseum'] = latestmuseum
+    context['museumsfull'] = museumsfull
+    carouselentries = getcarouselinfo()
+    context['carousel'] = carouselentries
+    context['locations'] = locationslist
+    context['specialities'] = museumtypes
     template = loader.get_template('museum.html')
     return HttpResponse(template.render(context, request))
 
@@ -64,8 +136,8 @@ def details(request):
         return HttpResponse("Invalid method of call")
     mid = None
     if request.method == 'GET':
-        if 'q' in request.GET.keys():
-            mid = str(request.GET['q'])
+        if 'mid' in request.GET.keys():
+            mid = str(request.GET['mid'])
     if not mid:
         return HttpResponse("Invalid Request: Request is missing mid")
     museumobj = None
@@ -85,7 +157,7 @@ def details(request):
     eventsprioritylist = []
     context = {}
     if allmuseumeventsqset.__len__() > 0:
-        latestevent = {'eventname' : allmuseumeventsqset[0].eventname, 'eventperiod' : allmuseumeventsqset[0].eventperiod, 'eventtype' : allmuseumeventsqset[0].eventtype, 'presenter' : allmuseumeventsqset[0].presenter, 'eventinfo' : allmuseumeventsqset[0].eventinfo, 'eventurl' : allmuseumeventsqset[0].eventurl}
+        latestevent = {'eventname' : allmuseumeventsqset[0].eventname, 'eventperiod' : allmuseumeventsqset[0].eventperiod, 'eventtype' : allmuseumeventsqset[0].eventtype, 'presenter' : allmuseumeventsqset[0].presenter, 'eventinfo' : allmuseumeventsqset[0].eventinfo, 'eventurl' : allmuseumeventsqset[0].eventurl, 'coverimage' : allmuseumeventsqset[0].coverimage}
         eventsprioritylist.append(allmuseumeventsqset[0].eventname)
     context['latestevent'] = latestevent
     if allmuseumeventsqset.__len__() > 1:
@@ -94,6 +166,7 @@ def details(request):
             evt['eventname'] = museumevt.eventname
             evt['eventperiod'] = museumevt.eventperiod
             evt['eventtype'] = museumevt.eventtype
+            evt['coverimage'] = museumevt.coverimage
             evt['presenter'] = museumevt.presenter
             evt['eventinfo'] = museumevt.eventinfo
             evt['eventurl'] = museumevt.eventurl
@@ -103,6 +176,10 @@ def details(request):
                 overviewevents.append(evt)
     context['allevents'] = allevents
     context['overviewevents'] = overviewevents
+    if eventsprioritylist.__len__() < 4:
+        for i in range(eventsprioritylist.__len__(), 4):
+            eventsprioritylist.append("")
+    context['eventsprioritylist'] = eventsprioritylist
     for evname in eventsprioritylist:
         allworks[evname] = []
     piecesqset = MuseumPieces.objects.filter(museum=museumobj).order_by('-edited', '-priority')
@@ -119,13 +196,32 @@ def details(request):
             overviewworks.append(d)
     context['allworks'] = allworks
     context['overviewworks'] = overviewworks
+    allarticles = []
+    overviewarticles = []
+    articlesqset = MuseumArticles.objects.filter(museum=museumobj).order_by('-edited', '-priority')
+    actr = 0
+    for article in articlesqset:
+        a = {}
+        a['articlename'] = article.articlename
+        a['writername'] = article.writername
+        a['articletype'] = article.articletype
+        a['detailurl'] = article.detailurl
+        a['published'] = article.published
+        a['thumbimage'] = article.thumbimage
+        allarticles.append(a)
+        if actr < chunksize:
+            overviewarticles.append(a)
+        actr += 1
+    context['allarticles'] = allarticles
+    context['overviewarticles'] = overviewarticles
     template = loader.get_template('museum_details.html')
     return HttpResponse(template.render(context, request))
 
     
 
 
-
+def follow(request):
+    return HttpResponse("")
 
 
 

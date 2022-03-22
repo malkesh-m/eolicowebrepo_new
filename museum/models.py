@@ -30,6 +30,7 @@ class MuseumEvent(models.Model):
     eventperiod = models.CharField(max_length=255, blank=True, default='')
     eventstartdate = models.DateTimeField()
     eventenddate = models.DateTimeField()
+    coverimage = models.TextField()
     eventstatus = models.CharField(max_length=20, blank=True, default='')
     eventtype = models.CharField(max_length=255, blank=True, default='') # Classifies the event as "Outdoor Art", "Non-western Art" etc.
     presenter = models.CharField(max_length=255, blank=True, default='')
@@ -77,6 +78,28 @@ class MuseumPieces(models.Model):
     class Meta:
         verbose_name = "Museum Pieces (artworks) Information Table"
         db_table = 'museumpieces'
+        ordering = ('-priority',)
+
+    def __unicode__(self):
+        return "%s"%(self.piecename)
+
+
+class MuseumArticles(models.Model):
+    articlename = models.TextField()
+    museum = models.ForeignKey(Museum, blank=False, null=False, on_delete=models.CASCADE)
+    writername = models.CharField(max_length=255, blank=True, default='')
+    articletype = models.CharField(max_length=255, blank=True, default='')
+    detailurl = models.TextField()
+    published = models.TextField()
+    thumbimage = models.TextField()
+    priority = models.IntegerField(default=0)
+    inserted = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
+
+
+    class Meta:
+        verbose_name = "Museum Articles Information Table"
+        db_table = 'museumarticles'
         ordering = ('-priority',)
 
     def __unicode__(self):

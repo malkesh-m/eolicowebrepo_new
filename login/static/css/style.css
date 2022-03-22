@@ -2640,7 +2640,10 @@ footer .under-footer a:hover {
 	font-size: 18px;
 	background:#f1f0ef;
 }
-
+.articl-row{
+padding-top: 80px;
+/*border-top: 3px dotted #eee;*/
+}
 /* 
 ---------------------------------------------
 responsive
