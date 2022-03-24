@@ -29,7 +29,7 @@ def index(request):
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
     chunksize = 9
-    rows = 5
+    rows = 6
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
     mtypesqset = Museum.objects.order_by().values_list('museumtype').distinct()
@@ -103,6 +103,12 @@ def index(request):
             allmuseums[m.museumtype] = l
         else:
             continue
+    emptytypes = []
+    for mt in allmuseums.keys():
+        if allmuseums[mt].__len__() == 0:
+            emptytypes.append(mt)
+    for mt in emptytypes:
+        del allmuseums[mt]
     context['allmuseums'] = allmuseums
     for m in museumqset:
         if m.museumtype in museumsfull.keys():
@@ -121,6 +127,12 @@ def index(request):
         museumqset[0].description = museumqset[0].description.replace("\n", "").replace("\r", "")
         latestmuseum = {'museumname' : museumqset[0].museumname, 'location' : museumqset[0].location, 'description' : museumqset[0].description, 'museumurl' : museumqset[0].museumurl, 'coverimage' : museumqset[0].coverimage, 'mid' : museumqset[0].id}
     context['latestmuseum'] = latestmuseum
+    emptytypes = []
+    for mt in museumsfull.keys():
+        if museumsfull[mt].__len__() == 0:
+            emptytypes.append(mt)
+    for mt in emptytypes:
+        del museumsfull[mt]
     context['museumsfull'] = museumsfull
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
@@ -155,6 +167,9 @@ def details(request):
     allworks = {}
     topwork = {}
     eventsprioritylist = []
+    artistnationalities = {}
+    nationalities = []
+    filterartists = []
     context = {}
     if allmuseumeventsqset.__len__() > 0:
         latestevent = {'eventname' : allmuseumeventsqset[0].eventname, 'eventperiod' : allmuseumeventsqset[0].eventperiod, 'eventtype' : allmuseumeventsqset[0].eventtype, 'presenter' : allmuseumeventsqset[0].presenter, 'eventinfo' : allmuseumeventsqset[0].eventinfo, 'eventurl' : allmuseumeventsqset[0].eventurl, 'coverimage' : allmuseumeventsqset[0].coverimage}
@@ -171,7 +186,9 @@ def details(request):
             evt['eventinfo'] = museumevt.eventinfo
             evt['eventurl'] = museumevt.eventurl
             allevents.append(evt)
-            eventsprioritylist.append(museumevt.eventname)
+            mpqset = MuseumPieces.objects.filter(event=museumevt)
+            if mpqset.__len__() > 0:
+                eventsprioritylist.append(museumevt.eventname)
             if overviewevents.__len__() < chunksize:
                 overviewevents.append(evt)
     context['allevents'] = allevents
@@ -180,12 +197,17 @@ def details(request):
         for i in range(eventsprioritylist.__len__(), 4):
             eventsprioritylist.append("")
     context['eventsprioritylist'] = eventsprioritylist
+    #print(eventsprioritylist)
     for evname in eventsprioritylist:
         allworks[evname] = []
     piecesqset = MuseumPieces.objects.filter(museum=museumobj).order_by('-edited', '-priority')
     if piecesqset.__len__() > 0:
         topwork = {'piecename' : piecesqset[0].piecename, 'creationdate' : piecesqset[0].creationdate, 'museum' : piecesqset[0].museum.museumname, 'artistname' : piecesqset[0].artistname, 'artistbirthyear' : piecesqset[0].artistbirthyear, 'artistdeathyear' : piecesqset[0].artistdeathyear, 'artistnationality' : piecesqset[0].artistnationality, 'medium' : piecesqset[0].medium, 'size' : piecesqset[0].size, 'edition' : piecesqset[0].edition, 'signature' : piecesqset[0].signature, 'description' : piecesqset[0].description, 'detailurl' : piecesqset[0].detailurl, 'provenance' : piecesqset[0].provenance, 'literature' : piecesqset[0].literature, 'exhibited' : piecesqset[0].exhibited, 'image' : piecesqset[0].image1}
+        artistnationalities[piecesqset[0].artistnationality.lower()] = 1
+        nationalities.append(piecesqset[0].artistnationality.lower())
+        filterartists.append(piecesqset[0].artistname)
     context['topwork'] = topwork
+    allartists = {}
     for piece in piecesqset[1:]:
         ename = piece.event.eventname
         l = allworks[ename]
@@ -194,8 +216,20 @@ def details(request):
         allworks[ename] = l
         if overviewworks.__len__() < chunksize:
             overviewworks.append(d)
+        if piece.artistname not in allartists.keys():
+            allartists[piece.artistname] = 1
+        if piece.artistnationality.lower() not in artistnationalities.keys():
+            artistnationalities[piece.artistnationality.lower()] = 1
+            nationalities.append(piece.artistnationality.lower())
+        if piece.artistname not in filterartists:
+            filterartists.append(piece.artistname)
+    #print(allworks)
     context['allworks'] = allworks
     context['overviewworks'] = overviewworks
+    context['allartists'] = allartists
+    context['artistnationalities'] = artistnationalities
+    context['nationalities'] = nationalities
+    context['filterartists'] = filterartists
     allarticles = []
     overviewarticles = []
     articlesqset = MuseumArticles.objects.filter(museum=museumobj).order_by('-edited', '-priority')

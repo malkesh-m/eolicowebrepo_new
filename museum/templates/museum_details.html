@@ -27,6 +27,513 @@
 
 
 	</style>
+
+	<script type='text/javascript'>
+
+      function removeItemOnce(arr, value) {
+        var index = arr.indexOf(value);
+        if (index > -1) {
+          arr.splice(index, 1);
+        }
+        return arr;
+      }
+
+      function filter(ftype, fval, elid){
+	const artworks = {
+		{% for evname, valueslist in allworks.items %}
+		  "{{ evname }}" : [ 
+			{% for val in valueslist %}
+			   { 
+			     {% for k, v in val.items %}
+			     "{{k}}" : "{{v}}",
+			     {% endfor %} 
+			   }, 
+			{% endfor %}
+		  ],
+		{% endfor %}
+	};
+	targetcheckbox = document.getElementById(elid);
+        
+        targetdiv = document.getElementById('allworks');
+    	s1 = "";
+	s2 = "";
+	s3 = "";
+	s4 = "";
+	selections = {};
+	artistslen = {{filterartists|length}};
+        natlen = {{nationalities|length}};
+        // Check which artists are selected
+	selections['Artists'] = Array();
+        for(actr=1; actr <= artistslen; actr++){
+	  achkbox = document.getElementById("Artist" + actr);
+	  if (achkbox.checked == true){
+	    av = achkbox.value;
+	    selections['Artists'].push(av);
+	  }
+	}
+	// Check Medium selected
+	selections['Medium'] = Array();
+	for(dctr=1; dctr <= 6; dctr++){
+	  dchkbox = document.getElementById('Medium' + dctr);
+	  if (dchkbox.checked == true){
+	    dv = dchkbox.value;
+	    selections['Medium'].push(dv);
+	  }
+	}
+	// Check Material selected
+	selections['Material'] = Array();
+	for(mctr=1; mctr <= 34; mctr++){
+	  mchkbox = document.getElementById('Material' + mctr);
+	  if (mchkbox.checked == true){
+	    mv = mchkbox.value;
+	    selections['Material'].push(mv);
+	  }
+	}
+	// Check Size selected
+	selections['Size'] = Array();
+	for(zctr=1; zctr <= 3; zctr++){
+	  zchkbox = document.getElementById('Size' + zctr);
+	  if (zchkbox.checked == true){
+	    zv = zchkbox.value;
+	    selections['Size'].push(zv);
+	  }
+	}
+	// Check Nationalities selected
+	selections['Nationality'] = Array();
+	for(nctr=1; nctr <= natlen; nctr++){
+	  nchkbox = document.getElementById('nat' + nctr);
+	  if (nchkbox.checked == true){
+	    nv = nchkbox.value;
+	    selections['Nationality'].push(nv);
+	  }
+	}
+	// Check Color selected
+	selections['Color'] = Array();
+	for(cctr=1; cctr <= 3; cctr++){
+	  cchkbox = document.getElementById('Color' + cctr);
+	  if (cchkbox.checked == true){
+	    cv = cchkbox.value;
+	    selections['Color'].push(cv);
+	  }
+	}
+	// Check Period selected
+	selections['Period'] = Array();
+	for(pctr=1; pctr <= 12; pctr++){
+	  pchkbox = document.getElementById('Period' + pctr);
+	  if (pchkbox.checked == true){
+	    pv = pchkbox.value;
+	    selections['Period'].push(pv);
+	  }
+	}
+	if(targetcheckbox.checked == false){
+	    // Logic for unchecked value here
+	    l = selections[ftype];
+	    v = targetcheckbox.value;
+	    for(j=0; j < l.length; j++){
+		if(l[j] == v){
+		    l = removeItemOnce(l, v);
+		}
+	    }
+	    selections[ftype] = l;
+	}
+	s1 += "<div class='column'>";
+	s2 += "<div class='column'>";
+ 	s3 += "<div class='column'>";
+	s4 += "<div class='column'>";
+	if(targetcheckbox.checked == true){
+	for(evname in artworks){
+	  l = artworks[evname];
+	  k = 0
+	  for(var i=0; i < l.length; i++){
+	    e = l[i];
+	    if(ftype == "Artists" && fval.toLowerCase() == e.artistname.toLowerCase()){
+	    if(k == 0){
+	    s1 += "<div class='img-box'>";
+	    s1 += "<img src='" + e.image + "' style='width:100%'>";
+	    s1 += "<h4>" + e.artworkname + "</h4>";
+	    s1 += "<h6>" + e.medium + "</h6>";
+	    s1 += "<p>" + e.description + "</p>";
+	    s1 += "</div>";
+	    }
+	    if(k == 1){
+	    s2 += "<div class='img-box'>";
+	    s2 += "<img src='" + e.image + "' style='width:100%'>";
+	    s2 += "<h4>" + e.artworkname + "</h4>";
+	    s2 += "<h6>" + e.medium + "</h6>";
+	    s2 += "<p>" + e.description + "</p>";
+	    s2 += "</div>";
+	    }
+	    if(k == 2){
+	    s3 += "<div class='img-box'>";
+	    s3 += "<img src='" + e.image + "' style='width:100%'>";
+	    s3 += "<h4>" + e.artworkname + "</h4>";
+	    s3 += "<h6>" + e.medium + "</h6>";
+	    s3 += "<p>" + e.description + "</p>";
+	    s3 += "</div>";
+	    }
+	    if(k == 3){
+	    s4 += "<div class='img-box'>";
+	    s4 += "<img src='" + e.image + "' style='width:100%'>";
+	    s4 += "<h4>" + e.artworkname + "</h4>";
+	    s4 += "<h6>" + e.medium + "</h6>";
+	    s4 += "<p>" + e.description + "</p>";
+	    s4 += "</div>";
+	    }
+	    k += 1;
+	    if(k == 4){
+		k = 0;
+	    }
+	    }
+	    if(ftype == "Medium" && e.description.toLowerCase().includes(fval.toLowerCase())){
+	    if(k == 0){
+	    s1 += "<div class='img-box'>";
+	    s1 += "<img src='" + e.image + "' style='width:100%'>";
+	    s1 += "<h4>" + e.artworkname + "</h4>";
+	    s1 += "<h6>" + e.medium + "</h6>";
+	    s1 += "<p>" + e.description + "</p>";
+	    s1 += "</div>";
+	    }
+	    if(k == 1){
+	    s2 += "<div class='img-box'>";
+	    s2 += "<img src='" + e.image + "' style='width:100%'>";
+	    s2 += "<h4>" + e.artworkname + "</h4>";
+	    s2 += "<h6>" + e.medium + "</h6>";
+	    s2 += "<p>" + e.description + "</p>";
+	    s2 += "</div>";
+	    }
+	    if(k == 2){
+	    s3 += "<div class='img-box'>";
+	    s3 += "<img src='" + e.image + "' style='width:100%'>";
+	    s3 += "<h4>" + e.artworkname + "</h4>";
+	    s3 += "<h6>" + e.medium + "</h6>";
+	    s3 += "<p>" + e.description + "</p>";
+	    s3 += "</div>";
+	    }
+	    if(k == 3){
+	    s4 += "<div class='img-box'>";
+	    s4 += "<img src='" + e.image + "' style='width:100%'>";
+	    s4 += "<h4>" + e.artworkname + "</h4>";
+	    s4 += "<h6>" + e.medium + "</h6>";
+	    s4 += "<p>" + e.description + "</p>";
+	    s4 += "</div>";
+	    }
+	    k += 1;
+	    if(k == 4){
+		k = 0;
+	    }
+	    }
+	    if(ftype == "Material" && e.medium.toLowerCase().includes(fval.toLowerCase())){
+	    if(k == 0){
+	    s1 += "<div class='img-box'>";
+	    s1 += "<img src='" + e.image + "' style='width:100%'>";
+	    s1 += "<h4>" + e.artworkname + "</h4>";
+	    s1 += "<h6>" + e.medium + "</h6>";
+	    s1 += "<p>" + e.description + "</p>";
+	    s1 += "</div>";
+	    }
+	    if(k == 1){
+	    s2 += "<div class='img-box'>";
+	    s2 += "<img src='" + e.image + "' style='width:100%'>";
+	    s2 += "<h4>" + e.artworkname + "</h4>";
+	    s2 += "<h6>" + e.medium + "</h6>";
+	    s2 += "<p>" + e.description + "</p>";
+	    s2 += "</div>";
+	    }
+	    if(k == 2){
+	    s3 += "<div class='img-box'>";
+	    s3 += "<img src='" + e.image + "' style='width:100%'>";
+	    s3 += "<h4>" + e.artworkname + "</h4>";
+	    s3 += "<h6>" + e.medium + "</h6>";
+	    s3 += "<p>" + e.description + "</p>";
+	    s3 += "</div>";
+	    }
+	    if(k == 3){
+	    s4 += "<div class='img-box'>";
+	    s4 += "<img src='" + e.image + "' style='width:100%'>";
+	    s4 += "<h4>" + e.artworkname + "</h4>";
+	    s4 += "<h6>" + e.medium + "</h6>";
+	    s4 += "<p>" + e.description + "</p>";
+	    s4 += "</div>";
+	    }
+	    k += 1;
+	    if(k == 4){
+		k = 0;
+	    }
+	    }
+	    if(ftype == "Nationality" && e.artistnationality.toLowerCase().includes(fval.toLowerCase())){
+	    if(k == 0){
+	    s1 += "<div class='img-box'>";
+	    s1 += "<img src='" + e.image + "' style='width:100%'>";
+	    s1 += "<h4>" + e.artworkname + "</h4>";
+	    s1 += "<h6>" + e.medium + "</h6>";
+	    s1 += "<p>" + e.description + "</p>";
+	    s1 += "</div>";
+	    }
+	    if(k == 1){
+	    s2 += "<div class='img-box'>";
+	    s2 += "<img src='" + e.image + "' style='width:100%'>";
+	    s2 += "<h4>" + e.artworkname + "</h4>";
+	    s2 += "<h6>" + e.medium + "</h6>";
+	    s2 += "<p>" + e.description + "</p>";
+	    s2 += "</div>";
+	    }
+	    if(k == 2){
+	    s3 += "<div class='img-box'>";
+	    s3 += "<img src='" + e.image + "' style='width:100%'>";
+	    s3 += "<h4>" + e.artworkname + "</h4>";
+	    s3 += "<h6>" + e.medium + "</h6>";
+	    s3 += "<p>" + e.description + "</p>";
+	    s3 += "</div>";
+	    }
+	    if(k == 3){
+	    s4 += "<div class='img-box'>";
+	    s4 += "<img src='" + e.image + "' style='width:100%'>";
+	    s4 += "<h4>" + e.artworkname + "</h4>";
+	    s4 += "<h6>" + e.medium + "</h6>";
+	    s4 += "<p>" + e.description + "</p>";
+	    s4 += "</div>";
+	    }
+	    k += 1;
+	    if(k == 4){
+		k = 0;
+	    }
+	    }
+	    if(ftype == "Period"){
+		if(e.artistbirthyear > 1800 && e.artistbirthyear < 1900){
+	     	    if(k == 0){
+		    s1 += "<div class='img-box'>";
+		    s1 += "<img src='" + e.image + "' style='width:100%'>";
+		    s1 += "<h4>" + e.artworkname + "</h4>";
+		    s1 += "<h6>" + e.medium + "</h6>";
+		    s1 += "<p>" + e.description + "</p>";
+		    s1 += "</div>";
+		    }
+		    if(k == 1){
+		    s2 += "<div class='img-box'>";
+		    s2 += "<img src='" + e.image + "' style='width:100%'>";
+		    s2 += "<h4>" + e.artworkname + "</h4>";
+		    s2 += "<h6>" + e.medium + "</h6>";
+		    s2 += "<p>" + e.description + "</p>";
+		    s2 += "</div>";
+		    }
+		    if(k == 2){
+		    s3 += "<div class='img-box'>";
+		    s3 += "<img src='" + e.image + "' style='width:100%'>";
+		    s3 += "<h4>" + e.artworkname + "</h4>";
+		    s3 += "<h6>" + e.medium + "</h6>";
+		    s3 += "<p>" + e.description + "</p>";
+		    s3 += "</div>";
+		    }
+		    if(k == 3){
+		    s4 += "<div class='img-box'>";
+		    s4 += "<img src='" + e.image + "' style='width:100%'>";
+		    s4 += "<h4>" + e.artworkname + "</h4>";
+		    s4 += "<h6>" + e.medium + "</h6>";
+		    s4 += "<p>" + e.description + "</p>";
+		    s4 += "</div>";
+		    }
+		    k += 1;
+		    if(k == 4){
+			k = 0;
+		    }
+		}
+	    }
+	  } // end for i
+	  
+	} // for evname
+	} // end if targetcheckbox.checked == true
+  	k = 0;
+	for(evname in artworks){
+	    l = artworks[evname];
+	    for(i=0; i < l.length; i++){
+		e = l[i];
+	        if(selections.hasOwnProperty('Artists')){
+		    artistslist = selections['Artists'];
+		    
+		    for(ax=0; ax < artistslist.length; ax++){
+		        a = artistslist[ax];
+			if(a.toLowerCase() == e.artistname.toLowerCase()){
+			    if(k == 0){
+				s1 += "<div class='img-box'>";
+			        s1 += "<img src='" + e.image + "' style='width:100%'>";
+			        s1 += "<h4>" + e.artworkname + "</h4>";
+			        s1 += "<h6>" + e.medium + "</h6>";
+			        s1 += "<p>" + e.description + "</p>";
+			        s1 += "</div>";
+			    }
+			    if(k == 1){
+				s2 += "<div class='img-box'>";
+			        s2 += "<img src='" + e.image + "' style='width:100%'>";
+			        s2 += "<h4>" + e.artworkname + "</h4>";
+			        s2 += "<h6>" + e.medium + "</h6>";
+			        s2 += "<p>" + e.description + "</p>";
+			        s2 += "</div>";
+			    }
+			    if(k == 2){
+				s3 += "<div class='img-box'>";
+			        s3 += "<img src='" + e.image + "' style='width:100%'>";
+			        s3 += "<h4>" + e.artworkname + "</h4>";
+			        s3 += "<h6>" + e.medium + "</h6>";
+			        s3 += "<p>" + e.description + "</p>";
+			        s3 += "</div>";
+			    }
+			    if(k == 3){
+				s4 += "<div class='img-box'>";
+			        s4 += "<img src='" + e.image + "' style='width:100%'>";
+			        s4 += "<h4>" + e.artworkname + "</h4>";
+			        s4 += "<h6>" + e.medium + "</h6>";
+			        s4 += "<p>" + e.description + "</p>";
+			        s4 += "</div>";
+			    }
+			    k = k + 1;
+			    if(k == 4){
+				k = 0;
+			    }
+			}
+		    }
+	        } // if hasOwnProperty
+		if(selections.hasOwnProperty('Medium')){
+		    mediumslist = selections['Medium'];
+		    for(ax=0; ax < mediumslist.length; ax++){
+			a = mediumslist[ax];
+			if(e.description.toLowerCase().includes(a.toLowerCase())){
+			    if(k == 0){
+				s1 += "<div class='img-box'>";
+			        s1 += "<img src='" + e.image + "' style='width:100%'>";
+			        s1 += "<h4>" + e.artworkname + "</h4>";
+			        s1 += "<h6>" + e.medium + "</h6>";
+			        s1 += "<p>" + e.description + "</p>";
+			        s1 += "</div>";
+			    }
+			    if(k == 1){
+				s2 += "<div class='img-box'>";
+			        s2 += "<img src='" + e.image + "' style='width:100%'>";
+			        s2 += "<h4>" + e.artworkname + "</h4>";
+			        s2 += "<h6>" + e.medium + "</h6>";
+			        s2 += "<p>" + e.description + "</p>";
+			        s2 += "</div>";
+			    }
+			    if(k == 2){
+				s3 += "<div class='img-box'>";
+			        s3 += "<img src='" + e.image + "' style='width:100%'>";
+			        s3 += "<h4>" + e.artworkname + "</h4>";
+			        s3 += "<h6>" + e.medium + "</h6>";
+			        s3 += "<p>" + e.description + "</p>";
+			        s3 += "</div>";
+			    }
+			    if(k == 3){
+				s4 += "<div class='img-box'>";
+			        s4 += "<img src='" + e.image + "' style='width:100%'>";
+			        s4 += "<h4>" + e.artworkname + "</h4>";
+			        s4 += "<h6>" + e.medium + "</h6>";
+			        s4 += "<p>" + e.description + "</p>";
+			        s4 += "</div>";
+			    }
+			    k = k + 1;
+			    if(k == 4){
+				k = 0;
+			    }
+			}
+		    }
+		} // if hasOwnProperty
+		if(selections.hasOwnProperty('Material')){
+		    materialslist = selections['Material'];
+		    for(ax=0; ax < materialslist.length; ax++){
+			a = materialslist[ax];
+			if(e.medium.toLowerCase().includes(a.toLowerCase())){
+			    if(k == 0){
+				s1 += "<div class='img-box'>";
+			        s1 += "<img src='" + e.image + "' style='width:100%'>";
+			        s1 += "<h4>" + e.artworkname + "</h4>";
+			        s1 += "<h6>" + e.medium + "</h6>";
+			        s1 += "<p>" + e.description + "</p>";
+			        s1 += "</div>";
+			    }
+			    if(k == 1){
+				s2 += "<div class='img-box'>";
+			        s2 += "<img src='" + e.image + "' style='width:100%'>";
+			        s2 += "<h4>" + e.artworkname + "</h4>";
+			        s2 += "<h6>" + e.medium + "</h6>";
+			        s2 += "<p>" + e.description + "</p>";
+			        s2 += "</div>";
+			    }
+			    if(k == 2){
+				s3 += "<div class='img-box'>";
+			        s3 += "<img src='" + e.image + "' style='width:100%'>";
+			        s3 += "<h4>" + e.artworkname + "</h4>";
+			        s3 += "<h6>" + e.medium + "</h6>";
+			        s3 += "<p>" + e.description + "</p>";
+			        s3 += "</div>";
+			    }
+			    if(k == 3){
+				s4 += "<div class='img-box'>";
+			        s4 += "<img src='" + e.image + "' style='width:100%'>";
+			        s4 += "<h4>" + e.artworkname + "</h4>";
+			        s4 += "<h6>" + e.medium + "</h6>";
+			        s4 += "<p>" + e.description + "</p>";
+			        s4 += "</div>";
+			    }
+			    k = k + 1;
+			    if(k == 4){
+				k = 0;
+			    }
+			}
+		    }
+		} // if hasOwnProperty
+		if(selections.hasOwnProperty('Nationality')){
+		    natlist = selections['Nationality'];
+		    for(ax=0; ax < natlist.length; ax++){
+			a = natlist[ax];
+			if(a.toLowerCase() == e.artistnationality.toLowerCase()){
+			    if(k == 0){
+				s1 += "<div class='img-box'>";
+			        s1 += "<img src='" + e.image + "' style='width:100%'>";
+			        s1 += "<h4>" + e.artworkname + "</h4>";
+			        s1 += "<h6>" + e.medium + "</h6>";
+			        s1 += "<p>" + e.description + "</p>";
+			        s1 += "</div>";
+			    }
+			    if(k == 1){
+				s2 += "<div class='img-box'>";
+			        s2 += "<img src='" + e.image + "' style='width:100%'>";
+			        s2 += "<h4>" + e.artworkname + "</h4>";
+			        s2 += "<h6>" + e.medium + "</h6>";
+			        s2 += "<p>" + e.description + "</p>";
+			        s2 += "</div>";
+			    }
+			    if(k == 2){
+				s3 += "<div class='img-box'>";
+			        s3 += "<img src='" + e.image + "' style='width:100%'>";
+			        s3 += "<h4>" + e.artworkname + "</h4>";
+			        s3 += "<h6>" + e.medium + "</h6>";
+			        s3 += "<p>" + e.description + "</p>";
+			        s3 += "</div>";
+			    }
+			    if(k == 3){
+				s4 += "<div class='img-box'>";
+			        s4 += "<img src='" + e.image + "' style='width:100%'>";
+			        s4 += "<h4>" + e.artworkname + "</h4>";
+			        s4 += "<h6>" + e.medium + "</h6>";
+			        s4 += "<p>" + e.description + "</p>";
+			        s4 += "</div>";
+			    }
+			    k = k + 1;
+			    if(k == 4){
+				k = 0;
+			    }
+			}
+		    }
+		} // if hasOwnProperty
+	    }
+	}
+	s1 += "</div>";
+	s2 += "</div>";
+	s3 += "</div>";
+	s4 += "</div>";
+	targetdiv.innerHTML = s1 + s2 + s3 + s4;
+      }
+    </script>
+
     </head>
     
     <body>
@@ -55,11 +562,11 @@
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="#" class="active">Home</a></li>
-							<li class="scroll-to-section"><a href="#">About</a></li>
+                            <li class="scroll-to-section"><a href="/login/index/" class="active">Home</a></li>
+			    <li class="scroll-to-section"><a href="#">About</a></li>
                             <li class="scroll-to-section"><a href="#">Viewing Rooms</a></li>
-                            <li class="scroll-to-section"><a href="galleries.html">Galleries</a></li>
-                            <li class="scroll-to-section"><a href="#">Museums</a></li>
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
                             <li class="scroll-to-section"><a href="#">Contact</a></li>
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
@@ -260,7 +767,6 @@
 					</div>
 				  </div>
 				  {% endfor %}
-				  
 			  </div>
 		  </div>
         </div>
@@ -279,21 +785,13 @@
 						</a>
 					</div>
 					<div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+						{% for artist, v in allartists.items %}
 						 <div class="form-check">
-						  <label class="form-check-label" for="Artists1">
-							<input type="checkbox" class="form-check-input" id="Artists1" name="option1" value="something" >Aage Birck
+						  <label class="form-check-label" for="Artists{{forloop.counter}}">
+							<input type="checkbox" class="form-check-input" id="Artists{{forloop.counter}}" name="Artists{{forloop.counter}}" value="{{artist}}" >{{artist}}
 						  </label>
 						</div>
-						<div class="form-check">
-						  <label class="form-check-label" for="Artists2">
-							<input type="checkbox" class="form-check-input" id="Artists2" name="option2" value="something">Achille Salvagni
-						  </label>
-						</div>
-						<div class="form-check">
-						  <label class="form-check-label" for="Artists3">
-							<input type="checkbox" class="form-check-input" id="Artists3" name="option2" value="something">Aldus
-						  </label>
-						</div>
+						{% endfor %}
 					</div>
 					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
 						<a class="card-title">
@@ -302,18 +800,18 @@
 					</div>
 					<div id="collapseTwo" class="card-body collapse" data-parent="#accordion" >
 						<div class="form-check">
-						  <label class="form-check-label" for="Unique">
-							<input type="checkbox" class="form-check-input" id="Unique" name="option1" value="something" >Unique
+						  <label class="form-check-label" for="Rarity1">
+							<input type="checkbox" class="form-check-input" id="Rarity1" name="option1" value="unique"  onclick="javascript:filter('Rarity', 'unique', 'Rarity1');">Unique
 						  </label>
 						</div>
 						<div class="form-check">
-						  <label class="form-check-label" for="LimitedEdition">
-							<input type="checkbox" class="form-check-input" id="LimitedEdition" name="option1" value="something" >Limited Edition
+						  <label class="form-check-label" for="Rarity2">
+							<input type="checkbox" class="form-check-input" id="Rarity2" name="option1" value="limited edition" onclick="javascript:filter('Rarity', 'limited edition', 'Rarity2');">Limited Edition
 						  </label>
 						</div>
 						<div class="form-check">
-						  <label class="form-check-label" for="OpenEdition">
-							<input type="checkbox" class="form-check-input" id="OpenEdition" name="option1" value="something" >Open Edition
+						  <label class="form-check-label" for="Rarity3">
+							<input type="checkbox" class="form-check-input" id="Rarity3" name="option1" value="open edition" onclick="javascript:filter('Rarity', 'open edition', 'Rarity3');">Open Edition
 						  </label>
 						</div>
 					</div>
@@ -325,18 +823,33 @@
 					<div id="collapseThree" class="collapse" data-parent="#accordion" >
 						<div class="card-body">
 							<div class="form-check">
-							  <label class="form-check-label" for="Design">
-								<input type="checkbox" class="form-check-input" id="Design" name="option1" value="something" >Design
+							  <label class="form-check-label" for="Medium1">
+								<input type="checkbox" class="form-check-input" id="Medium1" name="option1" value="photography" onclick="javascript:filter('Medium', 'photography', 'Medium1');">Photography
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="Sculpture">
-								<input type="checkbox" class="form-check-input" id="Sculpture" name="option1" value="something" >Sculpture
+							  <label class="form-check-label" for="Medium2">
+								<input type="checkbox" class="form-check-input" id="Medium2" name="option2" value="painting" onclick="javascript:filter('Medium', 'painting', 'Medium2');">Painting
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="Painting">
-								<input type="checkbox" class="form-check-input" id="Painting" name="option1" value="something" >Painting
+							  <label class="form-check-label" for="Medium3">
+								<input type="checkbox" class="form-check-input" id="Medium3" name="option3" value="sculpture" onclick="javascript:filter('Medium', 'sculpture', 'Medium3');">Sculpture
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Medium4">
+								<input type="checkbox" class="form-check-input" id="Medium4" name="option4" value="works on paper" onclick="javascript:filter('Medium', 'works on paper', 'Medium4');">Works On Paper
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Medium5">
+								<input type="checkbox" class="form-check-input" id="Medium5" name="option5" value="prints" onclick="javascript:filter('Medium', 'prints', 'Medium5');">Prints
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Medium6">
+								<input type="checkbox" class="form-check-input" id="Medium6" name="option6" value="installation" onclick="javascript:filter('Medium', 'installation', 'Medium6');">Installation
 							  </label>
 							</div>
 						</div>
@@ -349,18 +862,18 @@
 					<div id="collapse4" class="collapse" data-parent="#accordion" >
 						<div class="card-body">
 							<div class="form-check">
-							  <label class="form-check-label" for="SmallSize">
-								<input type="checkbox" class="form-check-input" id="SmallSize" name="option1" value="something" >Small (under 40cm)
+							  <label class="form-check-label" for="Size1">
+								<input type="checkbox" class="form-check-input" id="Size1" name="option1" value="small" onclick="javascript:filter('Size', 'small', 'Size1');">Small (under 40cm)
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="Medium">
-								<input type="checkbox" class="form-check-input" id="Medium" name="option1" value="something" >Medium (40 – 100cm)
+							  <label class="form-check-label" for="Size2">
+								<input type="checkbox" class="form-check-input" id="Size2" name="option2" value="medium" onclick="javascript:filter('Size', 'medium', 'Size2');">Medium (40 – 100cm)
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="Large">
-								<input type="checkbox" class="form-check-input" id="Large" name="option1" value="something" >Large (over 100cm)
+							  <label class="form-check-label" for="Size3">
+								<input type="checkbox" class="form-check-input" id="Size3" name="option3" value="large" onclick="javascript:filter('Size', 'large', 'Size3');">Large (over 100cm)
 							  </label>
 							</div>
 						</div>
@@ -373,18 +886,173 @@
 					<div id="collapse5" class="collapse" data-parent="#accordion" >
 						<div class="card-body">
 							<div class="form-check">
-							  <label class="form-check-label" for="Acrylic">
-								<input type="checkbox" class="form-check-input" id="Acrylic" name="option1" value="something" >Acrylic
+							  <label class="form-check-label" for="Material1">
+								<input type="checkbox" class="form-check-input" id="Material1" name="option1" value="acrylic" onclick="javascript:filter('Material', 'acrylic', 'Material1');">Acrylic
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="Aluminum">
-								<input type="checkbox" class="form-check-input" id="Aluminum" name="option1" value="something" >Aluminum
+							  <label class="form-check-label" for="Material2">
+								<input type="checkbox" class="form-check-input" id="Material2" name="option1" value="aluminum" onclick="javascript:filter('Material', 'aluminium', 'Material2');">Aluminum
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="Artpaper">
-								<input type="checkbox" class="form-check-input" id="Artpaper" name="option1" value="something" >Art paper
+							  <label class="form-check-label" for="Material3">
+								<input type="checkbox" class="form-check-input" id="Material3" name="option1" value="art paper" onclick="javascript:filter('Material', 'art paper', 'Material3');">Art paper
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material4">
+								<input type="checkbox" class="form-check-input" id="Material4" name="option1" value="bronze" onclick="javascript:filter('Material', 'bronze', 'Material4');">Bronze
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material5">
+								<input type="checkbox" class="form-check-input" id="Material5" name="option1" value="c-print" onclick="javascript:filter('Material', 'c-print', 'Material5');">C-print
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material6">
+								<input type="checkbox" class="form-check-input" id="Material6" name="option1" value="canvas" onclick="javascript:filter('Material', 'canvas', 'Material6');">Canvas
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material7">
+								<input type="checkbox" class="form-check-input" id="Material7" name="option1" value="cardboard" onclick="javascript:filter('Material', 'cardboard', 'Material7');">Cardboard
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material8">
+								<input type="checkbox" class="form-check-input" id="Material8" name="option1" value="ceramic" onclick="javascript:filter('Material', 'ceramic', 'Material8');">Ceramic
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material9">
+								<input type="checkbox" class="form-check-input" id="Material9" name="option1" value="charcoal" onclick="javascript:filter('Material', 'charcoal', 'Material9');">Charcoal
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material10">
+								<input type="checkbox" class="form-check-input" id="Material10" name="option1" value="collage" onclick="javascript:filter('Material', 'collage', 'Material10');">Collage
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material11">
+								<input type="checkbox" class="form-check-input" id="Material11" name="option1" value="copper" onclick="javascript:filter('Material', 'copper', 'Material11');">Copper
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material12">
+								<input type="checkbox" class="form-check-input" id="Material12" name="option1" value="cotton" onclick="javascript:filter('Material', 'cotton', 'Material12');">Cotton
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material13">
+								<input type="checkbox" class="form-check-input" id="Material13" name="option1" value="digital" onclick="javascript:filter('Material', 'digital', 'Material13');">Digital
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material14">
+								<input type="checkbox" class="form-check-input" id="Material14" name="option1" value="enamel" onclick="javascript:filter('Material', 'enamel', 'Material14');">Enamel
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material15">
+								<input type="checkbox" class="form-check-input" id="Material15" name="option1" value="glass" onclick="javascript:filter('Material', 'glass', 'Material15');">Glass
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material16">
+								<input type="checkbox" class="form-check-input" id="Material16" name="option1" value="gouache" onclick="javascript:filter('Material', 'gouache', 'Material16');">Gouache
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material17">
+								<input type="checkbox" class="form-check-input" id="Material17" name="option1" value="ink" onclick="javascript:filter('Material', 'ink', 'Material17');">Ink
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material18">
+								<input type="checkbox" class="form-check-input" id="Material18" name="option1" value="inkjet" onclick="javascript:filter('Material', 'inkjet', 'Material18');">Inkjet
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material19">
+								<input type="checkbox" class="form-check-input" id="Material19" name="option1" value="linen" onclick="javascript:filter('Material', 'linen', 'Material19');">Linen
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material20">
+								<input type="checkbox" class="form-check-input" id="Material20" name="option1" value="mixedmedia" onclick="javascript:filter('Material', 'mixed media', 'Material20');">Mixed Media
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material21">
+								<input type="checkbox" class="form-check-input" id="Material21" name="option1" value="oil" onclick="javascript:filter('Material', 'oil', 'Material21');">Oil
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material22">
+								<input type="checkbox" class="form-check-input" id="Material22" name="option1" value="paint" onclick="javascript:filter('Material', 'paint', 'Material22');">Paint
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material23">
+								<input type="checkbox" class="form-check-input" id="Material23" name="option1" value="panel" onclick="javascript:filter('Material', 'panel', 'Material23');">Panel
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material24">
+								<input type="checkbox" class="form-check-input" id="Material24" name="option1" value="paper" onclick="javascript:filter('Material', 'paper', 'Material24');">Paper
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material25">
+								<input type="checkbox" class="form-check-input" id="Material25" name="option1" value="pigment" onclick="javascript:filter('Material', 'pigment', 'Material25');">Pigment
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material26">
+								<input type="checkbox" class="form-check-input" id="Material26" name="option1" value="polaroid" onclick="javascript:filter('Material', 'polaroid', 'Material26');">Polaroid
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material27">
+								<input type="checkbox" class="form-check-input" id="Material27" name="option1" value="gelatin" onclick="javascript:filter('Material', 'gelatin', 'Material27');">Gelatin
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material28">
+								<input type="checkbox" class="form-check-input" id="Material28" name="option1" value="spraypaint" onclick="javascript:filter('Material', 'spray paint', 'Material28');">Spray Paint
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material29">
+								<input type="checkbox" class="form-check-input" id="Material29" name="option1" value="stone" onclick="javascript:filter('Material', 'stone', 'Material29');">Stone
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material30">
+								<input type="checkbox" class="form-check-input" id="Material30" name="option1" value="vinyl" onclick="javascript:filter('Material', 'vinyl', 'Material30');">Vinyl
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material31">
+								<input type="checkbox" class="form-check-input" id="Material31" name="option1" value="wash" onclick="javascript:filter('Material', 'wash', 'Material31');">Wash
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material32">
+								<input type="checkbox" class="form-check-input" id="Material32" name="option1" value="watercolor" onclick="javascript:filter('Material', 'watercolor', 'Material32');">Water Color
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material33">
+								<input type="checkbox" class="form-check-input" id="Material33" name="option1" value="wire" onclick="javascript:filter('Material', 'wire', 'Material33');">Wire
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Material34">
+								<input type="checkbox" class="form-check-input" id="Material34" name="option1" value="wood" onclick="javascript:filter('Material', 'wood', 'Material34');" >Wood
 							  </label>
 							</div>
 						</div>
@@ -396,21 +1064,13 @@
 					</div>
 					<div id="collapse6" class="collapse" data-parent="#accordion" >
 						<div class="card-body">
+							{% for nat, v in artistnationalities.items %}
 							<div class="form-check">
-							  <label class="form-check-label" for="American">
-								<input type="checkbox" class="form-check-input" id="American" name="option1" value="something" >American
+							  <label class="form-check-label" for="nat{{ forloop.counter }}">
+								<input type="checkbox" class="form-check-input" id="nat{{ forloop.counter }}" name="option1" value="{{nat}}" onclick="javascript:filter('Nationality', '{{nat}}', 'nat{{ forloop.counter }}');">{{nat}}
 							  </label>
 							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Argentine">
-								<input type="checkbox" class="form-check-input" id="Argentine" name="option1" value="something" >Argentine
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Armenian">
-								<input type="checkbox" class="form-check-input" id="Armenian" name="option1" value="something" >Armenian
-							  </label>
-							</div>
+							{% endfor %}
 						</div>
 					</div>
 					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse7">
@@ -421,18 +1081,63 @@
 					<div id="collapse7" class="collapse" data-parent="#accordion" >
 						<div class="card-body">
 							<div class="form-check">
-							  <label class="form-check-label" for="time-2020">
-								<input type="checkbox" class="form-check-input" id="time-2020" name="option1" value="something" >2020s
+							  <label class="form-check-label" for="Period1">
+								<input type="checkbox" class="form-check-input" id="Period1" name="option1" value="2020" onclick="javascript:filter('Period', '2020s', 'Period1');">2020s
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="time-2010">
-								<input type="checkbox" class="form-check-input" id="time-2010" name="option1" value="something" >2010s
+							  <label class="form-check-label" for="Period2">
+								<input type="checkbox" class="form-check-input" id="Period2" name="option1" value="2010" onclick="javascript:filter('Period', '2010s', 'Period2');">2010s
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="time-2000">
-								<input type="checkbox" class="form-check-input" id="time-2000" name="option1" value="something" >2000s
+							  <label class="form-check-label" for="Period3">
+								<input type="checkbox" class="form-check-input" id="Period3" name="option1" value="2000" onclick="javascript:filter('Period', '2000s', 'Period3');">2000s
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period4">
+								<input type="checkbox" class="form-check-input" id="Period4" name="option1" value="1990" onclick="javascript:filter('Period', '1990s', 'Period4');">1990s
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period5">
+								<input type="checkbox" class="form-check-input" id="Period5" name="option1" value="1980" onclick="javascript:filter('Period', '1980s', 'Period5');">1980s
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period6">
+								<input type="checkbox" class="form-check-input" id="Period6" name="option1" value="1970" onclick="javascript:filter('Period', '1970s', 'Period6');">1970s
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period7">
+								<input type="checkbox" class="form-check-input" id="Period7" name="option1" value="1960" onclick="javascript:filter('Period', '1960s', 'Period7');">1960s
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period8">
+								<input type="checkbox" class="form-check-input" id="Period8" name="option1" value="early-20th" onclick="javascript:filter('Period', 'early 20th', 'Period8');">Early 20th Century
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period9">
+								<input type="checkbox" class="form-check-input" id="Period9" name="option1" value="late-19th" onclick="javascript:filter('Period', 'late 19th', 'Period9');">Late 19th Century
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period10">
+								<input type="checkbox" class="form-check-input" id="Period10" name="option1" value="mid-19th" onclick="javascript:filter('Period', 'mid 19th', 'Period10');">Mid 19th Century
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period11">
+								<input type="checkbox" class="form-check-input" id="Period11" name="option1" value="early-19th" onclick="javascript:filter('Period', 'early 19th', 'Period11');">Early 19th Century
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Period12">
+								<input type="checkbox" class="form-check-input" id="Period12" name="option1" value="18th-earlier" onclick="javascript:filter('Period', '18th', 'Period12');">18th Century and Earlier
 							  </label>
 							</div>
 						</div>
@@ -445,18 +1150,18 @@
 					<div id="collapse8" class="collapse" data-parent="#accordion" >
 						<div class="card-body">
 							<div class="form-check">
-							  <label class="form-check-label" for="Color-red">
-								<input type="checkbox" class="form-check-input" id="Color-red" name="option1" value="something" >Red <span class="color-span" style="background:red;"></span>
+							  <label class="form-check-label" for="Color1">
+								<input type="checkbox" class="form-check-input" id="Color1" name="option1" value="red" onclick="javascript:filter('Color', 'red', 'Color1');">Red <span class="color-span" style="background:red;"></span>
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="Color-blue">
-								<input type="checkbox" class="form-check-input" id="Color-blue" name="option1" value="something" >Blue <span class="color-span" style="background:blue;"></span>
+							  <label class="form-check-label" for="Color2">
+								<input type="checkbox" class="form-check-input" id="Color2" name="option1" value="blue" onclick="javascript:filter('Color', 'blue', 'Color2');">Blue <span class="color-span" style="background:blue;"></span>
 							  </label>
 							</div>
 							<div class="form-check">
-							  <label class="form-check-label" for="Color-green">
-								<input type="checkbox" class="form-check-input" id="Color-green" name="option1" value="something" >Green <span class="color-span" style="background:green;"></span>
+							  <label class="form-check-label" for="Color3">
+								<input type="checkbox" class="form-check-input" id="Color3" name="option1" value="green" onclick="javascript:filter('Color', 'green', 'Color3');">Green <span class="color-span" style="background:green;"></span>
 							  </label>
 							</div>
 						</div>
@@ -477,42 +1182,59 @@
 				  </div>
 				<div class="row">
 			  <div class="column">
-				{% for works in allworks.eventsprioritylist.0 %}
+				{% for ename, works in allworks.items %}
+				{% if ename == eventsprioritylist.0 %}
+				{% for work in works %}
 				<div class="img-box">
-				<img src="{{works.image}}" style="width:100%">
-				<h4>{{works.piecename}}</h4>
-				<h6>{{works.artistname}}</h6>
-				<p>{{works.description}}</p>
+				<img src="{{work.image}}" style="width:100%">
+				<h4>{{work.piecename}}</h4>
+				<h6>{{work.artistname}}</h6>
+				<p>{{work.description}}</p>
 				</div>
+				{% endfor %}
+				{% endif %}
 				{% endfor %}
 			  </div>
 			  <div class="column">
-				{% for works in allworks.eventsprioritylist.1 %}
+				{% for ename, works in allworks.items %}
+				{% if ename == eventsprioritylist.1 %}
+				{% for work in works %}
 				<div class="img-box">
-				<img src="{{works.image}}" style="width:100%">
-				<h4>{{works.piecename}}</h4>
-				<h6>{{works.artistname}}</h6>
-				<p>{{works.description}}</p>
+				<img src="{{work.image}}" style="width:100%">
+				<h4>{{work.piecename}}</h4>
+				<h6>{{work.artistname}}</h6>
+				<p>{{work.description}}</p>
 				</div>
 				{% endfor %}
-			  </div>
-				{% for works in allworks.eventsprioritylist.2 %}
-				<div class="img-box">
-				<img src="{{works.image}}" style="width:100%">
-				<h4>{{works.piecename}}</h4>
-				<h6>{{works.artistname}}</h6>
-				<p>{{works.description}}</p>
-				</div>
+				{% endif %}
 				{% endfor %}
 			  </div>
 			  <div class="column">
-				{% for works in allworks.eventsprioritylist.3 %}
+				{% for ename, works in allworks.items %}
+				{% if ename == eventsprioritylist.2 %}
+				{% for work in works %}
 				<div class="img-box">
-				<img src="{{works.image}}" style="width:100%">
-				<h4>{{works.piecename}}</h4>
-				<h6>{{works.artistname}}</h6>
-				<p>{{works.description}}</p>
+				<img src="{{work.image}}" style="width:100%">
+				<h4>{{work.piecename}}</h4>
+				<h6>{{work.artistname}}</h6>
+				<p>{{work.description}}</p>
 				</div>
+				{% endfor %}
+				{% endif %}
+				{% endfor %}
+			  </div>
+			  <div class="column">
+				{% for ename, works in allworks.items %}
+				{% if ename == eventsprioritylist.3 %}
+				{% for work in works %}
+				<div class="img-box">
+				<img src="{{work.image}}" style="width:100%">
+				<h4>{{work.piecename}}</h4>
+				<h6>{{work.artistname}}</h6>
+				<p>{{work.description}}</p>
+				</div>
+				{% endfor %}
+				{% endif %}
 				{% endfor %}
 			  </div>
 			  </div>
