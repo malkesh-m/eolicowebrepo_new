@@ -65,20 +65,26 @@
         // Check which artists are selected
 	selections['Artists'] = Array();
         for(actr=1; actr <= artistslen; actr++){
-	  achkbox = document.getElementById("Artist" + actr);
+	  achkbox = document.getElementById("Artists" + actr);
+	  try{
 	  if (achkbox.checked == true){
 	    av = achkbox.value;
 	    selections['Artists'].push(av);
 	  }
+	  }
+	  catch(err){ }
 	}
 	// Check Medium selected
 	selections['Medium'] = Array();
 	for(dctr=1; dctr <= 6; dctr++){
 	  dchkbox = document.getElementById('Medium' + dctr);
+	  try{
 	  if (dchkbox.checked == true){
 	    dv = dchkbox.value;
 	    selections['Medium'].push(dv);
 	  }
+	  }
+	  catch(err){ }
 	}
 	// Check Material selected
 	selections['Material'] = Array();
@@ -562,12 +568,18 @@
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="/login/index/" class="active">Home</a></li>
-			    <li class="scroll-to-section"><a href="#">About</a></li>
-                            <li class="scroll-to-section"><a href="#">Viewing Rooms</a></li>
-                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-                            <li class="scroll-to-section"><a href="#">Contact</a></li>
+                            <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
+				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
+				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+				 <li class="scroll-to-section"><a href="/museum/index/" class="active">Museums</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+				 <li class="scroll-to-section"><a href="/gallery/events/">Events</a></li>
+				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
+				 <li class="scroll-to-section"><a href="/login/about/">About</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -788,7 +800,7 @@
 						{% for artist, v in allartists.items %}
 						 <div class="form-check">
 						  <label class="form-check-label" for="Artists{{forloop.counter}}">
-							<input type="checkbox" class="form-check-input" id="Artists{{forloop.counter}}" name="Artists{{forloop.counter}}" value="{{artist}}" >{{artist}}
+							<input type="checkbox" class="form-check-input" id="Artists{{forloop.counter}}" name="Artists{{forloop.counter}}" value="{{artist}}" onclick="javascript:filter('Artists', '{{artist}}', 'Artists{{forloop.counter}}');">{{artist}}
 						  </label>
 						</div>
 						{% endfor %}
@@ -1170,7 +1182,7 @@
 			</div>
 			</div>
 
-			<div id="main">
+			<div id="allworks">
 				<div class="work-top-pnl">
 					<button class="openbtn" onclick="openNav()"> Filter</button>
 					<div class="dropdown">Sort By:

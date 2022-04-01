@@ -105,7 +105,7 @@ def details(request):
         template = loader.get_template('artist_details.html')
         return HttpResponse(template.render(context, request))
     artistname = artistobj.artistname
-    # Get all artworks by the given artist
+    # Get all artworks by the given artist.
     allartworks = []
     artworksqset = Artwork.objects.filter(artistname__icontains=artistname).order_by('-priority', '-edited')
     for artwork in artworksqset:
@@ -153,6 +153,7 @@ def details(request):
     context['artistgalleries'] = artistgalleries
     template = loader.get_template('artist_details.html')
     return HttpResponse(template.render(context, request))
+
 
 
 def follow(request):

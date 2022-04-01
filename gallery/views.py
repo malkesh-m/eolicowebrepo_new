@@ -65,6 +65,8 @@ def index(request):
     gallerieslist4 = galleries4[startctr4:lastctr4]
     gallerieslist5 = galleries5[startctr5:lastctr5]
     galleriesdict = {}
+    gallerylocations = {}
+    allgalleries = {}
     for g in gallerieslist1[startctr1:lastctr1]:
         gname = g.galleryname
         gloc = g.location
@@ -72,6 +74,8 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+        gallerylocations[gloc] = 1
+        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context = {'galleries1' : galleriesdict}
     galleriesdict = {}
     for g in gallerieslist2[startctr2:lastctr2]:
@@ -81,6 +85,8 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[1][0]]
+        gallerylocations[gloc] = 1
+        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context['galleries2'] = galleriesdict
     galleriesdict = {}
     for g in gallerieslist3[startctr3:lastctr3]:
@@ -90,6 +96,8 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[2][0]]
+        gallerylocations[gloc] = 1
+        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context['galleries3'] = galleriesdict
     galleriesdict = {}
     for g in gallerieslist4[startctr4:lastctr4]:
@@ -99,6 +107,8 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[3][0]]
+        gallerylocations[gloc] = 1
+        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context['galleries4'] = galleriesdict
     galleriesdict = {}
     for g in gallerieslist5[startctr5:lastctr5]:
@@ -108,7 +118,11 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[4][0]]
+        gallerylocations[gloc] = 1
+        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context['galleries5'] = galleriesdict
+    context['gallerylocations'] = gallerylocations
+    context['allgalleries'] = allgalleries
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     context['gallerytypes'] = [gtypesqset[0][0], gtypesqset[1][0], gtypesqset[2][0], gtypesqset[3][0], gtypesqset[4][0]]

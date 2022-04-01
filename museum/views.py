@@ -252,8 +252,6 @@ def details(request):
     return HttpResponse(template.render(context, request))
 
     
-
-
 def follow(request):
     return HttpResponse("")
 

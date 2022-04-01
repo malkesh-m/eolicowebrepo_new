@@ -157,6 +157,81 @@ footer .under-footer a:hover {
 TemplateMo 571 Hexashop
 https://templatemo.com/tm-571-hexashop
 -->
+
+<script type='text/javascript'>
+	function dofilter1(selectid){
+	  alert("hi");
+	}
+
+	function dofilter(selectid){
+	  alert("hi");
+	  const galleriesdict = {
+	    {% for gname, glist in allgalleries.items %}
+		"{{gname}}" : Array("{{glist.0}}", "{{glist.1}}", "{{glist.2}}", "{{glist.3}}", "{{glist.4}}"),
+	    {% endfor %}
+	  };
+	  sectiontag = document.getElementById("galleries");
+	  selecttag = document.getElementById(selectid);
+	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
+	  alert(selectedoption);
+          html = "";
+ 	  if(selectid == "bylocation"){
+	    for(gname in galleriesdict){
+		gvlist = galleriesdict[gname];
+		starter = 0;
+		  if(selectedoption != "1"){
+		  if(gvlist[0].toLowerCase() == selectedoption.toLowerCase()){
+		    if(starter == 0){
+            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";        
+		  }
+		}// if selectedoption != 1
+		else{
+		    if(starter == 0){
+            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";  
+		}
+		html += "</div></div></div></div></div>";
+	    } 
+	  }
+	  if(selectid == "byspeciality"){
+	    for(gname in galleriesdict){
+		if(gname.toLowerCase() == selectedoption.toLowerCase()){
+		  gvlist = galleriesdict[gname];
+		  starter = 0;
+
+		  if(selectedoption != "1"){
+		  if(gvlist[0].toLowerCase() == selectedoption.toLowerCase()){
+		    if(starter == 0){
+            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";  
+		  }
+		} // if selectedoption != 1
+		else{
+		    if(starter == 0){
+            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";    
+		}
+
+		html += "</div></div></div></div></div>";
+		}
+	    }
+	  }
+	  sectiontag.innerHTML = html;
+	}
+    </script>
  </head>
 
  <body>
@@ -186,17 +261,17 @@ https://templatemo.com/tm-571-hexashop
  <!-- ***** Menu Start ***** -->
  <ul class="nav">
  <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
- <li class="scroll-to-section"><a href="/auctions/index/">Auctions</a></li>
- <li class="scroll-to-section"><a href="/artists/index/">Artists</a></li>
- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li>
+ <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
+ <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+ <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+ <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
  <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
  <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li>
+ <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
  <li class="scroll-to-section"><a href="/gallery/events/">Events</a></li>
- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li>
+ <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
  <li class="scroll-to-section"><a href="/login/about/">About</a></li>
- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li>
+ <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
  <!--<li class="submenu">
  <a href="javascript:;">Pages</a>
  <ul>
@@ -261,53 +336,41 @@ btn-slider" href="#">Explore</a></div></div>
  <div class="row">
  <div class="col-md-4">
 <div class="demo">
- <select style="display:none"
-placeholder="Select">
-<option value="1">All
-Locations</option>
-<option
-value="2">2</option>
-<option
-value="3">3</option>
-<option
-value="4">4</option>
+ <select style="display:none" name="bylocation" placeholder="Select" id='bylocation' onChange="javascript:dofilter1('bylocation');">
+<option value="1">All Locations</option>
+{% for gloc, v in gallerylocations.items %}
+<option value="{{gloc}}">{{gloc}}</option>
+{% endfor %}
  </select>
 </div>
 </div>
+<!-- 
  <div class="col-md-4">
 <div class="demo">
- <select style="display:none"
-placeholder="Select">
-<option value="1">All
-Specialties</option>
-<option
-value="2">2</option>
-<option
-value="3">3</option>
-<option
-value="4">4</option>
+ <select style="display:none" name="byspeciality" placeholder="Select" id='byspeciality' onChange="javascript:dofilter1('byspeciality');">
+<option value="1">All Specialties</option>
+{% for gtype in gallerytypes %}
+<option value="{{gtype}}">{{gtype}}</option>
+{% endfor %}
  </select>
 </div>
 </div>
+
  <div class="col-md-4">
 <div class="demo">
- <select style="display:none"
-placeholder="Select">
-<option value="1">All
-Galleries</option>
-<option
-value="2">2</option>
-<option
-value="3">3</option>
-<option
-value="4">4</option>
+ <select style="display:none" placeholder="Select">
+<option value="1">All Galleries</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
  </select>
 </div>
 </div>
+ -->
 </div>
 </div>
 </section>
-<section class="section gal-section" id="">
+<section class="section gal-section" id="galleries">
  <div class="container">
  <div class="row">
  <div class="col-lg-12">
@@ -506,8 +569,7 @@ adipiscing elit.</span>
  <div class="col-lg-3">
  <div class="first-item">
  <div class="logo">
- <img src="/static/images/logo-white.png"
-alt="">
+ <img src="/static/images/logo-white.png" alt="">
  </div>
  <ul>
  <li><a href="#">1234 Collins Ave, Sunny
@@ -585,8 +647,7 @@ Isles Beach, FL 33160, United States</a></li>
 /*https://www.jqueryscript.net/demo/Searchable-Multi-selectjQuery-Dropdown/*/
 $('.demo').dropdown({
 limitCount: 1,
-input:'<input type="text" maxLength="20"
-placeholder="Search">'
+input:'<input type="text" maxLength="20" placeholder="Search">'
 });
 $('#Top-owl-carousel').owlCarousel({
 loop:false,
