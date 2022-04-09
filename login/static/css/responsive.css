@@ -1,0 +1,110 @@
+@media only screen and (max-width: 1500px) {
+}
+
+@media only screen and (max-width: 1367px) {
+
+}
+
+@media only screen and (max-width: 1170px) {
+}
+
+@media only screen and (max-width: 992px) {
+ .cate-tabs-content #main .column {
+        flex: 50%;
+        max-width: 50%;
+    }
+}
+@media only screen and (max-width: 768px) {
+    .oth-works .sec-tow{flex-direction:row;}
+    .auc-det .sec-bid {
+        padding-left: 0px;
+    }
+    .save-share{padding-bottom:30px;}
+    .oth-works .column {
+        flex: 50%;
+        max-width: 100%;
+    }
+    .section-heading h2 {
+        font-size: 20px;
+    }
+ .bio-des{margin-top:30px;}
+ .sec-content {
+    flex-direction: column;
+}
+ .sec-right{margin-top:20px;}
+ .follow{text-align:center;}
+    .category-tabs .tabbable-responsive-new  .nav-tabs .nav-item {
+        width: 100%;
+    }
+    #works-for-sale .owl-nav, #related-artist .owl-nav{display:none;}
+    .download-app .row{display:flex;flex-direction: column-reverse;}
+    .download-app h4{margin-top:30px;font-size:26px;}
+    .sidebar-left-res{display:none;}
+    .auction-filer-search{flex-direction:column;}
+    .auction-filer-search .fixed-sidbr-header button{width:100%;}
+        .auction-filer-search .dropdown select {
+            width: 79% !important;
+        }
+    .res-bts .btn-slider {
+        font-size: 14px;
+        letter-spacing: 0;
+    }
+
+        .res-bts h5 {font-size:14px;}
+    .text-end {
+    text-align: left;
+}
+    .section-heading-2 h2{width:78%;}
+    .Top-owl-carousel-2{margin-top:13% !important;}
+    .Top-owl-carousel-2 .slide-cap{top:8%;}
+    .Top-owl-carousel-2 .slide-cap h2{font-size:18px;}
+      .Top-owl-carousel-2 .rit-cap{top:8%;}
+        .Top-owl-carousel-2 .rit-cap h2 {
+            font-size: 18px;
+        }
+        .Top-owl-carousel-2 p {
+            margin-top: 5px !important;
+        }
+}
+
+@media only screen and (max-width: 575px) {
+    .sell-work-content{padding:30px;}
+    h4{font-size:20px;}
+    .career-highlight-list ul li {
+        width: calc(100% - 0px);
+    }
+    .work-top-pnl .dropdown select{width:120px;}
+    h3{font-size:22px;}
+    .market-head p {
+    font-size: 16px;
+}
+    .market-signel .row .text-right{margin-top:30px;}
+    .market-signel .row .text-right .col-sm-12 {
+        width: 50%;
+        padding-left: 0;
+    }
+    .market-signel .row .text-right p{font-size:14px;}
+    .Top-owl-carousel-2 {
+        margin-top: 17% !important;
+    }
+        .Top-owl-carousel-2 p {
+            display:none;
+        }
+    .Top-owl-carousel-2 .owl-nav{display:none;}
+}
+
+@media only screen and (max-width: 321px) {
+    .Top-owl-carousel-2 {
+        margin-top: 31% !important;
+    }
+        .Top-owl-carousel-2 .slide-cap {
+            position: absolute;
+            left: 5%;
+            width: 45%;
+        }
+        .Top-owl-carousel-2 .owl-item img {
+            display: block;
+            width: 100%;
+            height: 130px;
+        }
+}
