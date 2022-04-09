@@ -74,7 +74,12 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
-        gallerylocations[gloc] = 1
+        glocparts = gloc.split(",")
+        for gloc in glocparts:
+            gloc = gloc.strip()
+            if gloc == "":
+                continue
+            gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context = {'galleries1' : galleriesdict}
     galleriesdict = {}
@@ -85,7 +90,12 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[1][0]]
-        gallerylocations[gloc] = 1
+        glocparts = gloc.split(",")
+        for gloc in glocparts:
+            gloc = gloc.strip()
+            if gloc == "":
+                continue
+            gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context['galleries2'] = galleriesdict
     galleriesdict = {}
@@ -96,7 +106,12 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[2][0]]
-        gallerylocations[gloc] = 1
+        glocparts = gloc.split(",")
+        for gloc in glocparts:
+            gloc = gloc.strip()
+            if gloc == "":
+                continue
+            gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context['galleries3'] = galleriesdict
     galleriesdict = {}
@@ -107,7 +122,12 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[3][0]]
-        gallerylocations[gloc] = 1
+        glocparts = gloc.split(",")
+        for gloc in glocparts:
+            gloc = gloc.strip()
+            if gloc == "":
+                continue
+            gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context['galleries4'] = galleriesdict
     galleriesdict = {}
@@ -118,7 +138,12 @@ def index(request):
         gurl = g.galleryurl
         gid = g.id
         galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[4][0]]
-        gallerylocations[gloc] = 1
+        glocparts = gloc.split(",")
+        for gloc in glocparts:
+            gloc = gloc.strip()
+            if gloc == "":
+                continue
+            gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
     context['galleries5'] = galleriesdict
     context['gallerylocations'] = gallerylocations

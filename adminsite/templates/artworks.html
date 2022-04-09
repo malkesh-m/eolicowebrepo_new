@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Eolico Admin: Artworks Form </title>
+
+    <!-- ================= Favicon ================== -->
+    <!-- Standard -->
+    <link rel="shortcut icon" href="http://placehold.it/64.png/000/fff">
+    <!-- Retina iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="144x144" href="http://placehold.it/144.png/000/fff">
+    <!-- Retina iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="114x114" href="http://placehold.it/114.png/000/fff">
+    <!-- Standard iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="72x72" href="http://placehold.it/72.png/000/fff">
+    <!-- Standard iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="57x57" href="http://placehold.it/57.png/000/fff">
+
+    <!-- Styles -->
+    <link href="/static/admincss/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/themify-icons.css" rel="stylesheet">
+    <link href="/static/admincss/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="/static/admincss/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/helper.css" rel="stylesheet">
+    <link href="/static/admincss/style.css" rel="stylesheet">
+
+    <script type='text/javascript'>
+	function addartwork(){
+	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
+	  artworknm = document.frmartwork.artworkname.value;
+	  artistnm = document.frmartwork.artistname.value;
+	  galleryid = document.frmartwork.selgalleryname.options[document.frmartwork.selgalleryname.options.selectedIndex].value;
+	  eventid = document.frmartwork.selgeventname.options[document.frmartwork.selgeventname.options.selectedIndex].value;
+	  abirth = document.frmartwork.artistbirth.value;
+	  adeath = document.frmartwork.artistdeath.value;
+	  anationality = document.frmartwork.artistnationality.value;
+	  medium = document.frmartwork.medium.value;
+	  sz = document.frmartwork.size.value;
+	  artdesc = document.frmartwork.artworkdescription.value;
+	  artsig = document.frmartwork.signature.value;
+	  artauth = document.frmartwork.authenticity.value;
+	  artestimate = document.frmartwork.estimate.value;
+	  artsoldprice = document.frmartwork.soldprice.value;
+	  artprovenance = document.frmartwork.provenance.value;
+	  artliterature = document.frmartwork.literature.value;
+	  artexhibitions = document.frmartwork.exhibitions.value;
+	  arturl = document.frmartwork.artworkurl.value;
+	  artpriority = document.frmartwork.selartworkpriority.options[document.frmartwork.selartworkpriority.options.selectedIndex].value;
+	  let formData = new FormData();
+	  if(document.getElementById("image1").files.length > 0){
+	  let image1 = document.getElementById("image1").files[0];
+	  formData.append("image1", image1);
+	  }
+	  if(document.getElementById("image2").files.length > 0){
+	  let image2 = document.getElementById("image2").files[0];
+	  formData.append("image2", image2); 
+	  }
+	  if(document.getElementById("image3").files.length > 0){
+	  let image3 = document.getElementById("image3").files[0];
+	  formData.append("image3", image3); 
+	  }
+	  if(document.getElementById("image4").files.length > 0){
+	  let image4 = document.getElementById("image4").files[0];
+	  formData.append("image4", image4); 
+	  }
+	  formData.append("artworkname", artworknm); 
+	  formData.append("artistname", artistnm); 
+	  formData.append("selgalleryname", galleryid); 
+ 	  formData.append("selgeventname", eventid); 
+	  formData.append("artistbirth", abirth); 
+	  formData.append("artistdeath", adeath); 
+	  formData.append("artistnationality", anationality);
+	  formData.append("medium", medium); 
+	  formData.append("size", sz); 
+	  formData.append("artworkdescription", artdesc); 
+	  formData.append("signature", artsig); 
+	  formData.append("authenticity", artauth); 
+	  formData.append("estimate", artestimate); 
+	  formData.append("soldprice", artsoldprice); 
+	  formData.append("provenance", artprovenance); 
+	  formData.append("literature", artliterature); 
+	  formData.append("exhibitions", artexhibitions); 
+	  formData.append("artworkurl", arturl); 
+	  formData.append("selartworkpriority", artpriority); 
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('artworkstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", "/admin/artworks/");
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+	function populategevents(){
+	  selectedgalleryid = document.frmartwork.selgalleryname.options[document.frmartwork.selgalleryname.options.selectedIndex].value;
+	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+          postdata = "gid=" + selectedgalleryid + "&csrfmiddlewaretoken=" + csrf;
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    // create the options
+	    eventsdict = JSON.parse(xmlhttp.responseText);
+	    var select = document.getElementById("selgeventname");
+	    select.options.length = 0;
+	    for (const [eventname, eventid] of Object.entries(eventsdict)){
+	    	var option = document.createElement("option");
+	    	option.text = eventname;
+	    	option.value = eventid;
+	    	select.appendChild(option);
+	    }
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/getevents/', true);
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  //alert(postdata);
+	  xmlhttp.send(postdata);
+	}
+
+
+	function searchartworksbykeyword(){
+	  keyword = document.frmsearchartworks.btnartworkssearch.value;
+	  //alert(keyword);
+ 	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    artform = document.getElementById('frmartwork');
+	    artform.innerHTML = "";
+	    gform = "";
+	    artworksdict = JSON.parse(xmlhttp.responseText);
+	    for (const [artname, artid] of Object.entries(artworksdict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editartwork(" + artid + ")'>" +  artname + "</a></div>";
+	    }
+	    artform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", '/admin/searchartworks/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.send();
+	}
+
+	function editartwork(awid){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    awform = document.getElementById('frmartwork');
+	    awform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchartworks.csrfmiddlewaretoken.value + "'>";
+	    context = JSON.parse(xmlhttp.responseText);
+	    geventsdict = context['gevents'];
+	    artwork = context['artwork'];
+	    galleries = context['galleriesdict'];
+	    gform += "<div class='card-title'><h4>Artwork Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork Name' name='artworkname' value='" + artwork['artworkname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Gallery Name</h4></div><div class='form-group'>";
+	    gform += "<select name='selgalleryname' id ='selgalleryname' class='form-control input-default'><option value=''>Select Gallery </option>";
+	    for (const [galname, galid] of Object.entries(galleries)){
+		if(artwork['gallery'] == galid){
+		gform += "<option value='" + galid + "' selected>" + galname + "</option>";
+		}
+		else{
+		gform += "<option value='" + galid + "'>" + galname + "</option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Event Name</h4></div><div class='form-group'>";
+	    gform += "<select name='selgeventname' id ='selgeventname' class='form-control input-default'><option value=''>Select Event </option>";
+	    for (const [gevname, gevid] of Object.entries(geventsdict)){
+		if(artwork['event'] == gevid){
+		gform += "<option value='" + gevid + "' selected>" + gevname + "</option>";
+		}
+		else{
+		gform += "<option value='" + gevid + "'>" + gevname + "</option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Artist Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Name' name='artistname' value='" + artwork['artistname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Birth Year</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Birth Year' name='artistbirth' value='" + artwork['artistbirthyear'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Death Year</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Death Year' name='artistdeath' value='" + artwork['artistdeathyear'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Nationality</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Nationality' name='artistnationality' value='" + artwork['artistnationality'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Medium</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Medium' name='medium' value='" + artwork['medium'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Size</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Size' name='size' value='" + artwork['size'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='artworkdescription'>" + artwork['description'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Signature</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Signature' name='signature' value='" + artwork['signature'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Letter of Authenticity</h4></div><div class='form-group'><textarea class='form-control input-default ' name='authenticity'>" + artwork['letterofauthenticity'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Estimate</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Estimate' name='estimate' value='" + artwork['estimate'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Sold Price</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Sold Price' name='soldprice' value='" + artwork['soldprice'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Provenance</h4></div><div class='form-group'><textarea class='form-control input-default ' name='provenance'>" + artwork['provenance'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Literature</h4></div><div class='form-group'><textarea class='form-control input-default ' name='literature'>" + artwork['literature'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Exhibitions</h4></div><div class='form-group'><textarea class='form-control input-default ' name='exhibitions'>" + artwork['exhibitions'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Artwork URL</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork URL' name='artworkurl' value='" + artwork['workurl'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artwork Image 1</h4></div><div class='form-group'><input type='file' name='image1' id='image1' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Artwork Image 2</h4></div><div class='form-group'><input type='file' name='image2' id='image2' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Artwork Image 3</h4></div><div class='form-group'><input type='file' name='image3' id='image3' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Artwork Image 4</h4></div><div class='form-group'><input type='file' name='image4' id='image4' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Event Priority</h4></div><div class='form-group'>";
+	    gform += "<select name='selartworkpriority' id='selartworkpriority' class='form-control input-default'><option value=''>Select Priority </option>";
+	    for(i=1; i <= 5; i++){
+		if(artwork['priority'] == i){
+		gform += "<option value='" + i + "' selected>" + i + " </option>";
+		}
+		else{
+		gform += "<option value='" + i + "'>" + i + " </option>";
+		}
+	    }
+	    gform += "</select></div>";
+
+	    gform += "<div class='card-title'><input type='button' name='editartwork' class='form-control input-default' value='Save Artwork' onclick='javascript:saveartwork();'></div>";
+	    gform += "<div class='card-title' id='artworkstatus'></div>";
+	    gform += "<input type='hidden' name='awid' value='" + artwork['id'] + "'>";
+	    awform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", "/admin/editartwork/?awid=" + awid);
+	  xmlhttp.send();
+	}
+
+	function saveartwork(){
+	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
+	  artworknm = document.frmartwork.artworkname.value;
+	  selgalleryname = document.getElementById('selgalleryname').value;
+	  selgeventname = document.getElementById('selgeventname').value;
+	  artistname = document.frmartwork.artistname.value;
+	  artistbirth = document.frmartwork.artistbirth.value;
+	  artistdeath = document.frmartwork.artistdeath.value;
+	  artistnationality = document.frmartwork.artistnationality.value;
+	  medium = document.frmartwork.medium.value;
+	  size = document.frmartwork.size.value;
+	  artworkdesc = document.frmartwork.artworkdescription.value;
+	  //alert(artworkdesc);
+	  signature = document.frmartwork.signature.value;
+	  authenticity = document.frmartwork.authenticity.value;
+	  estimate = document.frmartwork.estimate.value;
+	  soldprice = document.frmartwork.soldprice.value;
+	  provenance = document.frmartwork.provenance.value;
+	  literature = document.frmartwork.literature.value;
+	  exhibitions = document.frmartwork.exhibitions.value;
+	  artworkurl = document.frmartwork.artworkurl.value;
+	  priority = document.getElementById('selartworkpriority').value;
+	  awid = document.frmartwork.awid.value;
+	  let formData = new FormData();
+	  //alert(formData);
+	  let image1 = document.getElementById("image1").files[0];
+	  let image2 = document.getElementById("image2").files[0];
+	  let image3 = document.getElementById("image3").files[0];
+	  let image4 = document.getElementById("image4").files[0];
+	  formData.append("image1", image1); 
+	  formData.append("image2", image2);
+	  formData.append("image3", image3);
+	  formData.append("image4", image4);
+	  formData.append("artworkname", artworknm); 
+	  formData.append("galleryid", selgalleryname); 
+	  formData.append("eventid", selgeventname); 
+ 	  formData.append("artistname", artistname); 
+	  formData.append("artistbirth", artistbirth); 
+	  formData.append("artistdeath", artistdeath); 
+	  formData.append("artistnationality", artistnationality); 
+	  formData.append("medium", medium); 
+	  formData.append("size", size); 
+	  formData.append("artworkdescription", artworkdesc); 
+	  formData.append("signature", signature); 
+	  formData.append("authenticity", authenticity); 
+	  formData.append("estimate", estimate); 
+	  formData.append("soldprice", soldprice); 
+	  formData.append("provenance", provenance); 
+	  formData.append("literature", literature); 
+	  formData.append("exhibitions", exhibitions); 
+	  formData.append("artworkurl", artworkurl); 
+	  formData.append("priority", priority); 
+	  formData.append("awid", awid);
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('artworkstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/saveartwork/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+    </script>
+    
+</head>
+
+<body>
+
+<div class="content-wrap">
+        <div class="main">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 p-r-0 title-margin-right">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h1>Hello, <span>Welcome Here</span></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                    <div class="col-lg-4 p-l-0 title-margin-left">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                                    <li class="breadcrumb-item active">Form-Basic</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                </div>
+		
+                <!-- /# row -->
+                <section id="main-content">
+                    <div class="row">
+			<!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Artworks Search Box</h4>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmsearchartworks' id='frmsearchartworks' method='POST' action='/admin/searchartworks/'>
+					    {% csrf_token %}
+                                            <div class="form-group">
+                                                
+                                                <div class="input-group input-group-default">
+                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searchartworksbykeyword();'><i class="ti-search"></i></button></span>
+                                                    <input type="text" placeholder="Search Artworks" name="btnartworkssearch" class="form-control">
+                                                </div>
+                                            </div>
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h3>Add New Artwork</h3>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmartwork' id='frmartwork' method='POST' action='/admin/artworks/'>
+					    {% csrf_token %}
+					    <div class="card-title">
+                                    		<h4>Artwork Name</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default " placeholder="Artwork Name" name='artworkname'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Gallery </h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select name='selgalleryname' id='selgalleryname' class="form-control input-default" onchange='javascript:populategevents();'>
+						<option value=''>Select Gallery </option>
+						{% for gname, gid in galleriesdict.items %}
+						<option value='{{gid}}'>{{gname}}</option>
+						{% endfor %}
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Event </h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select name='selgeventname' id='selgeventname' class="form-control input-default">
+						<option value=''>Select Event </option>
+						
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Artist Name</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default " placeholder="Artist Name" name='artistname'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Artist Birth Year</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Birth Year" name='artistbirth'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Artist Death Year</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Death Year" name='artistdeath'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Artist Nationality</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Nationality" name='artistnationality'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Medium</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Medium" name='medium'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Size</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Size" name='size'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Description</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='artworkdescription'></textarea>
+                                            </div>
+                                            <div class="card-title">
+                                    		<h4>Signature</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Signature" name='signature'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Letter of Authenticity</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='authenticity'></textarea>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Estimate</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Estimate" name='estimate'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Sold Price</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Sold Price" name='soldprice'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Provenance</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='provenance'></textarea>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Literature</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='literature'></textarea>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Exhibitions</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='exhibitions'></textarea>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Artwork URL</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Artwork URL" name='artworkurl'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Artwork Image #1</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='file' name='image1' id='image1' class="form-control input-default">
+					    </div>
+					    <div class="card-title">
+                                    		<h4>Artwork Image #2</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='file' name='image2' id='image2' class="form-control input-default">
+					    </div>
+					    <div class="card-title">
+                                    		<h4>Artwork Image #3</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='file' name='image3' id='image3' class="form-control input-default">
+					    </div>
+					    <div class="card-title">
+                                    		<h4>Artwork Image #4</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='file' name='image4' id='image4' class="form-control input-default">
+					    </div>
+					    <div class="card-title">
+                                    		<h4>Artwork Priority</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <select name='selartworkpriority' class="form-control input-default">
+						<option value=''>Select Priority </option>
+						<option value='1'>1 </option>
+						<option value='2'>2 </option>
+						<option value='3'>3 </option>
+						<option value='4'>4 </option>
+						<option value='5'>5 </option>
+						</select>
+                                            </div>
+					    
+					    <div class="form-group">
+						<input type='button' name='addnewartwork' class="form-control input-default" value='Add Artwork' onclick='javascript:addartwork();'>
+					    </div>
+					    <div class="card-title" id='artworkstatus'>
+                                    		
+                                	    </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- /# row -->
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="footer">
+                                <p>2022 © Eolico Board. - <a href="#">eolico.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    
+    <!-- jquery vendor -->
+    <script src="/static/adminjs/lib/jquery.min.js"></script>
+    <script src="/static/adminjs/lib/jquery.nanoscroller.min.js"></script>
+    <!-- nano scroller -->
+    <script src="/static/adminjs/lib/menubar/sidebar.js"></script>
+    <script src="/static/adminjs/lib/preloader/pace.min.js"></script>
+    <!-- sidebar -->
+    
+    <!-- bootstrap -->
+
+
+    <script src="/static/adminjs/lib/bootstrap.min.js"></script><script src="/static/adminjs/scripts.js"></script>
+    <!-- scripit init-->
+
+
+
+
+
+</body>
+
+</html>

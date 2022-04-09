@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Eolico Admin: Gallery Event Form </title>
+
+    <!-- ================= Favicon ================== -->
+    <!-- Standard -->
+    <link rel="shortcut icon" href="http://placehold.it/64.png/000/fff">
+    <!-- Retina iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="144x144" href="http://placehold.it/144.png/000/fff">
+    <!-- Retina iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="114x114" href="http://placehold.it/114.png/000/fff">
+    <!-- Standard iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="72x72" href="http://placehold.it/72.png/000/fff">
+    <!-- Standard iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="57x57" href="http://placehold.it/57.png/000/fff">
+
+    <!-- Styles -->
+    <link href="/static/admincss/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/themify-icons.css" rel="stylesheet">
+    <link href="/static/admincss/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="/static/admincss/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/helper.css" rel="stylesheet">
+    <link href="/static/admincss/style.css" rel="stylesheet">
+
+    <script type='text/javascript'>
+	function addgevent(){
+	  csrf = document.frmgevents.csrfmiddlewaretoken.value;
+	  eventnm = document.frmgevents.geventname.value;
+	  eventloc = document.frmgevents.geventlocation.value;
+	  galleryid = document.frmgevents.selgalleryname.options[document.frmgevents.selgalleryname.options.selectedIndex].value;
+	  eventinfo = document.frmgevents.geventinfo.innerHTML;
+	  eventtype = document.frmgevents.selgeventtype.options[document.frmgevents.selgeventtype.options.selectedIndex].value;
+	  eventseltype = document.frmgevents.selgeventtype.options[document.frmgevents.selgeventtype.options.selectedIndex].value;
+	  eventpr = document.frmgevents.selgeventpriority.options[document.frmgevents.selgeventpriority.options.selectedIndex].value;
+	  eventstatus = document.frmgevents.selgeventstatus.options[document.frmgevents.selgeventstatus.options.selectedIndex].value;
+	  geventcover = document.frmgevents.geventcoverimage.value;
+	  eventstartdate = document.frmgevents.geventstartdate.value;
+	  eventenddate = document.frmgevents.geventenddate.value;
+	  let formData = new FormData();
+	  let coverimage = document.getElementById("geventcoverimage").files[0];
+	  formData.append("geventcoverimage", coverimage); 
+	  if (eventseltype == ""){
+	    eventseltype = document.frmgevents.geventtype.value;
+	  }
+	  formData.append("geventname", eventnm); 
+	  formData.append("geventlocation", eventloc); 
+	  formData.append("geventinfo", eventinfo); 
+ 	  formData.append("geventstartdate", eventstartdate); 
+	  formData.append("geventenddate", eventenddate); 
+	  formData.append("selgalleryname", galleryid); 
+	  formData.append("selgeventtype", eventseltype);
+	  formData.append("selgeventstatus", eventstatus); 
+	  formData.append("selgeventpriority", eventpr); 
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('gevstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", "/admin/gevents/");
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+	function searcheventsbykeyword(){
+	  keyword = document.frmsearchgevents.btngeventssearch.value;
+	  //alert(keyword);
+ 	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    gevform = document.getElementById('frmgevents');
+	    gevform.innerHTML = "";
+	    gform = "";
+	    geventsdict = JSON.parse(xmlhttp.responseText);
+	    for (const [evname, evid] of Object.entries(geventsdict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editgevent(" + evid + ")'>" +  evname + "</a></div>";
+	    }
+	    gevform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", '/admin/searchgevents/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.send();
+	}
+
+
+	function editgevent(gevid){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    gevform = document.getElementById('frmgevents');
+	    gevform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchgevents.csrfmiddlewaretoken.value + "'>";
+	    context = JSON.parse(xmlhttp.responseText);
+	    geventsdict = context['gevent'];
+	    geventtypes = context['geventtypes'];
+	    galleries = context['galleriesdict'];
+	    gform += "<div class='card-title'><h4>Event Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Event Name' name='geventname' value='" + geventsdict['eventname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Gallery Name</h4></div><div class='form-group'>";
+	    gform += "<select name='selgalleryname' id ='selgalleryname' class='form-control input-default'><option value=''>Select Gallery </option>";
+	    for (const [galname, galid] of Object.entries(galleries)){
+		if(geventsdict['galleryname'] == galname){
+		gform += "<option value='" + galid + "' selected>" + galname + "</option>";
+		}
+		else{
+		gform += "<option value='" + galid + "'>" + galname + "</option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Event Location</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Event Location' name='geventlocation' value='" + geventsdict['location'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Event Info</h4></div><div class='form-group'><textarea class='form-control input-default ' name='geventinfo'>" + geventsdict['eventinfo'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Event Type</h4></div><div class='form-group'>";
+	    gform += "<select name='selgeventtype' id ='selgeventtype' class='form-control input-default'><option value=''>Select type </option>";
+	    for(var i=0; i < geventtypes.length; i++){
+		if(geventtypes[i] == geventsdict['eventtype']){
+		gform += "<option value='" + geventtypes[i] + "' selected>" + geventtypes[i] + "</option>";
+		}
+		else{
+		gform += "<option value='" + geventtypes[i] + "'>" + geventtypes[i] + "</option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Event Priority</h4></div><div class='form-group'>";
+	    gform += "<select name='selgeventpriority' id='selgeventpriority' class='form-control input-default'><option value=''>Select Priority </option>";
+	    for(i=1; i <= 5; i++){
+		if(geventsdict['priority'] == i){
+		gform += "<option value='" + i + "' selected>" + i + " </option>";
+		}
+		else{
+		gform += "<option value='" + i + "'>" + i + " </option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Event Status</h4></div><div class='form-group'><select name='selgeventstatus' class='form-control input-default'><option value=''>Select Status </option>";
+	    if(geventsdict['eventstatus'] == "active"){
+	        gform += "<option value='active' selected>active </option>";
+	    }
+	    else{
+		gform += "<option value='active'>active </option>";
+	    }
+	    if(geventsdict['eventstatus'] == "running"){
+	        gform += "<option value='running' selected>running </option>";
+	    }
+	    else{
+		gform += "<option value='running'>running </option>";
+	    }
+	    if(geventsdict['eventstatus'] == "past"){
+	        gform += "<option value='past' selected>past </option>";
+	    }
+	    else{
+		gform += "<option value='past'>past </option>";
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='geventstartdate' value='" + geventsdict['eventstartdate'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Event End Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='geventenddate' value='" + geventsdict['eventenddate'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Event Cover Image</h4></div><div class='form-group'><input type='file' name='geventcoverimage' id='geventcoverimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><input type='button' name='editgevent' class='form-control input-default' value='Save Event' onclick='javascript:savegevent();'></div>";
+	    gform += "<div class='card-title' id='gevstatus'></div>";
+	    gform += "<input type='hidden' name='gevid' value='" + geventsdict['id'] + "'>";
+	    gevform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", "/admin/editgevent/?evid=" + gevid);
+	  xmlhttp.send();
+	}
+
+
+	function savegevent(){
+	  csrf = document.frmgevents.csrfmiddlewaretoken.value;
+	  eventnm = document.frmgevents.geventname.value;
+	  eventloc = document.frmgevents.geventlocation.value;
+	  galleryid = document.frmgevents.selgalleryname.options[document.frmgevents.selgalleryname.options.selectedIndex].value;
+	  eventinfo = document.frmgevents.geventinfo.innerHTML;
+	  eventtype = document.frmgevents.selgeventtype.options[document.frmgevents.selgeventtype.options.selectedIndex].value;
+	  eventseltype = document.frmgevents.selgeventtype.options[document.frmgevents.selgeventtype.options.selectedIndex].value;
+	  eventpr = document.frmgevents.selgeventpriority.options[document.frmgevents.selgeventpriority.options.selectedIndex].value;
+	  eventstatus = document.frmgevents.selgeventstatus.options[document.frmgevents.selgeventstatus.options.selectedIndex].value;
+	  geventcover = document.frmgevents.geventcoverimage.value;
+	  eventstartdate = document.frmgevents.geventstartdate.value;
+	  eventenddate = document.frmgevents.geventenddate.value;
+	  gevid = document.frmgevents.gevid.value;
+	  let formData = new FormData();
+	  let coverimage = document.getElementById("geventcoverimage").files[0];
+	  formData.append("geventcoverimage", coverimage); 
+	  if (eventseltype == ""){
+	    eventseltype = document.frmgevents.geventtype.value;
+	  }
+	  formData.append("geventname", eventnm); 
+	  formData.append("geventlocation", eventloc); 
+	  formData.append("geventinfo", eventinfo); 
+ 	  formData.append("geventstartdate", eventstartdate); 
+	  formData.append("geventenddate", eventenddate); 
+	  formData.append("selgalleryname", galleryid); 
+	  formData.append("selgeventtype", eventseltype);
+	  formData.append("selgeventstatus", eventstatus); 
+	  formData.append("selgeventpriority", eventpr); 
+	  formData.append("gevid", gevid); 
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('gevstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/savegevent/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+    </script>
+</head>
+
+<body>
+
+<div class="content-wrap">
+        <div class="main">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 p-r-0 title-margin-right">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h1>Hello, <span>Welcome Here</span></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                    <div class="col-lg-4 p-l-0 title-margin-left">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                                    <li class="breadcrumb-item active">Form-Basic</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                </div>
+		
+                <!-- /# row -->
+                <section id="main-content">
+                    <div class="row">
+			<!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Gallery Events Search Box</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmsearchgevents' method='POST' action='/admin/searchgevents/'>
+					    {% csrf_token %}
+                                            <div class="form-group">
+                                                
+                                                <div class="input-group input-group-default">
+                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searcheventsbykeyword();'><i class="ti-search"></i></button></span>
+                                                    <input type="text" placeholder="Search Events" name="btngeventssearch" class="form-control">
+                                                </div>
+                                            </div>
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h3>Add New Gallery Event</h3>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmgevents' id='frmgevents' method='POST' action='/admin/gevents/'>
+					    {% csrf_token %}
+					    <div class="card-title">
+                                    		<h4>Event Name</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default " placeholder="Event Name" name='geventname'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Gallery Name</h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select name='selgalleryname' class="form-control input-default">
+						<option value=''>Select Gallery </option>
+						{% for gname, gid in galleriesdict.items %}
+						<option value='{{gid}}'>{{gname}}</option>
+						{% endfor %}
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Event Location</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Event Location" name='geventlocation'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Event Info</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='geventinfo'></textarea>
+                                            </div>
+                                            
+					    <div class="card-title">
+                                    		<h4>Event Type</h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select name='selgeventtype' class="form-control input-default">
+						<option value=''>Select type </option>
+						{% for getype in allevents %}
+						<option value='{{getype}}'>{{getype}}</option>
+						{% endfor %}
+						</select>
+                                                <input type="text" class="form-control input-default" placeholder="Enter Event Type" name='geventtype'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Event Priority</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <select name='selgeventpriority' class="form-control input-default">
+						<option value=''>Select type </option>
+						<option value='1'>1 </option>
+						<option value='2'>2 </option>
+						<option value='3'>3 </option>
+						<option value='4'>4 </option>
+						<option value='5'>5 </option>
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Event Status</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <select name='selgeventstatus' class="form-control input-default">
+						<option value=''>Select Status </option>
+						<option value='active'>active </option>
+						<option value='running'>running </option>
+						<option value='past'>past </option>
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Event Start Date</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='date' name='geventstartdate' class="form-control input-default">
+					    </div>
+					    <div class="card-title">
+                                    		<h4>Event End Date</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='date' name='geventenddate' class="form-control input-default">
+					    </div>
+					    <div class="card-title">
+                                    		<h4>Event Cover Image</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='file' name='geventcoverimage' id='geventcoverimage' class="form-control input-default">
+					    </div>
+					    <div class="form-group">
+						<input type='button' name='addnewgevent' class="form-control input-default" value='Add Event' onclick='javascript:addgevent();'>
+					    </div>
+					    <div class="card-title" id='gevstatus'>
+                                    		
+                                	    </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- /# row -->
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="footer">
+                                <p>2022 © Eolico Board. - <a href="#">eolico.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    
+    <!-- jquery vendor -->
+    <script src="/static/adminjs/lib/jquery.min.js"></script>
+    <script src="/static/adminjs/lib/jquery.nanoscroller.min.js"></script>
+    <!-- nano scroller -->
+    <script src="/static/adminjs/lib/menubar/sidebar.js"></script>
+    <script src="/static/adminjs/lib/preloader/pace.min.js"></script>
+    <!-- sidebar -->
+    
+    <!-- bootstrap -->
+
+
+    <script src="/static/adminjs/lib/bootstrap.min.js"></script><script src="/static/adminjs/scripts.js"></script>
+    <!-- scripit init-->
+
+
+
+
+
+</body>
+
+</html>

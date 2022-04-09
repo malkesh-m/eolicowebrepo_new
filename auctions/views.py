@@ -107,23 +107,30 @@ def details(request):
     chunksize = 6
     rows = 2
     context = {}
-    lotinfo = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artist' : lotobj.artistname, 'birth' : lotobj.artistbirth, 'death' : lotobj.artistdeath, 'nationality' : lotobj.artistnationality, 'medium' : lotobj.medium, 'size' : lotobj.size, 'auctionname' : lotobj.auction.auctionname, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'provenance' : lotobj.provenance, 'literature' : lotobj.literature, 'exhibitions' : lotobj.exhibited, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.loturl, 'category' : lotobj.category}
+    lotinfo = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artist' : lotobj.artistname, 'birth' : lotobj.artistbirth, 'death' : lotobj.artistdeath, 'nationality' : lotobj.artistnationality, 'medium' : lotobj.medium, 'size' : lotobj.size, 'auctionname' : lotobj.auction.auctionname, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'provenance' : lotobj.provenance, 'literature' : lotobj.literature, 'exhibitions' : lotobj.exhibited, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.loturl, 'category' : lotobj.category, 'created' : ''}
     context['lotinfo'] = lotinfo
     artistqset = Artist.objects.filter(artistname__iexact=lotobj.artistname)
     aboutartist = {'artistname' : '', 'nationality' : '', 'birth' : '', 'death' : '', 'about' : '', 'image' : '', 'aid' : ''}
     if artistqset.__len__() > 0:
         aboutartist = {'artistname' : artistqset[0].artistname, 'nationality' : artistqset[0].nationality, 'birth' : artistqset[0].birthdate, 'death' : artistqset[0].deathdate, 'about' : artistqset[0].about, 'image' : artistqset[0].squareimage, 'aid' : artistqset[0].id}
     context['aboutartist'] = aboutartist
-    otherworks = []
-    relatedworks = []
+    otherworks = [[], [], [], []]
+    relatedworks = [[], [], [], []]
     allartists = {}
     lotsqset = Lot.objects.filter(auction=lotobj.auction).order_by() # Ordered by priority, by default
     numlots = chunksize * rows
     if lotsqset.__len__() < numlots:
         numlots = lotsqset.__len__()
+    actr = 0
+    rctr = 0
     for lot in lotsqset[0:numlots]:
         d = {'title' : lot.lottitle, 'artist' : lot.artistname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id}
-        otherworks.append(d)
+        l = otherworks[rctr]
+        l.append(d)
+        otherworks[rctr] = l
+        rctr += 1
+        if rctr == 4:
+            rctr = 0
         if lot.artistname in allartists.keys():
             l = allartists[lot.artistname]
             l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
@@ -137,16 +144,22 @@ def details(request):
     numlots = chunksize * rows
     if relatedqset.__len__() < numlots:
         numlots = relatedqset.__len__()
+    rctr = 0
     for lot in relatedqset[0:numlots]:
         d = {'title' : lot.lottitle, 'artist' : lot.artistname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id}
-        relatedworks.append(d)
+        l = relatedworks[rctr]
+        l.append(d)
+        relatedworks[rctr] = l
+        rctr += 1
+        if rctr == 4:
+            rctr = 0
         if lot.artistname in allartists.keys(): # This is the part that would be executed, not the else clause
             l = allartists[lot.artistname]
-            l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
+            l.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
             allartists[lot.artistname] = l
         else: # This should never be executed.
             l = []
-            l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
+            l.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
             allartists[lot.artistname] = l
     context['relatedworks'] = relatedworks
     context['allartists'] = allartists

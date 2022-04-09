@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Eolico Admin: Gallery Form </title>
+
+    <!-- ================= Favicon ================== -->
+    <!-- Standard -->
+    <link rel="shortcut icon" href="http://placehold.it/64.png/000/fff">
+    <!-- Retina iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="144x144" href="http://placehold.it/144.png/000/fff">
+    <!-- Retina iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="114x114" href="http://placehold.it/114.png/000/fff">
+    <!-- Standard iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="72x72" href="http://placehold.it/72.png/000/fff">
+    <!-- Standard iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="57x57" href="http://placehold.it/57.png/000/fff">
+
+    <!-- Styles -->
+    <link href="/static/admincss/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/themify-icons.css" rel="stylesheet">
+    <link href="/static/admincss/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="/static/admincss/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/helper.css" rel="stylesheet">
+    <link href="/static/admincss/style.css" rel="stylesheet">
+
+    <script type='text/javascript'>
+	function addgallery(){
+	  csrf = document.frmgallery.csrfmiddlewaretoken.value;
+	  gallerynm = document.frmgallery.galleryname.value;
+	  galleryloc = document.frmgallery.gallerylocation.value;
+	  gallerydesc = document.frmgallery.gallerydescription.innerHTML;
+	  galleryweburl = document.frmgallery.gallerywebsite.value;
+	  galleryseltype = document.frmgallery.selgallerytype.options[document.frmgallery.selgallerytype.options.selectedIndex].value;
+	  gallerypr = document.frmgallery.selgallerypriority.options[document.frmgallery.selgallerypriority.options.selectedIndex].value;
+	  gallerycover = document.frmgallery.gallerycoverimage.value;
+  	  postdata = "galleryname=" + gallerynm + "&gallerylocation=" + galleryloc + "&gallerydescription=" + gallerydesc + "&gallerywebsite=" + galleryweburl + "&selgallerytype=" + galleryseltype + "&selgallerypriority=" + gallerypr + "&gallerycoverimage=" + gallerycover;
+	  let formData = new FormData();
+	  //alert(formData);
+	  let coverimage = document.getElementById("gallerycoverimage").files[0];
+	  formData.append("gallerycoverimage", coverimage); 
+	  formData.append("galleryname", gallerynm); 
+	  formData.append("gallerylocation", galleryloc); 
+	  formData.append("gallerydescription", gallerydesc); 
+ 	  formData.append("gallerywebsite", galleryweburl); 
+	  formData.append("selgallerypriority", gallerypr); 
+	  if (galleryseltype == ""){
+	    galleryseltype = document.frmgallery.gallerytype.value;
+	  }
+	  formData.append("selgallerytype", galleryseltype); 
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+          postdata += "&csrfmiddlewaretoken=" + csrf;
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('galstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/galleries/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+
+	function searchgalleriesbykeyword(){
+	  keyword = document.frmsearchgallery.btngallerysearch.value;
+	  //alert(keyword);
+ 	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    galform = document.getElementById('frmgallery');
+	    galform.innerHTML = "";
+	    gform = "";
+	    galleriesdict = JSON.parse(xmlhttp.responseText);
+	    for (const [galname, galid] of Object.entries(galleriesdict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editgallery(" + galid + ")'>" +  galname + "</a></div>";
+	    }
+	    galform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", '/admin/searchgallery/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.send();
+	}
+
+
+	function savegallery(){
+	  csrf = document.frmgallery.csrfmiddlewaretoken.value;
+	  gallerynm = document.frmgallery.galleryname.value;
+	  galleryloc = document.frmgallery.gallerylocation.value;
+	  gallerydesc = document.frmgallery.gallerydescription.value;
+	  galleryweburl = document.frmgallery.gallerywebsite.value;
+	  //galleryseltype = document.frmgallery.selgallerytype.options[document.frmgallery.selgallerytype.options.selectedIndex].value;
+	  galleryseltype = document.getElementById('selgallerytype').value;
+	  //gallerypr = document.frmgallery.selgallerypriority.options[document.frmgallery.selgallerypriority.options.selectedIndex].value;
+  	  gallerypr = document.getElementById('selgallerypriority').value;
+	  gallerycover = document.frmgallery.gallerycoverimage.value;
+	  galid = document.frmgallery.gid.value;
+  	  postdata = "galleryname=" + gallerynm + "&gallerylocation=" + galleryloc + "&gallerydescription=" + gallerydesc + "&gallerywebsite=" + galleryweburl + "&selgallerytype=" + galleryseltype + "&selgallerypriority=" + gallerypr + "&gallerycoverimage=" + gallerycover;
+	  let formData = new FormData();
+	  //alert(formData);
+	  let coverimage = document.getElementById("gallerycoverimage").files[0];
+	  formData.append("gallerycoverimage", coverimage); 
+	  formData.append("galleryname", gallerynm); 
+	  formData.append("gallerylocation", galleryloc); 
+	  formData.append("gallerydescription", gallerydesc); 
+ 	  formData.append("gallerywebsite", galleryweburl); 
+	  formData.append("selgallerypriority", gallerypr); 
+	  if (galleryseltype == ""){
+	    galleryseltype = document.frmgallery.gallerytype.value;
+	  }
+	  formData.append("selgallerytype", galleryseltype);
+	  formData.append("gid", galid);
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+          postdata += "&csrfmiddlewaretoken=" + csrf;
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('galstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/savegallery/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+
+	function editgallery(gid){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    galform = document.getElementById('frmgallery');
+	    galform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchgallery.csrfmiddlewaretoken.value + "'>";
+	    context = JSON.parse(xmlhttp.responseText);
+	    gallerydict = context['gallery'];
+	    gallerytypes = context['gallerytypes'];
+	    gform += "<div class='card-title'><h4>Gallery Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Gallery Name' name='galleryname' value='" + gallerydict['galleryname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Gallery Location</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Gallery Location' name='gallerylocation' value='" + gallerydict['location'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Gallery Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='gallerydescription'>" + gallerydict['description'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Gallery Website</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Gallery Website' name='gallerywebsite' value='" + gallerydict['website'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Gallery Type</h4></div><div class='form-group'>";
+	    gform += "<select name='selgallerytype' id ='selgallerytype' class='form-control input-default'><option value=''>Select type </option>";
+	    for(var i=0; i < gallerytypes.length; i++){
+		if(gallerytypes[i] == gallerydict['gallerytype']){
+		gform += "<option value='" + gallerytypes[i] + "' selected>" + gallerytypes[i] + "</option>";
+		}
+		else{
+		gform += "<option value='" + gallerytypes[i] + "'>" + gallerytypes[i] + "</option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Gallery Priority</h4></div><div class='form-group'>";
+	    gform += "<select name='selgallerypriority' id='selgallerypriority' class='form-control input-default'><option value=''>Select type </option>";
+	    for(i=1; i <= 5; i++){
+		if(gallerydict['priority'] == i){
+		gform += "<option value='" + i + "' selected>" + i + " </option>";
+		}
+		else{
+		gform += "<option value='" + i + "'>" + i + " </option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Gallery Cover Image</h4></div><div class='form-group'><input type='file' name='gallerycoverimage' id='gallerycoverimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewgallery' class='form-control input-default' value='Save Gallery' onclick='javascript:savegallery();'></div>";
+	    gform += "<div class='card-title' id='galstatus'></div>";
+	    gform += "<input type='hidden' name='gid' value='" + gallerydict['id'] + "'>";
+	    galform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", "/admin/editgallery/?gid=" + gid);
+	  xmlhttp.send();
+	}
+    </script>
+</head>
+
+<body>
+
+<div class="content-wrap">
+        <div class="main">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 p-r-0 title-margin-right">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h1>Hello, <span>Welcome Here</span></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                    <div class="col-lg-4 p-l-0 title-margin-left">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                                    <li class="breadcrumb-item active">Form-Basic</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                </div>
+		
+                <!-- /# row -->
+                <section id="main-content">
+                    <div class="row">
+			<!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Gallery Search Box</h4>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmsearchgallery' method='POST' action='/admin/searchgallery/'>
+                                            <div class="form-group">
+                                                {% csrf_token %}
+                                                <div class="input-group input-group-default">
+                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searchgalleriesbykeyword();'><i class="ti-search"></i></button></span>
+                                                    <input type="text" placeholder="Search Galleries" name="btngallerysearch" class="form-control">
+                                                </div>
+                                            </div>
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h3>Add New Gallery</h3>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmgallery' method='POST' action='/admin/galleries/' id='frmgallery'>
+					    {% csrf_token %}
+					    <div class="card-title">
+                                    		<h4>Gallery Name</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default " placeholder="Gallery Name" name='galleryname'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Gallery Location</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Gallery Location" name='gallerylocation'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Gallery Description</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='gallerydescription'></textarea>
+                                            </div>
+                                            <div class="card-title">
+                                    		<h4>Gallery Website</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Gallery Website" name='gallerywebsite'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Gallery Type</h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select name='selgallerytype' class="form-control input-default">
+						<option value=''>Select type </option>
+						{% for gtype in gallerytypes %}
+						<option value='{{gtype}}'>{{gtype}}</option>
+						{% endfor %}
+						</select>
+                                                <input type="text" class="form-control input-default" placeholder="Enter Gallery Type" name='gallerytype'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Gallery Priority</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <select name='selgallerypriority' class="form-control input-default">
+						<option value=''>Select type </option>
+						<option value='1'>1 </option>
+						<option value='2'>2 </option>
+						<option value='3'>3 </option>
+						<option value='4'>4 </option>
+						<option value='5'>5 </option>
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Gallery Cover Image</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='file' name='gallerycoverimage' id='gallerycoverimage' class="form-control input-default">
+					    </div>
+					    <div class="form-group">
+						<input type='button' name='addnewgallery' class="form-control input-default" value='Add Gallery' onclick='javascript:addgallery();'>
+					    </div>
+					    <div class="card-title" id='galstatus'>
+                                    		
+                                	    </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- /# row -->
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="footer">
+                                <p>2022 © Eolico Board. - <a href="#">eolico.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    
+    <!-- jquery vendor -->
+    <script src="/static/adminjs/lib/jquery.min.js"></script>
+    <script src="/static/adminjs/lib/jquery.nanoscroller.min.js"></script>
+    <!-- nano scroller -->
+    <script src="/static/adminjs/lib/menubar/sidebar.js"></script>
+    <script src="/static/adminjs/lib/preloader/pace.min.js"></script>
+    <!-- sidebar -->
+    
+    <!-- bootstrap -->
+
+
+    <script src="/static/adminjs/lib/bootstrap.min.js"></script><script src="/static/adminjs/scripts.js"></script>
+    <!-- scripit init-->
+
+
+
+
+
+</body>
+
+</html>

@@ -26,10 +26,12 @@ from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    page = "1"
+    pagemap = {'a' : 1, 'b' : 2, 'c' : 3, 'd' : 4, 'e' : 5, 'f' : 6, 'g' : 7, 'h' : 8, 'i' : 9, 'j' : 10, 'k' : 11, 'l' : 12, 'm' : 13, 'n' : 14, 'o' : 15, 'p' : 16, 'q' : 17, 'r' : 18, 's' : 19, 't' : 20, 'u' : 21, 'v' : 22, 'w' : 23, 'x' : 24, 'y' : 25, 'z' : 26}
+    pageno = "a"
     if request.method == 'GET':
         if 'page' in request.GET.keys():
-            page = str(request.GET['page'])
+            pageno = str(request.GET['page'])
+    page = pagemap[pageno]
     chunksize = 9
     rows = 6
     featuredsize = 5
@@ -39,8 +41,9 @@ def index(request):
     endctr = (chunksize * rows) * int(page) + featuredsize
     context = {}
     featuredartists = []
-    artistsqset = Artist.objects.all().order_by('-priority', '-edited')
-    for artist in artistsqset:
+    artistsqset = Artist.objects.filter(artistname__istartswith=pageno).order_by('-priority', '-edited')
+    for artist in artistsqset[0:featuredsize]:
+        print(artist.artistname)
         d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
         artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname)
         if artworkqset.__len__() == 0:
@@ -48,27 +51,51 @@ def index(request):
         d['artworkname'] = artworkqset[0].artworkname
         d['artworkimage'] = artworkqset[0].image1
         d['artworkdate'] = artworkqset[0].creationdate
+        d['awid'] = artworkqset[0].id
         featuredartists.append(d)
-    if featuredartists.__len__() > featuredsize:
-        context['featuredartists'] = featuredartists[0:featuredsize]
-    else:
-        context['featuredartists'] = featuredartists
+    context['featuredartists'] = featuredartists
     allartists = []
     rctr = 0
     while rctr < rows:
-        allartists.append([])
+        allartists.append([]) # 'allartists' is a list of lists, and the inner list contains dicts specified by the variable 'd' below.
         rctr += 1
     rctr = 0
     actr = 0
+    uniqueartists = {}
+    uniqueartworks = {}
     if artistsqset.__len__() > featuredsize:
         for artist in artistsqset[startctr:endctr]:
+            #print(artist.artistname)
             d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname)
+            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by() # Ordered by 'priority' - descending.
             if artworkqset.__len__() == 0:
                 continue
-            d['artworkname'] = artworkqset[0].artworkname
-            d['artworkimage'] = artworkqset[0].image1
-            d['artworkdate'] = artworkqset[0].creationdate
+            if artist.artistname.title() not in uniqueartists.keys():
+                uniqueartists[artist.artistname.title()] = 1
+            artworkobj = artworkqset[0]
+            if artworkobj.artworkname.title() not in uniqueartworks.keys():
+                d['artworkname'] = artworkobj.artworkname.title()
+                #print(d['artworkname'])
+                uniqueartworks[artworkobj.artworkname.title()] = 1
+            else:
+                awctr = 0
+                awfound = 0
+                while awctr < artworkqset.__len__() - 1: # Iterate over all artworks by the artist under consideration
+                    awctr += 1
+                    artworkobj = artworkqset[awctr]
+                    if artworkobj.artworkname.title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
+                        awfound = 1
+                        break
+                if awfound: # Add artwork if it has not been encountered before.
+                    uniqueartworks[artworkobj.artworkname.title()] = 1
+                    d['artworkname'] = artworkobj.artworkname.title()
+                else: # Skip this artist if no new artworks could be found.
+                    continue
+            d['artworkimage'] = artworkobj.image1
+            d['artworkdate'] = artworkobj.creationdate
+            d['awid'] = artworkobj.id
+            d['artworkmedium'] = artworkobj.medium
+            d['artworkestimate'] = artworkobj.estimate
             if actr < chunksize:
                 l = allartists[rctr]
                 l.append(d)
@@ -80,6 +107,8 @@ def index(request):
             if rctr == rows:
                 break
     context['allartists'] = allartists
+    context['uniqueartists'] = uniqueartists
+    context['uniqueartworks'] = uniqueartworks
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     template = loader.get_template('artist.html')

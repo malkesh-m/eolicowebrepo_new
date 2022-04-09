@@ -21,6 +21,8 @@ BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
+GALLERY_FILE_DIR = BASE_PATH + os.path.sep + "images" + os.path.sep + "galleries"
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -48,6 +50,10 @@ INSTALLED_APPS = [
     'login',
     'gallery',
     'museum',
+    'artists',
+    'auctions',
+    'auctionhouses',
+    'adminsite',
 ]
 
 MIDDLEWARE = [

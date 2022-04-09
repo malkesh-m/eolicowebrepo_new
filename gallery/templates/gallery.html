@@ -159,12 +159,9 @@ https://templatemo.com/tm-571-hexashop
 -->
 
 <script type='text/javascript'>
-	function dofilter1(selectid){
-	  alert("hi");
-	}
-
+	
 	function dofilter(selectid){
-	  alert("hi");
+	  //alert("hi");
 	  const galleriesdict = {
 	    {% for gname, glist in allgalleries.items %}
 		"{{gname}}" : Array("{{glist.0}}", "{{glist.1}}", "{{glist.2}}", "{{glist.3}}", "{{glist.4}}"),
@@ -173,17 +170,19 @@ https://templatemo.com/tm-571-hexashop
 	  sectiontag = document.getElementById("galleries");
 	  selecttag = document.getElementById(selectid);
 	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
-	  alert(selectedoption);
+	  //alert(selectedoption);
           html = "";
  	  if(selectid == "bylocation"){
 	    for(gname in galleriesdict){
 		gvlist = galleriesdict[gname];
 		starter = 0;
 		  if(selectedoption != "1"){
-		  if(gvlist[0].toLowerCase() == selectedoption.toLowerCase()){
+		  //alert(gvlist[0].toLowerCase() + "gvlist"); alert(selectedoption.toLowerCase());
+		  if(gvlist[0].toLowerCase().includes(selectedoption.toLowerCase())){
+                  //if(gvlist[0].toLowerCase() == selectedoption.toLowerCase() ){
 		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
 		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";        
@@ -191,13 +190,13 @@ https://templatemo.com/tm-571-hexashop
 		}// if selectedoption != 1
 		else{
 		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
 		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";  
 		}
-		html += "</div></div></div></div></div>";
+		html += "</div></div></div></div></div></section>";
 	    } 
 	  }
 	  if(selectid == "byspeciality"){
@@ -209,8 +208,8 @@ https://templatemo.com/tm-571-hexashop
 		  if(selectedoption != "1"){
 		  if(gvlist[0].toLowerCase() == selectedoption.toLowerCase()){
 		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
 		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";  
@@ -218,14 +217,14 @@ https://templatemo.com/tm-571-hexashop
 		} // if selectedoption != 1
 		else{
 		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
 		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";    
 		}
 
-		html += "</div></div></div></div></div>";
+		html += "</div></div></div></div></div></section>";
 		}
 	    }
 	  }
@@ -335,8 +334,9 @@ btn-slider" href="#">Explore</a></div></div>
 <div class="container">
  <div class="row">
  <div class="col-md-4">
-<div class="demo">
- <select style="display:none" name="bylocation" placeholder="Select" id='bylocation' onChange="javascript:dofilter1('bylocation');">
+<div class="row">
+<!-- <div class="demo"> -->
+ <select name="bylocation" placeholder="Select" id='bylocation' onChange="javascript:dofilter('bylocation');">
 <option value="1">All Locations</option>
 {% for gloc, v in gallerylocations.items %}
 <option value="{{gloc}}">{{gloc}}</option>
@@ -347,7 +347,7 @@ btn-slider" href="#">Explore</a></div></div>
 <!-- 
  <div class="col-md-4">
 <div class="demo">
- <select style="display:none" name="byspeciality" placeholder="Select" id='byspeciality' onChange="javascript:dofilter1('byspeciality');">
+ <select style="display:none" name="byspeciality" placeholder="Select" id='byspeciality' onChange="javascript:dofilter('byspeciality');">
 <option value="1">All Specialties</option>
 {% for gtype in gallerytypes %}
 <option value="{{gtype}}">{{gtype}}</option>
@@ -370,7 +370,8 @@ btn-slider" href="#">Explore</a></div></div>
 </div>
 </div>
 </section>
-<section class="section gal-section" id="galleries">
+<div id="galleries">
+<section class="section gal-section">
  <div class="container">
  <div class="row">
  <div class="col-lg-12">
@@ -561,7 +562,7 @@ adipiscing elit.</span>
  </div>
  </div>
  </section>
-
+ </div>
  <!-- ***** Footer Start ***** -->
  <footer>
  <div class="container">

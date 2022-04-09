@@ -21,10 +21,13 @@ from django.views.generic import RedirectView
 import login
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
+    path('admin/', include('adminsite.urls')),
     path('login/', include('login.urls')),
     path('gallery/', include('gallery.urls')),
     path('museum/', include('museum.urls')),
+    path('artist/', include('artists.urls')),
+    path('auction/', include('auctions.urls')),
     path('', login.views.index, name='homeindex'),
 ]
 

@@ -72,7 +72,10 @@ def index(request):
         allmtypes.append(mtype[0])
         museumsfull[mtype[0]] = []
     for loc in locationsqset:
-        locationslist.append(loc[0])
+        locparts = loc[0].split(",")
+        for iloc in locparts:
+            iloc = iloc.strip()
+            locationslist.append(iloc)
     """
     if endctr1 > museumsqset1.__len__():
         endctr1 = museumsqset1.__len__()

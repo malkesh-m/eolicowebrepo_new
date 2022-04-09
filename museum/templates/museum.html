@@ -36,12 +36,9 @@ https://templatemo.com/tm-571-hexashop
 -->
 
     <script type='text/javascript'>
-	function dofilter1(selectid){
-	  alert("hi");
-	}
-
+	
 	function dofilter(selectid){
-	  alert("hi");
+	  //alert("hi");
 	  const museumsdict = {
 	    {% for mtype, museumslist in museumsfull.items %}
 		"{{mtype}}" : Array(
@@ -54,33 +51,42 @@ https://templatemo.com/tm-571-hexashop
 	  sectiontag = document.getElementById("museums");
 	  selecttag = document.getElementById(selectid);
 	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
-	  alert(selectedoption);
+	  //alert(selectedoption);
           html = "";
  	  if(selectid == "location"){
 	    for(mtype in museumsdict){
 		museumslist = museumsdict[mtype];
 		starter = 0;
+		uniquemuseums = {};
 		for(var i=0; i < museumslist.length; i++){
 		  if(selectedoption != "1"){
 		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
 		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
+		    if(museumslist[i][0] in uniquemuseums){
+			continue;
+		    }
+		    uniquemuseums[museumslist[i][0]] = 1;
 		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
 		  }
 		}// if selectedoption != 1
 		else{
 		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
+		    if(museumslist[i][0] in uniquemuseums){
+			continue;
+		    }
+		    uniquemuseums[museumslist[i][0]] = 1;
 		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";  
 		}
 		} // for museumslist loop ends
-		html += "</div></div></div></div></div>";
+		html += "</div></div></div></div></div></section>";
 	    } 
 	  }
 	  if(selectid == "speciality"){
@@ -88,27 +94,36 @@ https://templatemo.com/tm-571-hexashop
 		if(mtype.toLowerCase() == selectedoption.toLowerCase()){
 		  museumslist = museumsdict[mtype];
 		  starter = 0;
+		  uniquemuseums = {};
 		for(var i=0; i < museumslist.length; i++){
 		  if(selectedoption != "1"){
 		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
 		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
+		    if(museumslist[i][0] in uniquemuseums){
+			continue;
+		    }
+		    uniquemuseums[museumslist[i][0]] = 1;
 		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
 		  }
 		} // if selectedoption != 1
 		else{
 		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
+		    if(museumslist[i][0] in uniquemuseums){
+			continue;
+		    }
+		    uniquemuseums[museumslist[i][0]] = 1;
 		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";       
 		}
 		}  // for museumslist ends
-		html += "</div></div></div></div></div>";
+		html += "</div></div></div></div></div></section>";
 		}
 	    }
 	  }
@@ -203,25 +218,28 @@ https://templatemo.com/tm-571-hexashop
 		<div class="container">
             <div class="row">
                 <div class="col-md-4">
-					<div class="demo">
-					  <select style="display:none" name="location" placeholder="Select" id='location' onChange="javascript:dofilter1('location');">
+					<div class="row">
+					<!-- <div class="demo"> -->
+					  <select name="location" placeholder="Select" id='location' onChange="javascript:dofilter('location');">
 						<option value="1">All Locations</option>
 						{% for loc in locations %}
 						<option value="{{loc}}">{{loc}}</option>
 						{% endfor %}
 					  </select>
 					</div>
-				</div>
+		</div>
                 <div class="col-md-4">
+					<!-- 
 					<div class="demo">
-					  <select style="display:none" name="speciality" placeholder="Select" id='speciality' onChange="javascript:dofilter1('speciality');">
+					  <select name="speciality" placeholder="Select" id='speciality' onChange="javascript:dofilter('speciality');">
 						<option value="1">All Specialties</option>
 						{% for mtype in specialities %}
 						<option value="{{mtype}}">{{mtype}}</option>
 						{% endfor %}
 					  </select>
 					</div>
-				</div>
+					-->
+		</div>
                 <div class="col-md-4">
 					<!-- <div class="demo">
 					  <select style="display:none"  placeholder="Select" id='gallery' onchange='javascript:dofilter('gallery');'>
@@ -235,8 +253,9 @@ https://templatemo.com/tm-571-hexashop
 			</div>
 		</div>
 	</section>
+	<div id='museums'>
 	{% for mtype, museumslist in allmuseums.items %}
-	<section class="section gal-section" id="museums">
+	<section class="section gal-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -275,7 +294,7 @@ https://templatemo.com/tm-571-hexashop
         </div>
     </section>
 	{% endfor %}
-   
+   </div>
     
     <!-- ***** Footer Start ***** -->
     <footer>

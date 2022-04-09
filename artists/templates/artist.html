@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,131 +19,47 @@
 
     <link rel="stylesheet" href="/static/css/style.css">
 
+    <link rel="stylesheet" href="/static/css/responsive.css">
     <link rel="stylesheet" href="/static/css/owl-carousel.css">
 
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
-	<style>
-		
- 
-	</style>
-<!--
+    <style>
+    </style>
+    <!--
 
-TemplateMo 571 Hexashop
+    TemplateMo 571 Hexashop
 
-https://templatemo.com/tm-571-hexashop
+    https://templatemo.com/tm-571-hexashop
 
--->
-
-    <script type='text/javascript'>
-	function dofilter1(selectid){
-	  alert("hi");
-	}
-
-	function dofilter(selectid){
-	  alert("hi");
-	  const museumsdict = {
-	    {% for mtype, museumslist in museumsfull.items %}
-		"{{mtype}}" : Array(
-		  {% for museum in museumslist %}
-			Array( "{{museum.museumname}}", "{{museum.location}}", "{{museum.coverimage}}", "{{museum.museumurl}}", "{{museum.description}}", "{{museum.mid}}" ),
-		  {% endfor %}
-		),
-	    {% endfor %}
-	  };
-	  sectiontag = document.getElementById("museums");
-	  selecttag = document.getElementById(selectid);
-	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
-	  alert(selectedoption);
-          html = "";
- 	  if(selectid == "location"){
-	    for(mtype in museumsdict){
-		museumslist = museumsdict[mtype];
-		starter = 0;
-		for(var i=0; i < museumslist.length; i++){
-		  if(selectedoption != "1"){
-		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
-		  }
-		}// if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";  
-		}
-		} // for museumslist loop ends
-		html += "</div></div></div></div></div>";
-	    } 
-	  }
-	  if(selectid == "speciality"){
-	    for(mtype in museumsdict){
-		if(mtype.toLowerCase() == selectedoption.toLowerCase()){
-		  museumslist = museumsdict[mtype];
-		  starter = 0;
-		for(var i=0; i < museumslist.length; i++){
-		  if(selectedoption != "1"){
-		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
-		  }
-		} // if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";       
-		}
-		}  // for museumslist ends
-		html += "</div></div></div></div></div>";
-		}
-	    }
-	  }
-	  sectiontag.innerHTML = html;
-	}
-    </script>
-    </head>
+    -->
+</head>
     
-    <body>
-    
-    <!-- ***** Preloader Start ***** -->
-    <div id="preloader">
-        <div class="jumper">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>  
-    <!-- ***** Preloader End ***** -->
-    
-    
-    <!-- ***** Header Area Start ***** -->
-    <header class="header-area header-sticky">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <nav class="main-nav">
-                        <!-- ***** Logo Start ***** -->
-                        <a href="index.html" class="logo">
-                            <img src="/static/images/logo1.png">
-                        </a>
-                        <!-- ***** Logo End ***** -->
-                        <!-- ***** Menu Start ***** -->
-                        <ul class="nav">
-                            	 <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
+  <body>
+
+      <!-- ***** Preloader Start ***** -->
+      <div id="preloader">
+          <div class="jumper">
+              <div></div>
+              <div></div>
+              <div></div>
+          </div>
+      </div>
+      <!-- ***** Preloader End ***** -->
+      <!-- ***** Header Area Start ***** -->
+      <header class="header-area header-sticky">
+          <div class="container">
+              <div class="row">
+                  <div class="col-12">
+                      <nav class="main-nav">
+                          <!-- ***** Logo Start ***** -->
+                          <a href="index.html" class="logo">
+                              <img src="/static/images/logo1.png">
+                          </a>
+                          <!-- ***** Logo End ***** -->
+                          <!-- ***** Menu Start ***** -->
+                          <ul class="nav">
+                              <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
 				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
 				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
 				 <li class="scroll-to-section"><a href="/artist/index/" class="active">Artists</a></li>
@@ -155,7 +71,7 @@ https://templatemo.com/tm-571-hexashop
 				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
 				 <li class="scroll-to-section"><a href="/login/about/">About</a></li>
 				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
-                            <!--<li class="submenu">
+                              <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
                                     <li><a href="about.html">About Us</a></li>
@@ -164,23 +80,78 @@ https://templatemo.com/tm-571-hexashop
                                     <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </li>-->
-                            
-                            
-                        </ul>        
-                        <a class='menu-trigger'>
-                            <span>Menu</span>
-                        </a>
-                        <!-- ***** Menu End ***** -->
-                    </nav>
+
+
+                          </ul>
+                          <a class='menu-trigger'>
+                              <span>Menu</span>
+                          </a>
+                          <!-- ***** Menu End ***** -->
+                      </nav>
+                  </div>
+              </div>
+          </div>
+      </header>
+      <!-- ***** Header Area End ***** -->
+      <!-- ***** Main Banner Area Start ***** -->
+      <!----<section class="featured-artist-slider">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div id="Top-owl-carousel" class="owl-carousel owl-theme">
+                        <div class="item">
+                            <div class="thumb">
+                                <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                            </div>
+                            <div class="down-content">
+                                <a href="#">
+                                    <h4>Maison Gerard</h4>
+                                    <span>New York 1995</span>
+                                </a><a class="btn btn-slider" href="#">Follow</a>
+
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="thumb">
+                                <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                            </div>
+                            <div class="down-content">
+                                <a href="#">
+                                    <h4>Maison Gerard</h4>
+                                    <span>New York 1984</span>
+                                </a><a class="btn btn-slider" href="#">Follow</a>
+
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="thumb">
+                                <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                            </div>
+                            <div class="down-content">
+                                <a href="#">
+                                    <h4>Maison Gerard</h4>
+                                    <span>New York 1988</span>
+                                </a><a class="btn btn-slider" href="#">Follow</a>
+
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="thumb">
+                                <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                            </div>
+                            <div class="down-content">
+                                <a href="#">
+                                    <h4>Maison Gerard</h4>
+                                    <span>New York 1995</span>
+                                </a><a class="btn btn-slider" href="#">Follow</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </header>
-    <!-- ***** Header Area End ***** -->
-
-    <!-- ***** Main Banner Area Start ***** -->
-    
-	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
+    </section>-->
+      <div id="Top-owl-carousel" class="owl-carousel owl-theme">
 		{% for d in carousel %}
                 
 		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="#">Explore</a></div></div>
@@ -188,220 +159,418 @@ https://templatemo.com/tm-571-hexashop
 	    	{% endfor %}
 		
 	</div>
-    <!-- ***** Main Banner Area End ***** -->
-	<section class="section gal-section" id="">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Browse Institutions</h2>
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-		<div class="container">
-            <div class="row">
-                <div class="col-md-4">
-					<div class="demo">
-					  <select style="display:none" name="location" placeholder="Select" id='location' onChange="javascript:dofilter1('location');">
-						<option value="1">All Locations</option>
-						{% for loc in locations %}
-						<option value="{{loc}}">{{loc}}</option>
-						{% endfor %}
-					  </select>
-					</div>
-				</div>
-                <div class="col-md-4">
-					<div class="demo">
-					  <select style="display:none" name="speciality" placeholder="Select" id='speciality' onChange="javascript:dofilter1('speciality');">
-						<option value="1">All Specialties</option>
-						{% for mtype in specialities %}
-						<option value="{{mtype}}">{{mtype}}</option>
-						{% endfor %}
-					  </select>
-					</div>
-				</div>
-                <div class="col-md-4">
-					<!-- <div class="demo">
-					  <select style="display:none"  placeholder="Select" id='gallery' onchange='javascript:dofilter('gallery');'>
-						<option value="1">All Galleries</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-					  </select>
-					</div> -->
-				</div>
-			</div>
-		</div>
-	</section>
-	{% for mtype, museumslist in allmuseums.items %}
-	<section class="section gal-section" id="museums">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>{{mtype}}</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-                        <div class="owl-men-item owl-carousel">
-			    {% for museum in museumslist %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/museum/details/?mid={{museum.mid}}"><img src="{{museum.coverimage}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/museum/details/?mid={{museum.mid}}">
-										<h4>{{museum.museumname}}</h4>
-										<span>{{museum.location}}</span>
-										<a class="btn btn-slider" href="/museum/follow/?mid={{museum.mid}}">Follow</a>
-									</a>
-                                </div>
-                            </div>
-			    {% endfor %}
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-	{% endfor %}
-   
-    
-    <!-- ***** Footer Start ***** -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="first-item">
-                        <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
-                        </div>
-                        <ul>
-                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
-                            <li><a href="#">demo@company.com</a></li>
-                            <li><a href="#">010-020-0340</a></li>
-                        </ul>
-                    </div>
-                </div>
-                 <div class="col-lg-3">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#">Featured shows</a></li>
-                        <li><a href="#">Market News</a></li>
-                        <li><a href="#">Current Fairs</a></li>
-                        <li><a href="#">Trending Artists</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3">
-                    <h4>Useful Links</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Galleries</a></li>
-                        <li><a href="#">Museums</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3">
-                    <h4>Information</h4>
-                    <ul>
-                        <li><a href="#">FAQ's</a></li>
-                        <li><a href="#">Terms of Use</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Security</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-12">
-                    <div class="under-footer">
-                        <p>Copyright © 2022. All Rights Reserved.</p>
-                       
-                        <ul>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    
+      <!------ Featured Artist ------->
+      <section class="featured-artist">
+          <div class="container max-container">
+              <div class="row d-flex">
+                  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <div class="section-heading">
+                          <h2>Featured Artists</h2>
+                          <span>Browse over 100,000 artists</span>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <ul class="text-end">
+                          <li><a href="/artist/index/?page=a">a</a></li>
+                          <li><a href="/artist/index/?page=b">b</a></li>
+                          <li><a href="/artist/index/?page=c">c</a></li>
+                          <li><a href="/artist/index/?page=d">d</a></li>
+                          <li><a href="/artist/index/?page=e">e</a></li>
+                          <li><a href="/artist/index/?page=f">f</a></li>
+                          <li><a href="/artist/index/?page=g">g</a></li>
+                          <li><a href="/artist/index/?page=h">h</a></li>
+                          <li><a href="/artist/index/?page=i">i</a></li>
+                          <li><a href="/artist/index/?page=j">j</a></li>
+                          <li><a href="/artist/index/?page=k">k</a></li>
+                          <li><a href="/artist/index/?page=l">l</a></li>
+                          <li><a href="/artist/index/?page=m">m</a></li>
+                          <li><a href="/artist/index/?page=n">n</a></li>
+                          <li><a href="/artist/index/?page=o">o</a></li>
+                          <li><a href="/artist/index/?page=p">p</a></li>
+                          <li><a href="/artist/index/?page=q">q</a></li>
+                          <li><a href="/artist/index/?page=r">r</a></li>
+                          <li><a href="/artist/index/?page=s">s</a></li>
+                          <li><a href="/artist/index/?page=t">t</a></li>
+                          <li><a href="/artist/index/?page=u">u</a></li>
+                          <li><a href="/artist/index/?page=v">v</a></li>
+                          <li><a href="/artist/index/?page=w">w</a></li>
+                          <li><a href="/artist/index/?page=x">x</a></li>
+                          <li><a href="/artist/index/?page=y">y</a></li>
+                          <li><a href="/artist/index/?page=z">z</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </section>
+      <!------ Featured Artist ------->
+      <!-- ***** Main Banner Area End ***** -->
+      <section class="section gal-section br-none">
+          <div class="container max-container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <h2>Emerging Art</h2>
+                          <span>
+                              <a href="">View All</a>
+                          </span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+		  {% for artistobj in featuredartists %}
+                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                      <div class="artist-category">
+                          <div class="thumb">
+                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                          </div>
+                          <div class="down-content">
+                              <a href="/artist/details/?aid={{artistobj.aid}}">
+                                  <h4>{{artistobj.artistname}}</h4>
+                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
+                              </a><a class="btn btn-slider" href="#">Follow</a>
+                          </div>
+                      </div>
+                  </div>
+		  {% endfor %}
+                  
+              </div>
+          </div>
+      </section>
 
-    <!-- jQuery -->
-    <script src="/static/js/jquery-2.1.0.min.js"></script>
+      <section class="section gal-section br-none pdt-0">
+          <div class="container max-container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <h2>Contemporary Chinese Art</h2>
+                          <span>
+                              <a href="">View All</a>
+                          </span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  {% for artistobj in allartists.0 %}
+                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                      <div class="artist-category">
+                          <div class="thumb">
+                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                          </div>
+                          <div class="down-content">
+                              <a href="/artist/details/?aid={{artistobj.aid}}">
+                                  <h4>{{artistobj.artistname}}</h4>
+                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
+                              </a><a class="btn btn-slider" href="#">Follow</a>
+                          </div>
+                      </div>
+                  </div>
+		  {% endfor %}
+                  
+              </div>
+          </div>
+      </section>
+      <section class="section gal-section br-none pdt-0">
+          <div class="container max-container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <h2>Abstract Sculpture</h2>
+                          <span>
+                              <a href="">View All</a>
+                          </span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  {% for artistobj in allartists.1 %}
+                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                      <div class="artist-category">
+                          <div class="thumb">
+                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                          </div>
+                          <div class="down-content">
+                              <a href="/artist/details/?aid={{artistobj.aid}}">
+                                  <h4>{{artistobj.artistname}}</h4>
+                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
+                              </a><a class="btn btn-slider" href="#">Follow</a>
+                          </div>
+                      </div>
+                  </div>
+		  {% endfor %}
+                  
+              </div>
+          </div>
+      </section>
+      <section class="section gal-section br-none pdt-0">
+          <div class="container max-container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <h2>Post-War European Art</h2>
+                          <span>
+                              <a href="">View All</a>
+                          </span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  {% for artistobj in allartists.2 %}
+                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                      <div class="artist-category">
+                          <div class="thumb">
+                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                          </div>
+                          <div class="down-content">
+                              <a href="/artist/details/?aid={{artistobj.aid}}">
+                                  <h4>{{artistobj.artistname}}</h4>
+                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
+                              </a><a class="btn btn-slider" href="#">Follow</a>
+                          </div>
+                      </div>
+                  </div>
+		  {% endfor %}
+                  
+              </div>
+          </div>
+      </section>
+      <section class="section gal-section br-none pdt-0">
+          <div class="container max-container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <h2>Contemporary Furniture and Design</h2>
+                          <span>
+                              <a href="">View All</a>
+                          </span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  {% for artistobj in allartists.3 %}
+                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                      <div class="artist-category">
+                          <div class="thumb">
+                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                          </div>
+                          <div class="down-content">
+                              <a href="/artist/details/?aid={{artistobj.aid}}">
+                                  <h4>{{artistobj.artistname}}</h4>
+                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
+                              </a><a class="btn btn-slider" href="#">Follow</a>
+                          </div>
+                      </div>
+                  </div>
+		  {% endfor %}
+                  
+              </div>
+          </div>
+      </section>
+      <section class="section gal-section br-none pdt-0">
+          <div class="container max-container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <h2>Contemporary Conceptualism</h2>
+                          <span>
+                              <a href="">View All</a>
+                          </span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  {% for artistobj in allartists.4 %}
+                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                      <div class="artist-category">
+                          <div class="thumb">
+                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                          </div>
+                          <div class="down-content">
+                              <a href="/artist/details/?aid={{artistobj.aid}}">
+                                  <h4>{{artistobj.artistname}}</h4>
+                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
+                              </a><a class="btn btn-slider" href="#">Follow</a>
+                          </div>
+                      </div>
+                  </div>
+		  {% endfor %}
+                  
+              </div>
+          </div>
+      </section>
+      <section class="section gal-section br-none pdt-0">
+          <div class="container max-container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <h2>East Village Art</h2>
+                          <span>
+                              <a href="">View All</a>
+                          </span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  {% for artistobj in allartists.5 %}
+                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                      <div class="artist-category">
+                          <div class="thumb">
+                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                          </div>
+                          <div class="down-content">
+                              <a href="/artist/details/?aid={{artistobj.aid}}">
+                                  <h4>{{artistobj.artistname}}</h4>
+                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
+                              </a><a class="btn btn-slider" href="#">Follow</a>
+                          </div>
+                      </div>
+                  </div>
+		  {% endfor %}
+                  
+              </div>
+          </div>
+      </section>
+      <section class="download-app">
+          <div class="container max-container">
+              <div class="row">
+                  <div class="col-sm-12 col-md-5 col-lg-4 col-xl-4">
+                      <div class="download-app">
+                          <h4>Get More from Eolico—on the App</h4>
+                          <div class="pl-st">
+                              <a href=""><img src="/static/images/app-store.png" alt=""></a> <a href=""><img src="/static/images/google-play.png" alt=""></a>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md-7 col-lg-8 col-xl-8">
+                      <img src="/static/images/download-app.jpg" alt="">
+                  </div>
+              </div>
+          </div>
+      </section>
+      <!-- ***** Footer Start ***** -->
+      <footer>
+          <div class="container">
+              <div class="row">
+                  <div class="col-lg-3">
+                      <div class="first-item">
+                          <div class="logo">
+                              <img src="/static/images/logo-white.png" alt="">
+                          </div>
+                          <ul>
+                              <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
+                              <li><a href="#"><span class="__cf_email__" data-cfemail="e98d8c8486a98a868499888790c78a8684">[email&#160;protected]</span></a></li>
+                              <li><a href="#">010-020-0340</a></li>
+                          </ul>
+                      </div>
+                  </div>
+                  <div class="col-lg-3">
+                      <h4>Quick Links</h4>
+                      <ul>
+                          <li><a href="#">Featured shows</a></li>
+                          <li><a href="#">Market News</a></li>
+                          <li><a href="#">Current Fairs</a></li>
+                          <li><a href="#">Trending Artists</a></li>
+                      </ul>
+                  </div>
+                  <div class="col-lg-3">
+                      <h4>Useful Links</h4>
+                      <ul>
+                          <li><a href="#">About Us</a></li>
+                          <li><a href="#">Galleries</a></li>
+                          <li><a href="#">Museums</a></li>
+                          <li><a href="#">Contact Us</a></li>
+                      </ul>
+                  </div>
+                  <div class="col-lg-3">
+                      <h4>Information</h4>
+                      <ul>
+                          <li><a href="#">FAQ's</a></li>
+                          <li><a href="#">Terms of Use</a></li>
+                          <li><a href="#">Privacy Policy</a></li>
+                          <li><a href="#">Security</a></li>
+                      </ul>
+                  </div>
+                  <div class="col-lg-12">
+                      <div class="under-footer">
+                          <p>Copyright © 2022. All Rights Reserved.</p>
 
-    <!-- Bootstrap -->
-    <script src="/static/js/popper.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
+                          <ul>
+                              <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                              <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                              <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </footer>
 
-    <!-- Plugins -->
-    <script src="/static/js/owl-carousel.js"></script>
-    <script src="/static/js/accordions.js"></script>
-    <script src="/static/js/datepicker.js"></script>
-    <script src="/static/js/scrollreveal.min.js"></script>
-    <script src="/static/js/waypoints.min.js"></script>
-    <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
-    
-    <!-- Global Init -->
-    <script src="/static/js/custom.js"></script>
-	
-	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
-		$('#Top-owl-carousel').owlCarousel({
-			loop:false,
-			rewind: true,
-			margin:1,
-			nav:true,
-			autoplay:true,
-			autoplayTimeout:8000,
-			responsive:{
-				0:{
-					items:1
-				},
-				600:{
-					items:1
-				},
-				1000:{
-					items:1
-				}
-			}
-		})
-	</script>
-    <script>
-		
-        $(function() {
-            var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
-            });
-        });
 
-    </script>
+      <!-- jQuery -->
+      <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/static/js/jquery-2.1.0.min.js"></script>
+
+      <!-- Bootstrap -->
+      <script src="/static/js/popper.js"></script>
+      <script src="/static/js/bootstrap.min.js"></script>
+
+      <!-- Plugins -->
+      <script src="/static/js/owl-carousel.js"></script>
+      <script src="/static/js/accordions.js"></script>
+      <script src="/static/js/datepicker.js"></script>
+      <script src="/static/js/scrollreveal.min.js"></script>
+      <script src="/static/js/waypoints.min.js"></script>
+      <script src="/static/js/jquery.counterup.min.js"></script>
+      <script src="/static/js/imgfix.min.js"></script>
+      <script src="/static/js/slick.js"></script>
+      <script src="/static/js/lightbox.js"></script>
+      <script src="/static/js/isotope.js"></script>
+      <script src="/static/js/jquery.dropdown.min.js"></script>
+
+      <!-- Global Init -->
+      <script src="/static/js/custom.js"></script>
+
+      <script>
+          /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+          $('.demo').dropdown({
+              limitCount: 1,
+              input: '<input type="text" maxLength="20" placeholder="Search">'
+          });
+          $('#Top-owl-carousel').owlCarousel({
+              loop: false,
+              rewind: true,
+              margin: 20,
+              nav: true,
+              autoplay: true,
+              autoplayTimeout: 8000,
+              responsive: {
+                  0: {
+                      items: 1
+                  },
+                  600: {
+                      items: 1
+                  },
+                  1000: {
+                      items: 1
+                  }
+              }
+          })
+      </script>
+      <script>
+
+          $(function () {
+              var selectedClass = "";
+              $("p").click(function () {
+                  selectedClass = $(this).attr("data-rel");
+                  $("#portfolio").fadeTo(50, 0.1);
+                  $("#portfolio div").not("." + selectedClass).fadeOut();
+                  setTimeout(function () {
+                      $("." + selectedClass).fadeIn();
+                      $("#portfolio").fadeTo(50, 1);
+                  }, 500);
+
+              });
+          });
+
+      </script>
 
   </body>
 </html>
