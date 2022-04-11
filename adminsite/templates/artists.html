@@ -27,6 +27,215 @@
     <link href="/static/admincss/lib/bootstrap.min.css" rel="stylesheet">
     <link href="/static/admincss/lib/helper.css" rel="stylesheet">
     <link href="/static/admincss/style.css" rel="stylesheet">
+
+    <script type='text/javascript'>
+        function addartist(){
+    	  csrf = document.frmartists.csrfmiddlewaretoken.value;
+	  artistnm = document.frmartists.artistname.value;
+	  aboutartist = document.frmartists.aboutartist.value;
+	  artistnat = document.frmartists.artistnationality.value;
+	  artistbirth = document.frmartists.artistbirth.value;
+	  artistdeath = document.frmartists.artistdeath.value;
+	  eventselid = document.frmartists.seleventname.options[document.frmartists.seleventname.options.selectedIndex].value;
+          artistgender = document.frmartists.selgender.options[document.frmartists.selgender.options.selectedIndex].value;
+	  artistpr = document.frmartists.selartistpriority.options[document.frmartists.selartistpriority.options.selectedIndex].value;
+	  artistprofileurl = document.frmartists.artistprofileurl.value;
+	  let formData = new FormData();
+	  //alert(formData);
+	  let coverimage = document.getElementById("artistcoverimage").files[0];
+	  let largeimage = document.getElementById("artistlargeimage").files[0];
+	  formData.append("artistcoverimage", coverimage); 
+	  formData.append("artistlargeimage", largeimage); 
+	  formData.append("artistname", artistnm); 
+	  formData.append("aboutartist", aboutartist); 
+	  formData.append("artistnationality", artistnat); 
+	  formData.append("artistbirth", artistbirth); 
+ 	  formData.append("artistdeath", artistdeath); 
+	  formData.append("seleventname", eventselid);
+	  formData.append("selgender", artistgender);
+	  formData.append("selartistpriority", artistpr);
+	  formData.append("artistprofileurl", artistprofileurl);
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('artiststatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/artists/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+        }
+
+	function searchartistsbykeyword(){
+ 	  keyword = document.frmsearchartists.btnartistsearch.value;
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    artform = document.getElementById('frmartists');
+	    artform.innerHTML = "";
+	    gform = "";
+	    artistsdict = JSON.parse(xmlhttp.responseText);
+	    for (const [artname, artid] of Object.entries(artistsdict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editartist(" + artid + ")'>" +  artname + "</a></div>";
+	    }
+	    artform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", '/admin/searchartists/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.send();
+	}
+
+	function editartist(artistid){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    artform = document.getElementById('frmartists');
+	    artform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchartists.csrfmiddlewaretoken.value + "'>";
+	    context = JSON.parse(xmlhttp.responseText);
+	    eventsdict = context['eventsdict'];
+	    artistsdict = context['artistsdict'];
+	    gform += "<div class='card-title'><h4>Artist Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Name' name='artistname' value='" + artistsdict['artistname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Event Name</h4></div><div class='form-group'>";
+	    gform += "<select name='seleventname' id ='seleventname' class='form-control input-default'><option value=''>Select Event </option>";
+	    for (const [evname, evid] of Object.entries(eventsdict)){
+		if(evid == artistsdict['eventid']){
+		gform += "<option value='" + evid + "' selected>" + evname + "</option>";
+		}
+		else{
+		gform += "<option value='" + evid + "'>" + evname + "</option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>About Artist</h4></div><div class='form-group'><textarea class='form-control input-default' placeholder='' name='aboutartist'>" + artistsdict['about'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Artist Nationality</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Nationality' name='artistnationality' value='" + artistsdict['nationality'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Birth Year</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Birth Year' name='artistbirth' value='" + artistsdict['artistbirth'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Death Year</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Death Year' name='artistdeath' value='" + artistsdict['artistdeath'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Gender</h4></div><div class='form-group'>";
+	    gform += "<select name='selgender' id ='selgender' class='form-control input-default'><option value=''>Select Gender </option>";
+		if(artistsdict['gender'] == "male"){
+		gform += "<option value='male' selected>Male</option>";
+		}
+		else{
+		gform += "<option value='male'>Male</option>";
+		}
+		if(artistsdict['gender'] == "female"){
+		gform += "<option value='female' selected>Female</option>";
+		}
+		else{
+		gform += "<option value='female'>Female</option>";
+		}
+		if(artistsdict['gender'] == "none"){
+		gform += "<option value='none' selected>Can't Decide</option>";
+		}
+		else{
+		gform += "<option value='none'>Can't Decide</option>";
+		}
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Artist Cover Image</h4></div><div class='form-group'><input type='file' name='artistcoverimage' id='artistcoverimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Artist Large Image</h4></div><div class='form-group'><input type='file' name='artistlargeimage' id='artistlargeimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Artist URL</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist URL' name='artistprofileurl' value='" + artistsdict['artistprofileurl'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Priority</h4></div><div class='form-group'>";
+	    gform += "<select name='selartistpriority' id='selartistpriority' class='form-control input-default'><option value=''>Select type </option>";
+	    for(i=1; i <= 5; i++){
+		if(artistsdict['priority'] == i){
+		gform += "<option value='" + i + "' selected>" + i + " </option>";
+		}
+		else{
+		gform += "<option value='" + i + "'>" + i + " </option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewartist' class='form-control input-default' value='Save Artist' onclick='javascript:saveartist();'></div>";
+	    gform += "<div class='card-title' id='artiststatus'></div>";
+	    gform += "<input type='hidden' name='aid' value='" + artistsdict['id'] + "'>";
+	    artform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", "/admin/editartist/?aid=" + artistid);
+	  xmlhttp.send();
+	}
+
+
+	function saveartist(){
+	  csrf = document.frmartists.csrfmiddlewaretoken.value;
+	  artistnm = document.frmartists.artistname.value;
+	  aboutartist = document.frmartists.aboutartist.value;
+	  artistnationality = document.frmartists.artistnationality.value;
+	  artistbirth = document.frmartists.artistbirth.value;
+	  artistdeath = document.frmartists.artistdeath.value;
+	  seleventname = document.getElementById('seleventname').value;
+  	  artistpr = document.getElementById('selartistpriority').value;
+	  artistgender = document.getElementById('selgender').value;
+	  artistpriority = document.getElementById('selartistpriority').value;
+	  artistprofileurl = document.frmartists.artistprofileurl.value;
+	  aid = document.frmartists.aid.value;
+	  let formData = new FormData();
+	  //alert(formData);
+	  let coverimage = document.getElementById("artistcoverimage").files[0];
+	  let largeimage = document.getElementById("artistlargeimage").files[0];
+	  formData.append("artistcoverimage", coverimage); 
+	  formData.append("artistlargeimage", largeimage);
+	  formData.append("artistname", artistnm); 
+	  formData.append("aboutartist", aboutartist); 
+	  formData.append("artistnationality", artistnationality); 
+ 	  formData.append("artistbirth", artistbirth); 
+	  formData.append("artistdeath", artistdeath); 
+	  formData.append("seleventname", seleventname); 
+	  formData.append("selgender", artistgender); 
+	  formData.append("selartistpriority", artistpriority); 
+	  formData.append("artistprofileurl", artistprofileurl); 
+	  formData.append("aid", aid);
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('artiststatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/saveartist/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+    </script>
 </head>
 
 <body>
@@ -68,12 +277,12 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
-                                        <form name='frmsearchartists' method='POST' action='/gallery/searchartists/'>
+                                        <form name='frmsearchartists' method='POST' action='/admin/searchartists/'>
 					    {% csrf_token %}
                                             <div class="form-group">
                                                 
                                                 <div class="input-group input-group-default">
-                                                    <span class="input-group-btn"><button class="btn btn-primary" type="submit"><i class="ti-search"></i></button></span>
+                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button"  onclick='javascript:searchartistsbykeyword();'><i class="ti-search"></i></button></span>
                                                     <input type="text" placeholder="Search Artists" name="btnartistsearch" class="form-control">
                                                 </div>
                                             </div>
@@ -92,7 +301,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
-                                        <form name='frmartists' method='POST' action='/admin/artists/'>
+                                        <form name='frmartists' id='frmartists' method='POST' action='/admin/artists/'>
 					    {% csrf_token %}
 					    <div class="card-title">
                                     		<h4>Artist Name</h4>
@@ -110,6 +319,12 @@
 						<option value='{{eid}}'>{{ename}}</option>
 						{% endfor %}
 						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>About Artist</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" placeholder="" name='aboutartist'></textarea>
                                             </div>
 					    <div class="card-title">
                                     		<h4>Artist Nationality</h4>
@@ -144,13 +359,13 @@
                                     		<h4>Artist Cover Image</h4>
                                 	    </div>
 					    <div class="form-group">
-						<input type='file' name='artistcoverimage' class="form-control input-default">
+						<input type='file' name='artistcoverimage' id='artistcoverimage' class="form-control input-default">
 					    </div>
 					    <div class="card-title">
                                     		<h4>Artist Large Image</h4>
                                 	    </div>
 					    <div class="form-group">
-						<input type='file' name='artistlargeimage' class="form-control input-default">
+						<input type='file' name='artistlargeimage' id='artistlargeimage' class="form-control input-default">
 					    </div>
 					    <div class="card-title">
                                     		<h4>Artist Profile URL</h4>
@@ -162,8 +377,8 @@
                                     		<h4>Artist Priority</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <select name='selgeventpriority' class="form-control input-default">
-						<option value=''>Select type </option>
+                                                <select name='selartistpriority' class="form-control input-default">
+						<option value=''>Select priority </option>
 						<option value='1'>1 </option>
 						<option value='2'>2 </option>
 						<option value='3'>3 </option>
@@ -174,6 +389,8 @@
 					    					    
 					    <div class="form-group">
 						<input type='button' name='addnewartist' class="form-control input-default" value='Add Artist' onclick='javascript:addartist();'>
+					    </div>
+					    <div class="form-group" id='artiststatus'>
 					    </div>
                                         </form>
                                     </div>

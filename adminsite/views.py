@@ -27,6 +27,11 @@ from auctionhouses.models import AuctionHouse
 import simplejson as json
 import urllib
 
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth import logout
+
 
 def output_path():
     return os.path.join(settings.OUTPUT_FILE_DIR, 'csv')
@@ -54,8 +59,30 @@ def handleuploadedfile(uploaded_file, targetdir, filename):
     return [ destinationfile, '', filename ]
 
 
+def showlogin(request):
+    if request.method == 'GET':
+        context = {}
+        template = loader.get_template('adminlogin.html')
+        return HttpResponse(template.render(context, request))
+    elif request.method == 'POST':
+        username, passwd = "", ""
+        if 'username' in request.POST.keys():
+            username = request.POST['username'].strip()
+        if 'passwd' in request.POST.keys():
+            passwd = request.POST['passwd']
+        userqset = User.objects.filter(username=username)
+        if userqset.__len__() > 0:
+            userobj = userqset[0]
+            if userobj.check_password(passwd):
+                login(request, userobj)
+                return HttpResponseRedirect("/admin/galleries/")
+            else:
+                return HttpResponseRedirect("/admin/login/?2")
+    else:
+        return HttpResponseRedirect("/admin/login/?1")
 
 
+@login_required(login_url='/admin/login/')
 def galleries(request):
     if request.method == 'GET':
         context = {}
@@ -127,6 +154,7 @@ def galleries(request):
         return HttpResponse(message)
 
 
+@login_required(login_url='/admin/login/')
 def savegallery(request):
     if request.method == 'POST':
         galleryname, gallerylocation, gallerydescription, gallerywebsite, selgallerytype, gallerytype, gallerycoverimage, selgallerypriority, galid = "", "", "", "", "", "", "", "", ""
@@ -187,6 +215,8 @@ def savegallery(request):
     else:
         return HttpResponse("Error: Invalid method of call")
 
+
+@login_required(login_url='/admin/login/')
 def searchgalleries(request):
     if request.method == 'GET':
         context = {}
@@ -201,6 +231,7 @@ def searchgalleries(request):
         return HttpResponse("{'Error' : 'Invalid method of call'}")
 
 
+@login_required(login_url='/admin/login/')
 def editgallery(request):
     if request.method == 'GET':
         context = {}
@@ -233,6 +264,7 @@ def editgallery(request):
         return HttpResponse("{'Error' : 'Invalid method of call'}")
 
 
+@login_required(login_url='/admin/login/')
 def gevents(request):
     if request.method == 'GET':
         context = {}
@@ -309,6 +341,7 @@ def gevents(request):
         return HttpResponse(message)
 
 
+@login_required(login_url='/admin/login/')
 def searchgevents(request):
     if request.method == 'GET':
         context = {}
@@ -364,6 +397,7 @@ def editgevent(request):
         return HttpResponse("{'Error' : 'Invalid method of call'}")
 
 
+@login_required(login_url='/admin/login/')
 def savegevent(request):
     if request.method == 'POST':
         geventname, geventlocation, geventinfo, geventstatus, selgeventtype, geventtype, geventcoverimage, selgeventpriority, geventstartdate, geventenddate, galleryid, gevid = "", "", "", "", "", "", "", "", "", "", "", ""
@@ -436,6 +470,7 @@ def savegevent(request):
         return HttpResponse("Error: Invalid method of call")
 
 
+@login_required(login_url='/admin/login/')
 def artworks(request):
     if request.method == 'GET':
         context = {}
@@ -580,6 +615,7 @@ def artworks(request):
         return HttpResponse(message)
 
 
+@login_required(login_url='/admin/login/')
 def searchartworks(request):
     if request.method == 'GET':
         context = {}
@@ -594,6 +630,7 @@ def searchartworks(request):
         return HttpResponse("{'Error' : 'Invalid method of call'}")
 
 
+@login_required(login_url='/admin/login/')
 def editartwork(request):
     if request.method == 'GET':
         context = {}
@@ -650,6 +687,7 @@ def editartwork(request):
         return HttpResponse("{'Error' : 'Invalid method of call'}")
 
 
+@login_required(login_url='/admin/login/')
 def saveartwork(request):
     if request.method == 'POST':
         artworkname, artistname, galleryid, eventid, artistbirth, artistdeath, artistnationality, medium, size, artworkdescription, signature, authenticity, estimate, soldprice, provenance, literature, exhibitions, artworkurl, priority, awid = "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
@@ -792,7 +830,9 @@ def saveartwork(request):
     else:
         return HttpResponse("Invalid method of call")
 
+
 @csrf_protect
+@login_required(login_url='/admin/login/')
 def getevents(request):
     if request.method == 'POST':
         context = {}
@@ -820,6 +860,7 @@ def getevents(request):
         return HttpResponse(json.dumps({}))
 
 
+@login_required(login_url='/admin/login/')
 def artists(request):
     if request.method == 'GET':
         context = {}
@@ -836,9 +877,211 @@ def artists(request):
         template = loader.get_template('artists.html')
         return HttpResponse(template.render(context, request))
     elif request.method == 'POST':
-        pass
+        artistname, artistnationality, aboutartist, artistbirth, artistdeath, artistgender, artistevent, artistpriority, artistprofileurl = "", "", "", "", "", "", "", "", ""
+        if 'artistname' in request.POST.keys():
+            artistname = request.POST['artistname'].strip()
+        if 'artistnationality' in request.POST.keys():
+            artistnationality = request.POST['artistnationality'].strip()
+        if 'aboutartist' in request.POST.keys():
+            aboutartist = request.POST['aboutartist'].strip()
+        if 'artistbirth' in request.POST.keys():
+            artistbirth = request.POST['artistbirth'].strip()
+        if 'artistdeath' in request.POST.keys():
+            artistdeath = request.POST['artistdeath'].strip()
+        if 'selgender' in request.POST.keys():
+            artistgender = request.POST['selgender'].strip()
+        if 'seleventname' in request.POST.keys():
+            artistevent = request.POST['seleventname'].strip()
+        if 'selartistpriority' in request.POST.keys():
+            artistpriority = request.POST['selartistpriority']
+        if 'artistprofileurl' in request.POST.keys():
+            artistprofileurl = request.POST['artistprofileurl']
+        if artistname == "":
+            message = "Artist's name is empty. Can't create Artist."
+            return HttpResponse(message)
+        eventobj = None
+        try:
+            eventobj = Event.objects.get(id=artistevent)
+        except:
+            pass
+        artist = Artist()
+        artist.artistname = artistname
+        artist.nationality = artistnationality
+        artist.birthdate = artistbirth
+        artist.deathdate = artistdeath
+        artist.about = aboutartist
+        artist.profileurl = artistprofileurl
+        artist.gender = artistgender
+        artist.event = eventobj
+        artist.priority = artistpriority
+        artist.profileurl = artistprofileurl
+        artistcoverimage = request.FILES.get("artistcoverimage")
+        if artistcoverimage:
+            mimetype = artistcoverimage.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'artistcoverimage' in request.FILES.keys():
+                coverimagename = request.FILES['artistcoverimage'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + eventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + eventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['artistcoverimage'], imagelocation, coverimagename)
+            artist.squareimage = uploadstatus[0]
+        artistlargeimage = request.FILES.get("artistlargeimage")
+        if artistlargeimage:
+            mimetype = artistlargeimage.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'artistlargeimage' in request.FILES.keys():
+                largeimagename = request.FILES['artistlargeimage'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + eventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + eventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['artistlargeimage'], imagelocation, largeimagename)
+            artist.largeimage = uploadstatus[0]
+        try:
+            artist.save()
+            message = "Successfully created artist named %s"%artistname
+        except:
+            message = "Could not create artist object - Error: %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
 
 
+@login_required(login_url='/admin/login/')
+def searchartists(request):
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        artistsqset = Artist.objects.filter(artistname__icontains=searchkey)
+        artists = {}
+        for art in artistsqset:
+            artists[art.artistname] = art.id
+        artistsjson = json.dumps(artists)
+        #print(artistsjson)
+        return HttpResponse(artistsjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def editartist(request):
+    if request.method == 'GET':
+        context = {}
+        aid = request.GET.get('aid')
+        artistqset = Artist.objects.filter(id=aid)
+        if artistqset.__len__() == 0:
+            message = {'Error' : 'Could not find artist with Id %s'%aid}
+            resp = json.dumps(message)
+            return HttpResponse(resp)
+        artistsdict = {}
+        eventsdict = {}
+        artistsdict['artistname'] = artistqset[0].artistname
+        artistsdict['nationality'] = artistqset[0].nationality
+        artistsdict['about'] = artistqset[0].about
+        artistsdict['eventid'] = artistqset[0].event.id
+        artistsdict['artistbirth'] = artistqset[0].birthdate
+        artistsdict['artistdeath'] = artistqset[0].deathdate
+        artistsdict['gender'] = artistqset[0].gender
+        artistsdict['artistprofileurl'] = str(artistqset[0].profileurl)
+        artistsdict['priority'] = str(artistqset[0].priority)
+        artistsdict['id'] = artistqset[0].id
+        context['artistsdict'] = artistsdict
+        geventsqset = Event.objects.filter(gallery=artistqset[0].event.gallery.id)
+        for gev in geventsqset:
+            eventsdict[gev.eventname] = gev.id
+        context['eventsdict'] = eventsdict
+        artistjson = json.dumps(context)
+        return HttpResponse(artistjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def saveartist(request):
+    if request.method == 'POST':
+        artistname, aboutartist, artistnationality, artistbirth, artistdeath, artistgender, priority, artisturl = "", "", "", "", "", "", "", ""
+        eventid = ""
+        if 'artistname' in request.POST.keys():
+            artistname = request.POST['artistname'].strip()
+        if 'aboutartist' in request.POST.keys():
+            aboutartist = request.POST['aboutartist'].strip()
+        if 'artistnationality' in request.POST.keys():
+            artistnationality = request.POST['artistnationality'].strip()
+        if 'artistbirth' in request.POST.keys():
+            artistbirth = request.POST['artistbirth'].strip()
+        if 'artistdeath' in request.POST.keys():
+            artistdeath = request.POST['artistdeath'].strip()
+        if 'selgender' in request.POST.keys():
+            artistgender = request.POST['selgender'].strip()
+        if 'seleventname' in request.POST.keys():
+            eventid = request.POST['seleventname']
+        if 'selartistpriority' in request.POST.keys():
+            priority = request.POST['selartistpriority']
+        if 'artistprofileurl' in request.POST.keys():
+            artisturl = request.POST['artistprofileurl']
+        if 'aid' in request.POST.keys():
+            aid = request.POST['aid']
+        if artistname == "":
+            message = "Artist name is empty. Can't save Artist."
+            return HttpResponse(message)
+        gevent = None
+        try:
+            gevent = Event.objects.get(id=eventid)
+        except:
+            message = "Could not find event with Id %s"%eventid
+            return HttpResponse(message)
+        artistobj = None
+        try:
+            artistobj = Artist.objects.get(id=aid)
+        except:
+            message = "Could not find artist with Id %s"%aid
+            return HttpResponse(message)
+        artistobj.artistname = artistname.title()
+        artistobj.nationality = artistnationality
+        artistobj.birthdate = artistbirth
+        artistobj.deathdate = artistdeath
+        artistobj.about = aboutartist
+        artistobj.profileurl = artisturl
+        artistobj.gender = artistgender
+        artistobj.event = gevent
+        artistobj.priority = priority
+        if artistobj.priority == "":
+            artistobj.priority = 1
+        imgfile = request.FILES.get("artistcoverimage")
+        if imgfile:
+            mimetype = imgfile.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'artistcoverimage' in request.FILES.keys():
+                coverimage = request.FILES['artistcoverimage'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + gevent.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + gevent.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['artistcoverimage'], imagelocation, coverimage)
+            artistobj.squareimage = uploadstatus[0]
+        imgfile = request.FILES.get("artistlargeimage")
+        if imgfile:
+            mimetype = imgfile.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'artistlargeimage' in request.FILES.keys():
+                largeimage = request.FILES['artistlargeimage'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + gevent.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + gevent.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['artistlargeimage'], imagelocation, largeimage)
+            artistobj.largeimage = uploadstatus[0]
+        try:
+            artistobj.save()
+            message = "Successfully saved artist named '%s'"%artistobj.artistname.title()
+        except:
+            message = "Error: Could not save artist - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Error: Invalid method of call")
+
+
+@login_required(login_url='/admin/login/')
 def museums(request):
     if request.method == 'GET':
         context = {}
@@ -848,6 +1091,7 @@ def museums(request):
         pass
 
 
+@login_required(login_url='/admin/login/')
 def mevents(request):
     if request.method == 'GET':
         context = {}
@@ -857,6 +1101,7 @@ def mevents(request):
         pass
 
 
+@login_required(login_url='/admin/login/')
 def museumpieces(request):
     if request.method == 'GET':
         context = {}
@@ -866,6 +1111,7 @@ def museumpieces(request):
         pass
 
 
+@login_required(login_url='/admin/login/')
 def auctionhouses(request):
     if request.method == 'GET':
         context = {}
@@ -875,6 +1121,7 @@ def auctionhouses(request):
         pass
 
 
+@login_required(login_url='/admin/login/')
 def auctions(request):
     if request.method == 'GET':
         context = {}
@@ -884,6 +1131,7 @@ def auctions(request):
         pass
 
 
+@login_required(login_url='/admin/login/')
 def lots(request):
     if request.method == 'GET':
         context = {}

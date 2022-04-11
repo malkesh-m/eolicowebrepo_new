@@ -6,6 +6,7 @@ from django.views.generic import RedirectView
 from adminsite import views
 
 urlpatterns = [
+    path('login/', views.showlogin, name='showlogin'),
     path('galleries/', views.galleries, name='galleries'),
     path('gevents/', views.gevents, name='gevents'),
     path('artists/', views.artists, name='artists'),
@@ -26,6 +27,9 @@ urlpatterns = [
     path('searchartworks/', views.searchartworks, name='searchartworks'),
     path('editartwork/', views.editartwork, name='editartwork'),
     path('saveartwork/', views.saveartwork, name='saveartwork'),
+    path('searchartists/', views.searchartists, name='searchartists'),
+    path('editartist/', views.editartist, name='editartist'),
+    path('saveartist/', views.saveartist, name='saveartist'),
 ]
 
 
