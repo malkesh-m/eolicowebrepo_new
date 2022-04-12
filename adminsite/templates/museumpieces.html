@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Eolico Admin: Artworks Form </title>
+    <title>Eolico Admin: Museum Pieces Form </title>
 
     <!-- ================= Favicon ================== -->
     <!-- Standard -->
@@ -33,8 +33,8 @@
 	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
 	  artworknm = document.frmartwork.artworkname.value;
 	  artistnm = document.frmartwork.artistname.value;
-	  galleryid = document.frmartwork.selgalleryname.options[document.frmartwork.selgalleryname.options.selectedIndex].value;
-	  eventid = document.frmartwork.selgeventname.options[document.frmartwork.selgeventname.options.selectedIndex].value;
+	  museumid = document.frmartwork.selmuseumname.options[document.frmartwork.selmuseumname.options.selectedIndex].value;
+	  eventid = document.frmartwork.selmeventname.options[document.frmartwork.selmeventname.options.selectedIndex].value;
 	  abirth = document.frmartwork.artistbirth.value;
 	  adeath = document.frmartwork.artistdeath.value;
 	  anationality = document.frmartwork.artistnationality.value;
@@ -42,9 +42,9 @@
 	  sz = document.frmartwork.size.value;
 	  artdesc = document.frmartwork.artworkdescription.value;
 	  artsig = document.frmartwork.signature.value;
-	  artauth = document.frmartwork.authenticity.value;
-	  artestimate = document.frmartwork.estimate.value;
-	  artsoldprice = document.frmartwork.soldprice.value;
+	  //artauth = document.frmartwork.authenticity.value;
+	  //artestimate = document.frmartwork.estimate.value;
+	  //artsoldprice = document.frmartwork.soldprice.value;
 	  artprovenance = document.frmartwork.provenance.value;
 	  artliterature = document.frmartwork.literature.value;
 	  artexhibitions = document.frmartwork.exhibitions.value;
@@ -69,8 +69,8 @@
 	  }
 	  formData.append("artworkname", artworknm); 
 	  formData.append("artistname", artistnm); 
-	  formData.append("selgalleryname", galleryid); 
- 	  formData.append("selgeventname", eventid); 
+	  formData.append("selmuseumname", museumid); 
+ 	  formData.append("selmeventname", eventid); 
 	  formData.append("artistbirth", abirth); 
 	  formData.append("artistdeath", adeath); 
 	  formData.append("artistnationality", anationality);
@@ -78,9 +78,9 @@
 	  formData.append("size", sz); 
 	  formData.append("artworkdescription", artdesc); 
 	  formData.append("signature", artsig); 
-	  formData.append("authenticity", artauth); 
-	  formData.append("estimate", artestimate); 
-	  formData.append("soldprice", artsoldprice); 
+	  //formData.append("authenticity", artauth); 
+	  //formData.append("estimate", artestimate); 
+	  //formData.append("soldprice", artsoldprice); 
 	  formData.append("provenance", artprovenance); 
 	  formData.append("literature", artliterature); 
 	  formData.append("exhibitions", artexhibitions); 
@@ -104,13 +104,13 @@
 	    }, 5000);
 	  }
 	  };
-	  xmlhttp.open("POST", "/admin/artworks/");
+	  xmlhttp.open("POST", "/admin/museumpieces/");
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	}
 
-	function populategevents(){
-	  selectedgalleryid = document.frmartwork.selgalleryname.options[document.frmartwork.selgalleryname.options.selectedIndex].value;
+	function populatemevents(){
+	  selectedmuseumid = document.frmartwork.selmuseumname.options[document.frmartwork.selmuseumname.options.selectedIndex].value;
 	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
@@ -120,12 +120,12 @@
 	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	  }
 	  // Register the handler
-          postdata = "gid=" + selectedgalleryid + "&csrfmiddlewaretoken=" + csrf;
+          postdata = "mid=" + selectedmuseumid + "&csrfmiddlewaretoken=" + csrf;
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    // create the options
 	    eventsdict = JSON.parse(xmlhttp.responseText);
-	    var select = document.getElementById("selgeventname");
+	    var select = document.getElementById("selmeventname");
 	    select.options.length = 0;
 	    for (const [eventname, eventid] of Object.entries(eventsdict)){
 	    	var option = document.createElement("option");
@@ -135,7 +135,7 @@
 	    }
 	  }
 	  };
-	  xmlhttp.open("POST", '/admin/getevents/', true);
+	  xmlhttp.open("POST", '/admin/getmevents/', true);
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  //alert(postdata);
 	  xmlhttp.send(postdata);
@@ -165,7 +165,7 @@
 	    artform.innerHTML = gform;
 	  }
 	  };
-	  xmlhttp.open("GET", '/admin/searchartworks/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.open("GET", '/admin/searchmpieces/?searchkey=' + encodeURI(keyword));
 	  xmlhttp.send();
 	}
 
@@ -184,29 +184,30 @@
 	    awform.innerHTML = "";
 	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchartworks.csrfmiddlewaretoken.value + "'>";
 	    context = JSON.parse(xmlhttp.responseText);
-	    geventsdict = context['gevents'];
+	    meventsdict = context['mevents'];
 	    artwork = context['artwork'];
-	    galleries = context['galleriesdict'];
-	    gform += "<div class='card-title'><h4>Artwork Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork Name' name='artworkname' value='" + artwork['artworkname'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Gallery Name</h4></div><div class='form-group'>";
-	    gform += "<select name='selgalleryname' id ='selgalleryname' class='form-control input-default'><option value=''>Select Gallery </option>";
-	    for (const [galname, galid] of Object.entries(galleries)){
-		if(artwork['gallery'] == galid){
-		gform += "<option value='" + galid + "' selected>" + galname + "</option>";
+	    museums = context['museumsdict'];
+	    //alert(museums);
+	    gform += "<div class='card-title'><h4>Artwork Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork Name' name='artworkname' value='" + artwork['piecename'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Museum Name</h4></div><div class='form-group'>";
+	    gform += "<select name='selmuseumname' id ='selmuseumname' class='form-control input-default'><option value=''>Select Museum </option>";
+	    for (const [musname, musid] of Object.entries(museums)){
+		if(artwork['museum'] == musid){
+		gform += "<option value='" + musid + "' selected>" + musname + "</option>";
 		}
 		else{
-		gform += "<option value='" + galid + "'>" + galname + "</option>";
+		gform += "<option value='" + musid + "'>" + musname + "</option>";
 		}
 	    }
 	    gform += "</select></div>";
 	    gform += "<div class='card-title'><h4>Event Name</h4></div><div class='form-group'>";
-	    gform += "<select name='selgeventname' id ='selgeventname' class='form-control input-default'><option value=''>Select Event </option>";
-	    for (const [gevname, gevid] of Object.entries(geventsdict)){
-		if(artwork['event'] == gevid){
-		gform += "<option value='" + gevid + "' selected>" + gevname + "</option>";
+	    gform += "<select name='selmeventname' id ='selmeventname' class='form-control input-default'><option value=''>Select Event </option>";
+	    for (const [mevname, mevid] of Object.entries(meventsdict)){
+		if(artwork['event'] == mevid){
+		gform += "<option value='" + mevid + "' selected>" + mevname + "</option>";
 		}
 		else{
-		gform += "<option value='" + gevid + "'>" + gevname + "</option>";
+		gform += "<option value='" + mevid + "'>" + mevname + "</option>";
 		}
 	    }
 	    gform += "</select></div>";
@@ -218,9 +219,9 @@
 	    gform += "<div class='card-title'><h4>Size</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Size' name='size' value='" + artwork['size'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='artworkdescription'>" + artwork['description'] + "</textarea></div>";
 	    gform += "<div class='card-title'><h4>Signature</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Signature' name='signature' value='" + artwork['signature'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Letter of Authenticity</h4></div><div class='form-group'><textarea class='form-control input-default ' name='authenticity'>" + artwork['letterofauthenticity'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Estimate</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Estimate' name='estimate' value='" + artwork['estimate'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Sold Price</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Sold Price' name='soldprice' value='" + artwork['soldprice'] + "'></div>";
+	    //gform += "<div class='card-title'><h4>Letter of Authenticity</h4></div><div class='form-group'><textarea class='form-control input-default ' name='authenticity'>" + artwork['letterofauthenticity'] + "</textarea></div>";
+	    //gform += "<div class='card-title'><h4>Estimate</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Estimate' name='estimate' value='" + artwork['estimate'] + "'></div>";
+	    //gform += "<div class='card-title'><h4>Sold Price</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Sold Price' name='soldprice' value='" + artwork['soldprice'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Provenance</h4></div><div class='form-group'><textarea class='form-control input-default ' name='provenance'>" + artwork['provenance'] + "</textarea></div>";
 	    gform += "<div class='card-title'><h4>Literature</h4></div><div class='form-group'><textarea class='form-control input-default ' name='literature'>" + artwork['literature'] + "</textarea></div>";
 	    gform += "<div class='card-title'><h4>Exhibitions</h4></div><div class='form-group'><textarea class='form-control input-default ' name='exhibitions'>" + artwork['exhibitions'] + "</textarea></div>";
@@ -247,7 +248,7 @@
 	    awform.innerHTML = gform;
 	  }
 	  };
-	  xmlhttp.open("GET", "/admin/editartwork/?awid=" + awid);
+	  xmlhttp.open("GET", "/admin/editmpieces/?awid=" + awid);
 	  xmlhttp.send();
 	}
 
@@ -255,8 +256,8 @@
 	function saveartwork(){
 	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
 	  artworknm = document.frmartwork.artworkname.value;
-	  selgalleryname = document.getElementById('selgalleryname').value;
-	  selgeventname = document.getElementById('selgeventname').value;
+	  selmuseumname = document.getElementById('selmuseumname').value;
+	  selmeventname = document.getElementById('selmeventname').value;
 	  artistname = document.frmartwork.artistname.value;
 	  artistbirth = document.frmartwork.artistbirth.value;
 	  artistdeath = document.frmartwork.artistdeath.value;
@@ -266,9 +267,9 @@
 	  artworkdesc = document.frmartwork.artworkdescription.value;
 	  //alert(artworkdesc);
 	  signature = document.frmartwork.signature.value;
-	  authenticity = document.frmartwork.authenticity.value;
-	  estimate = document.frmartwork.estimate.value;
-	  soldprice = document.frmartwork.soldprice.value;
+	  //authenticity = document.frmartwork.authenticity.value;
+	  //estimate = document.frmartwork.estimate.value;
+	  //soldprice = document.frmartwork.soldprice.value;
 	  provenance = document.frmartwork.provenance.value;
 	  literature = document.frmartwork.literature.value;
 	  exhibitions = document.frmartwork.exhibitions.value;
@@ -286,8 +287,8 @@
 	  formData.append("image3", image3);
 	  formData.append("image4", image4);
 	  formData.append("artworkname", artworknm); 
-	  formData.append("galleryid", selgalleryname); 
-	  formData.append("eventid", selgeventname); 
+	  formData.append("museumid", selmuseumname); 
+	  formData.append("eventid", selmeventname); 
  	  formData.append("artistname", artistname); 
 	  formData.append("artistbirth", artistbirth); 
 	  formData.append("artistdeath", artistdeath); 
@@ -296,9 +297,9 @@
 	  formData.append("size", size); 
 	  formData.append("artworkdescription", artworkdesc); 
 	  formData.append("signature", signature); 
-	  formData.append("authenticity", authenticity); 
-	  formData.append("estimate", estimate); 
-	  formData.append("soldprice", soldprice); 
+	  //formData.append("authenticity", authenticity); 
+	  //formData.append("estimate", estimate); 
+	  //formData.append("soldprice", soldprice); 
 	  formData.append("provenance", provenance); 
 	  formData.append("literature", literature); 
 	  formData.append("exhibitions", exhibitions); 
@@ -323,7 +324,7 @@
 	    }, 5000);
 	  }
 	  };
-	  xmlhttp.open("POST", '/admin/saveartwork/');
+	  xmlhttp.open("POST", '/admin/savempieces/');
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	}
@@ -354,10 +355,10 @@
                                     <li class="breadcrumb-item"><a href="/admin/artists/">Artists</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/galleries/">Galleries</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/gevents/">Gallery Events</a></li>
-				    <li class="breadcrumb-item active"><a href="/admin/artworks/">Artworks</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/artworks/">Artworks</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/museums/">Museums</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/mevents/">Museum Events</a></li>
-				    <li class="breadcrumb-item"><a href="/admin/museumpieces/">Museum Pieces</a></li>
+				    <li class="breadcrumb-item active"><a href="/admin/museumpieces/">Museum Pieces</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/auctionhouses/">Auction Houses</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/auctions/">Auctions</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/lots/">Lots</a></li>
@@ -381,7 +382,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
-                                        <form name='frmsearchartworks' id='frmsearchartworks' method='POST' action='/admin/searchartworks/'>
+                                        <form name='frmsearchartworks' id='frmsearchartworks' method='POST' action='/admin/searchmpieces/'>
 					    {% csrf_token %}
                                             <div class="form-group">
                                                 
@@ -405,7 +406,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
-                                        <form name='frmartwork' id='frmartwork' method='POST' action='/admin/artworks/'>
+                                        <form name='frmartwork' id='frmartwork' method='POST' action='/admin/museumpieces/'>
 					    {% csrf_token %}
 					    <div class="card-title">
                                     		<h4>Artwork Name</h4>
@@ -414,13 +415,13 @@
                                                 <input type="text" class="form-control input-default " placeholder="Artwork Name" name='artworkname'>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Gallery </h4>
+                                    		<h4>Museum </h4>
                                 	    </div>
                                             <div class="form-group">
-						<select name='selgalleryname' id='selgalleryname' class="form-control input-default" onchange='javascript:populategevents();'>
-						<option value=''>Select Gallery </option>
-						{% for gname, gid in galleriesdict.items %}
-						<option value='{{gid}}'>{{gname}}</option>
+						<select name='selmuseumname' id='selmuseumname' class="form-control input-default" onchange='javascript:populatemevents();'>
+						<option value=''>Select Museum </option>
+						{% for mname, mid in museumsdict.items %}
+						<option value='{{mid}}'>{{mname}}</option>
 						{% endfor %}
 						</select>
                                             </div>
@@ -428,7 +429,7 @@
                                     		<h4>Event </h4>
                                 	    </div>
                                             <div class="form-group">
-						<select name='selgeventname' id='selgeventname' class="form-control input-default">
+						<select name='selmeventname' id='selmeventname' class="form-control input-default">
 						<option value=''>Select Event </option>
 						
 						</select>
@@ -481,7 +482,7 @@
                                             <div class="form-group">
                                                 <input type="text" class="form-control input-default" placeholder="Signature" name='signature'>
                                             </div>
-					    <div class="card-title">
+					    <!-- <div class="card-title">
                                     		<h4>Letter of Authenticity</h4>
                                 	    </div>
                                             <div class="form-group">
@@ -498,7 +499,7 @@
                                 	    </div>
                                             <div class="form-group">
                                                 <input type="text" class="form-control input-default" placeholder="Sold Price" name='soldprice'>
-                                            </div>
+                                            </div> -->
 					    <div class="card-title">
                                     		<h4>Provenance</h4>
                                 	    </div>

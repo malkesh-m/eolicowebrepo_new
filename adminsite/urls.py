@@ -30,6 +30,16 @@ urlpatterns = [
     path('searchartists/', views.searchartists, name='searchartists'),
     path('editartist/', views.editartist, name='editartist'),
     path('saveartist/', views.saveartist, name='saveartist'),
+    path('searchmuseum/', views.searchmuseum, name='searchmuseum'),
+    path('editmuseum/', views.editmuseum, name='editmuseum'),
+    path('savemuseum/', views.savemuseum, name='savemuseum'),
+    path('searchmevents/', views.searchmevents, name='searchmevents'),
+    path('editmevent/', views.editmevent, name='editmevent'),
+    path('savemevent/', views.savemevent, name='savemevent'),
+    path('searchmpieces/', views.searchmpieces, name='searchmpieces'),
+    path('savempieces/', views.savempieces, name='savempieces'),
+    path('editmpieces/', views.editmpieces, name='editmpieces'),
+    path('getmevents/', views.getmevents, name='getmevents'),
 ]
 
 

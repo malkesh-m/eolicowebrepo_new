@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Eolico Admin: Gallery Form </title>
+    <title>Eolico Admin: Museum Form </title>
 
     <!-- ================= Favicon ================== -->
     <!-- Standard -->
@@ -29,29 +29,28 @@
     <link href="/static/admincss/style.css" rel="stylesheet">
 
     <script type='text/javascript'>
-	function addgallery(){
-	  csrf = document.frmgallery.csrfmiddlewaretoken.value;
-	  gallerynm = document.frmgallery.galleryname.value;
-	  galleryloc = document.frmgallery.gallerylocation.value;
-	  gallerydesc = document.frmgallery.gallerydescription.innerHTML;
-	  galleryweburl = document.frmgallery.gallerywebsite.value;
-	  galleryseltype = document.frmgallery.selgallerytype.options[document.frmgallery.selgallerytype.options.selectedIndex].value;
-	  gallerypr = document.frmgallery.selgallerypriority.options[document.frmgallery.selgallerypriority.options.selectedIndex].value;
-	  gallerycover = document.frmgallery.gallerycoverimage.value;
-  	  postdata = "galleryname=" + gallerynm + "&gallerylocation=" + galleryloc + "&gallerydescription=" + gallerydesc + "&gallerywebsite=" + galleryweburl + "&selgallerytype=" + galleryseltype + "&selgallerypriority=" + gallerypr + "&gallerycoverimage=" + gallerycover;
+	function addmuseum(){
+	  csrf = document.frmmuseum.csrfmiddlewaretoken.value;
+	  museumnm = document.frmmuseum.museumname.value;
+	  museumloc = document.frmmuseum.museumlocation.value;
+	  museumdesc = document.frmmuseum.museumdescription.innerHTML;
+	  museumweburl = document.frmmuseum.museumwebsite.value;
+	  museumseltype = document.frmmuseum.selmuseumtype.options[document.frmmuseum.selmuseumtype.options.selectedIndex].value;
+	  museumpr = document.frmmuseum.selmuseumpriority.options[document.frmmuseum.selmuseumpriority.options.selectedIndex].value;
+	  museumcover = document.frmmuseum.museumcoverimage.value;
 	  let formData = new FormData();
 	  //alert(formData);
-	  let coverimage = document.getElementById("gallerycoverimage").files[0];
-	  formData.append("gallerycoverimage", coverimage); 
-	  formData.append("galleryname", gallerynm); 
-	  formData.append("gallerylocation", galleryloc); 
-	  formData.append("gallerydescription", gallerydesc); 
- 	  formData.append("gallerywebsite", galleryweburl); 
-	  formData.append("selgallerypriority", gallerypr); 
-	  if (galleryseltype == ""){
-	    galleryseltype = document.frmgallery.gallerytype.value;
+	  let coverimage = document.getElementById("museumcoverimage").files[0];
+	  formData.append("museumcoverimage", coverimage); 
+	  formData.append("museumname", museumnm); 
+	  formData.append("museumlocation", museumloc); 
+	  formData.append("museumdescription", museumdesc); 
+ 	  formData.append("museumwebsite", museumweburl); 
+	  formData.append("selmuseumpriority", museumpr); 
+	  if (museumseltype == ""){
+	    museumseltype = document.frmmuseum.museumtype.value;
 	  }
-	  formData.append("selgallerytype", galleryseltype); 
+	  formData.append("selmuseumtype", museumseltype); 
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -60,25 +59,24 @@
 	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	  }
 	  // Register the handler
-          postdata += "&csrfmiddlewaretoken=" + csrf;
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    //alert(xmlhttp.responseText);
-	    statusdiv = document.getElementById('galstatus');
+	    statusdiv = document.getElementById('musstatus');
 	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
 	    setTimeout(function() {
     		document.location.href = document.location.href;
 	    }, 5000);
 	  }
 	  };
-	  xmlhttp.open("POST", '/admin/galleries/');
+	  xmlhttp.open("POST", '/admin/museums/');
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	}
 
 
-	function searchgalleriesbykeyword(){
-	  keyword = document.frmsearchgallery.btngallerysearch.value;
+	function searchmuseumsbykeyword(){
+	  keyword = document.frmsearchmuseum.btnmuseumsearch.value;
 	  //alert(keyword);
  	  var xmlhttp;
 	  if (window.XMLHttpRequest){
@@ -90,48 +88,47 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    galform = document.getElementById('frmgallery');
-	    galform.innerHTML = "";
+	    musform = document.getElementById('frmmuseum');
+	    musform.innerHTML = "";
 	    gform = "";
-	    galleriesdict = JSON.parse(xmlhttp.responseText);
-	    for (const [galname, galid] of Object.entries(galleriesdict)){
-	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editgallery(" + galid + ")'>" +  galname + "</a></div>";
+	    museumsdict = JSON.parse(xmlhttp.responseText);
+	    for (const [musname, musid] of Object.entries(museumsdict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editmuseum(" + musid + ")'>" +  musname + "</a></div>";
 	    }
-	    galform.innerHTML = gform;
+	    musform.innerHTML = gform;
 	  }
 	  };
-	  xmlhttp.open("GET", '/admin/searchgallery/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.open("GET", '/admin/searchmuseum/?searchkey=' + encodeURI(keyword));
 	  xmlhttp.send();
 	}
 
 
-	function savegallery(){
-	  csrf = document.frmgallery.csrfmiddlewaretoken.value;
-	  gallerynm = document.frmgallery.galleryname.value;
-	  galleryloc = document.frmgallery.gallerylocation.value;
-	  gallerydesc = document.frmgallery.gallerydescription.value;
-	  galleryweburl = document.frmgallery.gallerywebsite.value;
-	  //galleryseltype = document.frmgallery.selgallerytype.options[document.frmgallery.selgallerytype.options.selectedIndex].value;
-	  galleryseltype = document.getElementById('selgallerytype').value;
-	  //gallerypr = document.frmgallery.selgallerypriority.options[document.frmgallery.selgallerypriority.options.selectedIndex].value;
-  	  gallerypr = document.getElementById('selgallerypriority').value;
-	  gallerycover = document.frmgallery.gallerycoverimage.value;
-	  galid = document.frmgallery.gid.value;
-  	  postdata = "galleryname=" + gallerynm + "&gallerylocation=" + galleryloc + "&gallerydescription=" + gallerydesc + "&gallerywebsite=" + galleryweburl + "&selgallerytype=" + galleryseltype + "&selgallerypriority=" + gallerypr + "&gallerycoverimage=" + gallerycover;
+	function savemuseum(){
+	  csrf = document.frmmuseum.csrfmiddlewaretoken.value;
+	  museumnm = document.frmmuseum.museumname.value;
+	  museumloc = document.frmmuseum.museumlocation.value;
+	  museumdesc = document.frmmuseum.museumdescription.value;
+	  museumweburl = document.frmmuseum.museumwebsite.value;
+	  //museumseltype = document.frmmuseum.selmuseumtype.options[document.frmmuseum.selmuseumtype.options.selectedIndex].value;
+	  museumseltype = document.getElementById('selmuseumtype').value;
+	  //museumpr = document.frmmuseum.selmuseumpriority.options[document.frmmuseum.selmuseumpriority.options.selectedIndex].value;
+  	  museumpr = document.getElementById('selmuseumpriority').value;
+	  museumcover = document.frmmuseum.museumcoverimage.value;
+	  musid = document.frmmuseum.mid.value;
 	  let formData = new FormData();
 	  //alert(formData);
-	  let coverimage = document.getElementById("gallerycoverimage").files[0];
-	  formData.append("gallerycoverimage", coverimage); 
-	  formData.append("galleryname", gallerynm); 
-	  formData.append("gallerylocation", galleryloc); 
-	  formData.append("gallerydescription", gallerydesc); 
- 	  formData.append("gallerywebsite", galleryweburl); 
-	  formData.append("selgallerypriority", gallerypr); 
-	  if (galleryseltype == ""){
-	    galleryseltype = document.frmgallery.gallerytype.value;
+	  let coverimage = document.getElementById("museumcoverimage").files[0];
+	  formData.append("museumcoverimage", coverimage); 
+	  formData.append("museumname", museumnm); 
+	  formData.append("museumlocation", museumloc); 
+	  formData.append("museumdescription", museumdesc); 
+ 	  formData.append("museumwebsite", museumweburl); 
+	  formData.append("selmuseumpriority", museumpr); 
+	  if (museumseltype == ""){
+	    museumseltype = document.frmmuseum.museumtype.value;
 	  }
-	  formData.append("selgallerytype", galleryseltype);
-	  formData.append("gid", galid);
+	  formData.append("selmuseumtype", museumseltype);
+	  formData.append("mid", musid);
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -140,24 +137,23 @@
 	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	  }
 	  // Register the handler
-          postdata += "&csrfmiddlewaretoken=" + csrf;
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    //alert(xmlhttp.responseText);
-	    statusdiv = document.getElementById('galstatus');
+	    statusdiv = document.getElementById('musstatus');
 	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
 	    setTimeout(function() {
     		document.location.href = document.location.href;
 	    }, 5000);
 	  }
 	  };
-	  xmlhttp.open("POST", '/admin/savegallery/');
+	  xmlhttp.open("POST", '/admin/savemuseum/');
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	}
 
 
-	function editgallery(gid){
+	function editmuseum(mid){
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -168,31 +164,31 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    galform = document.getElementById('frmgallery');
-	    galform.innerHTML = "";
-	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchgallery.csrfmiddlewaretoken.value + "'>";
+	    musform = document.getElementById('frmmuseum');
+	    musform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchmuseum.csrfmiddlewaretoken.value + "'>";
 	    context = JSON.parse(xmlhttp.responseText);
-	    gallerydict = context['gallery'];
-	    gallerytypes = context['gallerytypes'];
-	    gform += "<div class='card-title'><h4>Gallery Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Gallery Name' name='galleryname' value='" + gallerydict['galleryname'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Gallery Location</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Gallery Location' name='gallerylocation' value='" + gallerydict['location'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Gallery Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='gallerydescription'>" + gallerydict['description'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Gallery Website</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Gallery Website' name='gallerywebsite' value='" + gallerydict['website'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Gallery Type</h4></div><div class='form-group'>";
-	    gform += "<select name='selgallerytype' id ='selgallerytype' class='form-control input-default'><option value=''>Select type </option>";
-	    for(var i=0; i < gallerytypes.length; i++){
-		if(gallerytypes[i] == gallerydict['gallerytype']){
-		gform += "<option value='" + gallerytypes[i] + "' selected>" + gallerytypes[i] + "</option>";
+	    museumdict = context['museum'];
+	    museumtypes = context['museumtypes'];
+	    gform += "<div class='card-title'><h4>Museum Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Name' name='museumname' value='" + museumdict['museumname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Museum Location</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Location' name='museumlocation' value='" + museumdict['location'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Museum Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='museumdescription'>" + museumdict['description'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Museum Website</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Website' name='museumwebsite' value='" + museumdict['website'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Museum Type</h4></div><div class='form-group'>";
+	    gform += "<select name='selmuseumtype' id ='selmuseumtype' class='form-control input-default'><option value=''>Select type </option>";
+	    for(var i=0; i < museumtypes.length; i++){
+		if(museumtypes[i] == museumdict['museumtype']){
+		gform += "<option value='" + museumtypes[i] + "' selected>" + museumtypes[i] + "</option>";
 		}
 		else{
-		gform += "<option value='" + gallerytypes[i] + "'>" + gallerytypes[i] + "</option>";
+		gform += "<option value='" + museumtypes[i] + "'>" + museumtypes[i] + "</option>";
 		}
 	    }
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Gallery Priority</h4></div><div class='form-group'>";
-	    gform += "<select name='selgallerypriority' id='selgallerypriority' class='form-control input-default'><option value=''>Select type </option>";
+	    gform += "<div class='card-title'><h4>Museum Priority</h4></div><div class='form-group'>";
+	    gform += "<select name='selmuseumpriority' id='selmuseumpriority' class='form-control input-default'><option value=''>Select priority </option>";
 	    for(i=1; i <= 5; i++){
-		if(gallerydict['priority'] == i){
+		if(museumdict['priority'] == i){
 		gform += "<option value='" + i + "' selected>" + i + " </option>";
 		}
 		else{
@@ -200,14 +196,14 @@
 		}
 	    }
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Gallery Cover Image</h4></div><div class='form-group'><input type='file' name='gallerycoverimage' id='gallerycoverimage' class='form-control input-default'></div>";
-	    gform += "<div class='card-title'><input type='button' name='addnewgallery' class='form-control input-default' value='Save Gallery' onclick='javascript:savegallery();'></div>";
-	    gform += "<div class='card-title' id='galstatus'></div>";
-	    gform += "<input type='hidden' name='gid' value='" + gallerydict['id'] + "'>";
-	    galform.innerHTML = gform;
+	    gform += "<div class='card-title'><h4>Museum Cover Image</h4></div><div class='form-group'><input type='file' name='museumcoverimage' id='museumcoverimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewmuseum' class='form-control input-default' value='Save Museum' onclick='javascript:savemuseum();'></div>";
+	    gform += "<div class='card-title' id='musstatus'></div>";
+	    gform += "<input type='hidden' name='mid' value='" + museumdict['id'] + "'>";
+	    musform.innerHTML = gform;
 	  }
 	  };
-	  xmlhttp.open("GET", "/admin/editgallery/?gid=" + gid);
+	  xmlhttp.open("GET", "/admin/editmuseum/?mid=" + mid);
 	  xmlhttp.send();
 	}
     </script>
@@ -233,10 +229,10 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="/admin/dashboard/">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="/admin/artists/">Artists</a></li>
-				    <li class="breadcrumb-item active"><a href="/admin/galleries/">Galleries</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/galleries/">Galleries</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/gevents/">Gallery Events</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/artworks/">Artworks</a></li>
-				    <li class="breadcrumb-item"><a href="/admin/museums/">Museums</a></li>
+				    <li class="breadcrumb-item active"><a href="/admin/museums/">Museums</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/mevents/">Museum Events</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/museumpieces/">Museum Pieces</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/auctionhouses/">Auction Houses</a></li>
@@ -257,17 +253,17 @@
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-title">
-                                    <h4>Gallery Search Box</h4>
+                                    <h4>Museum Search Box</h4>
                                     
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
-                                        <form name='frmsearchgallery' method='POST' action='/admin/searchgallery/'>
+                                        <form name='frmsearchmuseum' method='POST' action='/admin/searchmuseum/'>
                                             <div class="form-group">
                                                 {% csrf_token %}
                                                 <div class="input-group input-group-default">
-                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searchgalleriesbykeyword();'><i class="ti-search"></i></button></span>
-                                                    <input type="text" placeholder="Search Galleries" name="btngallerysearch" class="form-control">
+                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searchmuseumsbykeyword();'><i class="ti-search"></i></button></span>
+                                                    <input type="text" placeholder="Search Museums" name="btnmuseumsearch" class="form-control">
                                                 </div>
                                             </div>
                                             
@@ -280,55 +276,55 @@
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-title">
-                                    <h3>Add New Gallery</h3>
+                                    <h3>Add New Museum</h3>
                                     
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
-                                        <form name='frmgallery' method='POST' action='/admin/galleries/' id='frmgallery'>
+                                        <form name='frmmuseum' method='POST' action='/admin/museums/' id='frmmuseum'>
 					    {% csrf_token %}
 					    <div class="card-title">
-                                    		<h4>Gallery Name</h4>
+                                    		<h4>Museum Name</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <input type="text" class="form-control input-default " placeholder="Gallery Name" name='galleryname'>
+                                                <input type="text" class="form-control input-default " placeholder="Museum Name" name='museumname'>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Gallery Location</h4>
+                                    		<h4>Museum Location</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <input type="text" class="form-control input-default" placeholder="Gallery Location" name='gallerylocation'>
+                                                <input type="text" class="form-control input-default" placeholder="Museum Location" name='museumlocation'>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Gallery Description</h4>
+                                    		<h4>Museum Description</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <textarea class="form-control input-default" name='gallerydescription'></textarea>
+                                                <textarea class="form-control input-default" name='museumdescription'></textarea>
                                             </div>
                                             <div class="card-title">
-                                    		<h4>Gallery Website</h4>
+                                    		<h4>Museum Website</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <input type="text" class="form-control input-default" placeholder="Gallery Website" name='gallerywebsite'>
+                                                <input type="text" class="form-control input-default" placeholder="Museum Website" name='museumwebsite'>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Gallery Type</h4>
+                                    		<h4>Museum Type</h4>
                                 	    </div>
                                             <div class="form-group">
-						<select name='selgallerytype' class="form-control input-default">
+						<select name='selmuseumtype' class="form-control input-default">
 						<option value=''>Select type </option>
-						{% for gtype in gallerytypes %}
-						<option value='{{gtype}}'>{{gtype}}</option>
+						{% for mtype in museumtypes %}
+						<option value='{{mtype}}'>{{mtype}}</option>
 						{% endfor %}
 						</select>
-                                                <input type="text" class="form-control input-default" placeholder="Enter Gallery Type" name='gallerytype'>
+                                                <input type="text" class="form-control input-default" placeholder="Enter Museum Type" name='museumtype'>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Gallery Priority</h4>
+                                    		<h4>Museum Priority</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <select name='selgallerypriority' class="form-control input-default">
-						<option value=''>Select type </option>
+                                                <select name='selmuseumpriority' id='selmuseumpriority' class="form-control input-default">
+						<option value=''>Select priority </option>
 						<option value='1'>1 </option>
 						<option value='2'>2 </option>
 						<option value='3'>3 </option>
@@ -337,15 +333,15 @@
 						</select>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Gallery Cover Image</h4>
+                                    		<h4>Museum Cover Image</h4>
                                 	    </div>
 					    <div class="form-group">
-						<input type='file' name='gallerycoverimage' id='gallerycoverimage' class="form-control input-default">
+						<input type='file' name='museumcoverimage' id='museumcoverimage' class="form-control input-default">
 					    </div>
 					    <div class="form-group">
-						<input type='button' name='addnewgallery' class="form-control input-default" value='Add Gallery' onclick='javascript:addgallery();'>
+						<input type='button' name='addnewmuseum' class="form-control input-default" value='Add Museum' onclick='javascript:addmuseum();'>
 					    </div>
-					    <div class="card-title" id='galstatus'>
+					    <div class="card-title" id='musstatus'>
                                     		
                                 	    </div>
                                         </form>

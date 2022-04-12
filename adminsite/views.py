@@ -1085,30 +1085,766 @@ def saveartist(request):
 def museums(request):
     if request.method == 'GET':
         context = {}
+        mtypesqset = Museum.objects.order_by().values_list('museumtype').distinct()
+        museumtypes = []
+        for mtype in mtypesqset:
+            museumtypes.append(mtype[0])
+        context['museumtypes'] = museumtypes
         template = loader.get_template('museums.html')
         return HttpResponse(template.render(context, request))
     elif request.method == 'POST':
-        pass
+        museumname, museumlocation, museumdescription, museumwebsite, selmuseumtype, museumtype, museumcoverimage, selmuseumpriority = "", "", "", "", "", "", "", ""
+        if 'museumname' in request.POST.keys():
+            museumname = request.POST['museumname'].strip()
+        if 'museumlocation' in request.POST.keys():
+            museumlocation = request.POST['museumlocation'].strip()
+        if 'museumdescription' in request.POST.keys():
+            museumdescription = request.POST['museumdescription'].strip()
+        if 'museumwebsite' in request.POST.keys():
+            museumwebsite = request.POST['museumwebsite'].strip()
+        if 'selmuseumtype' in request.POST.keys():
+            selmuseumtype = request.POST['selmuseumtype'].strip()
+        if 'museumtype' in request.POST.keys():
+            museumtype = request.POST['museumtype'].strip()
+        if 'selmuseumpriority' in request.POST.keys():
+            selmuseumpriority = request.POST['selmuseumpriority']
+        if selmuseumtype == "":
+            selmuseumtype = museumtype
+        if museumname == "" or selmuseumtype == "":
+            message = "Museum name or museum type is empty. Can't create museum."
+            return HttpResponse(message)
+        museum = Museum()
+        #print(museumname + " ########")
+        museum.museumname = museumname.title()
+        museum.location = museumlocation
+        museum.description = museumdescription
+        museum.museumurl = museumwebsite
+        museum.museumtype = selmuseumtype
+        museum.slug = ""
+        museum.priority = selmuseumpriority
+        if museum.priority == "":
+            museum.priority = 1
+        imgfile = request.FILES.get("museumcoverimage")
+        mimetype = imgfile.content_type
+        if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+            return None
+        if 'museumcoverimage' in request.FILES.keys():
+            coverimage = request.FILES['museumcoverimage'].name
+        imagelocation = settings.MUSEUM_FILE_DIR + os.path.sep + museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+        if not os.path.exists(imagelocation):
+            mkdir_p(imagelocation)
+        uploadstatus = handleuploadedfile(request.FILES['museumcoverimage'], imagelocation, coverimage)
+        museum.coverimage = uploadstatus[0]
+        try:
+            museum.save()
+            message = "Successfully created museum named '%s'"%museumname.title()
+        except:
+            message = "Error: Could not create museum - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+
+
+@login_required(login_url='/admin/login/')
+def searchmuseum(request):
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        museumsqset = Museum.objects.filter(museumname__icontains=searchkey)
+        museums = {}
+        for mus in museumsqset:
+            museums[mus.museumname] = mus.id
+        museumsjson = json.dumps(museums)
+        #print(museumsjson)
+        return HttpResponse(museumsjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def editmuseum(request):
+    if request.method == 'GET':
+        context = {}
+        mid = request.GET.get('mid')
+        museumsqset = Museum.objects.filter(id=mid)
+        if museumsqset.__len__() == 0:
+            message = {'Error' : 'Could not find museum with Id %s'%mid}
+            resp = json.dumps(message)
+            return HttpResponse(resp)
+        museum = {}
+        museumtypes = []
+        museum['museumname'] = museumsqset[0].museumname
+        museum['location'] = museumsqset[0].location
+        museum['description'] = museumsqset[0].description
+        museum['museumurl'] = museumsqset[0].museumurl
+        museum['museumtype'] = museumsqset[0].museumtype
+        museum['priority'] = museumsqset[0].priority
+        museum['coverimage'] = museumsqset[0].coverimage
+        museum['id'] = museumsqset[0].id
+        context['museum'] = museum
+        mtypesqset = Museum.objects.order_by().values_list('museumtype').distinct()
+        museumtypes = []
+        for mtype in mtypesqset:
+            museumtypes.append(mtype[0])
+        context['museumtypes'] = museumtypes
+        museumjson = json.dumps(context)
+        return HttpResponse(museumjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def savemuseum(request):
+    if request.method == 'POST':
+        museumname, museumlocation, museumdescription, museumwebsite, selmuseumtype, museumtype, museumcoverimage, selmuseumpriority, musid = "", "", "", "", "", "", "", "", ""
+        if 'museumname' in request.POST.keys():
+            museumname = request.POST['museumname'].strip()
+        if 'museumlocation' in request.POST.keys():
+            museumlocation = request.POST['museumlocation'].strip()
+        if 'museumdescription' in request.POST.keys():
+            museumdescription = request.POST['museumdescription'].strip()
+        if 'museumwebsite' in request.POST.keys():
+            museumwebsite = request.POST['museumwebsite'].strip()
+        if 'selmuseumtype' in request.POST.keys():
+            selmuseumtype = request.POST['selmuseumtype'].strip()
+        if 'museumtype' in request.POST.keys():
+            museumtype = request.POST['museumtype'].strip()
+        if 'selmuseumpriority' in request.POST.keys():
+            selmuseumpriority = request.POST['selmuseumpriority']
+        if selmuseumtype == "":
+            selmuseumtype = museumtype
+        if museumname == "" or selmuseumtype == "":
+            message = "Museum name or museum type is empty. Can't save museum."
+            return HttpResponse(message)
+        if 'mid' in request.POST.keys():
+            musid = request.POST['mid'].strip()
+        museum = None
+        try:
+            museum = Museum.objects.get(id=musid)
+        except:
+            return HttpResponse("Museum with the given Id could not be found")
+        museum.museumname = museumname.title()
+        museum.location = museumlocation
+        museum.description = museumdescription
+        #print(museumdescription)
+        museum.museumurl = museumwebsite
+        museum.museumtype = selmuseumtype
+        museum.slug = ""
+        museum.priority = selmuseumpriority
+        if museum.priority == "":
+            museum.priority = 1
+        imgfile = request.FILES.get("museumcoverimage")
+        if imgfile:
+            mimetype = imgfile.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'museumcoverimage' in request.FILES.keys():
+                coverimage = request.FILES['museumcoverimage'].name
+            imagelocation = settings.MUSEUM_FILE_DIR + os.path.sep + museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['museumcoverimage'], imagelocation, coverimage)
+            museum.coverimage = uploadstatus[0]
+        try:
+            museum.save()
+            message = "Successfully saved changes to museum named '%s'"%museumname.title()
+        except:
+            message = "Error: Could not save changes to museum - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Error: Invalid method of call")
 
 
 @login_required(login_url='/admin/login/')
 def mevents(request):
     if request.method == 'GET':
         context = {}
+        museumsqset = Museum.objects.all()
+        museumsdict = {}
+        for museum in museumsqset:
+            museumsdict[museum.museumname] = museum.id
+        context['museumsdict'] = museumsdict
+        eventsqset = MuseumEvent.objects.order_by().values_list('eventtype').distinct()
+        allevents = []
+        for mev in eventsqset:
+            allevents.append(mev[0])
+        context['allevents'] = allevents
         template = loader.get_template('mevents.html')
         return HttpResponse(template.render(context, request))
     elif request.method == 'POST':
-        pass
+        meventname, meventlocation, meventinfo, meventstatus, selmeventtype, meventtype, meventcoverimage, selmeventpriority, meventstartdate, meventenddate, museumid = "", "", "", "", "", "", "", "", "", "", ""
+        if 'meventname' in request.POST.keys():
+            meventname = request.POST['meventname'].strip()
+        if 'meventlocation' in request.POST.keys():
+            meventlocation = request.POST['meventlocation'].strip()
+        if 'meventinfo' in request.POST.keys():
+            meventinfo = request.POST['meventinfo'].strip()
+        if 'meventstartdate' in request.POST.keys():
+            meventstartdate = request.POST['meventstartdate'].strip()
+        if 'meventenddate' in request.POST.keys():
+            meventenddate = request.POST['meventenddate'].strip()
+        if 'selmeventtype' in request.POST.keys():
+            selmeventtype = request.POST['selmeventtype'].strip()
+        if 'selmeventpriority' in request.POST.keys():
+            selmeventpriority = request.POST['selmeventpriority']
+        if 'selmeventstatus' in request.POST.keys():
+            meventstatus = request.POST['selmeventstatus']
+        if 'selmuseumname' in request.POST.keys():
+            museumid = request.POST['selmuseumname']
+        if meventname == "" or selmeventtype == "":
+            message = "Event name or event type is empty. Can't create Event."
+            return HttpResponse(message)
+        museumobj = None
+        try:
+            museumobj = Museum.objects.get(id=museumid)
+        except:
+            message = "Could not find museum with Id %s"%museumid
+            return HttpResponse(message)
+        mevent = MuseumEvent()
+        mevent.eventname = meventname.title()
+        mevent.eventinfo = meventinfo
+        mevent.eventtype = selmeventtype
+        mevent.eventstatus = meventstatus
+        mevent.eventstartdate = meventstartdate
+        mevent.eventenddate = meventenddate
+        mevent.museum = museumobj
+        mevent.priority = selmeventpriority
+        mevent.eventperiod = meventstartdate + " - " + meventenddate
+        if mevent.priority == "":
+            mevent.priority = 1
+        imgfile = request.FILES.get("meventcoverimage")
+        mimetype = imgfile.content_type
+        if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+            return None
+        if 'meventcoverimage' in request.FILES.keys():
+            coverimage = request.FILES['meventcoverimage'].name
+        imagelocation = settings.MUSEUM_FILE_DIR + os.path.sep + mevent.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + mevent.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+        if not os.path.exists(imagelocation):
+            mkdir_p(imagelocation)
+        uploadstatus = handleuploadedfile(request.FILES['meventcoverimage'], imagelocation, coverimage)
+        mevent.coverimage = uploadstatus[0]
+        try:
+            mevent.save()
+            message = "Successfully created museum event named '%s'"%meventname.title()
+        except:
+            message = "Error: Could not create museum event - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+
+
+@login_required(login_url='/admin/login/')
+def searchmevents(request):
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        meventsqset = MuseumEvent.objects.filter(eventname__icontains=searchkey)
+        mevents = {}
+        for mev in meventsqset:
+            mevents[mev.eventname] = mev.id
+        mevjson = json.dumps(mevents)
+        return HttpResponse(mevjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def editmevent(request):
+    if request.method == 'GET':
+        context = {}
+        mevid = request.GET.get('evid')
+        meventsqset = MuseumEvent.objects.filter(id=mevid)
+        if meventsqset.__len__() == 0:
+            message = {'Error' : 'Could not find event with Id %s'%mevid}
+            resp = json.dumps(message)
+            return HttpResponse(resp)
+        mevent = {}
+        meventtypes = []
+        museumsdict = {}
+        mevent['eventname'] = meventsqset[0].eventname
+        mevent['eventinfo'] = meventsqset[0].eventinfo
+        mevent['eventtype'] = meventsqset[0].eventtype
+        mevent['eventurl'] = meventsqset[0].eventurl
+        mevent['eventstatus'] = meventsqset[0].eventstatus
+        mevent['priority'] = meventsqset[0].priority
+        mevent['eventstartdate'] = str(meventsqset[0].eventstartdate)
+        mevent['eventenddate'] = str(meventsqset[0].eventenddate)
+        mevent['coverimage'] = meventsqset[0].coverimage
+        mevent['museumname'] = meventsqset[0].museum.museumname
+        mevent['id'] = meventsqset[0].id
+        context['mevent'] = mevent
+        mevtypesqset = MuseumEvent.objects.order_by().values_list('eventtype').distinct()
+        for mtype in mevtypesqset:
+            meventtypes.append(mtype[0])
+        context['meventtypes'] = meventtypes
+        museumsqset = Museum.objects.all()
+        for mus in museumsqset:
+            musname = mus.museumname
+            musid = mus.id
+            museumsdict[musname] = musid
+        context['museumsdict'] = museumsdict
+        museumjson = json.dumps(context)
+        return HttpResponse(museumjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+@login_required(login_url='/admin/login/')
+def savemevent(request):
+    if request.method == 'POST':
+        meventname, meventlocation, meventinfo, meventstatus, selmeventtype, meventtype, meventcoverimage, selmeventpriority, meventstartdate, meventenddate, museumid, mevid = "", "", "", "", "", "", "", "", "", "", "", ""
+        if 'meventname' in request.POST.keys():
+            meventname = request.POST['meventname'].strip()
+        if 'meventlocation' in request.POST.keys():
+            meventlocation = request.POST['meventlocation'].strip()
+        if 'meventinfo' in request.POST.keys():
+            meventinfo = request.POST['meventinfo'].strip()
+        if 'meventstartdate' in request.POST.keys():
+            meventstartdate = request.POST['meventstartdate'].strip()
+        if 'meventenddate' in request.POST.keys():
+            meventenddate = request.POST['meventenddate'].strip()
+        if 'selmeventtype' in request.POST.keys():
+            selmeventtype = request.POST['selmeventtype'].strip()
+        if 'selmeventpriority' in request.POST.keys():
+            selmeventpriority = request.POST['selmeventpriority']
+        if 'selmeventstatus' in request.POST.keys():
+            meventstatus = request.POST['selmeventstatus']
+        if 'selmuseumname' in request.POST.keys():
+            museumid = request.POST['selmuseumname']
+        if 'mevid' in request.POST.keys():
+            mevid = request.POST['mevid']
+        if meventname == "" or selmeventtype == "":
+            message = "Event name or event type is empty. Can't save Event."
+            return HttpResponse(message)
+        museumobj = None
+        try:
+            museumobj = Museum.objects.get(id=museumid)
+        except:
+            message = "Could not find Museum with Id %s"%museumid
+            return HttpResponse(message)
+        mevent = None
+        try:
+            mevent = MuseumEvent.objects.get(id=mevid)
+        except:
+            message = "Could not find event with Id %s"%mevid
+            return HttpResponse(message)
+        mevent.eventname = meventname.title()
+        mevent.eventinfo = meventinfo
+        mevent.eventtype = selmeventtype
+        mevent.eventstatus = meventstatus
+        mevent.eventstartdate = meventstartdate
+        mevent.eventenddate = meventenddate
+        mevent.museum = museumobj
+        mevent.priority = selmeventpriority
+        mevent.eventperiod = meventstartdate + " - " + meventenddate
+        if mevent.priority == "":
+            mevent.priority = 1
+        imgfile = request.FILES.get("meventcoverimage")
+        if imgfile:
+            mimetype = imgfile.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'meventcoverimage' in request.FILES.keys():
+                coverimage = request.FILES['meventcoverimage'].name
+            imagelocation = settings.MUSEUM_FILE_DIR + os.path.sep + mevent.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + mevent.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['meventcoverimage'], imagelocation, coverimage)
+            mevent.coverimage = uploadstatus[0]
+        try:
+            mevent.save()
+            message = "Successfully saved event named '%s'"%meventname.title()
+        except:
+            message = "Error: Could not save event - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Error: Invalid method of call")
 
 
 @login_required(login_url='/admin/login/')
 def museumpieces(request):
     if request.method == 'GET':
         context = {}
+        museumsqset = Museum.objects.all()
+        museumsdict = {}
+        for museum in museumsqset:
+            museumsdict[museum.museumname] = museum.id
+        context['museumsdict'] = museumsdict
         template = loader.get_template('museumpieces.html')
         return HttpResponse(template.render(context, request))
     elif request.method == 'POST':
-        pass
+        artworkname, artistname, galleryid, eventid, artistbirth, artistdeath, artistnationality, medium, size, artworkdescription, signature, authenticity, estimate, soldprice, provenance, literature, exhibitions, artworkurl, priority = "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+        if 'artworkname' in request.POST.keys():
+            artworkname = request.POST['artworkname'].strip()
+        if 'artistname' in request.POST.keys():
+            artistname = request.POST['artistname'].strip()
+        if 'selmuseumname' in request.POST.keys():
+            museumid = request.POST['selmuseumname'].strip()
+        if 'selmeventname' in request.POST.keys():
+            eventid = request.POST['selmeventname'].strip()
+        if 'artistbirth' in request.POST.keys():
+            artistbirth = request.POST['artistbirth'].strip()
+        if 'artistdeath' in request.POST.keys():
+            artistdeath = request.POST['artistdeath'].strip()
+        if 'artistnationality' in request.POST.keys():
+            artistnationality = request.POST['artistnationality']
+        if 'medium' in request.POST.keys():
+            medium = request.POST['medium']
+        if 'size' in request.POST.keys():
+            size = request.POST['size']
+        if 'artworkdescription' in request.POST.keys():
+            artworkdescription = request.POST['artworkdescription']
+        if 'signature' in request.POST.keys():
+            signature = request.POST['signature']
+        if 'authenticity' in request.POST.keys():
+            authenticity = request.POST['authenticity']
+        if 'estimate' in request.POST.keys():
+            estimate = request.POST['estimate']
+        if 'soldprice' in request.POST.keys():
+            soldprice = request.POST['soldprice']
+        if 'provenance' in request.POST.keys():
+            provenance = request.POST['provenance']
+        if 'literature' in request.POST.keys():
+            literature = request.POST['literature']
+        if 'exhibitions' in request.POST.keys():
+            exhibitions = request.POST['exhibitions']
+        if 'artworkurl' in request.POST.keys():
+            artworkurl = request.POST['artworkurl']
+        if 'selartworkpriority' in request.POST.keys():
+            priority = request.POST['selartworkpriority']
+        if artworkname == "" or artistname == "":
+            message = "Artwork name or Artist's name is empty. Can't create Artwork."
+            return HttpResponse(message)
+        museumobj = None
+        try:
+            museumobj = Museum.objects.get(id=museumid)
+        except:
+            message = "Could not find museum with Id %s"%museumid
+            return HttpResponse(message)
+        meventobj = None
+        try:
+            meventobj = MuseumEvent.objects.get(id=eventid)
+        except:
+            message = "Could not find event with Id %s"%eventid
+            return HttpResponse(message)
+        artwork = MuseumPieces()
+        artwork.piecename = artworkname.title()
+        artwork.museum = museumobj
+        artwork.event = meventobj
+        artwork.artistname = artistname
+        artwork.artistbirthyear = artistbirth
+        artwork.artistdeathyear = artistdeath
+        artwork.artistnationality = artistnationality
+        artwork.size = size
+        #artwork.estimate = estimate
+        #artwork.soldprice = soldprice
+        artwork.medium = medium
+        artwork.signature = signature
+        #artwork.letterofauthenticity = authenticity
+        artwork.description = artworkdescription
+        artwork.provenance = provenance
+        artwork.literature = literature
+        artwork.exhibited = exhibitions
+        artwork.workurl = artworkurl
+        artwork.priority = priority
+        artwork.creationdate = ""
+        if artwork.priority == "":
+            artwork.priority = 1
+        imgfile1 = request.FILES.get("image1")
+        if imgfile1:
+            mimetype = imgfile1.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'image1' in request.FILES.keys():
+                image1name = request.FILES['image1'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + meventobj.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + meventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
+            artwork.image1 = uploadstatus[0]
+        imgfile2 = request.FILES.get("image1")
+        if imgfile2:
+            mimetype = imgfile2.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'image2' in request.FILES.keys():
+                image2name = request.FILES['image2'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + meventobj.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + meventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
+            artwork.image2 = uploadstatus[0]
+        imgfile3 = request.FILES.get("image3")
+        if imgfile3:
+            mimetype = imgfile3.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'image3' in request.FILES.keys():
+                image3name = request.FILES['image3'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + meventobj.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + meventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
+            artwork.image3 = uploadstatus[0]
+        imgfile4 = request.FILES.get("image4")
+        if imgfile4:
+            mimetype = imgfile4.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'image4' in request.FILES.keys():
+                image4name = request.FILES['image4'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + meventobj.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + meventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
+            artwork.image4 = uploadstatus[0]
+        try:
+            artwork.save()
+            message = "Successfully added artwork named '%s'"%artworkname.title()
+        except:
+            message = "Error: Could not create artwork - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+
+
+@login_required(login_url='/admin/login/')
+def searchmpieces(request):
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        #print(searchkey)
+        artworksqset = MuseumPieces.objects.filter(piecename__icontains=searchkey)
+        artworks = {}
+        for art in artworksqset:
+            artworks[art.piecename] = art.id
+        artworksjson = json.dumps(artworks)
+        return HttpResponse(artworksjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def savempieces(request):
+    if request.method == 'POST':
+        artworkname, artistname, museumid, eventid, artistbirth, artistdeath, artistnationality, medium, size, artworkdescription, signature, authenticity, estimate, soldprice, provenance, literature, exhibitions, artworkurl, priority, awid = "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+        if 'artworkname' in request.POST.keys():
+            artworkname = request.POST['artworkname'].strip()
+        if 'artistname' in request.POST.keys():
+            artistname = request.POST['artistname'].strip()
+        if 'museumid' in request.POST.keys():
+            museumid = request.POST['museumid'].strip()
+        if 'eventid' in request.POST.keys():
+            eventid = request.POST['eventid'].strip()
+        if 'artistbirth' in request.POST.keys():
+            artistbirth = request.POST['artistbirth'].strip()
+        if 'artistdeath' in request.POST.keys():
+            artistdeath = request.POST['artistdeath'].strip()
+        if 'artistnationality' in request.POST.keys():
+            artistnationality = request.POST['artistnationality']
+        if 'medium' in request.POST.keys():
+            medium = request.POST['medium']
+        if 'size' in request.POST.keys():
+            size = request.POST['size']
+        if 'artworkdescription' in request.POST.keys():
+            artworkdescription = request.POST['artworkdescription']
+        if 'signature' in request.POST.keys():
+            signature = request.POST['signature']
+        if 'authenticity' in request.POST.keys():
+            authenticity = request.POST['authenticity']
+        if 'estimate' in request.POST.keys():
+            estimate = request.POST['estimate']
+        if 'soldprice' in request.POST.keys():
+            soldprice = request.POST['soldprice']
+        if 'provenance' in request.POST.keys():
+            provenance = request.POST['provenance']
+        if 'literature' in request.POST.keys():
+            literature = request.POST['literature']
+        if 'exhibitions' in request.POST.keys():
+            exhibitions = request.POST['exhibitions']
+        if 'artworkurl' in request.POST.keys():
+            artworkurl = request.POST['artworkurl']
+        if 'priority' in request.POST.keys():
+            priority = request.POST['priority']
+        if 'awid' in request.POST.keys():
+            awid = request.POST['awid']
+        if artworkname == "" or artistname == "":
+            message = "Artwork name or Artist's name is empty. Can't create Artwork."
+            return HttpResponse(message)
+        museumobj = None
+        try:
+            museumobj = Museum.objects.get(id=museumid)
+        except:
+            message = "Could not find museum with Id %s"%museumid
+            #return HttpResponse(message)
+        meventobj = None
+        try:
+            meventobj = MuseumEvent.objects.get(id=eventid)
+        except:
+            message = "Could not find event with Id %s"%eventid
+            #return HttpResponse(message)
+        artworkqset = MuseumPieces.objects.filter(id=awid)
+        artwork = None
+        if artworkqset.__len__() == 0:
+            return HttpResponse("Could not find artwork with Id %s"%awid)
+        artwork = artworkqset[0]
+        artwork.piecename = artworkname.title()
+        artwork.museum = museumobj
+        artwork.event = meventobj
+        artwork.artistname = artistname
+        artwork.artistbirthyear = artistbirth
+        artwork.artistdeathyear = artistdeath
+        artwork.artistnationality = artistnationality
+        artwork.size = size
+        #artwork.estimate = estimate
+        #artwork.soldprice = soldprice
+        artwork.medium = medium
+        artwork.signature = signature
+        #artwork.letterofauthenticity = authenticity
+        artwork.description = artworkdescription
+        artwork.provenance = provenance
+        artwork.literature = literature
+        artwork.exhibited = exhibitions
+        artwork.detailurl = artworkurl
+        artwork.priority = priority
+        artwork.creationdate = ""
+        if artwork.priority == "":
+            artwork.priority = 1
+        imgfile1 = request.FILES.get("image1")
+        if imgfile1:
+            mimetype = imgfile1.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'image1' in request.FILES.keys():
+                image1name = request.FILES['image1'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
+            artwork.image1 = uploadstatus[0]
+        imgfile2 = request.FILES.get("image1")
+        if imgfile2:
+            mimetype = imgfile2.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'image2' in request.FILES.keys():
+                image2name = request.FILES['image2'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
+            artwork.image2 = uploadstatus[0]
+        imgfile3 = request.FILES.get("image3")
+        if imgfile3:
+            mimetype = imgfile3.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'image3' in request.FILES.keys():
+                image3name = request.FILES['image3'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
+            artwork.image3 = uploadstatus[0]
+        imgfile4 = request.FILES.get("image4")
+        if imgfile4:
+            mimetype = imgfile4.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'image4' in request.FILES.keys():
+                image4name = request.FILES['image4'].name
+            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
+            artwork.image4 = uploadstatus[0]
+        try:
+            artwork.save()
+            message = "Successfully saved artwork named '%s'"%artworkname.title()
+        except:
+            message = "Error: Could not create artwork - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Invalid method of call")
+
+
+@login_required(login_url='/admin/login/')
+def editmpieces(request):
+    if request.method == 'GET':
+        context = {}
+        awid = request.GET.get('awid')
+        awqset = MuseumPieces.objects.filter(id=int(awid))
+        if awqset.__len__() == 0:
+            message = {'Error' : 'Could not find museum piece with Id %s'%awid}
+            resp = json.dumps(message)
+            return HttpResponse(resp)
+        artwork = {}
+        mevents = {}
+        museumsdict = {}
+        artwork['piecename'] = awqset[0].piecename
+        artwork['creationdate'] = awqset[0].creationdate
+        artwork['museum'] = awqset[0].museum.id
+        artwork['event'] = awqset[0].event.id
+        artwork['artistname'] = awqset[0].artistname
+        artwork['artistbirthyear'] = awqset[0].artistbirthyear
+        artwork['artistdeathyear'] = awqset[0].artistdeathyear
+        artwork['artistnationality'] = str(awqset[0].artistnationality)
+        artwork['size'] = str(awqset[0].size)
+        #artwork['estimate'] = awqset[0].estimate
+        #artwork['soldprice'] = awqset[0].soldprice
+        artwork['medium'] = awqset[0].medium
+        artwork['signature'] = awqset[0].signature
+        #artwork['letterofauthenticity'] = awqset[0].letterofauthenticity
+        artwork['description'] = awqset[0].description
+        artwork['provenance'] = awqset[0].provenance
+        artwork['literature'] = awqset[0].literature
+        artwork['exhibitions'] = awqset[0].exhibited
+        artwork['priority'] = awqset[0].priority
+        artwork['workurl'] = awqset[0].detailurl
+        artwork['image1'] = awqset[0].image1
+        artwork['image2'] = awqset[0].image2
+        artwork['image3'] = awqset[0].image3
+        artwork['image4'] = awqset[0].image4
+        artwork['id'] = awqset[0].id
+        context['artwork'] = artwork
+        musqset = Museum.objects.filter(id=awqset[0].museum.id)
+        musobj = musqset[0]
+        meventsqset = MuseumEvent.objects.filter(museum=musobj)
+        for mev in meventsqset:
+            mevents[mev.eventname] = mev.id
+        context['mevents'] = mevents
+        museumsqset = Museum.objects.all()
+        for mus in museumsqset:
+            musname = mus.museumname
+            musid = mus.id
+            museumsdict[musname] = musid
+        #print(museumsdict)
+        context['museumsdict'] = museumsdict
+        museumjson = json.dumps(context)
+        return HttpResponse(museumjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def getmevents(request):
+    if request.method == 'POST':
+        context = {}
+        mid = "-1"
+        requestbody = str(request.body)
+        bodycomponents = requestbody.split("&")
+        requestdict = {}
+        for comp in bodycomponents:
+            compparts = comp.split("=")
+            if compparts.__len__() > 1:
+                compparts[0] = compparts[0].replace("b'", "")
+                requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+        if 'mid' in requestdict.keys():
+            mid = requestdict['mid']
+        museumsqset = Museum.objects.filter(id=mid)
+        museumobj = None
+        if museumsqset.__len__() > 0:
+            museumobj = museumsqset[0]
+        eventsqset = MuseumEvent.objects.filter(museum=museumobj)
+        eventsdict = {}
+        for event in eventsqset:
+            eventsdict[event.eventname] = event.id
+        return HttpResponse(json.dumps(eventsdict))
+    else:
+        return HttpResponse(json.dumps({}))
 
 
 @login_required(login_url='/admin/login/')
