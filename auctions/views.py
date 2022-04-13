@@ -42,17 +42,17 @@ def index(request):
     allartists = {}
     allauctions = {}
     featuredauctions = {}
-    highlightsqset = Lot.objects.all().order_by('-priority', '-edited')
+    highlightsqset = Lot.objects.all().order_by('priority', '-edited')
     for hlobj in highlightsqset[0:chunksize]:
         d = {'title' : hlobj.lottitle, 'loturl' : hlobj.loturl, 'image' : hlobj.lotimage1, 'description' : hlobj.lotdescription, 'artist' : hlobj.artistname}
         highlightslist.append(d)
     context['highlights'] = highlightslist
-    auctionsqset = Auction.objects.all().order_by('-priority', '-edited')
+    auctionsqset = Auction.objects.all().order_by('priority', '-edited')
     try:
         for auction in auctionsqset[rowstartctr:rowendctr]:
             auctionname = auction.auctionname
             auctionurl = auction.auctionurl
-            auctionlots = Lot.objects.filter(auction=auction).order_by() # Ordered by -priority
+            auctionlots = Lot.objects.filter(auction=auction).order_by() # Ordered by priority
             lotslist = []
             for lotobj in auctionlots:
                 d = {'title' : lotobj.lottitle, 'loturl' : lotobj.loturl, 'image' : lotobj.lotimage1, 'description' : lotobj.lotdescription, 'artist' : lotobj.artistname, 'auctionurl' : auctionurl, 'lid' : lotobj.id}

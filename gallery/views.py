@@ -240,7 +240,7 @@ def details(request):
     endctr = startctr + (artcollen * artrowlen)
     allartworks1, allartworks2, allartworks3, allartworks4, allartworks = {}, {}, {}, {}, {} # Event names as keys and list of artworks as values.
     filterartists = {}
-    artworksqset = Artwork.objects.filter(gallery=galleryobj).order_by('-edited', '-priority')
+    artworksqset = Artwork.objects.filter(gallery=galleryobj).order_by('-edited', 'priority')
     for ename in eventsprioritylist:
         allartworks1[ename] = []
         allartworks2[ename] = []

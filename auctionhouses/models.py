@@ -16,7 +16,7 @@ class AuctionHouse(models.Model):
     class Meta:
         verbose_name = "Auction House Information Table"
         db_table = 'auctionhouses'
-        ordering = ('-priority',)
+        ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.housename)

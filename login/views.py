@@ -38,7 +38,7 @@ def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     chunksize = 3
-    galleries = Gallery.objects.all()
+    galleries = Gallery.objects.all().order_by('priority', '-edited')
     gallerieslist = galleries[0:4]
     galleriesdict = {}
     for g in gallerieslist:
@@ -48,7 +48,7 @@ def index(request):
         gurl = g.galleryurl
         galleriesdict[gname] = [gloc, gimg, gurl]
     context = {'galleries' : galleriesdict}
-    artists = Artist.objects.all()
+    artists = Artist.objects.all().order_by('-edited')
     artistslist = artists[0:4]
     artistsdict = {}
     for a in artistslist:
@@ -59,7 +59,7 @@ def index(request):
         anat = a.nationality
         artistsdict[aname] = [about, aurl, aimg, anat]
     context['artists'] = artistsdict
-    events = Event.objects.all()
+    events = Event.objects.all().order_by('priority', '-edited')
     eventslist = events[0:4]
     eventsdict = {}
     for e in eventslist:

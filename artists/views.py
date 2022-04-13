@@ -41,7 +41,7 @@ def index(request):
     endctr = (chunksize * rows) * int(page) + featuredsize
     context = {}
     featuredartists = []
-    artistsqset = Artist.objects.filter(artistname__istartswith=pageno).order_by('-priority', '-edited')
+    artistsqset = Artist.objects.filter(artistname__istartswith=pageno).order_by('priority', '-edited')
     for artist in artistsqset[0:featuredsize]:
         print(artist.artistname)
         d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
@@ -136,7 +136,7 @@ def details(request):
     artistname = artistobj.artistname
     # Get all artworks by the given artist.
     allartworks = []
-    artworksqset = Artwork.objects.filter(artistname__icontains=artistname).order_by('-priority', '-edited')
+    artworksqset = Artwork.objects.filter(artistname__icontains=artistname).order_by('priority', '-edited')
     for artwork in artworksqset:
         d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : artwork.provenance, 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : artwork.workurl, 'estimate' : artwork.estimate}
         allartworks.append(d)
@@ -147,10 +147,10 @@ def details(request):
     artistevents = {} # All events featuring the artist under consideration.
     artistgalleries = {} # All galleries where artworks of the artist under consideration are displayed.
     eventobj = artistobj.event
-    relatedartistqset = Artist.objects.filter(event=eventobj).order_by('-priority', '-edited')
+    relatedartistqset = Artist.objects.filter(event=eventobj).order_by('priority', '-edited')
     for artist in relatedartistqset:
         d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-        artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('-priority', '-edited')
+        artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority', '-edited')
         if artworkqset.__len__() == 0:
             continue
         d['artworkname'] = artworkqset[0].artworkname
@@ -158,7 +158,7 @@ def details(request):
         d['artworkdate'] = artworkqset[0].creationdate
         if relatedartists.__len__() < chunksize:
             relatedartists.append(d)
-    artworksqset = Artwork.objects.filter(artistname__icontains=artistobj.artistname).order_by('-priority', '-edited')
+    artworksqset = Artwork.objects.filter(artistname__icontains=artistobj.artistname).order_by('priority', '-edited')
     for artwork in artworksqset:
         eventname = artwork.event.eventname
         eventurl = artwork.event.eventurl

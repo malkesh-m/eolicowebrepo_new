@@ -36,7 +36,7 @@ def index(request):
     rows = 6
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
-    auctionhousesqset = AuctionHouse.objects.all().order_by('-priority', '-edited')
+    auctionhousesqset = AuctionHouse.objects.all().order_by('priority', '-edited')
     context = {}
     auctionhouses = []
     for auctionhouse in auctionhousesqset:
@@ -69,7 +69,7 @@ def details(request):
         auchouseobj = AuctionHouse.objects.get(id=ahid)
     except:
         return HttpResponse("Could not identify a auction house with Id %s"%ahid)
-    auctionsqset = Auction.objects.filter(auctionhouse__iexact=auchouseobj.housename).order_by('-priority', '-edited')
+    auctionsqset = Auction.objects.filter(auctionhouse__iexact=auchouseobj.housename).order_by('priority', '-edited')
     auctionslist = []
     relatedartists = {}
     context = {}

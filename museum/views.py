@@ -50,12 +50,12 @@ def index(request):
     latestmuseum = {}
     locationsqset = Museum.objects.order_by().values_list('location').distinct()
     mtypesqset = Museum.objects.order_by().values_list('museumtype').distinct()
-    museumqset = Museum.objects.all().order_by('-edited', '-priority')
-    #museumsqset1 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows][0]).order_by('-edited', '-priority')
-    #museumsqset2 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 1][0]).order_by('-edited', '-priority')
-    #museumsqset3 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 2][0]).order_by('-edited', '-priority')
-    #museumsqset4 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 3][0]).order_by('-edited', '-priority')
-    #museumsqset5 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 4][0]).order_by('-edited', '-priority')
+    museumqset = Museum.objects.all().order_by('-edited', 'priority')
+    #museumsqset1 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows][0]).order_by('-edited', 'priority')
+    #museumsqset2 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 1][0]).order_by('-edited', 'priority')
+    #museumsqset3 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 2][0]).order_by('-edited', 'priority')
+    #museumsqset4 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 3][0]).order_by('-edited', 'priority')
+    #museumsqset5 = Museum.objects.filter(museumtype=mtypesqset[(int(page) - 1) * rows + 4][0]).order_by('-edited', 'priority')
     if rowendctr > mtypesqset.__len__():
         rowendctr = mtypesqset.__len__()
     museumtypes = []
@@ -161,7 +161,7 @@ def details(request):
     except:
         return HttpResponse("Could not identify a museum with Id %s"%mid)
     # Find all museum events for the selected museum. Order by 'edited' and 'priority'.
-    allmuseumeventsqset = MuseumEvent.objects.filter(museum=museumobj).order_by('-eventstartdate', '-priority')
+    allmuseumeventsqset = MuseumEvent.objects.filter(museum=museumobj).order_by('-eventstartdate', 'priority')
     chunksize = 6
     latestevent = {}
     allevents = []
@@ -203,7 +203,7 @@ def details(request):
     #print(eventsprioritylist)
     for evname in eventsprioritylist:
         allworks[evname] = []
-    piecesqset = MuseumPieces.objects.filter(museum=museumobj).order_by('-edited', '-priority')
+    piecesqset = MuseumPieces.objects.filter(museum=museumobj).order_by('-edited', 'priority')
     if piecesqset.__len__() > 0:
         topwork = {'piecename' : piecesqset[0].piecename, 'creationdate' : piecesqset[0].creationdate, 'museum' : piecesqset[0].museum.museumname, 'artistname' : piecesqset[0].artistname, 'artistbirthyear' : piecesqset[0].artistbirthyear, 'artistdeathyear' : piecesqset[0].artistdeathyear, 'artistnationality' : piecesqset[0].artistnationality, 'medium' : piecesqset[0].medium, 'size' : piecesqset[0].size, 'edition' : piecesqset[0].edition, 'signature' : piecesqset[0].signature, 'description' : piecesqset[0].description, 'detailurl' : piecesqset[0].detailurl, 'provenance' : piecesqset[0].provenance, 'literature' : piecesqset[0].literature, 'exhibited' : piecesqset[0].exhibited, 'image' : piecesqset[0].image1}
         artistnationalities[piecesqset[0].artistnationality.lower()] = 1
@@ -235,7 +235,7 @@ def details(request):
     context['filterartists'] = filterartists
     allarticles = []
     overviewarticles = []
-    articlesqset = MuseumArticles.objects.filter(museum=museumobj).order_by('-edited', '-priority')
+    articlesqset = MuseumArticles.objects.filter(museum=museumobj).order_by('-edited', 'priority')
     actr = 0
     for article in articlesqset:
         a = {}

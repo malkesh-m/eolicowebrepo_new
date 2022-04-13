@@ -134,7 +134,7 @@ def galleries(request):
         gallery.slug = ""
         gallery.priority = selgallerypriority
         if gallery.priority == "":
-            gallery.priority = 1
+            gallery.priority = 5
         imgfile = request.FILES.get("gallerycoverimage")
         mimetype = imgfile.content_type
         if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
@@ -193,7 +193,7 @@ def savegallery(request):
         gallery.slug = ""
         gallery.priority = selgallerypriority
         if gallery.priority == "":
-            gallery.priority = 1
+            gallery.priority = 5
         imgfile = request.FILES.get("gallerycoverimage")
         if imgfile:
             mimetype = imgfile.content_type
@@ -321,7 +321,7 @@ def gevents(request):
         gevent.priority = selgeventpriority
         gevent.eventperiod = geventstartdate + " - " + geventenddate
         if gevent.priority == "":
-            gevent.priority = 1
+            gevent.priority = 5
         imgfile = request.FILES.get("geventcoverimage")
         mimetype = imgfile.content_type
         if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
@@ -447,7 +447,7 @@ def savegevent(request):
         gevent.priority = selgeventpriority
         gevent.eventperiod = geventstartdate + " - " + geventenddate
         if gevent.priority == "":
-            gevent.priority = 1
+            gevent.priority = 5
         imgfile = request.FILES.get("geventcoverimage")
         if imgfile:
             mimetype = imgfile.content_type
@@ -558,7 +558,7 @@ def artworks(request):
         artwork.priority = priority
         artwork.creationdate = ""
         if artwork.priority == "":
-            artwork.priority = 1
+            artwork.priority = 5
         imgfile1 = request.FILES.get("image1")
         if imgfile1:
             mimetype = imgfile1.content_type
@@ -772,7 +772,7 @@ def saveartwork(request):
         artwork.priority = priority
         artwork.creationdate = ""
         if artwork.priority == "":
-            artwork.priority = 1
+            artwork.priority = 5
         imgfile1 = request.FILES.get("image1")
         if imgfile1:
             mimetype = imgfile1.content_type
@@ -1046,7 +1046,7 @@ def saveartist(request):
         artistobj.event = gevent
         artistobj.priority = priority
         if artistobj.priority == "":
-            artistobj.priority = 1
+            artistobj.priority = 5
         imgfile = request.FILES.get("artistcoverimage")
         if imgfile:
             mimetype = imgfile.content_type
@@ -1123,7 +1123,7 @@ def museums(request):
         museum.slug = ""
         museum.priority = selmuseumpriority
         if museum.priority == "":
-            museum.priority = 1
+            museum.priority = 5
         imgfile = request.FILES.get("museumcoverimage")
         mimetype = imgfile.content_type
         if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
@@ -1230,7 +1230,7 @@ def savemuseum(request):
         museum.slug = ""
         museum.priority = selmuseumpriority
         if museum.priority == "":
-            museum.priority = 1
+            museum.priority = 5
         imgfile = request.FILES.get("museumcoverimage")
         if imgfile:
             mimetype = imgfile.content_type
@@ -1309,7 +1309,7 @@ def mevents(request):
         mevent.priority = selmeventpriority
         mevent.eventperiod = meventstartdate + " - " + meventenddate
         if mevent.priority == "":
-            mevent.priority = 1
+            mevent.priority = 5
         imgfile = request.FILES.get("meventcoverimage")
         mimetype = imgfile.content_type
         if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
@@ -1433,7 +1433,7 @@ def savemevent(request):
         mevent.priority = selmeventpriority
         mevent.eventperiod = meventstartdate + " - " + meventenddate
         if mevent.priority == "":
-            mevent.priority = 1
+            mevent.priority = 5
         imgfile = request.FILES.get("meventcoverimage")
         if imgfile:
             mimetype = imgfile.content_type
@@ -1544,7 +1544,7 @@ def museumpieces(request):
         artwork.priority = priority
         artwork.creationdate = ""
         if artwork.priority == "":
-            artwork.priority = 1
+            artwork.priority = 5
         imgfile1 = request.FILES.get("image1")
         if imgfile1:
             mimetype = imgfile1.content_type
@@ -1702,7 +1702,7 @@ def savempieces(request):
         artwork.priority = priority
         artwork.creationdate = ""
         if artwork.priority == "":
-            artwork.priority = 1
+            artwork.priority = 5
         imgfile1 = request.FILES.get("image1")
         if imgfile1:
             mimetype = imgfile1.content_type

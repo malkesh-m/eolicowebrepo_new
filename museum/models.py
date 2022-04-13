@@ -15,7 +15,7 @@ class Museum(models.Model):
     class Meta:
         verbose_name = "Museums Information Table"
         db_table = 'museums'
-        ordering = ('-priority',)
+        ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.museumname)
@@ -41,7 +41,7 @@ class MuseumEvent(models.Model):
     class Meta:
         verbose_name = "Museum Events Information Table"
         db_table = 'museumevents'
-        ordering = ('-priority',)
+        ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.eventname)
@@ -78,7 +78,7 @@ class MuseumPieces(models.Model):
     class Meta:
         verbose_name = "Museum Pieces (artworks) Information Table"
         db_table = 'museumpieces'
-        ordering = ('-priority',)
+        ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.piecename)
@@ -100,7 +100,7 @@ class MuseumArticles(models.Model):
     class Meta:
         verbose_name = "Museum Articles Information Table"
         db_table = 'museumarticles'
-        ordering = ('-priority',)
+        ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.piecename)
