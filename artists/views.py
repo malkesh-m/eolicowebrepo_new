@@ -43,7 +43,6 @@ def index(request):
     featuredartists = []
     artistsqset = Artist.objects.filter(artistname__istartswith=pageno).order_by('priority', '-edited')
     for artist in artistsqset[0:featuredsize]:
-        print(artist.artistname)
         d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
         artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname)
         if artworkqset.__len__() == 0:

@@ -150,7 +150,7 @@
 		gform += "<option value='" + meventtypes[i] + "'>" + meventtypes[i] + "</option>";
 		}
 	    }
-	    gform += "</select><input type='text' class='form-control input-default' placeholder='Enter Event Type' name='meventtype'></div>";
+	    gform += "<option value='none'>None of the above</option></select><input type='text' class='form-control input-default' placeholder='Enter Event Type' name='meventtype'></div>";
 	    gform += "<div class='card-title'><h4>Event Priority</h4></div><div class='form-group'>";
 	    gform += "<select name='selmeventpriority' id='selmeventpriority' class='form-control input-default'><option value=''>Select Priority </option>";
 	    for(i=1; i <= 5; i++){
@@ -163,23 +163,23 @@
 	    }
 	    gform += "</select></div>";
 	    gform += "<div class='card-title'><h4>Event Status</h4></div><div class='form-group'><select name='selmeventstatus' id='selmeventstatus' class='form-control input-default'><option value=''>Select Status </option>";
-	    if(meventsdict['eventstatus'] == "active"){
-	        gform += "<option value='active' selected>active </option>";
+	    if(meventsdict['eventstatus'] == "upcoming"){
+	        gform += "<option value='upcoming' selected>Upcoming </option>";
 	    }
 	    else{
-		gform += "<option value='active'>active </option>";
+		gform += "<option value='upcoming'>Upcoming </option>";
 	    }
-	    if(meventsdict['eventstatus'] == "running"){
-	        gform += "<option value='running' selected>running </option>";
+	    if(meventsdict['eventstatus'] == "ongoing"){
+	        gform += "<option value='ongoing' selected>Ongoing </option>";
 	    }
 	    else{
-		gform += "<option value='running'>running </option>";
+		gform += "<option value='ongoing'>Ongoing </option>";
 	    }
 	    if(meventsdict['eventstatus'] == "past"){
-	        gform += "<option value='past' selected>past </option>";
+	        gform += "<option value='past' selected>Past </option>";
 	    }
 	    else{
-		gform += "<option value='past'>past </option>";
+		gform += "<option value='past'>Past </option>";
 	    }
 	    gform += "</select></div>";
 	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventstartdate' value='" + meventsdict['eventstartdate'] + "'></div>";
@@ -364,6 +364,7 @@
 						{% for metype in allevents %}
 						<option value='{{metype}}'>{{metype}}</option>
 						{% endfor %}
+						<option value='none'>None of the above</option>
 						</select>
                                                 <input type="text" class="form-control input-default" placeholder="Enter Event Type" name='meventtype'>
                                             </div>
@@ -386,9 +387,9 @@
                                             <div class="form-group">
                                                 <select name='selmeventstatus' class="form-control input-default">
 						<option value=''>Select Status </option>
-						<option value='active'>active </option>
-						<option value='running'>running </option>
-						<option value='past'>past </option>
+						<option value='upcoming'>Upcoming </option>
+						<option value='ongoing'>Ongoing </option>
+						<option value='past'>Past </option>
 						</select>
                                             </div>
 					    <div class="card-title">

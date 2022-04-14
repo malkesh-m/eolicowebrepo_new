@@ -188,7 +188,7 @@
 		gform += "<option value='" + gallerytypes[i] + "'>" + gallerytypes[i] + "</option>";
 		}
 	    }
-	    gform += "</select></div>";
+	    gform += "<option value='none'>None of the above</option></select><input type='text' class='form-control input-default' placeholder='Enter Gallery Type' name='gallerytype'></div>";
 	    gform += "<div class='card-title'><h4>Gallery Priority</h4></div><div class='form-group'>";
 	    gform += "<select name='selgallerypriority' id='selgallerypriority' class='form-control input-default'><option value=''>Select type </option>";
 	    for(i=1; i <= 5; i++){
@@ -320,6 +320,7 @@
 						{% for gtype in gallerytypes %}
 						<option value='{{gtype}}'>{{gtype}}</option>
 						{% endfor %}
+						<option value='none'>None of the above</option>
 						</select>
                                                 <input type="text" class="form-control input-default" placeholder="Enter Gallery Type" name='gallerytype'>
                                             </div>

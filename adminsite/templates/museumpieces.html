@@ -191,7 +191,7 @@
 	    //alert(museums);
 	    gform += "<div class='card-title'><h4>Artwork Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork Name' name='artworkname' value='" + artwork['piecename'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Museum Name</h4></div><div class='form-group'>";
-	    gform += "<select name='selmuseumname' id ='selmuseumname' class='form-control input-default'><option value=''>Select Museum </option>";
+	    gform += "<select name='selmuseumname' id ='selmuseumname' class='form-control input-default' onchange='javascript:populatemevents();'><option value=''>Select Museum </option>";
 	    for (const [musname, musid] of Object.entries(museums)){
 		if(artwork['museum'] == musid){
 		gform += "<option value='" + musid + "' selected>" + musname + "</option>";

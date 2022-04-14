@@ -184,7 +184,7 @@
 		gform += "<option value='" + museumtypes[i] + "'>" + museumtypes[i] + "</option>";
 		}
 	    }
-	    gform += "</select></div>";
+	    gform += "<option value='none'>None of the above</option></select><input type='text' class='form-control input-default' placeholder='Enter Museum Type' name='museumtype'></div>";
 	    gform += "<div class='card-title'><h4>Museum Priority</h4></div><div class='form-group'>";
 	    gform += "<select name='selmuseumpriority' id='selmuseumpriority' class='form-control input-default'><option value=''>Select priority </option>";
 	    for(i=1; i <= 5; i++){
@@ -316,6 +316,7 @@
 						{% for mtype in museumtypes %}
 						<option value='{{mtype}}'>{{mtype}}</option>
 						{% endfor %}
+						<option value='none'>None of the above</option>
 						</select>
                                                 <input type="text" class="form-control input-default" placeholder="Enter Museum Type" name='museumtype'>
                                             </div>

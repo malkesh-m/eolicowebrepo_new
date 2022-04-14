@@ -189,7 +189,7 @@
 	    galleries = context['galleriesdict'];
 	    gform += "<div class='card-title'><h4>Artwork Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork Name' name='artworkname' value='" + artwork['artworkname'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Gallery Name</h4></div><div class='form-group'>";
-	    gform += "<select name='selgalleryname' id ='selgalleryname' class='form-control input-default'><option value=''>Select Gallery </option>";
+	    gform += "<select name='selgalleryname' id ='selgalleryname' class='form-control input-default' onchange='javascript:populategevents();'><option value=''>Select Gallery </option>";
 	    for (const [galname, galid] of Object.entries(galleries)){
 		if(artwork['gallery'] == galid){
 		gform += "<option value='" + galid + "' selected>" + galname + "</option>";

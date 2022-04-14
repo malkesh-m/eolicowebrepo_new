@@ -221,7 +221,7 @@ def searchgalleries(request):
     if request.method == 'GET':
         context = {}
         searchkey = request.GET.get('searchkey')
-        galleriesqset = Gallery.objects.filter(galleryname__icontains=searchkey)
+        galleriesqset = Gallery.objects.filter(galleryname__icontains=searchkey).order_by('-edited')
         galleries = {}
         for gal in galleriesqset:
             galleries[gal.galleryname] = gal.id
@@ -303,6 +303,8 @@ def gevents(request):
         if geventname == "" or selgeventtype == "":
             message = "Event name or event type is empty. Can't create Event."
             return HttpResponse(message)
+        if geventstatus == "":
+            geventstatus = "upcoming"
         galleryobj = None
         try:
             galleryobj = Gallery.objects.get(id=galleryid)
@@ -346,7 +348,7 @@ def searchgevents(request):
     if request.method == 'GET':
         context = {}
         searchkey = request.GET.get('searchkey')
-        geventsqset = Event.objects.filter(eventname__icontains=searchkey)
+        geventsqset = Event.objects.filter(eventname__icontains=searchkey).order_by('-edited')
         gevents = {}
         for gev in geventsqset:
             gevents[gev.eventname] = gev.id
@@ -424,6 +426,8 @@ def savegevent(request):
         if geventname == "" or selgeventtype == "":
             message = "Event name or event type is empty. Can't create Event."
             return HttpResponse(message)
+        if geventstatus == "":
+            geventstatus = "upcoming"
         galleryobj = None
         try:
             galleryobj = Gallery.objects.get(id=galleryid)
@@ -540,7 +544,7 @@ def artworks(request):
         artwork.artworkname = artworkname.title()
         artwork.gallery = galleryobj
         artwork.event = geventobj
-        artwork.artistname = artistname
+        artwork.artistname = artistname.title()
         artwork.artistbirthyear = artistbirth
         artwork.artistdeathyear = artistdeath
         artwork.artistnationality = artistnationality
@@ -557,6 +561,7 @@ def artworks(request):
         artwork.workurl = artworkurl
         artwork.priority = priority
         artwork.creationdate = ""
+        artistimage = ""
         if artwork.priority == "":
             artwork.priority = 5
         imgfile1 = request.FILES.get("image1")
@@ -569,8 +574,10 @@ def artworks(request):
             imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
-            uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
-            artwork.image1 = uploadstatus[0]
+            if 'image1' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
+                artwork.image1 = uploadstatus[0]
+                artistimage = artwork.image1
         imgfile2 = request.FILES.get("image1")
         if imgfile2:
             mimetype = imgfile2.content_type
@@ -581,8 +588,9 @@ def artworks(request):
             imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
-            uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
-            artwork.image2 = uploadstatus[0]
+            if 'image2' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
+                artwork.image2 = uploadstatus[0]
         imgfile3 = request.FILES.get("image3")
         if imgfile3:
             mimetype = imgfile3.content_type
@@ -593,8 +601,9 @@ def artworks(request):
             imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
-            uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
-            artwork.image3 = uploadstatus[0]
+            if 'image3' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
+                artwork.image3 = uploadstatus[0]
         imgfile4 = request.FILES.get("image4")
         if imgfile4:
             mimetype = imgfile4.content_type
@@ -605,10 +614,31 @@ def artworks(request):
             imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
-            uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
-            artwork.image4 = uploadstatus[0]
+            if 'image4' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
+                artwork.image4 = uploadstatus[0]
+        # Check if the given artist exists in the Artist model
+        artistobj = None
+        try:
+            artistobj = Artist.objects.get(artistname=artistname.title())
+        except:
+            pass
+        if not artistobj: # If the artist doesn't exist...
+            artistobj = Artist() # ... then create an Artist record
+            artistobj.artistname = artistname.title()
+            artistobj.birthdate = artistbirth
+            artistobj.deathdate = artistdeath
+            artistobj.nationality = artistnationality
+            artistobj.about = ""
+            artistobj.squareimage = artistimage
+            artistobj.largeimage = artistimage
+            artistobj.event = geventobj # This is the gallery event associated with the artwork being processed
+            artistobj.priority = priority # Priority of this artist will be the same as the priority of the artwork.
+        else: # Artist by the given name already exists
+            pass
         try:
             artwork.save()
+            artistobj.save()
             message = "Successfully added artwork named '%s'"%artworkname.title()
         except:
             message = "Error: Could not create artwork - %s"%sys.exc_info()[1].__str__()
@@ -620,7 +650,7 @@ def searchartworks(request):
     if request.method == 'GET':
         context = {}
         searchkey = request.GET.get('searchkey')
-        artworksqset = Artwork.objects.filter(artworkname__icontains=searchkey)
+        artworksqset = Artwork.objects.filter(artworkname__icontains=searchkey).order_by('-edited')
         artworks = {}
         for art in artworksqset:
             artworks[art.artworkname] = art.id
@@ -754,7 +784,7 @@ def saveartwork(request):
         artwork.artworkname = artworkname.title()
         artwork.gallery = galleryobj
         artwork.event = geventobj
-        artwork.artistname = artistname
+        artwork.artistname = artistname.title()
         artwork.artistbirthyear = artistbirth
         artwork.artistdeathyear = artistdeath
         artwork.artistnationality = artistnationality
@@ -773,6 +803,7 @@ def saveartwork(request):
         artwork.creationdate = ""
         if artwork.priority == "":
             artwork.priority = 5
+        artistimage = ""
         imgfile1 = request.FILES.get("image1")
         if imgfile1:
             mimetype = imgfile1.content_type
@@ -785,6 +816,7 @@ def saveartwork(request):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
             artwork.image1 = uploadstatus[0]
+            artistimage = artwork.image1
         imgfile2 = request.FILES.get("image1")
         if imgfile2:
             mimetype = imgfile2.content_type
@@ -821,8 +853,24 @@ def saveartwork(request):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
             artwork.image4 = uploadstatus[0]
+        # Check if the given artist exists in the Artist model
+        artistobj = None
+        try:
+            artistobj = Artist.objects.get(artistname=artistname.title())
+        except:
+            artistobj = Artist() # Create an Artist record
+            artistobj.artistname = artistname.title()
+            artistobj.birthdate = artistbirth
+            artistobj.deathdate = artistdeath
+            artistobj.nationality = artistnationality
+            artistobj.about = ""
+            artistobj.squareimage = artistimage # Artist image is the same as the first image of this artwork.
+            artistobj.largeimage = artistimage
+            artistobj.event = geventobj # This is the gallery event associated with the artwork being processed
+            artistobj.priority = priority # Priority of this artist will be the same as the priority of the artwork.
         try:
             artwork.save()
+            artistobj.save()
             message = "Successfully saved artwork named '%s'"%artworkname.title()
         except:
             message = "Error: Could not create artwork - %s"%sys.exc_info()[1].__str__()
@@ -905,7 +953,7 @@ def artists(request):
         except:
             pass
         artist = Artist()
-        artist.artistname = artistname
+        artist.artistname = artistname.title()
         artist.nationality = artistnationality
         artist.birthdate = artistbirth
         artist.deathdate = artistdeath
@@ -952,7 +1000,7 @@ def searchartists(request):
     if request.method == 'GET':
         context = {}
         searchkey = request.GET.get('searchkey')
-        artistsqset = Artist.objects.filter(artistname__icontains=searchkey)
+        artistsqset = Artist.objects.filter(artistname__icontains=searchkey).order_by('-edited')
         artists = {}
         for art in artistsqset:
             artists[art.artistname] = art.id
@@ -978,7 +1026,10 @@ def editartist(request):
         artistsdict['artistname'] = artistqset[0].artistname
         artistsdict['nationality'] = artistqset[0].nationality
         artistsdict['about'] = artistqset[0].about
-        artistsdict['eventid'] = artistqset[0].event.id
+        try:
+            artistsdict['eventid'] = artistqset[0].event.id
+        except:
+            artistsdict['eventid'] = ""
         artistsdict['artistbirth'] = artistqset[0].birthdate
         artistsdict['artistdeath'] = artistqset[0].deathdate
         artistsdict['gender'] = artistqset[0].gender
@@ -986,7 +1037,10 @@ def editartist(request):
         artistsdict['priority'] = str(artistqset[0].priority)
         artistsdict['id'] = artistqset[0].id
         context['artistsdict'] = artistsdict
-        geventsqset = Event.objects.filter(gallery=artistqset[0].event.gallery.id)
+        try:
+            geventsqset = Event.objects.filter(gallery=artistqset[0].event.gallery.id)
+        except:
+            geventsqset = Event.objects.all()
         for gev in geventsqset:
             eventsdict[gev.eventname] = gev.id
         context['eventsdict'] = eventsdict
@@ -1148,7 +1202,7 @@ def searchmuseum(request):
     if request.method == 'GET':
         context = {}
         searchkey = request.GET.get('searchkey')
-        museumsqset = Museum.objects.filter(museumname__icontains=searchkey)
+        museumsqset = Museum.objects.filter(museumname__icontains=searchkey).order_by('-edited')
         museums = {}
         for mus in museumsqset:
             museums[mus.museumname] = mus.id
@@ -1292,6 +1346,8 @@ def mevents(request):
         if meventname == "" or selmeventtype == "":
             message = "Event name or event type is empty. Can't create Event."
             return HttpResponse(message)
+        if meventstatus == "":
+            meventstatus = "upcoming"
         museumobj = None
         try:
             museumobj = Museum.objects.get(id=museumid)
@@ -1334,7 +1390,7 @@ def searchmevents(request):
     if request.method == 'GET':
         context = {}
         searchkey = request.GET.get('searchkey')
-        meventsqset = MuseumEvent.objects.filter(eventname__icontains=searchkey)
+        meventsqset = MuseumEvent.objects.filter(eventname__icontains=searchkey).order_by('-edited')
         mevents = {}
         for mev in meventsqset:
             mevents[mev.eventname] = mev.id
@@ -1411,6 +1467,8 @@ def savemevent(request):
         if meventname == "" or selmeventtype == "":
             message = "Event name or event type is empty. Can't save Event."
             return HttpResponse(message)
+        if meventstatus == "":
+            meventstatus = "upcoming"
         museumobj = None
         try:
             museumobj = Museum.objects.get(id=museumid)
@@ -1526,7 +1584,7 @@ def museumpieces(request):
         artwork.piecename = artworkname.title()
         artwork.museum = museumobj
         artwork.event = meventobj
-        artwork.artistname = artistname
+        artwork.artistname = artistname.title()
         artwork.artistbirthyear = artistbirth
         artwork.artistdeathyear = artistdeath
         artwork.artistnationality = artistnationality
@@ -1546,6 +1604,7 @@ def museumpieces(request):
         if artwork.priority == "":
             artwork.priority = 5
         imgfile1 = request.FILES.get("image1")
+        artistimage = ""
         if imgfile1:
             mimetype = imgfile1.content_type
             if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
@@ -1557,6 +1616,7 @@ def museumpieces(request):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
             artwork.image1 = uploadstatus[0]
+            artistimage = artwork.image1
         imgfile2 = request.FILES.get("image1")
         if imgfile2:
             mimetype = imgfile2.content_type
@@ -1593,8 +1653,27 @@ def museumpieces(request):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
             artwork.image4 = uploadstatus[0]
+        artistobj = None
+        try:
+            artistobj = Artist.objects.get(artistname=artistname.title())
+        except:
+            pass
+        if not artistobj: # If the artist doesn't exist...
+            artistobj = Artist() # ... then create an Artist record
+            artistobj.artistname = artistname.title()
+            artistobj.birthdate = artistbirth
+            artistobj.deathdate = artistdeath
+            artistobj.nationality = artistnationality
+            artistobj.about = ""
+            artistobj.squareimage = artistimage
+            artistobj.largeimage = artistimage
+            artistobj.event = None # This should be a gallery event. So for museum, we set it to None
+            artistobj.priority = priority # Priority of this artist will be the same as the priority of the artwork.
+        else: # Artist by the given name already exists
+            pass
         try:
             artwork.save()
+            artistobj.save()
             message = "Successfully added artwork named '%s'"%artworkname.title()
         except:
             message = "Error: Could not create artwork - %s"%sys.exc_info()[1].__str__()
@@ -1607,7 +1686,7 @@ def searchmpieces(request):
         context = {}
         searchkey = request.GET.get('searchkey')
         #print(searchkey)
-        artworksqset = MuseumPieces.objects.filter(piecename__icontains=searchkey)
+        artworksqset = MuseumPieces.objects.filter(piecename__icontains=searchkey).order_by('-edited')
         artworks = {}
         for art in artworksqset:
             artworks[art.piecename] = art.id
@@ -1684,7 +1763,7 @@ def savempieces(request):
         artwork.piecename = artworkname.title()
         artwork.museum = museumobj
         artwork.event = meventobj
-        artwork.artistname = artistname
+        artwork.artistname = artistname.title()
         artwork.artistbirthyear = artistbirth
         artwork.artistdeathyear = artistdeath
         artwork.artistnationality = artistnationality
@@ -1704,17 +1783,19 @@ def savempieces(request):
         if artwork.priority == "":
             artwork.priority = 5
         imgfile1 = request.FILES.get("image1")
+        artistimage = ""
         if imgfile1:
             mimetype = imgfile1.content_type
             if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
                 return None
             if 'image1' in request.FILES.keys():
                 image1name = request.FILES['image1'].name
-            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            imagelocation = settings.MUSEUM_FILE_DIR + os.path.sep + meventobj.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + meventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
             artwork.image1 = uploadstatus[0]
+            artistimage = artwork.image1
         imgfile2 = request.FILES.get("image1")
         if imgfile2:
             mimetype = imgfile2.content_type
@@ -1722,7 +1803,7 @@ def savempieces(request):
                 return None
             if 'image2' in request.FILES.keys():
                 image2name = request.FILES['image2'].name
-            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            imagelocation = settings.MUSEUM_FILE_DIR + os.path.sep + meventobj.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + meventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
@@ -1734,7 +1815,7 @@ def savempieces(request):
                 return None
             if 'image3' in request.FILES.keys():
                 image3name = request.FILES['image3'].name
-            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            imagelocation = settings.MUSEUM_FILE_DIR + os.path.sep + meventobj.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + meventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
@@ -1746,13 +1827,32 @@ def savempieces(request):
                 return None
             if 'image4' in request.FILES.keys():
                 image4name = request.FILES['image4'].name
-            imagelocation = settings.GALLERY_FILE_DIR + os.path.sep + geventobj.gallery.galleryname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + geventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
+            imagelocation = settings.MUSEUM_FILE_DIR + os.path.sep + meventobj.museum.museumname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_") + os.path.sep + meventobj.eventname.replace(" ", "_").replace("'", "_").replace(",", "_").replace(".", "_")
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
             artwork.image4 = uploadstatus[0]
+        artistobj = None
+        try:
+            artistobj = Artist.objects.get(artistname=artistname.title())
+        except:
+            pass
+        if not artistobj: # If the artist doesn't exist...
+            artistobj = Artist() # ... then create an Artist record
+            artistobj.artistname = artistname.title()
+            artistobj.birthdate = artistbirth
+            artistobj.deathdate = artistdeath
+            artistobj.nationality = artistnationality
+            artistobj.about = ""
+            artistobj.squareimage = artistimage
+            artistobj.largeimage = artistimage
+            artistobj.event = None # This should be a gallery event. So for museum, we set it to None
+            artistobj.priority = priority # Priority of this artist will be the same as the priority of the artwork.
+        else: # Artist by the given name already exists
+            pass
         try:
             artwork.save()
+            artistobj.save()
             message = "Successfully saved artwork named '%s'"%artworkname.title()
         except:
             message = "Error: Could not create artwork - %s"%sys.exc_info()[1].__str__()
