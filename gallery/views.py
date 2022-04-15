@@ -210,7 +210,10 @@ def details(request):
             eventsprioritylist.append(eqset.eventname)
     context['previousevents'] = previousevents
     # Showing 20 artists from the latest featured event only.
-    artistsqset = Artist.objects.filter(event=eventsqset[0]).order_by('-edited', 'priority')
+    try:
+        artistsqset = Artist.objects.filter(event=eventsqset[0]).order_by('-edited', 'priority')
+    except:
+        artistsqset = []
     artistslist = []
     max_len = 20
     if artistsqset.__len__() < max_len:
