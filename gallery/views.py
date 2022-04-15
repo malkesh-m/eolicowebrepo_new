@@ -223,7 +223,10 @@ def details(request):
         artistslist.append(adict)
     context['artists'] = artistslist
     nationalities = []
-    natqset = Artist.objects.filter(event=eventsqset[0]).order_by().values_list('nationality').distinct()
+    try:
+        natqset = Artist.objects.filter(event=eventsqset[0]).order_by().values_list('nationality').distinct()
+    except:
+        natqset = []
     for nat in natqset:
         nationalities.append(nat[0])
     context['nationalities'] = nationalities
