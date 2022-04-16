@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf.urls import url
 from django.conf import settings
 from django.views.generic import RedirectView
+from django.conf.urls.static import static
 import login
 
 urlpatterns = [
@@ -29,6 +30,6 @@ urlpatterns = [
     path('artist/', include('artists.urls')),
     path('auction/', include('auctions.urls')),
     path('', login.views.index, name='homeindex'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

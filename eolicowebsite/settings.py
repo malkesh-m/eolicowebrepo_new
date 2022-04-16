@@ -22,6 +22,7 @@ PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 GALLERY_FILE_DIR = BASE_PATH + os.path.sep + "images" + os.path.sep + "galleries"
+MUSEUM_FILE_DIR = BASE_PATH + os.path.sep + "images" + os.path.sep + "museums"
 
 
 # Quick-start development settings - unsuitable for production
@@ -146,6 +147,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
