@@ -42,16 +42,19 @@ def index(request):
     context = {}
     featuredartists = []
     artistsqset = Artist.objects.filter(artistname__istartswith=pageno).order_by('priority', '-edited')
+    uniqartists = {}
     for artist in artistsqset[0:featuredsize]:
-        d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-        artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname)
-        if artworkqset.__len__() == 0:
-            continue
-        d['artworkname'] = artworkqset[0].artworkname
-        d['artworkimage'] = artworkqset[0].image1
-        d['artworkdate'] = artworkqset[0].creationdate
-        d['awid'] = artworkqset[0].id
-        featuredartists.append(d)
+        if artist.artistname.title() not in uniqartists.keys():
+            d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
+            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname)
+            if artworkqset.__len__() == 0:
+                continue
+            d['artworkname'] = artworkqset[0].artworkname
+            d['artworkimage'] = artworkqset[0].image1
+            d['artworkdate'] = artworkqset[0].creationdate
+            d['awid'] = artworkqset[0].id
+            featuredartists.append(d)
+            uniqartists[artist.artistname.title()] = 1
     context['featuredartists'] = featuredartists
     allartists = []
     rctr = 0
@@ -71,6 +74,8 @@ def index(request):
                 continue
             if artist.artistname.title() not in uniqueartists.keys():
                 uniqueartists[artist.artistname.title()] = 1
+            else:
+                continue
             artworkobj = artworkqset[0]
             if artworkobj.artworkname.title() not in uniqueartworks.keys():
                 d['artworkname'] = artworkobj.artworkname.title()
