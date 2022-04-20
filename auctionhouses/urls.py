@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
-from museum import views
+from auctionhouses import views
 
 
 urlpatterns = [

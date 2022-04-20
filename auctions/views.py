@@ -155,11 +155,15 @@ def details(request):
             rctr = 0
         if lot.artistname in allartists.keys(): # This is the part that would be executed, not the else clause
             l = allartists[lot.artistname]
-            l.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
+            try:
+                artistobj = Artist.objects.get(artistname__icontains=lot.artistname)
+            except:
+                continue # If there is no corresponding artist object, we cannot continue
+            l.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
             allartists[lot.artistname] = l
         else: # This should never be executed.
             l = []
-            l.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
+            l.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
             allartists[lot.artistname] = l
     context['relatedworks'] = relatedworks
     context['allartists'] = allartists

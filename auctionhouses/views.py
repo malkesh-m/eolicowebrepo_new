@@ -32,23 +32,39 @@ def index(request):
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
-    chunksize = 9
+    chunksize = 5
     rows = 6
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
+    fstartctr = int(page) * chunksize
+    fendctr = int(page) * chunksize + chunksize
     auctionhousesqset = AuctionHouse.objects.all().order_by('priority', '-edited')
     context = {}
-    auctionhouses = []
-    for auctionhouse in auctionhousesqset:
-        d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : auctionhouse.description, 'image' : auctionhouse.coverimage, 'hid' : auctionhouse.id, 'location' : auctionhouse.location}
+    auctionhouses = [] # Auctions in various auction houses section.
+    if auctionhousesqset.__len__() <= fstartctr:
+        fstartctr = 0
+    for auctionhouse in auctionhousesqset[fstartctr:]:
+        d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : auctionhouse.description, 'image' : auctionhouse.coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
         auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionhouse.housename)
         auctionslist = []
         for auction in auctionsqset:
-            d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aid' : auction.id}
+            d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aucid' : auction.id}
             auctionslist.append(d1)
         d['auctionslist'] = auctionslist
         auctionhouses.append(d)
     context['auctionhouses'] = auctionhouses
+    featuredshows = [] # Featured shows section, will show 5 top priority auctions only.
+    #currentmngshows = [] # Current museum and gallery shows section - To be implemented later. Will need association of auctions to galleries and museums.
+    for auctionhouse in auctionhousesqset[:fstartctr]:
+        d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : auctionhouse.description, 'image' : auctionhouse.coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
+        auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionhouse.housename)
+        auctionslist = []
+        for auction in auctionsqset:
+            d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aucid' : auction.id, 'auctiondate' : str(auction.auctiondate)}
+            auctionslist.append(d1)
+        d['auctionslist'] = auctionslist
+        featuredshows.append(d)
+    context['featuredshows'] = featuredshows
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     template = loader.get_template('auctionhouses.html')

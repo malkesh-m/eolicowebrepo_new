@@ -46,13 +46,18 @@ def index(request):
     for artist in artistsqset[0:featuredsize]:
         if artist.artistname.title() not in uniqartists.keys():
             d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname)
+            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority')
             if artworkqset.__len__() == 0:
-                continue
-            d['artworkname'] = artworkqset[0].artworkname
-            d['artworkimage'] = artworkqset[0].image1
-            d['artworkdate'] = artworkqset[0].creationdate
-            d['awid'] = artworkqset[0].id
+                #continue
+                d['artworkname'] = ""
+                d['artworkimage'] = ""
+                d['artworkdate'] = ""
+                d['awid'] = ""
+            else:
+                d['artworkname'] = artworkqset[0].artworkname
+                d['artworkimage'] = artworkqset[0].image1
+                d['artworkdate'] = artworkqset[0].creationdate
+                d['awid'] = artworkqset[0].id
             featuredartists.append(d)
             uniqartists[artist.artistname.title()] = 1
     context['featuredartists'] = featuredartists
@@ -65,6 +70,8 @@ def index(request):
     actr = 0
     uniqueartists = {}
     uniqueartworks = {}
+    eventtypesdict = {}
+    eventtypeslist = []
     if artistsqset.__len__() > featuredsize:
         for artist in artistsqset[startctr:endctr]:
             #print(artist.artistname)
@@ -77,6 +84,7 @@ def index(request):
             else:
                 continue
             artworkobj = artworkqset[0]
+            eventtype = artworkobj.event.eventtype
             if artworkobj.artworkname.title() not in uniqueartworks.keys():
                 d['artworkname'] = artworkobj.artworkname.title()
                 #print(d['artworkname'])
@@ -100,17 +108,23 @@ def index(request):
             d['awid'] = artworkobj.id
             d['artworkmedium'] = artworkobj.medium
             d['artworkestimate'] = artworkobj.estimate
+            d['eventtype'] = eventtype
             if actr < chunksize:
                 l = allartists[rctr]
                 l.append(d)
                 allartists[rctr] = l
                 actr += 1
+                if eventtype in eventtypesdict.keys():
+                    eventtypesdict[eventtype] += 1
+                else:
+                    eventtypesdict[eventtype] = 1
             else:
                 actr = 0
                 rctr += 1
             if rctr == rows:
                 break
     context['allartists'] = allartists
+    context['eventtypes'] = eventtypesdict
     context['uniqueartists'] = uniqueartists
     context['uniqueartworks'] = uniqueartworks
     carouselentries = getcarouselinfo()
@@ -140,18 +154,45 @@ def details(request):
     artistname = artistobj.artistname
     # Get all artworks by the given artist.
     allartworks = []
-    artworksqset = Artwork.objects.filter(artistname__icontains=artistname).order_by('priority', '-edited')
+    allartworks1 = []
+    allartworks2 = []
+    allartworks3 = []
+    allartworks4 = []
+    artworksqset = Artwork.objects.filter(artistname=artistname.title()).order_by('priority')
+    uniqueartworks = {}
+    actr = 0
     for artwork in artworksqset:
-        d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : artwork.provenance, 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : artwork.workurl, 'estimate' : artwork.estimate}
-        allartworks.append(d)
-    artistinfo = {'name' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthdate, 'deathdate' : artistobj.deathdate, 'profileurl' : artistobj.profileurl, 'desctiption' : artistobj.about, 'image' : artistobj.largeimage, 'gender' : artistobj.gender}
+        d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : artwork.provenance, 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : artwork.workurl, 'estimate' : artwork.estimate, 'awid' : artwork.id}
+        if artwork.artworkname not in uniqueartworks.keys():
+            allartworks.append(d)
+            uniqueartworks[artwork.artworkname] = artwork.id
+            if actr == 0:
+                allartworks1.append(d)
+            elif actr == 1:
+                allartworks2.append(d)
+            elif actr == 2:
+                allartworks3.append(d)
+            elif actr == 3:
+                allartworks4.append(d)
+                actr = 0
+                continue
+            actr += 1
+    artistinfo = {'name' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthdate, 'deathdate' : artistobj.deathdate, 'profileurl' : artistobj.profileurl, 'desctiption' : artistobj.about, 'image' : artistobj.largeimage, 'gender' : artistobj.gender, 'about' : artistobj.about}
     context['allartworks'] = allartworks
+    context['allartworks1'] = allartworks1
+    context['allartworks2'] = allartworks2
+    context['allartworks3'] = allartworks3
+    context['allartworks4'] = allartworks4
     context['artistinfo'] = artistinfo
     relatedartists = [] # List of artists related to the artist under consideration through an event.
     artistevents = {} # All events featuring the artist under consideration.
     artistgalleries = {} # All galleries where artworks of the artist under consideration are displayed.
     eventobj = artistobj.event
-    relatedartistqset = Artist.objects.filter(event=eventobj).order_by('priority', '-edited')
+    # Related Artists can be sought out based on the 'event' or on 'nationality'. Though 'event' is a better
+    # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
+    # is a query that cannot be cached, so it has to be picked up from the DB every time.
+    relatedartistqset = Artist.objects.filter(event=eventobj)
+    #relatedartistqset = Artist.objects.filter(nationality__icontains=artistobj.nationality)
     for artist in relatedartistqset:
         d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
         artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority', '-edited')
@@ -160,9 +201,10 @@ def details(request):
         d['artworkname'] = artworkqset[0].artworkname
         d['artworkimage'] = artworkqset[0].image1
         d['artworkdate'] = artworkqset[0].creationdate
+        d['artworkdescription'] = artworkqset[0].description
+        d['awid'] = artworkqset[0].id
         if relatedartists.__len__() < chunksize:
             relatedartists.append(d)
-    artworksqset = Artwork.objects.filter(artistname__icontains=artistobj.artistname).order_by('priority', '-edited')
     for artwork in artworksqset:
         eventname = artwork.event.eventname
         eventurl = artwork.event.eventurl
@@ -170,9 +212,10 @@ def details(request):
         eventperiod = artwork.event.eventperiod
         eventimage = artwork.event.eventimage
         eventlocation = artwork.event.eventlocation
+        evid = artwork.event.id
         l = artistevents.keys()
         if l.__len__() < chunksize and eventname not in l:
-            artistevents[eventname] = {'eventurl' : eventurl, 'eventinfo' : eventinfo, 'eventperiod' : eventperiod, 'eventimage' : eventimage, 'eventlocation' : eventlocation}
+            artistevents[eventname] = {'eventurl' : eventurl, 'eventinfo' : eventinfo, 'eventperiod' : eventperiod, 'eventimage' : eventimage, 'eventlocation' : eventlocation, 'evid' : evid}
         galleryname = artwork.gallery.galleryname
         location = artwork.gallery.location
         description = artwork.gallery.description

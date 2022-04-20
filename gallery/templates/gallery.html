@@ -5,14 +5,13 @@
  <meta name="viewport" content="width=device-width, initialscale=1, shrink-to-fit=no">
  <meta name="description" content="">
  <meta name="author" content="">
- <link href="https://fonts.googleapis.com/css?
-family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-rel="stylesheet">
- <title>Eolico</title>
+ <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+ <title>Eolico Galleries</title>
  <!-- Additional CSS Files -->
  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
  <link rel="stylesheet" type="text/css" href="/static/css/fontawesome.css">
  <link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/responsive.css">
  <link rel="stylesheet" href="/static/css/owl-carousel.css">
  <link rel="stylesheet" href="/static/css/lightbox.css">
  <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
@@ -253,7 +252,7 @@ https://templatemo.com/tm-571-hexashop
  <div class="col-12">
  <nav class="main-nav">
  <!-- ***** Logo Start ***** -->
- <a href="index.html" class="logo">
+ <a href="/login/index/" class="logo">
  <img src="/static/images/logo1.png">
  </a>
  <!-- ***** Logo End ***** -->
@@ -267,7 +266,7 @@ https://templatemo.com/tm-571-hexashop
  <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
  <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
  <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
- <li class="scroll-to-section"><a href="/gallery/events/">Events</a></li>
+ <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
  <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
  <li class="scroll-to-section"><a href="/login/about/">About</a></li>
  <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
@@ -312,14 +311,25 @@ elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn
 btn-slider" href="#">Explore</a></div></div>
 </div>
 -->
+
 	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
             {% for d in carousel %}
-                
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="#">Explore</a></div></div>
-		
+                {% if d.datatype == "gallery" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "gevent" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "museum" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "mevent" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
 	    {% endfor %}
 	</div>
  <!-- ***** Main Banner Area End ***** -->
+
 <section class="section gal-section" id="">
  <div class="container">
  <div class="row">
@@ -377,8 +387,8 @@ btn-slider" href="#">Explore</a></div></div>
  <div class="col-lg-12">
  <div class="section-heading text-center">
  <h2>{{gallerytypes.0}}</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
-adipiscing elit.</span> 
+ <!-- <span>Lorem ipsum dolor sit amet, consectetur
+adipiscing elit.</span> -->
 <hr>
  </div>
  </div>
@@ -392,14 +402,14 @@ adipiscing elit.</span>
 {% for galleryname, gdata in galleries1.items %}
  <div class="item">
  <div class="thumb">
- <a href="/gallery/details/?q={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+ <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
  </div>
 
  <div class="down-content">
-<a href="/gallery/details/?q={{gdata.3}}">
+<a href="/gallery/details/?gid={{gdata.3}}">
 <h4>{{galleryname}}</h4>
 <span>{{gdata.0}}</span>
-<a class="btn btn-slider" href="#">Follow</a>
+<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 </a>
  </div>
  </div>
@@ -416,8 +426,8 @@ adipiscing elit.</span>
  <div class="col-lg-12">
  <div class="section-heading text-center">
  <h2>{{gallerytypes.1}}</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
-adipiscing elit.</span>
+ <!-- <span>Lorem ipsum dolor sit amet, consectetur
+adipiscing elit.</span> -->
 <hr>
  </div>
  </div>
@@ -431,13 +441,13 @@ adipiscing elit.</span>
 {% for galleryname, gdata in galleries2.items %}
  <div class="item">
  <div class="thumb">
- <a href="/gallery/details/?q={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+ <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
  </div>
  <div class="down-content">
-<a href="/gallery/details/?q={{gdata.3}}">
+<a href="/gallery/details/?gid={{gdata.3}}">
 <h4>{{galleryname}}</h4>
 <span>{{gdata.0}}</span>
-<a class="btn btn-slider" href="#">Follow</a>
+<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 </a>
  </div>
  </div>
@@ -454,8 +464,8 @@ adipiscing elit.</span>
  <div class="col-lg-12">
  <div class="section-heading text-center">
  <h2>{{gallerytypes.2}}</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
-adipiscing elit.</span>
+ <!-- <span>Lorem ipsum dolor sit amet, consectetur
+adipiscing elit.</span> -->
 <hr>
  </div>
  </div>
@@ -469,13 +479,13 @@ adipiscing elit.</span>
 {% for galleryname, gdata in galleries3.items %}
  <div class="item">
  <div class="thumb">
- <a href="/gallery/details/?q={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+ <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
  </div>
  <div class="down-content">
-<a href="/gallery/details/?q={{gdata.3}}">
+<a href="/gallery/details/?gid={{gdata.3}}">
 <h4>{{galleryname}}</h4>
 <span>{{gdata.0}}</span>
-<a class="btn btn-slider" href="#">Follow</a>
+<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 </a>
  </div>
  </div>
@@ -492,8 +502,8 @@ adipiscing elit.</span>
  <div class="col-lg-12">
  <div class="section-heading text-center">
  <h2>{{gallerytypes.3}}</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
-adipiscing elit.</span>
+ <!-- <span>Lorem ipsum dolor sit amet, consectetur
+adipiscing elit.</span> -->
 <hr>
  </div>
  </div>
@@ -507,13 +517,13 @@ adipiscing elit.</span>
 {% for galleryname, gdata in galleries4.items %}
  <div class="item">
  <div class="thumb">
- <a href="/gallery/details/?q={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+ <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
  </div>
  <div class="down-content">
-<a href="/gallery/details/?q={{gdata.3}}">
+<a href="/gallery/details/?gid={{gdata.3}}">
 <h4>{{galleryname}}</h4>
 <span>{{gdata.0}}</span>
-<a class="btn btn-slider" href="#">Follow</a>
+<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 </a>
  </div>
  </div>
@@ -530,8 +540,8 @@ adipiscing elit.</span>
  <div class="col-lg-12">
  <div class="section-heading text-center">
  <h2>{{gallerytypes.4}}</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
-adipiscing elit.</span>
+ <!-- <span>Lorem ipsum dolor sit amet, consectetur
+adipiscing elit.</span> -->
 <hr>
  </div>
  </div>
@@ -545,13 +555,13 @@ adipiscing elit.</span>
 {% for galleryname, gdata in galleries5.items %}
  <div class="item">
  <div class="thumb">
- <a href="/gallery/details/?q={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+ <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
  </div>
  <div class="down-content">
-<a href="/gallery/details/?q={{gdata.3}}">
+<a href="/gallery/details/?gid={{gdata.3}}">
 <h4>{{galleryname}}</h4>
 <span>{{gdata.0}}</span>
-<a class="btn btn-slider" href="#">Follow</a>
+<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 </a>
  </div>
  </div>

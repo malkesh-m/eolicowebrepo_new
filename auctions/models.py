@@ -8,6 +8,7 @@ class Auction(models.Model):
     auctionlocation = models.CharField(max_length=200, blank=True, default='')
     description = models.TextField()
     auctionurl = models.TextField()
+    auctiondate = models.DateField()
     lotslistingurl = models.TextField()
     coverimage = models.TextField()
     auctiontype = models.CharField(max_length=255, blank=True, default='') # Classifies the auctions as "Online", "Location Bound" etc.

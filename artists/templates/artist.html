@@ -67,7 +67,7 @@
 				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
 				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
 				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
-				 <li class="scroll-to-section"><a href="/gallery/events/">Events</a></li>
+				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
 				 <li class="scroll-to-section"><a href="/login/about/">About</a></li>
 				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
@@ -153,10 +153,20 @@
     </section>-->
       <div id="Top-owl-carousel" class="owl-carousel owl-theme">
 		{% for d in carousel %}
-                
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="#">Explore</a></div></div>
+                {% if d.datatype == "gallery" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "gevent" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "museum" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "mevent" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
 		
-	    	{% endfor %}
+	    {% endfor %}
 		
 	</div>
       <!------ Featured Artist ------->
@@ -209,9 +219,9 @@
               <div class="row">
                   <div class="col-lg-12">
                       <div class="section-heading section-heading-2">
-                          <h2>Emerging Art</h2>
+                          <!-- <h2>Emerging Art</h2> -->
                           <span>
-                              <a href="">View All</a>
+                              <!-- <a href="">View All</a> -->
                           </span>
                       </div>
                   </div>
@@ -221,18 +231,17 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category">
                           <div class="thumb">
-                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/gallery/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                           </div>
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
-                              </a><a class="btn btn-slider" href="#">Follow</a>
+                                  <span>{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                              </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
                   </div>
 		  {% endfor %}
-                  
               </div>
           </div>
       </section>
@@ -242,9 +251,9 @@
               <div class="row">
                   <div class="col-lg-12">
                       <div class="section-heading section-heading-2">
-                          <h2>Contemporary Chinese Art</h2>
+                          <!-- <h2>Contemporary Chinese Art</h2> -->
                           <span>
-                              <a href="">View All</a>
+                              <!-- <a href="">View All</a> -->
                           </span>
                       </div>
                   </div>
@@ -254,13 +263,13 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category">
                           <div class="thumb">
-                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/gallery/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                           </div>
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
-                              </a><a class="btn btn-slider" href="#">Follow</a>
+                                  <span>{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                              </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
                   </div>
@@ -274,9 +283,9 @@
               <div class="row">
                   <div class="col-lg-12">
                       <div class="section-heading section-heading-2">
-                          <h2>Abstract Sculpture</h2>
+                          <!-- <h2>Abstract Sculpture</h2> -->
                           <span>
-                              <a href="">View All</a>
+                              <!-- <a href="">View All</a> -->
                           </span>
                       </div>
                   </div>
@@ -286,13 +295,13 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category">
                           <div class="thumb">
-                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/gallery/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                           </div>
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
-                              </a><a class="btn btn-slider" href="#">Follow</a>
+                                  <span>{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                              </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
                   </div>
@@ -306,9 +315,9 @@
               <div class="row">
                   <div class="col-lg-12">
                       <div class="section-heading section-heading-2">
-                          <h2>Post-War European Art</h2>
+                          <!-- <h2>Post-War European Art</h2> -->
                           <span>
-                              <a href="">View All</a>
+                              <!-- <a href="">View All</a> -->
                           </span>
                       </div>
                   </div>
@@ -318,13 +327,13 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category">
                           <div class="thumb">
-                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/gallery/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                           </div>
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
-                              </a><a class="btn btn-slider" href="#">Follow</a>
+                                  <span>{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                              </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
                   </div>
@@ -338,9 +347,9 @@
               <div class="row">
                   <div class="col-lg-12">
                       <div class="section-heading section-heading-2">
-                          <h2>Contemporary Furniture and Design</h2>
+                          <!-- <h2>Contemporary Furniture and Design</h2> -->
                           <span>
-                              <a href="">View All</a>
+                              <!-- <a href="">View All</a> -->
                           </span>
                       </div>
                   </div>
@@ -350,13 +359,13 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category">
                           <div class="thumb">
-                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/gallery/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                           </div>
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
-                              </a><a class="btn btn-slider" href="#">Follow</a>
+                                  <span>{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                              </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
                   </div>
@@ -370,9 +379,9 @@
               <div class="row">
                   <div class="col-lg-12">
                       <div class="section-heading section-heading-2">
-                          <h2>Contemporary Conceptualism</h2>
+                          <!-- <h2>Contemporary Conceptualism</h2> -->
                           <span>
-                              <a href="">View All</a>
+                              <!-- <a href="">View All</a> -->
                           </span>
                       </div>
                   </div>
@@ -382,18 +391,17 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category">
                           <div class="thumb">
-                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/gallery/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                           </div>
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
-                              </a><a class="btn btn-slider" href="#">Follow</a>
+                                  <span>{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                              </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
                   </div>
 		  {% endfor %}
-                  
               </div>
           </div>
       </section>
@@ -402,9 +410,9 @@
               <div class="row">
                   <div class="col-lg-12">
                       <div class="section-heading section-heading-2">
-                          <h2>East Village Art</h2>
+                          <!-- <h2>East Village Art</h2> -->
                           <span>
-                              <a href="">View All</a>
+                              <!-- <a href="">View All</a> -->
                           </span>
                       </div>
                   </div>
@@ -414,13 +422,13 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category">
                           <div class="thumb">
-                              <a href="/artist/artwork/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/gallery/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                           </div>
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span>{{artistobj.nationality}} {{artistobj.artworkdate}}</span>
-                              </a><a class="btn btn-slider" href="#">Follow</a>
+                                  <span>{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                              </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
                   </div>

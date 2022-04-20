@@ -160,8 +160,8 @@ def details(request):
         return HttpResponse("Invalid method of call")
     gid = None
     if request.method == 'GET':
-        if 'q' in request.GET.keys():
-            gid = str(request.GET['q'])
+        if 'gid' in request.GET.keys():
+            gid = str(request.GET['gid'])
         page = "1"
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
@@ -178,7 +178,8 @@ def details(request):
     glocation = galleryobj.location
     gurl = galleryobj.galleryurl
     gimage = galleryobj.coverimage
-    context['gallery'] = {'galleryname' : galleryname, 'gallerylocation' : glocation, 'galleryurl' : gurl, 'galleryimage' : gimage}
+    gid = galleryobj.id
+    context['gallery'] = {'galleryname' : galleryname, 'gallerylocation' : glocation, 'galleryurl' : gurl, 'galleryimage' : gimage, 'gid' : gid}
     # Get latest events for this gallery. Also order by 'priority'.
     eventsqset = Event.objects.filter(gallery=galleryobj).order_by('-eventstartdate', 'priority')
     latestevent = {}
@@ -206,6 +207,7 @@ def details(request):
             pevent['eventperiod'] = eqset.eventperiod
             pevent['eventimage'] = eqset.eventimage
             pevent['eventlocation'] = eqset.eventlocation
+            pevent['eventid'] = eqset.id
             previousevents.append(pevent)
             eventsprioritylist.append(eqset.eventname)
     context['previousevents'] = previousevents
@@ -257,28 +259,28 @@ def details(request):
     for awork in artworksqset[startctr:endctr]:
         evname = awork.event.eventname
         l0 = allartworks[evname]
-        d0 = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+        d0 = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
         filterartists[str(awork.artistname)] = 1
         l0.append(d0)
         allartworks[evname] = l0
         if ctr % 4 == 0:
             l = allartworks4[evname]
-            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
             l.append(d)
             allartworks4[evname] = l
         elif ctr % 3 == 0:
             l = allartworks3[evname]
-            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
             l.append(d)
             allartworks3[evname] = l
         elif ctr % 2 == 0:
             l = allartworks2[evname]
-            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
             l.append(d)
             allartworks2[evname] = l
         elif ctr % 1 == 0:
             l = allartworks1[evname]
-            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl)}
+            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
             l.append(d)
             allartworks1[evname] = l
         ctr += 1
@@ -296,6 +298,197 @@ def details(request):
 
 
 
+def eventdetails(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    gevid = None
+    if request.method == 'GET':
+        if 'gevid' in request.GET.keys():
+            gevid = str(request.GET['gevid'])
+    if not gevid:
+        return HttpResponse("Invalid Request: Request is missing gevid")
+    geventobj = None
+    try:
+        geventobj = Event.objects.get(id=gevid)
+    except:
+        return HttpResponse("Could not identify a gallery event with Id %s"%gevid)
+    context = {}
+    eventdata = {'eventname' : geventobj.eventname, 'eventinfo' : geventobj.eventinfo, 'eventperiod' : geventobj.eventperiod, 'eventtype' : geventobj.eventtype, 'eventimage' : geventobj.eventimage, 'eventlocation' : geventobj.eventlocation, 'gid' : geventobj.gallery.id}
+    context['eventinfo'] = eventdata
+    galobj = geventobj.gallery
+    otherevents = {} # These will be events from the same gallery as the one in eventinfo.
+    eventsqset = Event.objects.filter(gallery=galobj).order_by('priority', '-edited')
+    for gev in eventsqset:
+        eventname = gev.eventname
+        d = {'eventinfo' : gev.eventinfo, 'eventperiod' : gev.eventperiod, 'eventtype' : gev.eventtype, 'eventimage' : gev.eventimage, 'eventlocation' : gev.eventlocation, 'gid' : gev.gallery.id, 'eventid' : gev.id}
+        otherevents[eventname] = d
+    context['otherevents'] = otherevents
+    artists = []
+    artistsqset = Artist.objects.filter(event=geventobj).order_by('priority', '-edited')
+    for artist in artistsqset:
+        d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : artist.birthdate, 'deathdate' : artist.deathdate, 'about' : artist.about, 'artistimage' : artist.squareimage, 'artistid' : artist.id}
+        artists.append(d)
+    context['artists'] = artists
+    # Get all artworks from the selected event
+    artworksqset = Artwork.objects.filter(event=geventobj).order_by('priority', '-edited')
+    allartworks1 = {}
+    allartworks2 = {}
+    allartworks3 = {}
+    allartworks4 = {}
+    actr = 0
+    for artwork in artworksqset:
+        eventname = artwork.event.eventname
+        if actr == 0:
+            if eventname in allartworks1.keys():
+                l = allartworks1[eventname]
+                d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'awid' : artwork.id}
+                l.append(d)
+                allartworks1[eventname] = l
+            else:
+                l = []
+                d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'awid' : artwork.id}
+                l.append(d)
+                allartworks1[eventname] = l
+        elif actr == 1:
+            if eventname in allartworks2.keys():
+                l = allartworks2[eventname]
+                d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'awid' : artwork.id}
+                l.append(d)
+                allartworks2[eventname] = l
+            else:
+                l = []
+                d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'awid' : artwork.id}
+                l.append(d)
+                allartworks2[eventname] = l
+        elif actr == 2:
+            if eventname in allartworks3.keys():
+                l = allartworks3[eventname]
+                d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'awid' : artwork.id}
+                l.append(d)
+                allartworks3[eventname] = l
+            else:
+                l = []
+                d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'awid' : artwork.id}
+                l.append(d)
+                allartworks3[eventname] = l
+        elif actr == 3:
+            if eventname in allartworks4.keys():
+                l = allartworks4[eventname]
+                d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'awid' : artwork.id}
+                l.append(d)
+                allartworks4[eventname] = l
+            else:
+                l = []
+                d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'awid' : artwork.id}
+                l.append(d)
+                allartworks4[eventname] = l
+        if actr == 3:
+            actr = 0
+        else:
+            actr += 1
+    context['allartworks1'] = allartworks1
+    context['allartworks2'] = allartworks2
+    context['allartworks3'] = allartworks3
+    context['allartworks4'] = allartworks4
+    # Get all artists whose works are in the same event as the selected event.
+    allartists = []
+    for artist in artistsqset:
+        d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : artist.birthdate, 'deathdate' : artist.deathdate, 'about' : artist.about, 'artistimage' : artist.squareimage, 'artistid' : artist.id}
+        allartists.append(d)
+    context['allartists'] = allartists
+    template = loader.get_template('event_details.html')
+    return HttpResponse(template.render(context, request))
+
+
+
+def artworkdetails(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    awid = None
+    if request.method == 'GET':
+        if 'awid' in request.GET.keys():
+            awid = str(request.GET['awid'])
+    if not awid:
+        return HttpResponse("Invalid Request: Request is missing awid")
+    artworkobj = None
+    try:
+        artworkobj = Artwork.objects.get(id=awid)
+    except:
+        return HttpResponse("Could not identify a artwork with Id %s"%awid)
+    context = {}
+    artworkinfo = {'artworkname' : artworkobj.artworkname, 'creationdate' : artworkobj.creationdate, 'artistname' : artworkobj.artistname, 'artistbirthyear' : artworkobj.artistbirthyear, 'artistdeathyear' : artworkobj.artistdeathyear, 'artistnationality' : artworkobj.artistnationality, 'size' : artworkobj.size, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'provenance' : artworkobj.provenance, 'artworkimage' : artworkobj.image1, 'estimate' : artworkobj.estimate, 'soldprice' : artworkobj.soldprice}
+    context['artworkinfo'] = artworkinfo
+    # Get all artworks by the same artist
+    allartworks = []
+    artworksqset = Artwork.objects.filter(artistname=artworkobj.artistname).order_by('priority', '-edited')
+    uniqueartworks = {}
+    eventslist = []
+    for artwork in artworksqset:
+        d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'provenance' : artwork.provenance, 'artworkimage' : artwork.image1, 'estimate' : artwork.estimate, 'soldprice' : artwork.soldprice, 'awid' : artwork.id}
+        eventslist.append(artwork.event)
+        if artwork.artworkname not in uniqueartworks.keys():
+            allartworks.append(d)
+            uniqueartworks[artwork.artworkname] = artwork.id
+        else:
+            pass
+    # Only 3 notable artworks are to be shown
+    if allartworks.__len__() < 3:
+        context['allartworks'] = allartworks
+    else:
+        context['allartworks'] = allartworks[0:3]
+    # Get all events featuring the artist of the selected artwork.
+    allevents = []
+    relatedartists = []
+    for gev in eventslist:
+        d = {'eventname' : gev.eventname, 'eventinfo' : gev.eventinfo, 'eventtype' : gev.eventtype, 'eventperiod' : gev.eventperiod, 'eventimage' : gev.eventimage, 'eventlocation' : gev.eventlocation, 'gevid' : gev.id}
+        allevents.append(d)
+    artistsqset = Artist.objects.filter(event=artworkobj.event)
+    uniqueartists = {}
+    for artist in artistsqset:
+        if artist.artistname not in uniqueartists.keys():
+            d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : artist.birthdate, 'deathdate' : artist.deathdate, 'about' : artist.about, 'squareimage' : artist.squareimage, 'aid' : artist.id}
+            relatedartists.append(d)
+            uniqueartists[artist.artistname] = artist.id
+    context['allevents'] = allevents
+    context['relatedartists'] = relatedartists
+    allartworks1 = []
+    allartworks2 = []
+    allartworks3 = []
+    allartworks4 = []
+    uniqueartworks = {}
+    # Get all artworks by the same artist in 4 lists for 4 columns
+    actr = 0
+    for artwork in artworksqset:
+        if actr == 0:
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'provenance' : artwork.provenance, 'artworkimage' : artwork.image1, 'estimate' : artwork.estimate, 'soldprice' : artwork.soldprice, 'awid' : artwork.id}
+            if artwork.artworkname not in uniqueartworks.keys():
+                allartworks1.append(d)
+                uniqueartworks[artwork.artworkname] = artwork.id
+        elif actr == 1:
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'provenance' : artwork.provenance, 'artworkimage' : artwork.image1, 'estimate' : artwork.estimate, 'soldprice' : artwork.soldprice, 'awid' : artwork.id}
+            if artwork.artworkname not in uniqueartworks.keys():
+                allartworks2.append(d)
+                uniqueartworks[artwork.artworkname] = artwork.id
+        elif actr == 2:
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'provenance' : artwork.provenance, 'artworkimage' : artwork.image1, 'estimate' : artwork.estimate, 'soldprice' : artwork.soldprice, 'awid' : artwork.id}
+            if artwork.artworkname not in uniqueartworks.keys():
+                allartworks3.append(d)
+                uniqueartworks[artwork.artworkname] = artwork.id
+        elif actr == 3:
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'artistname' : artwork.artistname, 'artistbirthyear' : artwork.artistbirthyear, 'artistdeathyear' : artwork.artistdeathyear, 'artistnationality' : artwork.artistnationality, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'provenance' : artwork.provenance, 'artworkimage' : artwork.image1, 'estimate' : artwork.estimate, 'soldprice' : artwork.soldprice, 'awid' : artwork.id}
+            if artwork.artworkname not in uniqueartworks.keys():
+                allartworks4.append(d)
+                uniqueartworks[artwork.artworkname] = artwork.id
+        if actr == 3:
+            actr = 0
+        else:
+            actr += 1
+    context['allartworks1'] = allartworks1
+    context['allartworks2'] = allartworks2
+    context['allartworks3'] = allartworks3
+    context['allartworks4'] = allartworks4
+    template = loader.get_template('artwork_details.html')
+    return HttpResponse(template.render(context, request))
 
     
 

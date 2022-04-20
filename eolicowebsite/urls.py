@@ -29,6 +29,7 @@ urlpatterns = [
     path('museum/', include('museum.urls')),
     path('artist/', include('artists.urls')),
     path('auction/', include('auctions.urls')),
+    path('auctionhouse/', include('auctionhouses.urls')),
     path('', login.views.index, name='homeindex'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
