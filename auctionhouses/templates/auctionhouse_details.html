@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <title>Eolico</title>
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <link rel="stylesheet" href="/static/css/owl-carousel.css">
+
+    <link rel="stylesheet" href="/static/css/lightbox.css">
+    <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
+	<style>
+
+
+	</style>
+    </head>
+    
+    <body>
+    
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>  
+    <!-- ***** Preloader End ***** -->
+    
+    
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <img src="/static/images/logo1.png">
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
+				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
+				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+				 <li class="scroll-to-section"><a href="/auctionhouse/index/" class="active">Auction Houses</a></li>
+				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
+				 <li class="scroll-to-section"><a href="/login/about/">About</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+                            <!--<li class="submenu">
+                                <a href="javascript:;">Pages</a>
+                                <ul>
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="products.html">Products</a></li>
+                                    <li><a href="single-product.html">Single Product</a></li>
+                                    <li><a href="contact.html">Contact Us</a></li>
+                                </ul>
+                            </li>-->
+                            
+                            
+                        </ul>        
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+    <!-- ***** Main Banner Area Start ***** -->
+    <section class="inner-top-banner"></section>
+	
+    <!-- ***** Main Banner Area End ***** -->
+	<section class="section gal-section gal-dtl-sec" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+						<div class="gal-logo-box">
+							<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="">
+								<img src="{{auctioninfo.coverimage}}">
+								<h2>{{auctioninfo.auctionhouse}}</h2>
+							 </a>
+							<p>{{auctioninfo.auctionlocation}}</p>
+							<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider">View</a>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<div class="container">
+            <!-- START TABS DIV -->
+      <div class="tabbable-responsive">
+        <div class="tabbable">
+          <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="true">Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="false">Auctions</a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false" >Lots</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" id="Articles-tab" data-toggle="tab" href="#Articles" role="tab" aria-controls="Articles" aria-selected="false">Articles</a>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" id="Contact-tab" data-toggle="tab" href="#Contact" role="tab" aria-controls="Contact" aria-selected="false">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+	<div class="container">
+    <div class="card-body">
+      
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
+			<div class="container">
+				<div class="row gl-ov-row">
+					<div class="col-md-7">
+						<!-- <h6>Past Show</h6> -->
+						<h2>{{auctioninfo.auctionhouse}}: {{auctioninfo.auctionname}}</h2>
+						<h4>{{auctioninfo.auctiondate}}</h4>
+						<h6>Hosted by {{auctioninfo.auctionhouse}}</h6>
+						<!-- <p></p> -->
+						<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider" >Read More</a>
+					</div>
+					<div class="col-md-5">
+						<img src="{{auctioninfo.coverimage}}" class="img-fluid"/>
+					</div>
+				</div>
+				<div class="row gal-tab-row">
+					<div class="col-lg-12 gl-abt">
+						<div class="section-heading text-center">
+							<h3>About</h3>
+							<hr>
+							<p>{{auctioninfo.description}}</p>
+							<p><a href="{{auctioninfo.auctionurl}}" target="_bnalk">{{auctioninfo.auctionname}}</a></p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+				   <div class="col-lg-12">
+					   <div class="section-heading text-center">
+							<h3>Select Lots</h3>
+							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+							<hr>
+					   </div>
+				   </div>
+				   <div class="col-lg-12">
+					 <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+			    {% for lot in overviewlots %}
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.lotimage}}" alt=""></a>
+                                </div>
+                                <div class="down-content">
+									<a href="/auction/details/?lid={{lot.lid}}">
+										<h4>{{lot.title}}</h4>
+										<span>{{lot.artistname}}</span>
+										<span>{{lot.medium}}</span>
+									</a>
+                                </div>
+                            </div>
+			    {% endfor %}
+                            
+                        </div>
+                    </div>
+				   </div>
+				</div>
+				<br>
+				<div class="row articl-row">
+					<div class="col-md-12">
+						<div class="section-heading text-center">
+							<!-- <h3>Articles</h3>
+							<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+							<hr> -->
+					   	</div>
+					</div>
+					<div class="col-lg-12">
+					 <div class="men-item-carousel">
+                        <!-- <div class="owl-men-item owl-carousel">
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/men-01.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+									<a href="#">
+										<h4>Cathy Tabbakh: Hello!</h4>
+										<span>Court Tree Collective</span>
+										<span>Feb 8 to May 15</span>
+									</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/men-02.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+									<h4>Béchir Boussandel</h4>
+									<span>Taymour Grahne Projects</span>
+									<span>Feb 11 to Apr 15</span>
+								</div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/men-03.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+									<h4>Cathy Tabbakh: Hello!</h4>
+									<span>Court Tree Collective</span>
+									<span>Feb 8 to May 15</span>
+								</div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <img src="/static/images/men-04.jpg" alt="">
+                                </div>
+                                <div class="down-content">
+                                    <h4>Finding Balance</h4>
+                                    <span>Kristin Hjellegjerde Gallery</span>
+									<span>Feb 10 to Mar 15</span>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+				   </div>
+				</div>
+			</div>
+        </div>
+        <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
+          <div class="container">
+			<div class="row gl-ov-row">
+				<div class="col-md-7">
+					<h2>{{auctioninfo.auctionname}}</h2>
+					<h4>{{auctioninfo.auctiondate}}</h4>
+					<h6>{{auctioninfo.auctionlocation}}</h6>
+					<p>{{auctioninfo.description}}</p>
+					<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider" >Read More</a>
+				</div>
+				<div class="col-md-5">
+					<img src="{{auctioninfo.coverimage}}" class="img-fluid"/>
+				</div>
+			</div>
+			<div class="row gal-tab-row pst-ev">
+				<div class="col-lg-12">
+					   <div class="section-heading text-center">
+							<h3>Other Auctions</h3>
+							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+						<hr>
+					   </div>
+				   </div>
+			</div>
+			<div class="row">
+				{% for auction in auctionslist %}
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="/auctionhouse/details/?aucid={{auction.aucid}}"><img src="{{auction.coverimage}}" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<a href="/auctionhouse/details/?aucid={{auction.aucid}}">
+							<h4>{{auction.auctionname}}</h4>
+							<span>{{auction.auctionlocation}}</span>
+							<span>{{auction.auctiondate}}</span>
+							<p>{{auction.description}}</p>
+							</a>
+						</div>
+					</div>
+				  </div>
+				{% endfor %}
+				  
+			  </div>
+		  </div>
+        </div>
+        
+        <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
+          <div id="mySidebar" class="sidebar">
+			<!-- <div class="fixed-sidbr-header">
+				<h5>Filter</h5>
+				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+			</div>
+			<div id="accordion" class="accordion">
+				<div class="card mb-0">
+					<div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+						<a class="card-title">
+							Artists
+						</a>
+					</div>
+					<div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+						 <div class="form-check">
+						  <label class="form-check-label" for="Artists1">
+							<input type="checkbox" class="form-check-input" id="Artists1" name="option1" value="something" >Aage Birck
+						  </label>
+						</div>
+						<div class="form-check">
+						  <label class="form-check-label" for="Artists2">
+							<input type="checkbox" class="form-check-input" id="Artists2" name="option2" value="something">Achille Salvagni
+						  </label>
+						</div>
+						<div class="form-check">
+						  <label class="form-check-label" for="Artists3">
+							<input type="checkbox" class="form-check-input" id="Artists3" name="option2" value="something">Aldus
+						  </label>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+						<a class="card-title">
+						  Rarity
+						</a>
+					</div>
+					<div id="collapseTwo" class="card-body collapse" data-parent="#accordion" >
+						<div class="form-check">
+						  <label class="form-check-label" for="Unique">
+							<input type="checkbox" class="form-check-input" id="Unique" name="option1" value="something" >Unique
+						  </label>
+						</div>
+						<div class="form-check">
+						  <label class="form-check-label" for="LimitedEdition">
+							<input type="checkbox" class="form-check-input" id="LimitedEdition" name="option1" value="something" >Limited Edition
+						  </label>
+						</div>
+						<div class="form-check">
+						  <label class="form-check-label" for="OpenEdition">
+							<input type="checkbox" class="form-check-input" id="OpenEdition" name="option1" value="something" >Open Edition
+						  </label>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+						<a class="card-title">
+						  Medium
+						</a>
+					</div>
+					<div id="collapseThree" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-check">
+							  <label class="form-check-label" for="Design">
+								<input type="checkbox" class="form-check-input" id="Design" name="option1" value="something" >Design
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Sculpture">
+								<input type="checkbox" class="form-check-input" id="Sculpture" name="option1" value="something" >Sculpture
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Painting">
+								<input type="checkbox" class="form-check-input" id="Painting" name="option1" value="something" >Painting
+							  </label>
+							</div>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+						<a class="card-title">
+						  Size
+						</a>
+					</div>
+					<div id="collapse4" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-check">
+							  <label class="form-check-label" for="SmallSize">
+								<input type="checkbox" class="form-check-input" id="SmallSize" name="option1" value="something" >Small (under 40cm)
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Medium">
+								<input type="checkbox" class="form-check-input" id="Medium" name="option1" value="something" >Medium (40 – 100cm)
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Large">
+								<input type="checkbox" class="form-check-input" id="Large" name="option1" value="something" >Large (over 100cm)
+							  </label>
+							</div>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+						<a class="card-title">
+						  Material
+						</a>
+					</div>
+					<div id="collapse5" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-check">
+							  <label class="form-check-label" for="Acrylic">
+								<input type="checkbox" class="form-check-input" id="Acrylic" name="option1" value="something" >Acrylic
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Aluminum">
+								<input type="checkbox" class="form-check-input" id="Aluminum" name="option1" value="something" >Aluminum
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Artpaper">
+								<input type="checkbox" class="form-check-input" id="Artpaper" name="option1" value="something" >Art paper
+							  </label>
+							</div>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+						<a class="card-title">
+						  Artist Nationality
+						</a>
+					</div>
+					<div id="collapse6" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-check">
+							  <label class="form-check-label" for="American">
+								<input type="checkbox" class="form-check-input" id="American" name="option1" value="something" >American
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Argentine">
+								<input type="checkbox" class="form-check-input" id="Argentine" name="option1" value="something" >Argentine
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Armenian">
+								<input type="checkbox" class="form-check-input" id="Armenian" name="option1" value="something" >Armenian
+							  </label>
+							</div>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse7">
+						<a class="card-title">
+						  Time Period
+						</a>
+					</div>
+					<div id="collapse7" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-check">
+							  <label class="form-check-label" for="time-2020">
+								<input type="checkbox" class="form-check-input" id="time-2020" name="option1" value="something" >2020s
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="time-2010">
+								<input type="checkbox" class="form-check-input" id="time-2010" name="option1" value="something" >2010s
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="time-2000">
+								<input type="checkbox" class="form-check-input" id="time-2000" name="option1" value="something" >2000s
+							  </label>
+							</div>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse8">
+						<a class="card-title">
+						  Color
+						</a>
+					</div>
+					<div id="collapse8" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-check">
+							  <label class="form-check-label" for="Color-red">
+								<input type="checkbox" class="form-check-input" id="Color-red" name="option1" value="something" >Red <span class="color-span" style="background:red;"></span>
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Color-blue">
+								<input type="checkbox" class="form-check-input" id="Color-blue" name="option1" value="something" >Blue <span class="color-span" style="background:blue;"></span>
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Color-green">
+								<input type="checkbox" class="form-check-input" id="Color-green" name="option1" value="something" >Green <span class="color-span" style="background:green;"></span>
+							  </label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			</div>
+
+			<div id="main">
+				<!-- <div class="work-top-pnl">
+					<button class="openbtn" onclick="openNav()"> Filter</button>
+					<div class="dropdown">Sort By:
+						<select>
+							<option value="1">Defult</option>
+							<option value="2">Defult</option>
+						</select>
+					  </div>
+				  </div> -->
+			  <div class="row">
+			{% for lot in alllots %}
+			  <div class="column">
+				<a href='/auction/details/?lid={{lot.lid}}'>
+				<div class="img-box">
+				<img src="{{lot.lotimage}}" style="width:100%">
+				<h4>{{lot.title}}</h4>
+				<h6>{{lot.artistname}}</h6>
+				<p>{{lot.description}}</p>
+				</div>
+				</a>
+			  </div>
+			{% endfor %}
+			  
+			  </div>
+			</div>
+        </div>
+        <!-- <div class="tab-pane fade" id="Articles" role="tabpanel" aria-labelledby="Articles-tab">
+			<div class="row">
+				<div class="col-lg-12">
+					   <div class="section-heading text-center">
+							<h3>Articles</h3>
+							<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+						<hr>
+					</div>
+				</div>
+			</div>
+			<div class="row ">
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				</div>
+        </div> -->
+        <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
+          <h5 class="card-title">Sixth Tab header</h5>
+          <p class="card-text">Proin ornare purus vitae magna viverra suscipit. Etiam rutrum lorem cursus libero scelerisque lacinia. Praesent bibendum risus id aliquam finibus. Donec sed orci sodales, viverra dolor a, dignissim mi. Pellentesque nec lectus enim. Suspendisse eu ligula ac tortor mollis lobortis. Nulla a laoreet neque, sit amet luctus dolor. Nam facilisis at odio ac commodo. Nullam vehicula blandit dui, vel suscipit orci.</p>
+        </div>
+      </div>
+		</div>
+		</div>
+	</section>
+
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="first-item">
+                        <div class="logo">
+                            <img src="/static/images/logo-white.png" alt="">
+                        </div>
+                        <ul>
+                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
+                            <li><a href="#">demo@company.com</a></li>
+                            <li><a href="#">010-020-0340</a></li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="col-lg-3">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Featured shows</a></li>
+                        <li><a href="#">Market News</a></li>
+                        <li><a href="#">Current Fairs</a></li>
+                        <li><a href="#">Trending Artists</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Galleries</a></li>
+                        <li><a href="#">Museums</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="#">FAQ's</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
+                       
+                        <ul>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+
+    <!-- jQuery -->
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!-- Plugins -->
+    <script src="/static/js/owl-carousel.js"></script>
+    <script src="/static/js/accordions.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <script src="/static/js/scrollreveal.min.js"></script>
+    <script src="/static/js/waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/imgfix.min.js"></script> 
+    <script src="/static/js/slick.js"></script> 
+    <script src="/static/js/lightbox.js"></script> 
+    <script src="/static/js/isotope.js"></script> 
+    <script src="/static/js/jquery.dropdown.min.js"></script> 
+    
+    <!-- Global Init -->
+    <script src="/static/js/custom.js"></script>
+	<script>
+function openNav() {
+  document.getElementById("mySidebar").style.width = "350px";
+  //document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidebar").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+}
+</script>
+	<script>
+	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+	$('.demo').dropdown({
+		limitCount: 1,
+		input:'<input type="text" maxLength="20" placeholder="Search">'
+	});
+		
+	</script>
+    <script>
+		
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function(){
+            selectedClass = $(this).attr("data-rel");
+            $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("."+selectedClass).fadeOut();
+            setTimeout(function() {
+              $("."+selectedClass).fadeIn();
+              $("#portfolio").fadeTo(50, 1);
+            }, 500);
+                
+            });
+        });
+
+    </script>
+
+  </body>
+</html>

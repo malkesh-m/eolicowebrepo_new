@@ -54,7 +54,7 @@ def index(request):
         auctionhouses.append(d)
     context['auctionhouses'] = auctionhouses
     featuredshows = [] # Featured shows section, will show 5 top priority auctions only.
-    #currentmngshows = [] # Current museum and gallery shows section - To be implemented later. Will need association of auctions to galleries and museums.
+    currentmngshows = {} # Current museum and gallery shows section - keys are auction houses, values are list of priority auctions in each house. Will need association of auctions to galleries and museums, which is to be implemented later.
     for auctionhouse in auctionhousesqset[:fstartctr]:
         d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : auctionhouse.description, 'image' : auctionhouse.coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
         auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionhouse.housename)
@@ -65,6 +65,20 @@ def index(request):
         d['auctionslist'] = auctionslist
         featuredshows.append(d)
     context['featuredshows'] = featuredshows
+    auctionsqset = Auction.objects.all().order_by('priority', '-edited')
+    for auction in auctionsqset:
+        auctionhouse = auction.auctionhouse.title()
+        if auctionhouse in currentmngshows.keys():
+            l = currentmngshows[auctionhouse]
+            d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aucid' : auction.id, 'auctiondate' : str(auction.auctiondate)}
+            l.append(d)
+            currentmngshows[auctionhouse] = l
+        else:
+            l = []
+            d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aucid' : auction.id, 'auctiondate' : str(auction.auctiondate)}
+            l.append(d)
+            currentmngshows[auctionhouse] = l
+    context['currentmngshows'] = currentmngshows
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     template = loader.get_template('auctionhouses.html')
@@ -74,24 +88,41 @@ def index(request):
 def details(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    ahid = None
+    aucid = None
     if request.method == 'GET':
-        if 'ahid' in request.GET.keys():
-            ahid = str(request.GET['ahid'])
-    if not ahid:
-        return HttpResponse("Invalid Request: Request is missing auction house Id")
-    auchouseobj = None
+        if 'aucid' in request.GET.keys():
+            aucid = str(request.GET['aucid'])
+    if not aucid:
+        return HttpResponse("Invalid Request: Request is missing auction Id")
+    auctionobj = None
     try:
-        auchouseobj = AuctionHouse.objects.get(id=ahid)
+        auctionobj = Auction.objects.get(id=aucid)
     except:
-        return HttpResponse("Could not identify a auction house with Id %s"%ahid)
-    auctionsqset = Auction.objects.filter(auctionhouse__iexact=auchouseobj.housename).order_by('priority', '-edited')
+        return HttpResponse("Could not identify a auction with Id %s"%aucid)
+    # Find all auctions from the same auction house as the selected auction
+    auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionobj.auctionhouse).order_by('priority', '-edited')
     auctionslist = []
     relatedartists = {}
     context = {}
     chunksize = 5
+    auctioninfo = {'auctionname' : auctionobj.auctionname, 'auctionhouse' : auctionobj.auctionhouse, 'auctionlocation' : auctionobj.auctionlocation, 'description' : auctionobj.description, 'auctionurl' : auctionobj.auctionurl, 'lotsurl' : auctionobj.lotslistingurl, 'coverimage' : auctionobj.coverimage, 'auctiondate' : auctionobj.auctiondate, 'auctionid' : auctionobj.auctionid, 'aucid' : auctionobj.id}
+    context['auctioninfo'] = auctioninfo
+    overviewlots = []
+    alllots = []
+    # This is going to be a very costly query. Lot (lots table) needs to be indexed on auction field. 
+    lotsqset = Lot.objects.filter(auction=auctionobj).order_by('priority')
+    lctr = 0
+    for lotobj in lotsqset:
+        d = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artistname' : lotobj.artistname, 'loturl' : lotobj.loturl, 'lotimage' : lotobj.lotimage1, 'medium' : lotobj.medium, 'size' : lotobj.size, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'nationality' : lotobj.artistnationality, 'lid' : lotobj.id}
+        if lctr < chunksize:
+            overviewlots.append(d)
+        else:
+            alllots.append(d)
+        lctr += 1
+    context['overviewlots'] = overviewlots
+    context['alllots'] = alllots
     for auction in auctionsqset:
-        d = {'auctionname' : auction.auctionname, 'auctionhouse' : auction.auctionhouse, 'auctionlocation' : auction.auctionlocation, 'description' : auction.description, 'auctionurl' : auction.auctionurl, 'lotsurl' : auction.lotslistingurl, 'coverimage' : auction.coverimage, 'auctionid' : auction.auctionid, 'aid' : auction.id}
+        d = {'auctionname' : auction.auctionname, 'auctionhouse' : auction.auctionhouse, 'auctionlocation' : auction.auctionlocation, 'description' : auction.description, 'auctionurl' : auction.auctionurl, 'lotsurl' : auction.lotslistingurl, 'coverimage' : auction.coverimage, 'auctionid' : auction.auctionid, 'aucid' : auction.id, 'auctiondate' : auctionobj.auctiondate}
         # Get 'chunksize' number of lots for this auction
         lotsqset = Lot.objects.filter(auction=auction).order_by() # Ordered by priority
         lots = []
@@ -115,6 +146,11 @@ def details(request):
 
 def follow(request):
     return HttpResponse("")
+
+
+# Presents information on lots available for sale at the given auction
+def auctiondetails(request):
+    pass
 
 
 
