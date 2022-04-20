@@ -24,12 +24,14 @@ def getcarouselinfo():
     entrieslist = []
     countqset = WebConfig.objects.filter(paramname="carousel entries count")
     entriescount = countqset[0].paramvalue
-    carouselqset = Carousel.objects.all()
+    carouselqset = Carousel.objects.all().order_by('-edited')
     for e in range(0, int(entriescount)):
         imgpath = carouselqset[e].imagepath
         title = carouselqset[e].title
         text = carouselqset[e].textvalue
-        d = {'img' : imgpath, 'title' : title, 'text' : text}
+        datatype = carouselqset[e].datatype
+        dataid = carouselqset[e].data_id
+        d = {'img' : imgpath, 'title' : title, 'text' : text, 'datatype' : datatype, 'data_id' : dataid}
         entrieslist.append(d)
     return entrieslist
 
@@ -46,7 +48,8 @@ def index(request):
         gloc = g.location
         gimg = g.coverimage
         gurl = g.galleryurl
-        galleriesdict[gname] = [gloc, gimg, gurl]
+        gid = g.id
+        galleriesdict[gname] = [gloc, gimg, gurl, gid]
     context = {'galleries' : galleriesdict}
     artists = Artist.objects.all().order_by('-edited')
     artistslist = artists[0:4]
@@ -57,7 +60,8 @@ def index(request):
         aurl = a.profileurl
         aimg = a.squareimage
         anat = a.nationality
-        artistsdict[aname] = [about, aurl, aimg, anat]
+        aid = a.id
+        artistsdict[aname] = [about, aurl, aimg, anat, aid]
     context['artists'] = artistsdict
     events = Event.objects.all().order_by('priority', '-edited')
     eventslist = events[0:4]
@@ -67,7 +71,9 @@ def index(request):
         eurl = e.eventurl
         einfo = str(e.eventinfo[0:20]) + "..."
         eperiod = e.eventperiod
-        eventsdict[ename] = [eurl, einfo, eperiod ]
+        eid = e.id
+        eventimage = e.eventimage
+        eventsdict[ename] = [eurl, einfo, eperiod, eid, eventimage ]
     context['events'] = eventsdict
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries

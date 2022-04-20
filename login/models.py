@@ -122,6 +122,8 @@ class Carousel(models.Model):
     title = models.CharField(max_length=255, null=False, blank=False)
     textvalue = models.TextField()
     imagepath = models.TextField()
+    datatype = models.CharField(max_length=200, null=False, default='Artist')
+    data_id = models.IntegerField(default=1)
     priority = models.IntegerField(default=0)
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
