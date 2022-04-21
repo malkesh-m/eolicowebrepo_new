@@ -254,6 +254,43 @@ https://templatemo.com/tm-571-hexashop
 			</div>
 		</div>
 	</section>
+	<!-- Begining of new auctions gallery -->
+	<div id="auctions">
+	{% for auctionname, lotslist in featuredauctions.items %}
+	<section class="oth-works mrt-90">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2 mrb-50">
+                        <h2>{{auctionname}}</h2>
+                        <span>
+                            
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+		{% for lot in lotslist %}
+                <div class="column">
+                    <div class="img-box">
+			<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
+                        <a href="/auction/details/?lid={{lot.lid}}">
+				<h4>{{lot.title}}</h4>
+				<span>{{lot.artist}}</span>
+				<a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
+			</a>
+			</a>
+                    </div>
+                </div>
+		{% endfor %}
+                
+            </div>
+        </div>
+    	</section>
+    	{% endfor %}
+    	</div>
+	<!-- End of new auctions gallery -->
+	<!-- 
 	<div id="auctions">
 	{% for auctionname, lotslist in featuredauctions.items %}
 	<section class="section gal-section">
@@ -262,7 +299,7 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>{{auctionname}}</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+                        
 						<hr>
                     </div>
                 </div>
@@ -296,6 +333,7 @@ https://templatemo.com/tm-571-hexashop
     </section>
 	{% endfor %}
     </div>
+    -->
     
     <!-- ***** Footer Start ***** -->
     <footer>
