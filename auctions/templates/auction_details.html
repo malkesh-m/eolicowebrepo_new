@@ -214,30 +214,36 @@
             <div class="row">
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <div id="related-artist-2" class="owl-carousel owl-theme owl-d">
+			{% if lotinfo.image1 != "" %}
                         <div class="item">
                             <div class="thumb">
                                 <img src="{{lotinfo.image1}}" class="img-fluid" alt="">
                             </div>
                         </div>
+			{% endif %}
+			{% if lotinfo.image2 != "" %}
                         <div class="item">
                             <div class="thumb">
                                 <img src="{{lotinfo.image2}}" class="img-fluid" alt="">
                             </div>
                         </div>
+			{% endif %}
+			{% if lotinfo.image3 != "" %}
                         <div class="item">
                             <div class="thumb">
                                 <img src="{{lotinfo.image3}}" class="img-fluid" alt="">
                             </div>
-
                         </div>
+			{% endif %}
+			{% if lotinfo.image4 != "" %}
                         <div class="item">
-
                             <div class="thumb">
-                                <img src="/static/images/g2.jpg" class="img-fluid" alt="">
+                                <img src="{{lotinfo.image4}}" class="img-fluid" alt="">
                             </div>
                         </div>
+			{% endif %}
                     </div>
-                    <div class="save-share">
+                    <!-- <div class="save-share">
                         <ul>
                             <li>
                                 <button><i class="fa fa-heart-o" aria-hidden="true"></i> Save</button>
@@ -249,7 +255,7 @@
                                 <button><i class="fa fa-share-alt" aria-hidden="true"></i> Share</button>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
                     <section class="category-tabs mrt-90">
                         <div class="container max-container">
                             <div class="row">
@@ -308,9 +314,9 @@
                                                             </span>
                                                         </div> -->
                                                         <div class="tb pdt20">
-                                                            <span>Established</span>
+                                                            <span>Literature</span>
                                                             <span>
-                                                                Represented by industry leading galleries.
+                                                                {{lotinfo.literature}}
                                                             </span>
                                                         </div>
                                                         <div class="tb pdt20">
@@ -361,9 +367,9 @@
                                                             </span>
                                                         </div> -->
                                                         <div class="tb pdt20">
-                                                            <span>Established</span>
+                                                            <span>Literature</span>
                                                             <span>
-                                                                Represented by industry leading galleries.
+                                                                {{lotinfo.literature}}
                                                             </span>
                                                         </div>
                                                         <div class="tb pdt20">

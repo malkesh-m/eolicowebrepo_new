@@ -133,11 +133,19 @@ def details(request):
             rctr = 0
         if lot.artistname in allartists.keys():
             l = allartists[lot.artistname]
-            l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
+            try:
+                artistobj = Artist.objects.get(artistname__iexact=lot.artistname)
+            except:
+                continue # If there is no corresponding artist object, we cannot continue
+            l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
             allartists[lot.artistname] = l
         else:
             l = []
-            l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id})
+            try:
+                artistobj = Artist.objects.get(artistname__iexact=lot.artistname)
+            except:
+                continue # If there is no corresponding artist object, we cannot continue
+            l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
             allartists[lot.artistname] = l
     context['otherworks'] = otherworks
     relatedqset = Lot.objects.filter(artistname__iexact=lotobj.artistname).order_by()
@@ -154,17 +162,21 @@ def details(request):
         if rctr == 4:
             rctr = 0
         if lot.artistname in allartists.keys(): # This is the part that would be executed, not the else clause
-            l = allartists[lot.artistname]
+            l2 = allartists[lot.artistname]
             try:
-                artistobj = Artist.objects.get(artistname__icontains=lot.artistname)
+                artistobj = Artist.objects.get(artistname__iexact=lot.artistname)
             except:
                 continue # If there is no corresponding artist object, we cannot continue
-            l.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
-            allartists[lot.artistname] = l
-        else: # This should never be executed.
-            l = []
-            l.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
-            allartists[lot.artistname] = l
+            l2.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
+            allartists[lot.artistname] = l2
+        else: # This should never be executed. Bad omen... bad things will happen if this is executed.
+            l2 = []
+            try:
+                artistobj = Artist.objects.get(artistname__iexact=lot.artistname)
+            except:
+                continue # If there is no corresponding artist object, we cannot continue
+            l2.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
+            allartists[lot.artistname] = l2
     context['relatedworks'] = relatedworks
     context['allartists'] = allartists
     template = loader.get_template('auction_details.html')

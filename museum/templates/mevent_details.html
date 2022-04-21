@@ -24,12 +24,8 @@
 
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
-	<style>
 
-
-	</style>
-
-	<script type='text/javascript'>
+    <script type='text/javascript'>
 
       function removeItemOnce(arr, value) {
         var index = arr.indexOf(value);
@@ -41,7 +37,7 @@
 
       function filter(ftype, fval, elid){
 	const artworks = {
-		{% for evname, valueslist in allworks.items %}
+		{% for evname, valueslist in allartworks.items %}
 		  "{{ evname }}" : [ 
 			{% for val in valueslist %}
 			   { 
@@ -66,26 +62,20 @@
         // Check which artists are selected
 	selections['Artists'] = Array();
         for(actr=1; actr <= artistslen; actr++){
-	  achkbox = document.getElementById("Artists" + actr);
-	  try{
+	  achkbox = document.getElementById("Artist" + actr);
 	  if (achkbox.checked == true){
 	    av = achkbox.value;
 	    selections['Artists'].push(av);
 	  }
-	  }
-	  catch(err){ }
 	}
 	// Check Medium selected
 	selections['Medium'] = Array();
 	for(dctr=1; dctr <= 6; dctr++){
 	  dchkbox = document.getElementById('Medium' + dctr);
-	  try{
 	  if (dchkbox.checked == true){
 	    dv = dchkbox.value;
 	    selections['Medium'].push(dv);
 	  }
-	  }
-	  catch(err){ }
 	}
 	// Check Material selected
 	selections['Material'] = Array();
@@ -569,7 +559,7 @@
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
+                            	 <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
 				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
 				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
 				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
@@ -614,12 +604,13 @@
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
 						<div class="gal-logo-box">
-							<a href="{{latestevent.eventurl}}" class="">
-								<img src="{{latestevent.coverimage}}">
-								<h2>{{latestevent.eventname}}</h2>
+							<a href="/museum/index/?mid={{eventinfo.mid}}" class="">
+								<img src="{{eventinfo.eventimage}}">
+								<h2>{{eventinfo.eventname}}</h2>
 							 </a>
-							<p>{{latestevent.eventperiod}}</p>
-							<a href="#" class="btn btn-slider">Follow</a>
+							<p>{{eventinfo.eventperiod}}</p>
+							<p>{{eventinfo.eventlocation}}</p>
+							<!-- <a href="{{gallery.galleryurl}}" class="btn btn-slider">Follow</a> -->
 						</div>
                     </div>
                 </div>
@@ -636,12 +627,14 @@
             <li class="nav-item">
               <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="false">Events</a>
             </li>
-            
+            <!-- <li class="nav-item">
+              <a class="nav-link" id="ViewingRooms-tab" data-toggle="tab" href="#ViewingRooms" role="tab" aria-controls="ViewingRooms" aria-selected="false">Viewing Rooms</a>
+            </li> -->
             <li class="nav-item">
-              <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false" >Works</a>
+              <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Works</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="Articles-tab" data-toggle="tab" href="#Articles" role="tab" aria-controls="Articles" aria-selected="false">Articles</a>
+              <a class="nav-link" id="Artists-tab" data-toggle="tab" href="#Artists" role="tab" aria-controls="Artists" aria-selected="false">Artists</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="Contact-tab" data-toggle="tab" href="#Contact" role="tab" aria-controls="Contact" aria-selected="false">Contact</a>
@@ -658,15 +651,14 @@
 			<div class="container">
 				<div class="row gl-ov-row">
 					<div class="col-md-7">
-						<h6>Past Show</h6>
-						<h2>{{latestevent.eventname}}</h2>
-						<h4>{{latestevent.eventperiod}}</h4>
-						<h6>{{latestevent.presenter}}</h6>
-						<p>{{latestevent.eventinfo}}</p>
-						<a href="/museum/eventdetails/?mevid={{latestevent.eventid}}" class="btn btn-slider" >Read More</a>
+						<h2>{{eventinfo.eventname}}</h2>
+						<h4>{{eventinfo.eventperiod}}</h4>
+						<h6>{{eventinfo.eventlocation}}</h6>
+						<p></p>
+						<!-- <a href="" class="btn btn-slider" >Read More</a> -->
 					</div>
 					<div class="col-md-5">
-						<img src="{{latestevent.coverimage}}" class="img-fluid"/>
+						<img src="{{eventinfo.eventimage}}" class="img-fluid"/>
 					</div>
 				</div>
 				<div class="row gal-tab-row">
@@ -674,8 +666,8 @@
 						<div class="section-heading text-center">
 							<h3>About</h3>
 							<hr>
-							<p>Public Art Fund brings dynamic contemporary art to a broad audience in New York City by mounting ambitious free exhibitions of international scope and impact that offer the public powerful experiences with art and the urban environment.</p>
-							<p><a href="http://www.publicartfund.org/" target="_bnalk">publicartfund.org</a></p>
+							<p>{{eventinfo.eventinfo}}</p>
+							<!-- <p><a href="#">demolink.com</a></p> -->
 						</div>
 					</div>
 				</div>
@@ -690,55 +682,57 @@
 				   <div class="col-lg-12">
 					 <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
-			    {% for event in overviewevents %}
+			{% for eventname, evobj in otherevents.items %}
                             <div class="item">
                                 <div class="thumb">
-                                    <a href="/museum/eventdetails/?mevid={{event.eventid}}"><img src="{{event.coverimage}}" alt=""></a>
+                                    <a href="/museum/eventdetails/?mevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-									<a href="/museum/eventdetails/?mevid={{event.eventid}}">
-										<h4>{{event.eventname}}</h4>
-										<span>{{event.eventinfo}}</span>
-										<span>{{event.eventperiod}}</span>
+									<a href="/museum/eventdetails/?mevid={{evobj.eventid}}">
+										<h4>{{eventname}}</h4>
+										<span>{{evobj.eventinfo}}</span>
+										<span>{{evobj.eventperiod}}</span>
 									</a>
                                 </div>
                             </div>
-			    {% endfor %}
+			{% endfor %}
+			<!--
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/men-02.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+									<h4>Béchir Boussandel</h4>
+									<span>Taymour Grahne Projects</span>
+									<span>Feb 11 to Apr 15</span>
+								</div>
+                            </div>
+			-->
                             
                         </div>
                     </div>
 				   </div>
 				</div>
-				<br>
-				<div class="row articl-row">
+				<div class="row art-box">
 					<div class="col-md-12">
 						<div class="section-heading text-center">
-							<h3>Articles</h3>
+							<h3>Artists</h3>
 							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
 							<hr>
 					   </div>
 					</div>
-					<div class="col-lg-12">
-					 <div class="men-item-carousel">
-                        <div class="owl-men-item owl-carousel">
-			    {% for article in overviewarticles %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="{{article.detailurl}}"><img src="{{article.thumbimage}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="{{article.detailurl}}">
-										<h4>{{article.articlename}}</h4>
-										<span>{{article.writername}}</span>
-										<span>{{article.published}}</span>
-									</a>
-                                </div>
-                            </div>
-			    {% endfor %}
-                            
-                        </div>
-                    </div>
-				   </div>
+					<div class="col-md-12">
+						<div class="art-list">
+							<div class="list-item">
+							{% for artist in artists %}
+								<p><a href="/artist/details/?aid={{artist.artistid}}">{{artist.artistname}}</a></p>
+							{% endfor %}
+							{% if artists|length == 0%}
+							<span>There are no artists listed for the featured events.</span>
+							{% endif %}
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
         </div>
@@ -746,46 +740,131 @@
           <div class="container">
 			<div class="row gl-ov-row">
 				<div class="col-md-7">
-					<h2>{{latestevent.eventname}}</h2>
-					<h4>{{latestevent.eventperiod}}</h4>
-					<h6>{{latestevent.presenter}}</h6>
-					<p>{{latestevent.eventinfo}}</p>
-					<a href="" class="btn btn-slider" >Read More</a>
+					<h2>{{eventinfo.eventname}}</h2>
+					<h4>{{eventinfo.eventperiod}}</h4>
+					<h6>{{eventinfo.eventlocation}}</h6>
+					<p>{{eventinfo.eventinfo}}</p>
+					<!-- <a href="" class="btn btn-slider" >Read More</a> -->
 				</div>
 				<div class="col-md-5">
-					<img src="{{latestevent.coverimage}}" class="img-fluid"/>
+					
+					<img src="{{eventinfo.eventimage}}" class="img-fluid"/>
 				</div>
 			</div>
 			<div class="row gal-tab-row pst-ev">
 				<div class="col-lg-12">
 					   <div class="section-heading text-center">
-							<h3>Past Events</h3>
+							<h3>Other Events</h3>
 							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
 						<hr>
 					   </div>
 				   </div>
 			</div>
 			<div class="row">
-				  {% for event in allevents %}
+                                  {% for eventname, evobj in otherevents.items %}
 				  <div class="col-md-4">
 					<div class="item gl-dt-item">
 						<div class="thumb">
-							<a href="/museum/eventdetails/?mevid={{event.eventid}}"><img src="{{event.coverimage}}" alt="" class="img-fluid"></a>
+							<a href="/museum/eventdetails/?mevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt="" class="img-fluid"></a>
 						</div>
 						<div class="down-content">
-							<a href="/museum/eventdetails/?mevid={{event.eventid}}">
-							<h4>{{event.eventname}}</h4>
-							<span>{{event.presenter}}</span>
-							<span>{{event.eventperiod}}</span>
+							<a href="/museum/eventdetails/?mevid={{evobj.eventid}}">
+							<h4>{{eventname}}</h4>
+							<span>{{evobj.eventinfo}}</span>
+							<span>{{evobj.eventperiod}}</span>
 							</a>
 						</div>
 					</div>
 				  </div>
 				  {% endfor %}
+				  
 			  </div>
 		  </div>
         </div>
-        
+        <!-- <div class="tab-pane fade" id="ViewingRooms" role="tabpanel" aria-labelledby="ViewingRooms-tab">
+          <div class="row viewing-rooms">
+			   <div class="col-lg-12">
+				   <div class="section-heading">
+						<h3>Past Viewing Rooms</h3>
+						<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+				   </div>
+			   </div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+				  <div class="col-md-4">
+					<div class="item gl-dt-item">
+						<div class="thumb">
+							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
+						</div>
+						<div class="down-content">
+							<h4>Béchir Boussandel</h4>
+							<span>Taymour Grahne Projects</span>
+							<span>Feb 11 to Apr 15</span>
+						</div>
+					</div>
+				  </div>
+			</div>
+        </div> -->
         <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
           <div id="mySidebar" class="sidebar">
 			<div class="fixed-sidbr-header">
@@ -795,15 +874,23 @@
 			<div id="accordion" class="accordion">
 				<div class="card mb-0">
 					<div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+						&nbsp;
+					</div>
+					<div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+						&nbsp;
+					</div>
+				</div>
+				<!-- <div class="card mb-0">
+					<div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
 						<a class="card-title">
 							Artists
 						</a>
 					</div>
 					<div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
-						{% for artist, v in allartists.items %}
+						{% for artist, v in filterartists.items %}
 						 <div class="form-check">
-						  <label class="form-check-label" for="Artists{{forloop.counter}}">
-							<input type="checkbox" class="form-check-input" id="Artists{{forloop.counter}}" name="Artists{{forloop.counter}}" value="{{artist}}" onclick="javascript:filter('Artists', '{{artist}}', 'Artists{{forloop.counter}}');">{{artist}}
+						  <label class="form-check-label" for="Artist{{forloop.counter}}">
+							<input type="checkbox" class="form-check-input" id="Artist{{forloop.counter}}" name="option{{artist}}" value="{{artist}}" onclick="javascript:filter('Artists', '{{artist}}', 'Artist{{forloop.counter}}');">{{artist}}
 						  </label>
 						</div>
 						{% endfor %}
@@ -1079,7 +1166,7 @@
 					</div>
 					<div id="collapse6" class="collapse" data-parent="#accordion" >
 						<div class="card-body">
-							{% for nat, v in artistnationalities.items %}
+							{% for nat in nationalities %}
 							<div class="form-check">
 							  <label class="form-check-label" for="nat{{ forloop.counter }}">
 								<input type="checkbox" class="form-check-input" id="nat{{ forloop.counter }}" name="option1" value="{{nat}}" onclick="javascript:filter('Nationality', '{{nat}}', 'nat{{ forloop.counter }}');">{{nat}}
@@ -1181,11 +1268,12 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 			</div>
 
-			<div id="allworks">
+			<div id="main">
+				<!-- 
 				<div class="work-top-pnl">
 					<button class="openbtn" onclick="openNav()"> Filter</button>
 					<div class="dropdown">Sort By:
@@ -1194,94 +1282,93 @@
 							<option value="2">Defult</option>
 						</select>
 					  </div>
-				  </div>
-				<div class="row">
+				</div>
+				-->
+			<div class="row" id='allworks'>
 			  <div class="column">
-				{% for ename, works in allworks.items %}
-				{% if ename == eventsprioritylist.0 %}
-				{% for work in works %}
+                                {% for evname, artworkslist in allartworks1.items %}
+                                {% for artwork in artworkslist %}
 				<div class="img-box">
-				<img src="{{work.image}}" style="width:100%">
-				<h4>{{work.piecename}}</h4>
-				<h6>{{work.artistname}}</h6>
-				<p>{{work.description}}</p>
+				<a href='/museum/artworkdetails/?mpid={{artwork.mpid}}'>
+				<img src="{{artwork.image}}" style="width:100%">
+				<h4>{{artwork.artworkname}}</h4>
+				<h6>{{artwork.medium}}</h6>
+				<p>{{artwork.description}}</p>
+				</a>
 				</div>
 				{% endfor %}
-				{% endif %}
 				{% endfor %}
+				
 			  </div>
 			  <div class="column">
-				{% for ename, works in allworks.items %}
-				{% if ename == eventsprioritylist.1 %}
-				{% for work in works %}
+				{% for evname, artworkslist in allartworks2.items %}
+                                {% for artwork in artworkslist %}
 				<div class="img-box">
-				<img src="{{work.image}}" style="width:100%">
-				<h4>{{work.piecename}}</h4>
-				<h6>{{work.artistname}}</h6>
-				<p>{{work.description}}</p>
+				<a href='/museum/artworkdetails/?mpid={{artwork.mpid}}'>
+				<img src="{{artwork.image}}" style="width:100%">
+				<h4>{{artwork.artworkname}}</h4>
+				<h6>{{artwork.medium}}</h6>
+				<p>{{artwork.description}}</p>
+				</a>
 				</div>
 				{% endfor %}
-				{% endif %}
 				{% endfor %}
+				
 			  </div>
 			  <div class="column">
-				{% for ename, works in allworks.items %}
-				{% if ename == eventsprioritylist.2 %}
-				{% for work in works %}
+				{% for evname, artworkslist in allartworks3.items %}
+                                {% for artwork in artworkslist %}
 				<div class="img-box">
-				<img src="{{work.image}}" style="width:100%">
-				<h4>{{work.piecename}}</h4>
-				<h6>{{work.artistname}}</h6>
-				<p>{{work.description}}</p>
+				<a href='/museum/artworkdetails/?mpid={{artwork.mpid}}'>
+				<img src="{{artwork.image}}" style="width:100%">
+				<h4>{{artwork.artworkname}}</h4>
+				<h6>{{artwork.medium}}</h6>
+				<p>{{artwork.description}}</p>
+				</a>
 				</div>
 				{% endfor %}
-				{% endif %}
 				{% endfor %}
+				
 			  </div>
 			  <div class="column">
-				{% for ename, works in allworks.items %}
-				{% if ename == eventsprioritylist.3 %}
-				{% for work in works %}
+				{% for evname, artworkslist in allartworks4.items %}
+                                {% for artwork in artworkslist %}
 				<div class="img-box">
-				<img src="{{work.image}}" style="width:100%">
-				<h4>{{work.piecename}}</h4>
-				<h6>{{work.artistname}}</h6>
-				<p>{{work.description}}</p>
+				<a href='/museum/artworkdetails/?mpid={{artwork.mpid}}'>
+				<img src="{{artwork.image}}" style="width:100%">
+				<h4>{{artwork.artworkname}}</h4>
+				<h6>{{artwork.medium}}</h6>
+				<p>{{artwork.description}}</p>
+				</a>
 				</div>
 				{% endfor %}
-				{% endif %}
 				{% endfor %}
+				
 			  </div>
 			  </div>
 			</div>
         </div>
-        <div class="tab-pane fade" id="Articles" role="tabpanel" aria-labelledby="Articles-tab">
-			<div class="row">
-				<div class="col-lg-12">
-					   <div class="section-heading text-center">
-							<h3>Articles</h3>
-							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+        <div class="tab-pane fade" id="Artists" role="tabpanel" aria-labelledby="Artists-tab">
+          <div class="row ">
+				<div class="col-md-12">
+					<div class="section-heading ">
+						<h3>Artists</h3>
+						<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+				   </div>
+				</div>
+					<div class="col-md-12">
+						<div class="art-list">
+							<div class="list-item">
+							{% for artist in allartists %}
+								<p><a href="/artist/details/?aid={{artist.artistid}}">{{artist.artistname}}</a></p>
+							{% endfor %}
+							{% if allartists|length == 0%}
+							<span>There are no artists listed for the featured event.</span>
+							{% endif %}
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row ">
-				  {% for art in allarticles %}
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="{{art.detailurl}}"><img src="{{art.thumbimage}}" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>{{art.articlename}}</h4>
-							<span>{{art.writername}}</span>
-							<span>{{art.published}}</span>
-						</div>
-					</div>
-				  </div>
-				  {% endfor %}
-				  
-			</div>
         </div>
         <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
           <h5 class="card-title">Sixth Tab header</h5>
@@ -1374,16 +1461,16 @@
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
 	<script>
-function openNav() {
-  document.getElementById("mySidebar").style.width = "350px";
-  //document.getElementById("main").style.marginLeft = "250px";
-}
+	function openNav() {
+	  document.getElementById("mySidebar").style.width = "350px";
+	  //document.getElementById("main").style.marginLeft = "250px";
+	}
 
-function closeNav() {
-  document.getElementById("mySidebar").style.width = "0";
-  document.getElementById("main").style.marginLeft= "0";
-}
-</script>
+	function closeNav() {
+	  document.getElementById("mySidebar").style.width = "0";
+	  document.getElementById("main").style.marginLeft= "0";
+	}
+	</script>
 	<script>
 	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
 	$('.demo').dropdown({

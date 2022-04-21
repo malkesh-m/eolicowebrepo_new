@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <title>Eolico</title>
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    <link rel="stylesheet" href="/static/css/owl-carousel.css">
+
+    <link rel="stylesheet" href="/static/css/lightbox.css">
+    <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
+    <style>
+    </style>
+    <!--
+
+    TemplateMo 571 Hexashop
+
+    https://templatemo.com/tm-571-hexashop
+
+    -->
+</head>
+
+<body>
+    <!-- Sign up Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Sign up to see full auction records — for free</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="name">name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Enter your full name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" id="email" placeholder="Enter your email address" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                <p>Password must be at least 8 characters.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="check-input">
+                                    <span>
+                                        <input type="checkbox" name="" value="" />
+                                    </span>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from Eolico.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Sign up</button>
+                            </div>
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Already have an account? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign up Modal -->
+    <!-- Sign in Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Login</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" id="email" placeholder="Enter your email address" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="form-group">
+                                <div class="check-input">
+                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Log in</button>
+                            </div>
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Don't have an account? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign in Modal -->
+    <!-- Sign in Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Reset your password</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign in Modal -->
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <img src="/static/images/logo1.png">
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
+				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
+				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+				 <li class="scroll-to-section"><a href="/museum/index/" class="active">Museums</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
+				 <li class="scroll-to-section"><a href="/login/about/">About</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+                            <!--<li class="submenu">
+                                <a href="javascript:;">Pages</a>
+                                <ul>
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="products.html">Products</a></li>
+                                    <li><a href="single-product.html">Single Product</a></li>
+                                    <li><a href="contact.html">Contact Us</a></li>
+                                </ul>
+                            </li>-->
+
+
+                        </ul>
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+    <!------ Featured Artist ------->
+    <section class="featured-artist featured-artist-details">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="section-heading">
+                        <div class="sec-content">
+                            <div class="sec-left">
+                                <img src="{{artworkinfo.artworkimage}}" alt="" class="img-fluid" />
+                            </div>
+                            <div class="sec-right">
+                                <h2>{{artworkinfo.artworkname}}</h2>
+                                <span>{{artworkinfo.artistname}}, {{artworkinfo.creationdate}}</span>
+                            </div>
+                        </div>
+                        <!-- <div class="follow">
+                            <a class="btn btn-slider" href="#">Follow</a>
+                            <span>1.3k Followers</span>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="bio-des">
+                        <div class="bio-artist">About</div>
+                        <div id="bio-section">
+                            <div class="bio-article">
+				<p>
+                                    {{artworkinfo.size}}
+                                </p>
+				<p>
+                                    {{artworkinfo.medium}}
+                                </p>
+                                <p>
+                                    {{artworkinfo.description}}
+                                </p>
+                                <!-- <p class="bio-moretext">
+                                    It has survived not only five
+                                    <a href="">centuries</a>, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                </p>  -->
+                            </div>
+                            <!-- <a class="moreless-button" href="#">Read more</a> -->
+                        </div>
+                        <div class="establish">
+                            <h4>Established representation</h4>
+                            <p>Represented by industry leading galleries.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!------ Featured Artist ------->
+
+    <!------- Category Tabs---------->
+    <section class="category-tabs mrt-90">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="tabbable-responsive tabbable-responsive-new">
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Overview</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Works for Sale</a>
+                                </li>
+
+                                <!-- <li class="nav-item">
+                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Auction Results</a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="cate-tabs-content mrt-90">
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
+				    
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="section-heading section-heading-2 pdb-50">
+                                                <h2>Notable Works</h2>
+                                                <span>
+                                                    <!-- <a href="">View All</a> -->
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+				    
+                                    <div id="noteble-works" class="owl-carousel owl-theme owl-d">
+					{% for artwork in allartworks %}
+                                        <div class="item">
+                                            <div class="thumb">
+                                                <a href="/museum/artworkdetails/?mpid={{artwork.mpid}}">
+                                                    <img src="{{artwork.artworkimage}}" class="img-fluid" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="slide-cap">
+                                                <a href="/museum/artworkdetails/?mpid={{artwork.mpid}}">
+                                                    <h2>{{artwork.artworkname}}</h2>
+                                                    <p>{{artwork.description}}</p>
+                                                </a>
+                                            </div>
+                                        </div>
+					{% endfor %}
+                                        
+                                    </div>
+				    <!--
+                                    <div class="career-highlight mrt-90">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-7 col-lg-8 col-xl-8">
+                                                <div class="section-heading section-heading-2 pdb-50">
+                                                    <h2>Notable Works</h2>
+                                                </div>
+                                                <div class="career-highlight-list">
+                                                    <ul>
+                                                        <li>
+                                                            <span><i class="fa fa-users" aria-hidden="true"></i></span>
+                                                            <p>
+                                                                Group show at a major institution
+                                                                <span> Hammer Museum and </span>, <a href="">1 more</a>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <span><i class="fa fa-bookmark-o" aria-hidden="true"></i></span>
+                                                            <p>
+                                                                Reviewed by a major art publication
+                                                                frieze, and
+                                                                <span> Hammer Museum and </span>, <a href="">1 more</a>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <span><i class="fa fa-building-o" aria-hidden="true"></i></span>
+                                                            <p>
+                                                                Included in a major biennial
+                                                                <span> Whitney Biennial</span>
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="see-all-post">
+                                                    <a href="">See all past shows and fair booths </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-5 col-lg-4 col-xl-4">
+                                                <div class="section-heading section-heading-2 pdb-50">
+                                                    <h2>Related categories</h2>
+                                                </div>
+                                                <div class="related-cat">
+                                                    <a href="">Brooklyn Artists</a>
+                                                    <a href="">Contemporary Figurative Painting</a>
+                                                    <a href="">New York Artists</a>
+                                                    <a href="">United States</a>
+                                                    <a href="">Painting</a>
+                                                    <a href="">Automatism</a>
+                                                    <a href="">Contemporary Art</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="sell-work mrt-90 mrb-90">
+                                        <div class="work-bg">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+                                                    <div class="sell-work-content">
+                                                        <h6>ARTSY CONSIGNMENTS</h6>
+                                                        <h4>Sell Works from Your Collection</h4>
+                                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
+                                                        <a href="" class="btn btn-slider">Submit now</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="section-heading section-heading-2 pdb-50">
+                                                <h2>Works For Sale</h2>
+                                                <span>
+                                                    <a href="">View All</a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="works-for-sale" class="owl-carousel owl-theme owl-d">
+                                        <div class="item">
+                                            <div class="thumb">
+                                                <a href="">
+                                                    <img src="/static/images/explore-image-01.jpg" class="img-fluid" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="slide-cap">
+                                                <a href="">
+                                                    <h2>Aliquam tincidunt dolor</h2>
+                                                    <p>Lorem ipsum dolor...</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <div class="thumb">
+                                                <a href="">
+                                                    <img src="/static/images/explore-image-02.jpg" class="img-fluid" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="slide-cap">
+                                                <a href="">
+                                                    <h2>Aliquam tincidunt dolor</h2>
+                                                    <p>Lorem ipsum dolor...</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <div class="thumb">
+                                                <a href="">
+                                                    <img src="/static/images/g1.jpg" class="img-fluid" alt="">
+                                                </a>
+                                                <div class="slide-cap">
+                                                    <a href="">
+                                                        <h2>Aliquam tincidunt dolor</h2>
+                                                        <p>Lorem ipsum dolor...</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="item">
+                                            <a href="">
+                                                <img src="/static/images/g2.jpg" class="img-fluid" alt="">
+                                            </a>
+                                            <div class="slide-cap">
+                                                <a href="">
+                                                    <h2>Aliquam tincidunt dolor</h2>
+                                                    <p>Lorem ipsum dolor...</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <a href="">
+                                                <img src="/static/images/g3.jpg" class="img-fluid" alt="">
+                                            </a>
+                                            <div class="slide-cap">
+                                                <a href="">
+                                                    <h2>Aliquam tincidunt dolor</h2>
+                                                    <p>Lorem ipsum dolor...</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <a href="">
+                                                <img src="/static/images/g4.jpg" class="img-fluid" alt="">
+                                            </a>
+                                            <div class="slide-cap">
+                                                <a href="">
+                                                    <h2>Aliquam tincidunt dolor</h2>
+                                                    <p>Lorem ipsum dolor...</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <a href="">
+                                                <img src="/static/images/explore-image-01.jpg" class="img-fluid" alt="">
+                                            </a>
+                                            <div class="slide-cap">
+                                                <a href="">
+                                                    <h2>Aliquam tincidunt dolor</h2>
+                                                    <p>Lorem ipsum dolor...</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <a href="">
+                                                <img src="/static/images/explore-image-02.jpg" class="img-fluid" alt="">
+                                            </a>
+                                            <div class="slide-cap">
+                                                <a href="">
+                                                    <h2>Aliquam tincidunt dolor</h2>
+                                                    <p>Lorem ipsum dolor...</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <section class="section mrt-90">
+                                        <div class="container max-container">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="section-heading section-heading-2 pdb-50">
+                                                        <h2>Events Featuring {{artworkinfo.artistname}}</h2>
+                                                        <span>
+                                                            <!-- <a href="">View All Articles</a> -->
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+						{% for evdata in allevents %}
+                                                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                                    <div class="artist-category">
+                                                        <div class="thumb">
+                                                            <a href="/museum/eventdetails/?mevid={{evdata.mevid}}"><img src="{{evdata.eventimage}}" alt=""></a>
+                                                        </div>
+                                                        <div class="down-content">
+                                                            <a href="/museum/eventdetails/?mevid={{evdata.mevid}}">
+                                                                <h4>{{evdata.eventname}}</h4>
+                                                                <span>{{evdata.eventlocation}} {{evdata.eventperiod}}</span>
+                                                            </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+						{% endfor %}
+                                                
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <div class="row mrt-90">
+                                        <div class="col-lg-12">
+                                            <div class="section-heading section-heading-2 pdb-50">
+                                                <h2>Related Artists</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="related-artist mrb-90">
+                                        <div id="related-artist" class="owl-carousel owl-theme owl-d">
+					    {% for artist in relatedartists %}
+                                            <div class="item">
+                                                <div class="thumb">
+                                                    <a href="/artist/details/?aid={{artist.aid}}">
+                                                        <img src="{{artist.squareimage}}" class="img-fluid" alt="">
+                                                    </a>
+                                                </div>
+                                                <div class="slide-cap">
+                                                    <a href="/artist/details/?aid={{artist.aid}}">
+                                                        <h2>{{artist.artistname}}</h2>
+                                                        <p>{{artist.about}}</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+					    {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
+                                    <div class="row mrb-90">
+					<div class="col-sm-12">
+                                            <div class="work-top-pnl">
+                                                <div class="fixed-sidbr-header">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="dropdown">
+                                                    &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                            <div id="target">
+                                                <div class="sidebar-left">
+                                                    <div class="res-bts">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div id="accordion" class="accordion">
+                                                        <div class="card mb-0">
+                                                            &nbsp;
+							</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+					<!--
+                                        <div class="col-sm-12">
+                                            <div class="work-top-pnl">
+                                                <div class="fixed-sidbr-header">
+                                                    <button class="openbtn Show" onclick="openNav()"> Filter</button>
+                                                </div>
+                                                <div class="dropdown">
+                                                    Sort By:
+                                                    <select>
+                                                        <option value="">Default</option>
+                                                        <option value="">Price (desc.)</option>
+                                                        <option value="">Price (asc.)</option>
+                                                        <option value="">Recently updated</option>
+                                                        <option value="">Recently added</option>
+                                                        <option value="">Artwork year (desc.)</option>
+                                                        <option value="">Artwork year (asc.)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                            <div id="target">
+                                                <div class="sidebar-left">
+                                                    <div class="res-bts">
+                                                        <button class="Hide btn btn-slider">Cancel</button>
+                                                        <h5>Filter</h5>
+                                                        <button class="Hide btn btn-slider">Clear all</button>
+                                                    </div>
+                                                    <div id="accordion" class="accordion">
+                                                        <div class="card mb-0">
+                                                            <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                                <a class="card-title">
+                                                                    Rarity
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapseTwo" class="card-body collapse show" data-parent="#accordion">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Unique">
+                                                                        <input type="checkbox" class="form-check-input" id="Unique" name="option1" value="something">Unique
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="LimitedEdition">
+                                                                        <input type="checkbox" class="form-check-input" id="LimitedEdition" name="option1" value="something">Limited Edition
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="OpenEdition">
+                                                                        <input type="checkbox" class="form-check-input" id="OpenEdition" name="option1" value="something">Open Edition
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                                <a class="card-title">
+                                                                    Medium
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapseThree" class="collapse show" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Design">
+                                                                            <input type="checkbox" class="form-check-input" id="Design" name="option1" value="something">Work on Paper
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Sculpture">
+                                                                            <input type="checkbox" class="form-check-input" id="Sculpture" name="option1" value="something">Sculpture
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Painting">
+                                                                            <input type="checkbox" class="form-check-input" id="Painting" name="option1" value="something">Painting
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Painting">
+                                                                            <input type="checkbox" class="form-check-input" id="Painting" name="option1" value="something">Installation
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseprice">
+                                                                <a class="card-title">
+                                                                    Price
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapseprice" class="collapse show" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="price-1">
+                                                                            <input type="radio" class="form-check-input" id="price-1" name="price" value="price-1" checked>$50K+
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="price-2">
+                                                                            <input type="radio" class="form-check-input" id="price-2" name="price" value="price-2">$25K - $50K
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="price-3">
+                                                                            <input type="radio" class="form-check-input" id="price-3" name="price" value="price-3">$10K - $25K
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="price-4">
+                                                                            <input type="radio" class="form-check-input" id="price-4" name="price" value="price-4">$5K - $10K
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="price-5">
+                                                                            <input type="radio" class="form-check-input" id="price-5" name="price" value="price-5">$1K - $5K
+                                                                        </label>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                                <a class="card-title">
+                                                                    Size
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapse4" class="collapse show" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <p class="dimension">This is based on the artwork’s average dimension.</p>
+                                                                    <div class="size-cm-in">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="cm">
+                                                                                <input type="radio" class="form-check-input" id="cm" name="dimension" value="cm" checked>cm
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="in">
+                                                                                <input type="radio" class="form-check-input" id="in" name="dimension" value="in">in
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="SmallSize">
+                                                                            <input type="checkbox" class="form-check-input" id="SmallSize" name="option1" value="something">Small (under 40cm)
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Medium">
+                                                                            <input type="checkbox" class="form-check-input" id="Medium" name="option1" value="something">Medium (40 – 100cm)
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Large">
+                                                                            <input type="checkbox" class="form-check-input" id="Large" name="option1" value="something">Large (over 100cm)
+                                                                        </label>
+                                                                    </div>
+                                                                    <div id="bio-section-2">
+                                                                        <div class="bio-article-2">
+                                                                            <div class="bio-moretext-2">
+                                                                                <div class="size-width">
+                                                                                    <p>Width</p>
+                                                                                    <input type="text" value="" placeholder="cm" />
+                                                                                    <input type="text" value="" placeholder="cm" />
+                                                                                </div>
+                                                                                <div class="size-width">
+                                                                                    <p>Height</p>
+                                                                                    <input type="text" value="" placeholder="cm" />
+                                                                                    <input type="text" value="" placeholder="cm" />
+                                                                                </div>
+                                                                                <button type="submit" value="Sumbit" class="btn btn-slider">Set size</button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <a class="moreless-button-2" href="#">Show custom size</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse55">
+                                                                <a class="card-title">
+                                                                    Ways to Buy
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapse55" class="collapse show" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="buy-now">
+                                                                            <input type="checkbox" class="form-check-input" id="buy-now" name="option1" value="something">Buy Now
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="make-offer">
+                                                                            <input type="checkbox" class="form-check-input" id="make-offer" name="option1" value="something">Make Offer
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="bid">
+                                                                            <input type="checkbox" class="form-check-input" id="bid" name="option1" value="something">Bid
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="inquiry">
+                                                                            <input type="checkbox" class="form-check-input" id="inquiry" name="option1" value="something">Inquiry
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+                                                                <a class="card-title">
+                                                                    Material
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapse5" class="collapse" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Acrylic">
+                                                                            <input type="checkbox" class="form-check-input" id="Acrylic" name="option1" value="something">Acrylic
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Aluminum">
+                                                                            <input type="checkbox" class="form-check-input" id="Aluminum" name="option1" value="something">Aluminum
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Artpaper">
+                                                                            <input type="checkbox" class="form-check-input" id="Artpaper" name="option1" value="something">Art paper
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+                                                                <a class="card-title">
+                                                                    Artist Nationality
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapse6" class="collapse" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="American">
+                                                                            <input type="checkbox" class="form-check-input" id="American" name="option1" value="something">American
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Argentine">
+                                                                            <input type="checkbox" class="form-check-input" id="Argentine" name="option1" value="something">Argentine
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Armenian">
+                                                                            <input type="checkbox" class="form-check-input" id="Armenian" name="option1" value="something">Armenian
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse7">
+                                                                <a class="card-title">
+                                                                    Time Period
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapse7" class="collapse" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="time-2020">
+                                                                            <input type="checkbox" class="form-check-input" id="time-2020" name="option1" value="something">2020s
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="time-2010">
+                                                                            <input type="checkbox" class="form-check-input" id="time-2010" name="option1" value="something">2010s
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="time-2000">
+                                                                            <input type="checkbox" class="form-check-input" id="time-2000" name="option1" value="something">2000s
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse8">
+                                                                <a class="card-title">
+                                                                    Color
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapse8" class="collapse" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Color-red">
+                                                                            <input type="checkbox" class="form-check-input" id="Color-red" name="option1" value="something">Red <span class="color-span" style="background:red;"></span>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Color-blue">
+                                                                            <input type="checkbox" class="form-check-input" id="Color-blue" name="option1" value="something">Blue <span class="color-span" style="background:blue;"></span>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="Color-green">
+                                                                            <input type="checkbox" class="form-check-input" id="Color-green" name="option1" value="something">Green <span class="color-span" style="background:green;"></span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="sidebar-left sidebar-left-res">
+                                                <div id="accordion" class="accordion">
+                                                    <div class="card mb-0">
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                            <a class="card-title">
+                                                                Rarity
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseTwo" class="card-body collapse show" data-parent="#accordion">
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="Unique">
+                                                                    <input type="checkbox" class="form-check-input" id="Unique" name="option1" value="something">Unique
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="LimitedEdition">
+                                                                    <input type="checkbox" class="form-check-input" id="LimitedEdition" name="option1" value="something">Limited Edition
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="OpenEdition">
+                                                                    <input type="checkbox" class="form-check-input" id="OpenEdition" name="option1" value="something">Open Edition
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                            <a class="card-title">
+                                                                Medium
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseThree" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Design">
+                                                                        <input type="checkbox" class="form-check-input" id="Design" name="option1" value="something">Work on Paper
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Sculpture">
+                                                                        <input type="checkbox" class="form-check-input" id="Sculpture" name="option1" value="something">Sculpture
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Painting">
+                                                                        <input type="checkbox" class="form-check-input" id="Painting" name="option1" value="something">Painting
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Painting">
+                                                                        <input type="checkbox" class="form-check-input" id="Painting" name="option1" value="something">Installation
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseprice">
+                                                            <a class="card-title">
+                                                                Price
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseprice" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="price-1">
+                                                                        <input type="radio" class="form-check-input" id="price-1" name="price" value="price-1" checked>$50K+
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="price-2">
+                                                                        <input type="radio" class="form-check-input" id="price-2" name="price" value="price-2">$25K - $50K
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="price-3">
+                                                                        <input type="radio" class="form-check-input" id="price-3" name="price" value="price-3">$10K - $25K
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="price-4">
+                                                                        <input type="radio" class="form-check-input" id="price-4" name="price" value="price-4">$5K - $10K
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="price-5">
+                                                                        <input type="radio" class="form-check-input" id="price-5" name="price" value="price-5">$1K - $5K
+                                                                    </label>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                            <a class="card-title">
+                                                                Size
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse4" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <p class="dimension">This is based on the artwork’s average dimension.</p>
+                                                                <div class="size-cm-in">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="cm">
+                                                                            <input type="radio" class="form-check-input" id="cm" name="dimension" value="cm" checked>cm
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="in">
+                                                                            <input type="radio" class="form-check-input" id="in" name="dimension" value="in">in
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="SmallSize">
+                                                                        <input type="checkbox" class="form-check-input" id="SmallSize" name="option1" value="something">Small (under 40cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Medium">
+                                                                        <input type="checkbox" class="form-check-input" id="Medium" name="option1" value="something">Medium (40 – 100cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Large">
+                                                                        <input type="checkbox" class="form-check-input" id="Large" name="option1" value="something">Large (over 100cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div id="bio-section-2">
+                                                                    <div class="bio-article-2">
+                                                                        <div class="bio-moretext-2">
+                                                                            <div class="size-width">
+                                                                                <p>Width</p>
+                                                                                <input type="text" value="" placeholder="cm" />
+                                                                                <input type="text" value="" placeholder="cm" />
+                                                                            </div>
+                                                                            <div class="size-width">
+                                                                                <p>Height</p>
+                                                                                <input type="text" value="" placeholder="cm" />
+                                                                                <input type="text" value="" placeholder="cm" />
+                                                                            </div>
+                                                                            <button type="submit" value="Sumbit" class="btn btn-slider">Set size</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <a class="moreless-button-2" href="#">Show custom size</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse55">
+                                                            <a class="card-title">
+                                                                Ways to Buy
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse55" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="buy-now">
+                                                                        <input type="checkbox" class="form-check-input" id="buy-now" name="option1" value="something">Buy Now
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="make-offer">
+                                                                        <input type="checkbox" class="form-check-input" id="make-offer" name="option1" value="something">Make Offer
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="bid">
+                                                                        <input type="checkbox" class="form-check-input" id="bid" name="option1" value="something">Bid
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="inquiry">
+                                                                        <input type="checkbox" class="form-check-input" id="inquiry" name="option1" value="something">Inquiry
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+                                                            <a class="card-title">
+                                                                Material
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse5" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Acrylic">
+                                                                        <input type="checkbox" class="form-check-input" id="Acrylic" name="option1" value="something">Acrylic
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Aluminum">
+                                                                        <input type="checkbox" class="form-check-input" id="Aluminum" name="option1" value="something">Aluminum
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Artpaper">
+                                                                        <input type="checkbox" class="form-check-input" id="Artpaper" name="option1" value="something">Art paper
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+                                                            <a class="card-title">
+                                                                Artist Nationality
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse6" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="American">
+                                                                        <input type="checkbox" class="form-check-input" id="American" name="option1" value="something">American
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Argentine">
+                                                                        <input type="checkbox" class="form-check-input" id="Argentine" name="option1" value="something">Argentine
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Armenian">
+                                                                        <input type="checkbox" class="form-check-input" id="Armenian" name="option1" value="something">Armenian
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse7">
+                                                            <a class="card-title">
+                                                                Time Period
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse7" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="time-2020">
+                                                                        <input type="checkbox" class="form-check-input" id="time-2020" name="option1" value="something">2020s
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="time-2010">
+                                                                        <input type="checkbox" class="form-check-input" id="time-2010" name="option1" value="something">2010s
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="time-2000">
+                                                                        <input type="checkbox" class="form-check-input" id="time-2000" name="option1" value="something">2000s
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse8">
+                                                            <a class="card-title">
+                                                                Color
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse8" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Color-red">
+                                                                        <input type="checkbox" class="form-check-input" id="Color-red" name="option1" value="something">Red <span class="color-span" style="background:red;"></span>
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Color-blue">
+                                                                        <input type="checkbox" class="form-check-input" id="Color-blue" name="option1" value="something">Blue <span class="color-span" style="background:blue;"></span>
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Color-green">
+                                                                        <input type="checkbox" class="form-check-input" id="Color-green" name="option1" value="something">Green <span class="color-span" style="background:green;"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                        <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
+                                            <div id="main">
+
+                                                <div class="row">
+                                                    <div class="column">
+							{% for artwork in allartworks1 %}
+                                                        <div class="img-box">
+							    <a href="/museum/artworkdetails/?mpid={{artwork.mpid}}">
+                                                            <img src="{{artwork.image}}" style="width:100%">
+                                                            <h4>{{ artwork.artworkname }}</h4>
+                                                            <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
+                                                            <p>{{artwork.description}}</p>
+							    </a>
+                                                        </div>
+							{% endfor %}
+                                                    </div>
+                                                    <div class="column">
+                                                        {% for artwork in allartworks2 %}
+                                                        <div class="img-box">
+							    <a href="/museum/artworkdetails/?mpid={{artwork.mpid}}">
+                                                            <img src="{{artwork.image}}" style="width:100%">
+                                                            <h4>{{ artwork.artworkname }}</h4>
+                                                            <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
+                                                            <p>{{artwork.description}}</p>
+							    </a>
+                                                        </div>
+							{% endfor %}
+                                                    </div>
+                                                    <div class="column">
+                                                        {% for artwork in allartworks3 %}
+                                                        <div class="img-box">
+							    <a href="/museum/artworkdetails/?mpid={{artwork.mpid}}">
+                                                            <img src="{{artwork.image}}" style="width:100%">
+                                                            <h4>{{ artwork.artworkname }}</h4>
+                                                            <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
+                                                            <p>{{artwork.description}}</p>
+							    </a>
+                                                        </div>
+							{% endfor %}
+                                                    </div>
+                                                    <div class="column">
+                                                        {% for artwork in allartworks4 %}
+                                                        <div class="img-box">
+							    <a href="/museum/artworkdetails/?mpid={{artwork.mpid}}">
+                                                            <img src="{{artwork.image}}" style="width:100%">
+                                                            <h4>{{ artwork.artworkname }}</h4>
+                                                            <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
+                                                            <p>{{artwork.description}}</p>
+							    </a>
+                                                        </div>
+							{% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+				<!-- 
+                                <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
+                                    <section class="market-signel mrb-90 mrt-90">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                                <div class="market-head">
+                                                    <h3>Market Signals <i class="fa fa-info-circle" aria-hidden="true"></i></h3>
+                                                    <p>Averages over the last 36 months</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                                <p>MEDIUM</p>
+                                                <select><option value="Painting">Painting</option><option value="Work on Paper">Work on Paper</option></select>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-9 col-xl-9">
+                                                <div class="row text-right">
+                                                    <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                                        <p> Yearly lots sold</p>
+                                                        <h2>5</h2>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                                        <p> Sell-through rate</p>
+                                                        <h2>85.3%</h2>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                                        <p> Sale price</p>
+                                                        <h2>$54k</h2>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                                        <p>Price over estimate</p>
+                                                        <h2>0%</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <div class="row mrb-90">
+                                        <div class="col-sm-12">
+                                            <div class="auc-re">
+                                                <h3>Auction Results</h3>
+                                            </div>
+                                            <div class="work-top-pnl auction-filer-search">
+                                                
+                                                <div class="fixed-sidbr-header">
+
+                                                    <button class="openbtn Show" onclick="openNav()"> Filter</button>
+                                                </div>
+                                                <div class="auction-search">
+                                                    <form method="post" enctype="multipart/form-data">
+                                                        <input type="text" value="" name="" placeholder="Search by artwork title, series, or description" />
+                                                        <button type="submit" value="" name=""><i class="fa fa-search" aria-hidden="true"></i></button>
+                                                    </form>
+                                                </div>
+                                                <div class="dropdown">
+                                                    Sort By:
+                                                    <select>
+                                                        <option value="">Sale Date (Most recent)</option>
+                                                        <option value="">Estimate</option>
+                                                        <option value="">Sale price</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                            <div class="sidebar-left">
+                                                <div id="target_2">
+                                                    <div class="sidebar-left">
+                                                        <div class="res-bts">
+                                                            <button class="Hide btn btn-slider">Cancel</button>
+                                                            <h5>Filter</h5>
+                                                            <button class="Hide btn btn-slider">Clear all</button>
+                                                        </div>
+                                                        <div id="accordion" class="accordion">
+                                                            <div class="card mb-0">
+                                                                <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                                    <a class="card-title">
+                                                                        Medium
+                                                                    </a>
+                                                                </div>
+                                                                <div id="collapseThree" class="collapse show" data-parent="#accordion">
+                                                                    <div class="card-body">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Design-tow">
+                                                                                <input type="checkbox" class="form-check-input" id="Design-tow" name="option1" value="something">Work on Paper
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Sculpture-tow">
+                                                                                <input type="checkbox" class="form-check-input" id="Sculpture-tow" name="option1" value="something">Sculpture
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Painting-two">
+                                                                                <input type="checkbox" class="form-check-input" id="Painting-two" name="option1" value="something">Painting
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Installation">
+                                                                                <input type="checkbox" class="form-check-input" id="Installation" name="option1" value="something">Installation
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="photography">
+                                                                                <input type="checkbox" class="form-check-input" id="photography" name="option1" value="something">Photography
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="texttile-arts">
+                                                                                <input type="checkbox" class="form-check-input" id="texttile-arts" name="option1" value="something">Texttile arts
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                                    <a class="card-title">
+                                                                        Size
+                                                                    </a>
+                                                                </div>
+                                                                <div id="collapse4" class="collapse show" data-parent="#accordion">
+                                                                    <div class="card-body">
+                                                                        <p class="dimension">This is based on the artwork’s average dimension.</p>
+                                                                        <div class="size-cm-in">
+                                                                            <div class="form-check">
+                                                                                <label class="form-check-label" for="cm-auction">
+                                                                                    <input type="radio" class="form-check-input" id="cm-auction" name="dimension" value="cm" checked>cm
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <label class="form-check-label" for="in-auction">
+                                                                                    <input type="radio" class="form-check-input" id="in-auction" name="dimension" value="in">in
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="SmallSize-tow">
+                                                                                <input type="checkbox" class="form-check-input" id="SmallSize-tow" name="option1" value="something">Small (under 40cm)
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Medium-tow">
+                                                                                <input type="checkbox" class="form-check-input" id="Medium-tow" name="option1" value="something">Medium (40 – 100cm)
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Large-tow">
+                                                                                <input type="checkbox" class="form-check-input" id="Large-tow" name="option1" value="something">Large (over 100cm)
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseyear">
+                                                                    <a class="card-title">
+                                                                        Year Created
+                                                                    </a>
+                                                                </div>
+                                                                <div id="collapseyear" class="collapse show" data-parent="#accordion">
+                                                                    <div class="card-body">
+                                                                        <div class="size-cm-in">
+                                                                            <div class="form-year">
+                                                                                <p>EARLIEST</p>
+                                                                                <select><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option></select>
+                                                                            </div>
+                                                                            <div class="form-year">
+                                                                                <p>LATEST</p>
+                                                                                <select><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option></select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Large-include">
+                                                                                <input type="checkbox" class="form-check-input" id="Large-include" name="option1" value="something">Large Include unspecified dates
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse55">
+                                                                    <a class="card-title">
+                                                                        Auction House
+                                                                    </a>
+                                                                </div>
+                                                                <div id="collapse55" class="collapse show" data-parent="#accordion">
+                                                                    <div class="card-body">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Sotheby">
+                                                                                <input type="checkbox" class="form-check-input" id="Sotheby" name="option1" value="something">Sotheby's
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Christie">
+                                                                                <input type="checkbox" class="form-check-input" id="Christie" name="option1" value="something">Christie's
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label" for="Phillips">
+                                                                                <input type="checkbox" class="form-check-input" id="Phillips" name="option1" value="something">Phillips
+                                                                            </label>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="accordion" class="accordion">
+                                                    <div class="card mb-0">
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                            <a class="card-title">
+                                                                Medium
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseThree" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Design-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="Design-tow" name="option1" value="something">Work on Paper
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Sculpture-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="Sculpture-tow" name="option1" value="something">Sculpture
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Painting-two">
+                                                                        <input type="checkbox" class="form-check-input" id="Painting-two" name="option1" value="something">Painting
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Installation">
+                                                                        <input type="checkbox" class="form-check-input" id="Installation" name="option1" value="something">Installation
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="photography">
+                                                                        <input type="checkbox" class="form-check-input" id="photography" name="option1" value="something">Photography
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="texttile-arts">
+                                                                        <input type="checkbox" class="form-check-input" id="texttile-arts" name="option1" value="something">Texttile arts
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                            <a class="card-title">
+                                                                Size
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse4" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <p class="dimension">This is based on the artwork’s average dimension.</p>
+                                                                <div class="size-cm-in">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="cm-auction">
+                                                                            <input type="radio" class="form-check-input" id="cm-auction" name="dimension" value="cm" checked>cm
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="in-auction">
+                                                                            <input type="radio" class="form-check-input" id="in-auction" name="dimension" value="in">in
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="SmallSize-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="SmallSize-tow" name="option1" value="something">Small (under 40cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Medium-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="Medium-tow" name="option1" value="something">Medium (40 – 100cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Large-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="Large-tow" name="option1" value="something">Large (over 100cm)
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseyear">
+                                                            <a class="card-title">
+                                                                Year Created
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseyear" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="size-cm-in">
+                                                                    <div class="form-year">
+                                                                        <p>EARLIEST</p>
+                                                                        <select><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option></select>
+                                                                    </div>
+                                                                    <div class="form-year">
+                                                                        <p>LATEST</p>
+                                                                        <select><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option></select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Large-include">
+                                                                        <input type="checkbox" class="form-check-input" id="Large-include" name="option1" value="something">Large Include unspecified dates
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse55">
+                                                            <a class="card-title">
+                                                                Auction House
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse55" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Sotheby">
+                                                                        <input type="checkbox" class="form-check-input" id="Sotheby" name="option1" value="something">Sotheby's
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Christie">
+                                                                        <input type="checkbox" class="form-check-input" id="Christie" name="option1" value="something">Christie's
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Phillips">
+                                                                        <input type="checkbox" class="form-check-input" id="Phillips" name="option1" value="something">Phillips
+                                                                    </label>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
+                                            <div id="main">
+                                                <div id="accordion" class="accordion">
+                                                    <div class="acc-auctions auction-pdb">
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
+                                                            <a class="card-title auc-det d-flex">
+                                                                <div class="auctions-img">
+                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
+                                                                </div>
+                                                                <div class="auctions-name">
+                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
+                                                                    <p>
+                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                        (iii) acrylic, nail polish and collage on paper
+                                                                    </p>
+                                                                </div>
+                                                                <div class="date-auctions">
+                                                                    <h4>Mar 9, 2022</h4>
+                                                                    <p>Phillips</p>
+                                                                </div>
+                                                                <div class="auction-price">
+                                                                    <h4>US$18,900</h4>
+                                                                    <p>Realized price</p>
+                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="card-body-inner">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Artwork Info</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Work on Paper</p>
+                                                                                <p>
+                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                                    (iii) acrylic, nail polish and collage on paper
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Estimate</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Auction Sale</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Mar 9, 2022</p>
+                                                                                <p>
+                                                                                    Phillips
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Realized Price</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <p>US$18,900</p>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="acc-auctions auction-pdb">
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
+                                                            <a class="card-title auc-det d-flex">
+                                                                <div class="auctions-img">
+                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
+                                                                </div>
+                                                                <div class="auctions-name">
+                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
+                                                                    <p>
+                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                        (iii) acrylic, nail polish and collage on paper
+                                                                    </p>
+                                                                </div>
+                                                                <div class="date-auctions">
+                                                                    <h4>Mar 9, 2022</h4>
+                                                                    <p>Phillips</p>
+                                                                </div>
+                                                                <div class="auction-price">
+                                                                    <h4>US$18,900</h4>
+                                                                    <p>Realized price</p>
+                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="card-body-inner">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Artwork Info</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Work on Paper</p>
+                                                                                <p>
+                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                                    (iii) acrylic, nail polish and collage on paper
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Estimate</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Auction Sale</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Mar 9, 2022</p>
+                                                                                <p>
+                                                                                    Phillips
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Realized Price</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <p>US$18,900</p>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="acc-auctions auction-pdb">
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
+                                                            <a class="card-title auc-det d-flex">
+                                                                <div class="auctions-img">
+                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
+                                                                </div>
+                                                                <div class="auctions-name">
+                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
+                                                                    <p>
+                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                        (iii) acrylic, nail polish and collage on paper
+                                                                    </p>
+                                                                </div>
+                                                                <div class="date-auctions">
+                                                                    <h4>Mar 9, 2022</h4>
+                                                                    <p>Phillips</p>
+                                                                </div>
+                                                                <div class="auction-price">
+                                                                    <h4>US$18,900</h4>
+                                                                    <p>Realized price</p>
+                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="card-body-inner">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Artwork Info</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Work on Paper</p>
+                                                                                <p>
+                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                                    (iii) acrylic, nail polish and collage on paper
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Estimate</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Auction Sale</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Mar 9, 2022</p>
+                                                                                <p>
+                                                                                    Phillips
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Realized Price</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <p>US$18,900</p>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="acc-auctions auction-pdb">
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
+                                                            <a class="card-title auc-det d-flex">
+                                                                <div class="auctions-img">
+                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
+                                                                </div>
+                                                                <div class="auctions-name">
+                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
+                                                                    <p>
+                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                        (iii) acrylic, nail polish and collage on paper
+                                                                    </p>
+                                                                </div>
+                                                                <div class="date-auctions">
+                                                                    <h4>Mar 9, 2022</h4>
+                                                                    <p>Phillips</p>
+                                                                </div>
+                                                                <div class="auction-price">
+                                                                    <h4>US$18,900</h4>
+                                                                    <p>Realized price</p>
+                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="card-body-inner">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Artwork Info</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Work on Paper</p>
+                                                                                <p>
+                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                                    (iii) acrylic, nail polish and collage on paper
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Estimate</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Auction Sale</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Mar 9, 2022</p>
+                                                                                <p>
+                                                                                    Phillips
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Realized Price</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <p>US$18,900</p>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="acc-auctions auction-pdb">
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
+                                                            <a class="card-title auc-det d-flex">
+                                                                <div class="auctions-img">
+                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
+                                                                </div>
+                                                                <div class="auctions-name">
+                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
+                                                                    <p>
+                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                        (iii) acrylic, nail polish and collage on paper
+                                                                    </p>
+                                                                </div>
+                                                                <div class="date-auctions">
+                                                                    <h4>Mar 9, 2022</h4>
+                                                                    <p>Phillips</p>
+                                                                </div>
+                                                                <div class="auction-price">
+                                                                    <h4>US$18,900</h4>
+                                                                    <p>Realized price</p>
+                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="card-body-inner">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Artwork Info</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Work on Paper</p>
+                                                                                <p>
+                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                                    (iii) acrylic, nail polish and collage on paper
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Estimate</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Auction Sale</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Mar 9, 2022</p>
+                                                                                <p>
+                                                                                    Phillips
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Realized Price</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <p>US$18,900</p>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="acc-auctions auction-pdb">
+                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
+                                                            <a class="card-title auc-det d-flex">
+                                                                <div class="auctions-img">
+                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
+                                                                </div>
+                                                                <div class="auctions-name">
+                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
+                                                                    <p>
+                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                        (iii) acrylic, nail polish and collage on paper
+                                                                    </p>
+                                                                </div>
+                                                                <div class="date-auctions">
+                                                                    <h4>Mar 9, 2022</h4>
+                                                                    <p>Phillips</p>
+                                                                </div>
+                                                                <div class="auction-price">
+                                                                    <h4>US$18,900</h4>
+                                                                    <p>Realized price</p>
+                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="card-body-inner">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Artwork Info</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Work on Paper</p>
+                                                                                <p>
+                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
+                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
+                                                                                    (iii) acrylic, nail polish and collage on paper
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Estimate</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <div class="auctions-img">
+                                                                                <h6>Auction Sale</h6>
+                                                                            </div>
+                                                                            <div class="auctions-name">
+                                                                                <p>Mar 9, 2022</p>
+                                                                                <p>
+                                                                                    Phillips
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="date-auctions">
+                                                                                <h6>Realized Price</h6>
+                                                                            </div>
+                                                                            <div class="auction-price">
+                                                                                <p>US$18,900</p>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="auction-pagination">
+                                                        <nav aria-label="Page navigation example">
+                                                            <ul class="pagination">
+                                                                <li class="page-item">
+                                                                    <a class="page-link" href="#" aria-label="Previous">
+                                                                        <span aria-hidden="true">Previous</span>
+                                                                        <span class="sr-only">Previous</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                                <li class="page-item">
+                                                                    <a class="page-link" href="#" aria-label="Next">
+                                                                        <span aria-hidden="true">Next</span>
+                                                                        <span class="sr-only">Next</span>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </nav>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!------- Category Tabs---------->
+
+    <section class="download-app">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-sm-12 col-md-5 col-lg-4 col-xl-4">
+                    <div class="download-app">
+                        <h4>Get More from Eolico—on the App</h4>
+                        <div class="pl-st">
+                            <a href=""><img src="/static/images/app-store.png" alt=""></a>
+                            <a href=""><img src="/static/images/google-play.png" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7 col-lg-8 col-xl-8">
+                    <img src="/static/images/download-app.jpg" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="first-item">
+                        <div class="logo">
+                            <img src="/static/images/logo-white.png" alt="">
+                        </div>
+                        <ul>
+                            <li>
+                                <a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a>
+                            </li>
+                            <li>
+                                <a href="#">demo@company.com</a>
+                            </li>
+                            <li>
+                                <a href="#">010-020-0340</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li>
+                            <a href="#">Featured shows</a>
+                        </li>
+                        <li>
+                            <a href="#">Market News</a>
+                        </li>
+                        <li>
+                            <a href="#">Current Fairs</a>
+                        </li>
+                        <li>
+                            <a href="#">Trending Artists</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li>
+                            <a href="#">About Us</a>
+                        </li>
+                        <li>
+                            <a href="#">Galleries</a>
+                        </li>
+                        <li>
+                            <a href="#">Museums</a>
+                        </li>
+                        <li>
+                            <a href="#">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Information</h4>
+                    <ul>
+                        <li>
+                            <a href="#">FAQ's</a>
+                        </li>
+                        <li>
+                            <a href="#">Terms of Use</a>
+                        </li>
+                        <li>
+                            <a href="#">Privacy Policy</a>
+                        </li>
+                        <li>
+                            <a href="#">Security</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
+
+                        <ul>
+                            <li>
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- jQuery -->
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!-- Plugins -->
+    <script src="/static/js/owl-carousel.js"></script>
+    <script src="/static/js/accordions.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <script src="/static/js/scrollreveal.min.js"></script>
+    <script src="/static/js/waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
+
+    <!-- Global Init -->
+    <script src="/static/js/custom.js"></script>
+
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
+        $('#Top-owl-carousel').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 20,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 8000,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 2
+                },
+                1000: {
+                    items: 3
+                }
+            }
+        })
+        $('#noteble-works').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 20,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 7000,
+            responsive: {
+                0: {
+                    items: 2
+                },
+                600: {
+                    items: 4
+                },
+                1000: {
+                    items: 6
+                }
+            }
+        })
+        $('#works-for-sale').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 20,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 8000,
+            responsive: {
+                0: {
+                    items: 2
+                },
+                600: {
+                    items: 4
+                },
+                1000: {
+                    items: 6
+                }
+            }
+        })
+
+        $('#related-artist').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 20,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 7000,
+            responsive: {
+                0: {
+                    items: 2
+                },
+                600: {
+                    items: 4
+                },
+                1000: {
+                    items: 6
+                }
+            }
+        })
+        $('.Show').click(function () {
+            $('#target').show(200);
+            $('#target_2').show(200);
+            $('.Show').hide(0);
+            $('.Hide').show(0);
+        });
+        $('.Hide').click(function () {
+            $('#target').hide(500);
+            $('#target_2').hide(500);
+            $('.Show').show(0);
+            $('.Hide').hide(0);
+        });
+        $('.toggle').click(function () {
+            $('#target').toggle('slow');
+            $('#target_2').toggle('slow');
+        });
+    </script>
+    <script>
+
+        $(function () {
+            var selectedClass = "";
+            $("p").click(function () {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function () {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
+            });
+        });
+
+    </script>
+    <script>
+        $('.moreless-button').click(function () {
+            $('.bio-moretext').slideToggle();
+            if ($('.moreless-button').text() == "Read more") {
+                $(this).text("Read less")
+            } else {
+                $(this).text("Read more")
+            }
+        });
+    </script>
+    <script>
+        $('.moreless-button-2').click(function () {
+            $('.bio-moretext-2').slideToggle();
+            if ($('.moreless-button-2').text() == "Show custom size") {
+                $(this).text("Hide custom size")
+            } else {
+                $(this).text("Show custom size")
+            }
+        });
+    </script>
+</body>
+</html>
