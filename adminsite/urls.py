@@ -40,6 +40,10 @@ urlpatterns = [
     path('savempieces/', views.savempieces, name='savempieces'),
     path('editmpieces/', views.editmpieces, name='editmpieces'),
     path('getmevents/', views.getmevents, name='getmevents'),
+    path('webconfig/', views.webconfig, name='webconfig'),
+    path('searchwebconfig/', views.searchwebconfig, name='searchwebconfig'),
+    path('savewebconfig/', views.savewebconfig, name='savewebconfig'),
+    path('editwebconfig/', views.editwebconfig, name='editwebconfig'),
 ]
 
 

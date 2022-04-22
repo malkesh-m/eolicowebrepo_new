@@ -83,6 +83,7 @@ def showlogin(request):
 
 
 @login_required(login_url='/admin/login/')
+@csrf_protect
 def galleries(request):
     if request.method == 'GET':
         context = {}
@@ -1440,6 +1441,7 @@ def editmevent(request):
     else:
         return HttpResponse("{'Error' : 'Invalid method of call'}")
 
+
 @login_required(login_url='/admin/login/')
 def savemevent(request):
     if request.method == 'POST':
@@ -1945,6 +1947,31 @@ def getmevents(request):
         return HttpResponse(json.dumps(eventsdict))
     else:
         return HttpResponse(json.dumps({}))
+
+
+@login_required(login_url='/admin/login/')
+def webconfig(request):
+    if request.method == 'GET':
+        context = {}
+        template = loader.get_template('webconfig.html')
+        return HttpResponse(template.render(context, request))
+    elif request.method == 'POST':
+        pass
+
+
+@login_required(login_url='/admin/login/')
+def searchwebconfig(request):
+    pass
+
+
+@login_required(login_url='/admin/login/')
+def savewebconfig(request):
+    pass
+
+
+@login_required(login_url='/admin/login/')
+def editwebconfig(request):
+    pass
 
 
 @login_required(login_url='/admin/login/')

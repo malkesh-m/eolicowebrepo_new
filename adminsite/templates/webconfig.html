@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Eolico Admin: Museum Form </title>
+    <title>Eolico Admin: Webconfig Form </title>
 
     <!-- ================= Favicon ================== -->
     <!-- Standard -->
@@ -29,15 +29,15 @@
     <link href="/static/admincss/style.css" rel="stylesheet">
 
     <script type='text/javascript'>
-	function addmuseum(){
-	  csrf = document.frmmuseum.csrfmiddlewaretoken.value;
-	  museumnm = document.frmmuseum.museumname.value;
-	  museumloc = document.frmmuseum.museumlocation.value;
-	  museumdesc = document.frmmuseum.museumdescription.innerHTML;
-	  museumweburl = document.frmmuseum.museumwebsite.value;
-	  museumseltype = document.frmmuseum.selmuseumtype.options[document.frmmuseum.selmuseumtype.options.selectedIndex].value;
-	  museumpr = document.frmmuseum.selmuseumpriority.options[document.frmmuseum.selmuseumpriority.options.selectedIndex].value;
-	  museumcover = document.frmmuseum.museumcoverimage.value;
+	function addwebconfig(){
+	  csrf = document.frmwebconfig.csrfmiddlewaretoken.value;
+	  webconfignm = document.frmwebconfig.webconfigname.value;
+	  webconfigloc = document.frmwebconfig.museumlocation.value;
+	  museumdesc = document.frmwebconfig.museumdescription.innerHTML;
+	  museumweburl = document.frmwebconfig.museumwebsite.value;
+	  museumseltype = document.frmwebconfig.selmuseumtype.options[document.frmwebconfig.selmuseumtype.options.selectedIndex].value;
+	  museumpr = document.frmwebconfig.selmuseumpriority.options[document.frmwebconfig.selmuseumpriority.options.selectedIndex].value;
+	  museumcover = document.frmwebconfig.museumcoverimage.value;
 	  let formData = new FormData();
 	  //alert(formData);
 	  let coverimage = document.getElementById("museumcoverimage").files[0];
@@ -48,7 +48,7 @@
  	  formData.append("museumwebsite", museumweburl); 
 	  formData.append("selmuseumpriority", museumpr); 
 	  if (museumseltype == ""){
-	    museumseltype = document.frmmuseum.museumtype.value;
+	    museumseltype = document.frmwebconfig.museumtype.value;
 	  }
 	  formData.append("selmuseumtype", museumseltype); 
 	  var xmlhttp;
@@ -62,21 +62,21 @@
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    //alert(xmlhttp.responseText);
-	    statusdiv = document.getElementById('musstatus');
+	    statusdiv = document.getElementById('wcstatus');
 	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
 	    setTimeout(function() {
     		document.location.href = document.location.href;
 	    }, 5000);
 	  }
 	  };
-	  xmlhttp.open("POST", '/admin/museums/');
+	  xmlhttp.open("POST", '/admin/webconfig/');
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	}
 
 
-	function searchmuseumsbykeyword(){
-	  keyword = document.frmsearchmuseum.btnmuseumsearch.value;
+	function searchwebconfigbykeyword(){
+	  keyword = document.frmsearchwebconfig.btnwebconfigsearch.value;
 	  //alert(keyword);
  	  var xmlhttp;
 	  if (window.XMLHttpRequest){
@@ -88,44 +88,44 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    musform = document.getElementById('frmmuseum');
-	    musform.innerHTML = "";
+	    wcform = document.getElementById('frmwebconfig');
+	    wcform.innerHTML = "";
 	    gform = "";
-	    museumsdict = JSON.parse(xmlhttp.responseText);
+	    webconfigdict = JSON.parse(xmlhttp.responseText);
 	    for (const [musname, musid] of Object.entries(museumsdict)){
-	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editmuseum(" + musid + ")'>" +  musname + "</a></div>";
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editwebconfig(" + wcid + ")'>" +  wcname + "</a></div>";
 	    }
-	    musform.innerHTML = gform;
+	    wcform.innerHTML = gform;
 	  }
 	  };
-	  xmlhttp.open("GET", '/admin/searchmuseum/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.open("GET", '/admin/searchwebconfig/?searchkey=' + encodeURI(keyword));
 	  xmlhttp.send();
 	}
 
 
-	function savemuseum(){
-	  csrf = document.frmmuseum.csrfmiddlewaretoken.value;
-	  museumnm = document.frmmuseum.museumname.value;
-	  museumloc = document.frmmuseum.museumlocation.value;
-	  museumdesc = document.frmmuseum.museumdescription.value;
-	  museumweburl = document.frmmuseum.museumwebsite.value;
-	  //museumseltype = document.frmmuseum.selmuseumtype.options[document.frmmuseum.selmuseumtype.options.selectedIndex].value;
-	  museumseltype = document.getElementById('selmuseumtype').value;
-	  //museumpr = document.frmmuseum.selmuseumpriority.options[document.frmmuseum.selmuseumpriority.options.selectedIndex].value;
-  	  museumpr = document.getElementById('selmuseumpriority').value;
-	  museumcover = document.frmmuseum.museumcoverimage.value;
-	  musid = document.frmmuseum.mid.value;
+	function savewebconfig(){
+	  csrf = document.frmwebconfig.csrfmiddlewaretoken.value;
+	  museumnm = document.frmwebconfig.museumname.value;
+	  museumloc = document.frmwebconfig.museumlocation.value;
+	  museumdesc = document.frmwebconfig.museumdescription.value;
+	  museumweburl = document.frmwebconfig.museumwebsite.value;
+	  //museumseltype = document.frmwebconfig.selmuseumtype.options[document.frmwebconfig.selmuseumtype.options.selectedIndex].value;
+	  museumseltype = document.getElementById('selwebconfigtype').value;
+	  //museumpr = document.frmwebconfig.selmuseumpriority.options[document.frmwebconfig.selmuseumpriority.options.selectedIndex].value;
+  	  museumpr = document.getElementById('selwebconfigpriority').value;
+	  museumcover = document.frmwebconfig.museumcoverimage.value;
+	  musid = document.frmwebconfig.mid.value;
 	  let formData = new FormData();
 	  //alert(formData);
-	  let coverimage = document.getElementById("museumcoverimage").files[0];
-	  formData.append("museumcoverimage", coverimage); 
+	  let coverimage = document.getElementById("webconfigcoverimage").files[0];
+	  formData.append("webconfigcoverimage", coverimage); 
 	  formData.append("museumname", museumnm); 
 	  formData.append("museumlocation", museumloc); 
 	  formData.append("museumdescription", museumdesc); 
  	  formData.append("museumwebsite", museumweburl); 
 	  formData.append("selmuseumpriority", museumpr); 
 	  if (museumseltype == ""){
-	    museumseltype = document.frmmuseum.museumtype.value;
+	    museumseltype = document.frmwebconfig.museumtype.value;
 	  }
 	  formData.append("selmuseumtype", museumseltype);
 	  formData.append("mid", musid);
@@ -147,7 +147,7 @@
 	    }, 5000);
 	  }
 	  };
-	  xmlhttp.open("POST", '/admin/savemuseum/');
+	  xmlhttp.open("POST", '/admin/savewebconfig/');
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	}
@@ -164,7 +164,7 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    musform = document.getElementById('frmmuseum');
+	    musform = document.getElementById('frmwebconfig');
 	    musform.innerHTML = "";
 	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchmuseum.csrfmiddlewaretoken.value + "'>";
 	    context = JSON.parse(xmlhttp.responseText);
@@ -203,7 +203,7 @@
 	    musform.innerHTML = gform;
 	  }
 	  };
-	  xmlhttp.open("GET", "/admin/editmuseum/?mid=" + mid);
+	  xmlhttp.open("GET", "/admin/editwebconfig/?wcid=" + wcid);
 	  xmlhttp.send();
 	}
     </script>
@@ -254,17 +254,17 @@
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-title">
-                                    <h4>Museum Search Box</h4>
+                                    <h4>Website Config Parameter Search Box</h4>
                                     
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
-                                        <form name='frmsearchmuseum' method='POST' action='/admin/searchmuseum/'>
+                                        <form name='frmsearchwebconfig' method='POST' action='/admin/searchwebconfig/'>
                                             <div class="form-group">
                                                 {% csrf_token %}
                                                 <div class="input-group input-group-default">
-                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searchmuseumsbykeyword();'><i class="ti-search"></i></button></span>
-                                                    <input type="text" placeholder="Search Museums" name="btnmuseumsearch" class="form-control">
+                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searchwebconfigbykeyword();'><i class="ti-search"></i></button></span>
+                                                    <input type="text" placeholder="Search Web Config" name="btnwebconfigsearch" class="form-control">
                                                 </div>
                                             </div>
                                             
@@ -277,73 +277,55 @@
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-title">
-                                    <h3>Add New Museum</h3>
+                                    <h3>Add New Config Param</h3>
                                     
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
-                                        <form name='frmmuseum' method='POST' action='/admin/museums/' id='frmmuseum'>
+                                        <form name='frmwebconfig' method='POST' action='/admin/webconfig/' id='frmwebconfig'>
 					    {% csrf_token %}
 					    <div class="card-title">
-                                    		<h4>Museum Name</h4>
+                                    		<h4>Config Name</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <input type="text" class="form-control input-default " placeholder="Museum Name" name='museumname'>
+                                                <input type="text" class="form-control input-default " placeholder="Config Name" name='webconfigname'>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Museum Location</h4>
+                                    		<h4>Config Value</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <input type="text" class="form-control input-default" placeholder="Museum Location" name='museumlocation'>
+                                                <input type="text" class="form-control input-default" placeholder="Config Value" name='webconfiglocation'>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Museum Description</h4>
+                                    		<h4>Config Description</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <textarea class="form-control input-default" name='museumdescription'></textarea>
+                                                <textarea class="form-control input-default" name='webconfigdescription'></textarea>
                                             </div>
                                             <div class="card-title">
-                                    		<h4>Museum Website</h4>
+                                    		<h4>Config URL</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <input type="text" class="form-control input-default" placeholder="Museum Website" name='museumwebsite'>
+                                                <input type="text" class="form-control input-default" placeholder="Config URL" name='webconfigurl'>
                                             </div>
 					    <div class="card-title">
-                                    		<h4>Museum Type</h4>
+                                    		<h4>Config Type</h4>
                                 	    </div>
                                             <div class="form-group">
-						<select name='selmuseumtype' class="form-control input-default">
+						<select name='selwebconfigtype' class="form-control input-default">
 						<option value=''>Select type </option>
-						{% for mtype in museumtypes %}
+						{% for mtype in webconfigtypes %}
 						<option value='{{mtype}}'>{{mtype}}</option>
 						{% endfor %}
 						<option value='none'>None of the above</option>
 						</select>
-                                                <input type="text" class="form-control input-default" placeholder="Enter Museum Type" name='museumtype'>
+                                                <input type="text" class="form-control input-default" placeholder="Enter Config Type" name='webconfigtype'>
                                             </div>
-					    <div class="card-title">
-                                    		<h4>Museum Priority</h4>
-                                	    </div>
-                                            <div class="form-group">
-                                                <select name='selmuseumpriority' id='selmuseumpriority' class="form-control input-default">
-						<option value=''>Select priority </option>
-						<option value='1'>1 </option>
-						<option value='2'>2 </option>
-						<option value='3'>3 </option>
-						<option value='4'>4 </option>
-						<option value='5'>5 </option>
-						</select>
-                                            </div>
-					    <div class="card-title">
-                                    		<h4>Museum Cover Image</h4>
-                                	    </div>
+					    
 					    <div class="form-group">
-						<input type='file' name='museumcoverimage' id='museumcoverimage' class="form-control input-default">
+						<input type='button' name='addnewwebconfig' class="form-control input-default" value='Add Config Param' onclick='javascript:addwebconfig();'>
 					    </div>
-					    <div class="form-group">
-						<input type='button' name='addnewmuseum' class="form-control input-default" value='Add Museum' onclick='javascript:addmuseum();'>
-					    </div>
-					    <div class="card-title" id='musstatus'>
+					    <div class="card-title" id='wcstatus'>
                                     		
                                 	    </div>
                                         </form>
