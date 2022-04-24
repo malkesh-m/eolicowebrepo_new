@@ -30,7 +30,7 @@ def index(request):
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
-    chunksize = 5
+    chunksize = 4
     # Find out the distinct gallery types available
     gtypesqset = Gallery.objects.order_by().values_list('gallerytype').distinct()
     lastctr1 = int(page) * chunksize

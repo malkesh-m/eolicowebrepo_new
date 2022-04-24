@@ -30,6 +30,8 @@ urlpatterns = [
     path('artist/', include('artists.urls')),
     path('auction/', include('auctions.urls')),
     path('auctionhouse/', include('auctionhouses.urls')),
+    path('about/', login.views.about, name='about'),
+    path('contactus/', login.views.contactus, name='contactus'),
     path('', login.views.index, name='homeindex'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

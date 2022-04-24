@@ -16,6 +16,8 @@ from django.template import loader
 from django.conf import settings
 
 import os, sys, re, time, datetime
+import shutil
+from PIL import Image
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -57,6 +59,28 @@ def handleuploadedfile(uploaded_file, targetdir, filename):
         os.chmod(targetdir, 0o777)
         os.chmod(destinationfile, 0o777) # Is there a way to club these 'chmod' statements?
     return [ destinationfile, '', filename ]
+
+
+def resizeimage(imgfilepath, targetwidth=300):
+    im = Image.open(imgfilepath)
+    concat = float(targetwidth/float(im.size[0]))
+    size = int((float(im.size[1])*float(concat)))
+    resized_im = im.resize((targetwidth,size), Image.ANTIALIAS)
+    inputfilename = os.path.basename(imgfilepath)
+    imgtype = im.format
+    if imgtype == 'JPEG':
+        outputfilename = inputfilename.split(".")[0] + "_resized.jpg"
+    elif imgtype == 'GIF':
+        outputfilename = inputfilename.split(".")[0] + "_resized.gif"
+    elif imgtype == 'PNG':
+        outputfilename = inputfilename.split(".")[0] + "_resized.png"
+    else:
+        print("Image type is not supported.")
+        return None
+    outfilepath = os.path.dirname(os.path.abspath(inputfilename)) + os.path.sep + "media" + os.path.sep + "carousel" + os.path.sep + outputfilename
+    #Save the cropped image
+    resized_im.save(outfilepath)
+    return outfilepath
 
 
 def showlogin(request):
@@ -1956,22 +1980,493 @@ def webconfig(request):
         template = loader.get_template('webconfig.html')
         return HttpResponse(template.render(context, request))
     elif request.method == 'POST':
-        pass
+        webconfigname, webconfigvalue, webconfigdescription, webconfigpath, webconfigpagename = "", "", "", "", ""
+        if 'webconfigname' in request.POST.keys():
+            webconfigname = request.POST['webconfigname'].strip()
+        if 'webconfigvalue' in request.POST.keys():
+            webconfigvalue = request.POST['webconfigvalue'].strip()
+        if 'webconfigdescription' in request.POST.keys():
+            webconfigdescription = request.POST['webconfigdescription'].strip()
+        if 'webconfigpath' in request.POST.keys():
+            webconfigpath = request.POST['webconfigpath'].strip()
+        if 'webconfigpagename' in request.POST.keys():
+            webconfigpagename = request.POST['webconfigpagename'].strip()
+        wcobj = WebConfig()
+        wcobj.pagename = webconfigpagename
+        wcobj.path = webconfigpath
+        wcobj.paramname = webconfigname
+        wcobj.paramvalue = webconfigvalue
+        wcobj.adminuser = request.user
+        try:
+            wcobj.save()
+        except:
+            message = "Could not save configuration value. Please contact admin. Error: %s"%sys.exc_info()[1].__str__()
+            return HttpResponse(message)
+        message = "Saved config param '%s' successfully."%webconfigname
+        return HttpResponse(message)
+        
 
 
 @login_required(login_url='/admin/login/')
 def searchwebconfig(request):
-    pass
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        #print(searchkey)
+        wcqset = WebConfig.objects.filter(paramname__icontains=searchkey).order_by('-edited')
+        wcdict = {}
+        for wc in wcqset:
+            wcdict[wc.paramname] = wc.id
+        wcjson = json.dumps(wcdict)
+        return HttpResponse(wcjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
 
 
 @login_required(login_url='/admin/login/')
 def savewebconfig(request):
-    pass
+    if request.method == 'POST':
+        webconfigname, webconfigvalue, webconfigpath, webconfigpagename, webconfigdescription = "", "", "", "", ""
+        wcid = None
+        if 'wcid' in request.POST.keys():
+            wcid = request.POST['wcid'].strip()
+        if 'webconfigname' in request.POST.keys():
+            webconfigname = request.POST['webconfigname'].strip()
+        if 'webconfigvalue' in request.POST.keys():
+            webconfigvalue = request.POST['webconfigvalue'].strip()
+        if 'webconfigpath' in request.POST.keys():
+            webconfigpath = request.POST['webconfigpath'].strip()
+        if 'webconfigpagename' in request.POST.keys():
+            webconfigpagename = request.POST['webconfigpagename'].strip()
+        if 'webconfigdescription' in request.POST.keys():
+            webconfigdescription = request.POST['webconfigdescription'].strip()
+        if webconfigname == "":
+            message = "Config param name is empty. Can't create Config Param."
+            return HttpResponse(message)
+        wcobj = None
+        try:
+            wcobj = WebConfig.objects.get(id=wcid)
+        except:
+            message = "Could not find WebConfig with Id %s"%wcid
+            return HttpResponse(message)
+        wcobj.paramname = webconfigname
+        wcobj.paramvalue = webconfigvalue
+        wcobj.pagename = webconfigpagename
+        wcobj.path = webconfigpath
+        wcobj.adminuser = request.user
+        try:
+            wcobj.save()
+            message = "Successfully saved webconfig param named '%s'"%webconfigname
+        except:
+            message = "Error: Could not create webconfig param - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Invalid method of call")
 
 
 @login_required(login_url='/admin/login/')
 def editwebconfig(request):
-    pass
+    if request.method == 'GET':
+        context = {}
+        wcid = request.GET.get('wcid')
+        wcqset = WebConfig.objects.filter(id=int(wcid))
+        if wcqset.__len__() == 0:
+            message = {'Error' : 'Could not find webconfig with Id %s'%wcid}
+            resp = json.dumps(message)
+            return HttpResponse(resp)
+        webconfig = {}
+        webconfig['webconfigname'] = wcqset[0].paramname
+        webconfig['webconfigvalue'] = wcqset[0].paramvalue
+        webconfig['webconfigpath'] = wcqset[0].path
+        webconfig['webconfigpagename'] = wcqset[0].pagename
+        webconfig['id'] = wcqset[0].id
+        context['webconfig'] = webconfig
+        wcjson = json.dumps(context)
+        return HttpResponse(wcjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def carousel(request):
+    if request.method == 'GET':
+        context = {}
+        template = loader.get_template('carousel.html')
+        return HttpResponse(template.render(context, request))
+    elif request.method == 'POST':
+        carouselitemname, carouselitemtext, carouselimage, seldatatype, seldataentry, selpriority = "", "", "", "", "", ""
+        if 'carouselitemname' in request.POST.keys():
+            carouselitemname = request.POST['carouselitemname'].strip()
+        if 'carouselitemtext' in request.POST.keys():
+            carouselitemtext = request.POST['carouselitemtext'].strip()
+        if 'seldatatype' in request.POST.keys():
+            seldatatype = request.POST['seldatatype'].strip()
+        if 'seldataentry' in request.POST.keys():
+            seldataentry = request.POST['seldataentry'].strip()
+        if 'selpriority' in request.POST.keys():
+            selpriority = request.POST['selpriority'].strip()
+        carouselobj = Carousel()
+        carouselimage = request.FILES.get("carouselimage")
+        if carouselimage:
+            mimetype = carouselimage.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return HttpResponse("Uploaded file is not gif, jpeg or png format.")
+            if 'carouselimage' in request.FILES.keys():
+                carouselimagename = request.FILES['carouselimage'].name
+            imagelocation = settings.MEDIA_ROOT + os.path.sep + "carousel"
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['carouselimage'], imagelocation, carouselimagename)
+            resizedimagefile = resizeimage(uploadstatus[0], 1500) # Max width is 1500 px.
+            carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+        else: # Get the image of the entry
+            if seldatatype == "gallery":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Gallery.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "gevent":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Event.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.eventimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "museum":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Museum.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "mevent":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = MuseumEvent.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "artist":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Artist.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.squareimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "auction":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Auction.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "auctionhouse":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = AuctionHouse.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+        carouselobj.textvalue = carouselitemtext
+        carouselobj.title = carouselitemname
+        carouselobj.datatype = seldatatype
+        carouselobj.data_id = seldataentry
+        carouselobj.priority = selpriority
+        try:
+            carouselobj.save()
+        except:
+            message = "Could not save carousel entry. Please contact admin. Error: %s"%sys.exc_info()[1].__str__()
+            return HttpResponse(message)
+        message = "Saved carousel entry '%s' successfully."%carouselitemname
+        return HttpResponse(message)
+
+
+@login_required(login_url='/admin/login/')
+def getcarouselentries(request):
+    if request.method == 'POST':
+        context = {}
+        cardatatype = ""
+        if 'seldatatype' in request.POST.keys():
+            cardatatype = request.POST['seldatatype']
+        dqset = None
+        cardict = {}
+        if cardatatype == "gallery":
+            dqset = Gallery.objects.all()
+            for dq in dqset:
+                dname = dq.galleryname
+                did = dq.id
+                cardict[dname] = did
+        elif cardatatype == "gevent":
+            dqset = Event.objects.all()
+            for dq in dqset:
+                dname = dq.eventname
+                did = dq.id
+                cardict[dname] = did
+        elif cardatatype == "museum":
+            dqset = Museum.objects.all()
+            for dq in dqset:
+                dname = dq.museumname
+                did = dq.id
+                cardict[dname] = did
+        elif cardatatype == "mevent":
+            dqset = MuseumEvent.objects.all()
+            for dq in dqset:
+                dname = dq.eventname
+                did = dq.id
+                cardict[dname] = did
+        elif cardatatype == "artist":
+            dqset = Artist.objects.all()
+            for dq in dqset:
+                dname = dq.artistname
+                did = dq.id
+                cardict[dname] = did
+        elif cardatatype == "auction":
+            dqset = Auction.objects.all()
+            for dq in dqset:
+                dname = dq.auctionname
+                did = dq.id
+                cardict[dname] = did
+        elif cardatatype == "auctionhouse":
+            dqset = AuctionHouse.objects.all()
+            for dq in dqset:
+                dname = dq.housename
+                did = dq.id
+                cardict[dname] = did
+        return HttpResponse(json.dumps(cardict))
+    else:
+        return HttpResponse(json.dumps({}))
+
+
+@login_required(login_url='/admin/login/')
+def searchcarousel(request):
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        #print(searchkey)
+        carqset = Carousel.objects.filter(title__icontains=searchkey).order_by('priority', '-edited')
+        cardict = {}
+        for car in carqset:
+            cardict[car.title] = car.id
+        carjson = json.dumps(cardict)
+        return HttpResponse(carjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def editcarousel(request):
+    if request.method == 'GET':
+        context = {}
+        carid = request.GET.get('carid')
+        carqset = Carousel.objects.filter(id=int(carid))
+        if carqset.__len__() == 0:
+            message = {'Error' : 'Could not find carousel with Id %s'%carid}
+            resp = json.dumps(message)
+            return HttpResponse(resp)
+        carouseldict = {}
+        carouseldict['carouselitemname'] = carqset[0].title
+        carouseldict['carouselitemtext'] = carqset[0].textvalue
+        carouseldict['carouseldatatype'] = carqset[0].datatype
+        carouseldict['carouseldataentry'] = carqset[0].data_id
+        carouseldict['selpriority'] = carqset[0].priority
+        carouseldict['id'] = carqset[0].id
+        context['carouseldict'] = carouseldict
+        carouseldatadict = {}
+        if carqset[0].datatype == "gallery":
+            dqset = Gallery.objects.all()
+            for dq in dqset:
+                dname = dq.galleryname
+                did = dq.id
+                carouseldatadict[dname] = did
+        elif carqset[0].datatype == "gevent":
+            dqset = Event.objects.all()
+            for dq in dqset:
+                dname = dq.eventname
+                did = dq.id
+                carouseldatadict[dname] = did
+        elif carqset[0].datatype == "museum":
+            dqset = Museum.objects.all()
+            for dq in dqset:
+                dname = dq.museumname
+                did = dq.id
+                carouseldatadict[dname] = did
+        elif carqset[0].datatype == "mevent":
+            dqset = MuseumEvent.objects.all()
+            for dq in dqset:
+                dname = dq.eventname
+                did = dq.id
+                carouseldatadict[dname] = did
+        elif carqset[0].datatype == "artist":
+            dqset = Artist.objects.all()
+            for dq in dqset:
+                dname = dq.artistname
+                did = dq.id
+                carouseldatadict[dname] = did
+        elif carqset[0].datatype == "auction":
+            dqset = Auction.objects.all()
+            for dq in dqset:
+                dname = dq.auctionname
+                did = dq.id
+                carouseldatadict[dname] = did
+        elif carqset[0].datatype == "auctionhouse":
+            dqset = AuctionHouse.objects.all()
+            for dq in dqset:
+                dname = dq.housename
+                did = dq.id
+                carouseldatadict[dname] = did
+        context['carouseldatadict'] = carouseldatadict
+        carjson = json.dumps(context)
+        return HttpResponse(carjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def savecarousel(request):
+    if request.method == 'POST':
+        carouselitemname, carouselitemtext, carouselimage, seldatatype, seldataentry, selpriority, carid = "", "", "", "", "", "", ""
+        if 'carouselitemname' in request.POST.keys():
+            carouselitemname = request.POST['carouselitemname'].strip()
+        if 'carouselitemtext' in request.POST.keys():
+            carouselitemtext = request.POST['carouselitemtext'].strip()
+        if 'seldatatype' in request.POST.keys():
+            seldatatype = request.POST['seldatatype'].strip()
+        if 'seldataentry' in request.POST.keys():
+            seldataentry = request.POST['seldataentry'].strip()
+        if 'selpriority' in request.POST.keys():
+            selpriority = request.POST['selpriority'].strip()
+        if 'carid' in request.POST.keys():
+            carid = request.POST['carid'].strip()
+        if carouselitemname == "":
+            message = "Carousel entry name is empty. Can't create carousel entry."
+            return HttpResponse(message)
+        carobj = None
+        try:
+            carobj = Carousel.objects.get(id=carid)
+        except:
+            message = "Could not find Carousel entry with Id %s"%carid
+            return HttpResponse(message)
+        carobj.title = carouselitemname
+        carobj.textvalue = carouselitemtext
+        carobj.datatype = seldatatype
+        carobj.data_id = seldataentry
+        carobj.priority = selpriority
+        # Handle image for the carousel entry
+        carouselimage = request.FILES.get("carouselimage")
+        if carouselimage:
+            mimetype = carouselimage.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return HttpResponse("Uploaded file is not gif, jpeg or png format.")
+            if 'carouselimage' in request.FILES.keys():
+                carouselimagename = request.FILES['carouselimage'].name
+            imagelocation = settings.MEDIA_ROOT + os.path.sep + "carousel"
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['carouselimage'], imagelocation, carouselimagename)
+            resizedimagefile = resizeimage(uploadstatus[0], 1500) # Max width is 1500 px.
+            carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+        else: # Get the image of the entry
+            if seldatatype == "gallery":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Gallery.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "gevent":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Event.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.eventimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "museum":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Museum.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "mevent":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = MuseumEvent.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "artist":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Artist.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.squareimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "auction":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = Auction.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+            elif seldatatype == "auctionhouse":
+                entid = seldataentry
+                dqobj = None
+                try:
+                    dqobj = AuctionHouse.objects.get(id=entid)
+                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
+                    carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
+                except:
+                    return HttpResponse("Could not find any image for this carousel entry.")
+        try:
+            carobj.save()
+            message = "Successfully saved carousel entry named '%s'"%carouselitemname
+        except:
+            message = "Error: Could not save carousel entry - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Invalid method of call")
 
 
 @login_required(login_url='/admin/login/')

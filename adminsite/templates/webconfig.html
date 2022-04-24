@@ -32,25 +32,21 @@
 	function addwebconfig(){
 	  csrf = document.frmwebconfig.csrfmiddlewaretoken.value;
 	  webconfignm = document.frmwebconfig.webconfigname.value;
-	  webconfigloc = document.frmwebconfig.museumlocation.value;
-	  museumdesc = document.frmwebconfig.museumdescription.innerHTML;
-	  museumweburl = document.frmwebconfig.museumwebsite.value;
-	  museumseltype = document.frmwebconfig.selmuseumtype.options[document.frmwebconfig.selmuseumtype.options.selectedIndex].value;
-	  museumpr = document.frmwebconfig.selmuseumpriority.options[document.frmwebconfig.selmuseumpriority.options.selectedIndex].value;
-	  museumcover = document.frmwebconfig.museumcoverimage.value;
+	  webconfigval = document.frmwebconfig.webconfigvalue.value;
+	  webconfigdesc = document.frmwebconfig.webconfigdescription.value;
+	  webconfigpth = document.frmwebconfig.webconfigpath.value;
+	  webconfigpgname = document.frmwebconfig.webconfigpagename.value;
 	  let formData = new FormData();
 	  //alert(formData);
-	  let coverimage = document.getElementById("museumcoverimage").files[0];
-	  formData.append("museumcoverimage", coverimage); 
-	  formData.append("museumname", museumnm); 
-	  formData.append("museumlocation", museumloc); 
-	  formData.append("museumdescription", museumdesc); 
- 	  formData.append("museumwebsite", museumweburl); 
-	  formData.append("selmuseumpriority", museumpr); 
-	  if (museumseltype == ""){
-	    museumseltype = document.frmwebconfig.museumtype.value;
+	  formData.append("webconfigname", webconfignm); 
+	  formData.append("webconfigvalue", webconfigval); 
+	  formData.append("webconfigdescription", webconfigdesc); 
+ 	  formData.append("webconfigpath", webconfigpth); 
+	  formData.append("webconfigpagename", webconfigpgname); 
+	  if (webconfignm == "" || webconfigval == ""){
+	    alert("Config name and value parameters are required.");
+	    exit;
 	  }
-	  formData.append("selmuseumtype", museumseltype); 
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -92,8 +88,8 @@
 	    wcform.innerHTML = "";
 	    gform = "";
 	    webconfigdict = JSON.parse(xmlhttp.responseText);
-	    for (const [musname, musid] of Object.entries(museumsdict)){
-	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editwebconfig(" + wcid + ")'>" +  wcname + "</a></div>";
+	    for (const [cfgname, cfgid] of Object.entries(webconfigdict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editwebconfig(" + cfgid + ")'>" +  cfgname + "</a></div>";
 	    }
 	    wcform.innerHTML = gform;
 	  }
@@ -105,30 +101,20 @@
 
 	function savewebconfig(){
 	  csrf = document.frmwebconfig.csrfmiddlewaretoken.value;
-	  museumnm = document.frmwebconfig.museumname.value;
-	  museumloc = document.frmwebconfig.museumlocation.value;
-	  museumdesc = document.frmwebconfig.museumdescription.value;
-	  museumweburl = document.frmwebconfig.museumwebsite.value;
-	  //museumseltype = document.frmwebconfig.selmuseumtype.options[document.frmwebconfig.selmuseumtype.options.selectedIndex].value;
-	  museumseltype = document.getElementById('selwebconfigtype').value;
-	  //museumpr = document.frmwebconfig.selmuseumpriority.options[document.frmwebconfig.selmuseumpriority.options.selectedIndex].value;
-  	  museumpr = document.getElementById('selwebconfigpriority').value;
-	  museumcover = document.frmwebconfig.museumcoverimage.value;
-	  musid = document.frmwebconfig.mid.value;
+	  webconfignm = document.frmwebconfig.webconfigname.value;
+	  webconfigval = document.frmwebconfig.webconfigvalue.value;
+	  webconfigpth = document.frmwebconfig.webconfigpath.value;
+	  webconfigpgname = document.frmwebconfig.webconfigpagename.value;
+	  webconfigdesc = document.frmwebconfig.webconfigdescription.value;
+	  webconfigid = document.frmwebconfig.wcid.value;
 	  let formData = new FormData();
 	  //alert(formData);
-	  let coverimage = document.getElementById("webconfigcoverimage").files[0];
-	  formData.append("webconfigcoverimage", coverimage); 
-	  formData.append("museumname", museumnm); 
-	  formData.append("museumlocation", museumloc); 
-	  formData.append("museumdescription", museumdesc); 
- 	  formData.append("museumwebsite", museumweburl); 
-	  formData.append("selmuseumpriority", museumpr); 
-	  if (museumseltype == ""){
-	    museumseltype = document.frmwebconfig.museumtype.value;
-	  }
-	  formData.append("selmuseumtype", museumseltype);
-	  formData.append("mid", musid);
+	  formData.append("webconfigname", webconfignm); 
+	  formData.append("webconfigvalue", webconfigval); 
+	  formData.append("webconfigpath", webconfigpth); 
+ 	  formData.append("webconfigpagename", webconfigpgname); 
+	  formData.append("webconfigdescription", webconfigdesc); 
+	  formData.append("wcid", webconfigid);
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -140,7 +126,7 @@
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    //alert(xmlhttp.responseText);
-	    statusdiv = document.getElementById('musstatus');
+	    statusdiv = document.getElementById('wcstatus');
 	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
 	    setTimeout(function() {
     		document.location.href = document.location.href;
@@ -153,7 +139,7 @@
 	}
 
 
-	function editmuseum(mid){
+	function editwebconfig(wcid){
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -164,43 +150,22 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    musform = document.getElementById('frmwebconfig');
-	    musform.innerHTML = "";
-	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchmuseum.csrfmiddlewaretoken.value + "'>";
+	    wcform = document.getElementById('frmwebconfig');
+	    wcform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchwebconfig.csrfmiddlewaretoken.value + "'>";
 	    context = JSON.parse(xmlhttp.responseText);
-	    museumdict = context['museum'];
-	    museumtypes = context['museumtypes'];
-	    gform += "<div class='card-title'><h4>Museum Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Name' name='museumname' value='" + museumdict['museumname'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Museum Location</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Location' name='museumlocation' value='" + museumdict['location'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Museum Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='museumdescription'>" + museumdict['description'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Museum Website</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Website' name='museumwebsite' value='" + museumdict['website'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Museum Type</h4></div><div class='form-group'>";
-	    gform += "<select name='selmuseumtype' id ='selmuseumtype' class='form-control input-default'><option value=''>Select type </option>";
-	    for(var i=0; i < museumtypes.length; i++){
-		if(museumtypes[i] == museumdict['museumtype']){
-		gform += "<option value='" + museumtypes[i] + "' selected>" + museumtypes[i] + "</option>";
-		}
-		else{
-		gform += "<option value='" + museumtypes[i] + "'>" + museumtypes[i] + "</option>";
-		}
-	    }
-	    gform += "<option value='none'>None of the above</option></select><input type='text' class='form-control input-default' placeholder='Enter Museum Type' name='museumtype'></div>";
-	    gform += "<div class='card-title'><h4>Museum Priority</h4></div><div class='form-group'>";
-	    gform += "<select name='selmuseumpriority' id='selmuseumpriority' class='form-control input-default'><option value=''>Select priority </option>";
-	    for(i=1; i <= 5; i++){
-		if(museumdict['priority'] == i){
-		gform += "<option value='" + i + "' selected>" + i + " </option>";
-		}
-		else{
-		gform += "<option value='" + i + "'>" + i + " </option>";
-		}
-	    }
-	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Museum Cover Image</h4></div><div class='form-group'><input type='file' name='museumcoverimage' id='museumcoverimage' class='form-control input-default'></div>";
-	    gform += "<div class='card-title'><input type='button' name='addnewmuseum' class='form-control input-default' value='Save Museum' onclick='javascript:savemuseum();'></div>";
-	    gform += "<div class='card-title' id='musstatus'></div>";
-	    gform += "<input type='hidden' name='mid' value='" + museumdict['id'] + "'>";
-	    musform.innerHTML = gform;
+	    console.log(JSON.stringify(context));
+	    wcdict = context['webconfig'];
+	    gform += "<div class='card-title'><h4>Config Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Config Name' name='webconfigname' value='" + wcdict['webconfigname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Config Value</h4></div><div class='form-group'><textarea class='form-control input-default ' name='webconfigvalue'>" + wcdict['webconfigvalue'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Page Path (Web)</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Page Path' name='webconfigpath' value='" + wcdict['webconfigpath'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Page Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Page Name' name='webconfigpagename' value='" + wcdict['webconfigpagename'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Config Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='webconfigdescription'>" + wcdict['webconfigdescription'] + "</textarea></div>";
+	    
+	    gform += "<div class='card-title'><input type='button' name='addnewwebconfig' class='form-control input-default' value='Save Config Param' onclick='javascript:savewebconfig();'></div>";
+	    gform += "<div class='card-title' id='wcstatus'></div>";
+	    gform += "<input type='hidden' name='wcid' value='" + wcdict['id'] + "'>";
+	    wcform.innerHTML = gform;
 	  }
 	  };
 	  xmlhttp.open("GET", "/admin/editwebconfig/?wcid=" + wcid);
@@ -240,6 +205,7 @@
 				    <li class="breadcrumb-item"><a href="/admin/lots/">Lots</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/prices/">Prices</a></li>
 				    <li class="breadcrumb-item"><a href="/admin/webconfig/">Webconfig</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/carousel/">Carousel</a></li>
                                 </ol>
                             </div>
                         </div>
@@ -255,7 +221,6 @@
                             <div class="card">
                                 <div class="card-title">
                                     <h4>Website Config Parameter Search Box</h4>
-                                    
                                 </div>
                                 <div class="card-body">
                                     <div class="basic-form">
@@ -294,7 +259,19 @@
                                     		<h4>Config Value</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <input type="text" class="form-control input-default" placeholder="Config Value" name='webconfiglocation'>
+                                                <textarea class="form-control input-default" name='webconfigvalue'></textarea>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Page Path (Web)</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Page Path" name='webconfigpath'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Page Name</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Page Name" name='webconfigpagename'>
                                             </div>
 					    <div class="card-title">
                                     		<h4>Config Description</h4>
@@ -302,26 +279,7 @@
                                             <div class="form-group">
                                                 <textarea class="form-control input-default" name='webconfigdescription'></textarea>
                                             </div>
-                                            <div class="card-title">
-                                    		<h4>Config URL</h4>
-                                	    </div>
-                                            <div class="form-group">
-                                                <input type="text" class="form-control input-default" placeholder="Config URL" name='webconfigurl'>
-                                            </div>
-					    <div class="card-title">
-                                    		<h4>Config Type</h4>
-                                	    </div>
-                                            <div class="form-group">
-						<select name='selwebconfigtype' class="form-control input-default">
-						<option value=''>Select type </option>
-						{% for mtype in webconfigtypes %}
-						<option value='{{mtype}}'>{{mtype}}</option>
-						{% endfor %}
-						<option value='none'>None of the above</option>
-						</select>
-                                                <input type="text" class="form-control input-default" placeholder="Enter Config Type" name='webconfigtype'>
-                                            </div>
-					    
+                                            					    
 					    <div class="form-group">
 						<input type='button' name='addnewwebconfig' class="form-control input-default" value='Add Config Param' onclick='javascript:addwebconfig();'>
 					    </div>

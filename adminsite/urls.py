@@ -44,6 +44,11 @@ urlpatterns = [
     path('searchwebconfig/', views.searchwebconfig, name='searchwebconfig'),
     path('savewebconfig/', views.savewebconfig, name='savewebconfig'),
     path('editwebconfig/', views.editwebconfig, name='editwebconfig'),
+    path('carousel/', views.carousel, name='carousel'),
+    path('getcarouselentries/', views.getcarouselentries, name='getcarouselentries'),
+    path('searchcarousel/', views.searchcarousel, name='searchcarousel'),
+    path('editcarousel/', views.editcarousel, name='editcarousel'),
+    path('savecarousel/', views.savecarousel, name='savecarousel'),
 ]
 
 

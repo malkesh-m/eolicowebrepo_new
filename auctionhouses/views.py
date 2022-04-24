@@ -32,7 +32,7 @@ def index(request):
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
-    chunksize = 5
+    chunksize = 4
     rows = 6
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
@@ -104,7 +104,7 @@ def details(request):
     auctionslist = []
     relatedartists = {}
     context = {}
-    chunksize = 5
+    chunksize = 4
     auctioninfo = {'auctionname' : auctionobj.auctionname, 'auctionhouse' : auctionobj.auctionhouse, 'auctionlocation' : auctionobj.auctionlocation, 'description' : auctionobj.description, 'auctionurl' : auctionobj.auctionurl, 'lotsurl' : auctionobj.lotslistingurl, 'coverimage' : auctionobj.coverimage, 'auctiondate' : auctionobj.auctiondate, 'auctionid' : auctionobj.auctionid, 'aucid' : auctionobj.id}
     context['auctioninfo'] = auctioninfo
     overviewlots = []

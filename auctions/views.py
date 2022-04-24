@@ -30,9 +30,9 @@ def index(request):
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
-    chunksize = 9
+    chunksize = 4
     rows = 6
-    featuredsize = 5
+    featuredsize = 4
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
@@ -104,7 +104,7 @@ def details(request):
         lotobj = Lot.objects.get(id=lid)
     except:
         return HttpResponse("Could not find the lot identified by the lot Id (%s)"%lid)
-    chunksize = 6
+    chunksize = 4
     rows = 2
     context = {}
     lotinfo = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artist' : lotobj.artistname, 'birth' : lotobj.artistbirth, 'death' : lotobj.artistdeath, 'nationality' : lotobj.artistnationality, 'medium' : lotobj.medium, 'size' : lotobj.size, 'auctionname' : lotobj.auction.auctionname, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'provenance' : lotobj.provenance, 'literature' : lotobj.literature, 'exhibitions' : lotobj.exhibited, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.loturl, 'category' : lotobj.category, 'created' : ''}

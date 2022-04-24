@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Eolico Admin: Webconfig Form </title>
+
+    <!-- ================= Favicon ================== -->
+    <!-- Standard -->
+    <link rel="shortcut icon" href="http://placehold.it/64.png/000/fff">
+    <!-- Retina iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="144x144" href="http://placehold.it/144.png/000/fff">
+    <!-- Retina iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="114x114" href="http://placehold.it/114.png/000/fff">
+    <!-- Standard iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="72x72" href="http://placehold.it/72.png/000/fff">
+    <!-- Standard iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="57x57" href="http://placehold.it/57.png/000/fff">
+
+    <!-- Styles -->
+    <link href="/static/admincss/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/themify-icons.css" rel="stylesheet">
+    <link href="/static/admincss/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="/static/admincss/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/helper.css" rel="stylesheet">
+    <link href="/static/admincss/style.css" rel="stylesheet">
+
+    <script type='text/javascript'>
+ 	function populateentrydata(){
+	  csrf = document.frmcarousel.csrfmiddlewaretoken.value;
+	  datatype = document.frmcarousel.seldatatype.options[document.frmcarousel.seldatatype.options.selectedIndex].value;
+	  let formData = new FormData();
+	  //alert(formData);
+	  formData.append("seldatatype", datatype); 
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    // Create dropdown options here... First remove existing options
+	    entryselect = document.getElementById('seldataentry');
+	    entryselect.options.length = 0;
+	    entrydict = JSON.parse(xmlhttp.responseText);
+	    for (const [entname, entid] of Object.entries(entrydict)){
+	        entryoption = document.createElement("option");
+	    	entryoption.text = entname;
+	    	entryoption.value = entid;
+	    	entryselect.appendChild(entryoption);
+	    }
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/getcarouselentries/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+	function addcarousel(){
+	  csrf = document.frmcarousel.csrfmiddlewaretoken.value;
+	  carouselnm = document.frmcarousel.carouselitemname.value;
+	  carouselval = document.frmcarousel.carouselitemtext.value;
+	  carouseldt = document.frmcarousel.seldatatype.options[document.frmcarousel.seldatatype.options.selectedIndex].value;
+	  carouselde = document.frmcarousel.seldataentry.options[document.frmcarousel.seldataentry.options.selectedIndex].value;
+	  carouselpr = document.frmcarousel.selpriority.options[document.frmcarousel.selpriority.options.selectedIndex].value;
+	  let formData = new FormData();
+	  let carouselimg = document.getElementById("carouselimage").files[0];
+	  formData.append("carouselimage", carouselimg);
+	  //alert(formData);
+	  formData.append("carouselitemname", carouselnm); 
+	  formData.append("carouselitemtext", carouselval); 
+ 	  formData.append("seldatatype", carouseldt); 
+	  formData.append("seldataentry", carouselde); 
+	  formData.append("selpriority", carouselpr); 
+	  if (carouselnm == "" || carouselval == ""){
+	    alert("Carousel Item name and value parameters are required.");
+	    exit;
+	  }
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('crstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/carousel/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+
+	function searchcarouselbykeyword(){
+	  keyword = document.frmsearchcarousel.btncarouselsearch.value;
+	  //alert(keyword);
+ 	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    carform = document.getElementById('frmcarousel');
+	    carform.innerHTML = "";
+	    gform = "";
+	    carouseldict = JSON.parse(xmlhttp.responseText);
+	    for (const [entname, entid] of Object.entries(carouseldict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editcarousel(" + entid + ")'>" +  entname + "</a></div>";
+	    }
+	    carform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", '/admin/searchcarousel/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.send();
+	}
+
+
+	function savecarousel(){
+	  csrf = document.frmcarousel.csrfmiddlewaretoken.value;
+	  carouselnm = document.frmcarousel.carouselitemname.value;
+	  carouselval = document.frmcarousel.carouselitemtext.value;
+	  carouseldt = document.frmcarousel.seldatatype.options[document.frmcarousel.seldatatype.options.selectedIndex].value;
+	  carouselde = document.frmcarousel.seldataentry.options[document.frmcarousel.seldataentry.options.selectedIndex].value;
+	  carouselpr = document.frmcarousel.selpriority.options[document.frmcarousel.selpriority.options.selectedIndex].value;
+	  crid = document.frmcarousel.carid.value;
+	  let formData = new FormData();
+	  let carouselimg = document.getElementById("carouselimage").files[0];
+	  formData.append("carouselimage", carouselimg);
+	  //alert(formData);
+	  formData.append("carouselitemname", carouselnm); 
+	  formData.append("carouselitemtext", carouselval); 
+ 	  formData.append("seldatatype", carouseldt); 
+	  formData.append("seldataentry", carouselpr); 
+	  formData.append("selpriority", webconfigid);
+	  formData.append("carid", crid);
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('crstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/savecarousel/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+
+	function editcarousel(crid){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    carform = document.getElementById('frmcarousel');
+	    carform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchcarousel.csrfmiddlewaretoken.value + "'>";
+	    context = JSON.parse(xmlhttp.responseText);
+	    //console.log(JSON.stringify(context));
+	    cardict = context['carouseldict'];
+            cardatatype = cardict['carouseldatatype'];
+            cardataentry = cardict['carouseldataentry'];
+            cardatadict = context['carouseldatadict'];
+	    carpriority = cardict['selpriority'];
+	    gform += "<div class='card-title'><h4>Entry Title</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Entry Title' name='carouselitemname' value='" + cardict['carouselitemname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Entry Text</h4></div><div class='form-group'><textarea class='form-control input-default' name='carouselitemtext'>" + cardict['carouselitemtext'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Image</h4></div><div class='form-group'><input type='file' name='carouselimage' id='carouselimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Data Type</h4></div><div class='form-group'><select class='form-control input-default' name='seldatatype' id='seldatatype' onchange='javascript:populateentrydata();'>";
+	    if(cardatatype == "gallery"){
+		gform += "<option value=''>Select Type</option><option value='gallery' 'selected'>Gallery</option><option value='gevent'>Gallery Event</option><option value='museum'>Museum</option><option value='mevent'>Museum Event</option><option value='auction'>Auction</option> <option value='artist'>Artist</option><option value='auctionhouse'>Auction House</option>";
+	    }
+	    else if(cardatatype == "gevent"){
+		gform += "<option value=''>Select Type</option><option value='gallery'>Gallery</option><option value='gevent' 'selected'>Gallery Event</option><option value='museum'>Museum</option><option value='mevent'>Museum Event</option><option value='auction'>Auction</option> <option value='artist'>Artist</option><option value='auctionhouse'>Auction House</option>";
+	    }
+	    else if(cardatatype == "museum"){
+		gform += "<option value=''>Select Type</option><option value='gallery'>Gallery</option><option value='gevent'>Gallery Event</option><option value='museum' 'selected'>Museum</option><option value='mevent'>Museum Event</option><option value='auction'>Auction</option> <option value='artist'>Artist</option><option value='auctionhouse'>Auction House</option>";
+	    }
+	    else if(cardatatype == "mevent"){
+		gform += "<option value=''>Select Type</option><option value='gallery'>Gallery</option><option value='gevent'>Gallery Event</option><option value='museum'>Museum</option><option value='mevent' 'selected'>Museum Event</option><option value='auction'>Auction</option> <option value='artist'>Artist</option><option value='auctionhouse'>Auction House</option>";
+	    }
+	    else if(cardatatype == "artist"){
+		gform += "<option value=''>Select Type</option><option value='gallery'>Gallery</option><option value='gevent'>Gallery Event</option><option value='museum'>Museum</option><option value='mevent'>Museum Event</option><option value='auction'>Auction</option> <option value='artist' 'selected'>Artist</option><option value='auctionhouse'>Auction House</option>";
+	    }
+	    else if(cardatatype == "auction"){
+		gform += "<option value=''>Select Type</option><option value='gallery'>Gallery</option><option value='gevent'>Gallery Event</option><option value='museum'>Museum</option><option value='mevent'>Museum Event</option><option value='auction' 'selected'>Auction</option> <option value='artist'>Artist</option><option value='auctionhouse'>Auction House</option>";
+	    }
+	    else if(cardatatype == "auctionhouse"){
+		gform += "<option value=''>Select Type</option><option value='gallery'>Gallery</option><option value='gevent'>Gallery Event</option><option value='museum'>Museum</option><option value='mevent'>Museum Event</option><option value='auction'>Auction</option> <option value='artist'>Artist</option><option value='auctionhouse' 'selected'>Auction House</option>";
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Select Entry</h4></div><div class='form-group'><select class='form-control input-default' name='seldataentry' id='seldataentry'>";
+	    for (const [entname, entid] of Object.entries(cardatadict)){
+		if(cardataentry == entid){
+		    gform += "<option value='" + entid + "' 'selected'>" + entname + "</option>";
+		}
+		else{
+		    gform += "<option value='" + entid + "'>" + entname + "</option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Select Priority</h4></div><div class='form-group'><select class='form-control input-default' name='selpriority' id='selpriority'>";
+	    if(carpriority == "1"){
+		gform += "<option value=''>Select Priority</option><option value='1' selected>1 </option><option value='2'>2 </option><option value='3'>3 </option><option value='4'>4 </option><option value='5'>5 </option>";
+	    }
+	    else if(carpriority == "2"){
+		gform += "<option value=''>Select Priority</option><option value='1'>1 </option><option value='2' selected>2 </option><option value='3'>3 </option><option value='4'>4 </option><option value='5'>5 </option>";
+	    }
+	    else if(carpriority == "3"){
+		gform += "<option value=''>Select Priority</option><option value='1'>1 </option><option value='2'>2 </option><option value='3' selected>3 </option><option value='4'>4 </option><option value='5'>5 </option>";
+	    }
+	    else if(carpriority == "4"){
+		gform += "<option value=''>Select Priority</option><option value='1'>1 </option><option value='2'>2 </option><option value='3'>3 </option><option value='4' selected>4 </option><option value='5'>5 </option>";
+	    }
+	    else if(carpriority == "5"){
+		gform += "<option value=''>Select Priority</option><option value='1'>1 </option><option value='2'>2 </option><option value='3'>3 </option><option value='4'>4 </option><option value='5' selected>5 </option>";
+	    }
+    	    gform += "</select></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewcarousel' class='form-control input-default' value='Save Carousel' onclick='javascript:savecarousel();'></div>";
+	    gform += "<div class='card-title' id='crstatus'></div>";
+	    gform += "<input type='hidden' name='carid' value='" + crid + "'>";
+	    carform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", "/admin/editcarousel/?carid=" + crid);
+	  xmlhttp.send();
+	}
+    </script>
+</head>
+
+<body>
+
+<div class="content-wrap">
+        <div class="main">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 p-r-0 title-margin-right">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h1>Hello, <span>Welcome Here</span></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                    <div class="col-lg-15 p-l-0 title-margin-left">
+                        <div class="page-header">
+                            <div class="card">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/admin/dashboard/">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="/admin/artists/">Artists</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/galleries/">Galleries</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/gevents/">Gallery Events</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/artworks/">Artworks</a></li>
+				    <li class="breadcrumb-item active"><a href="/admin/museums/">Museums</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/mevents/">Museum Events</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/museumpieces/">Museum Pieces</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/auctionhouses/">Auction Houses</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/auctions/">Auctions</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/lots/">Lots</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/prices/">Prices</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/webconfig/">Webconfig</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/carousel/">Carousel</a></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                </div>
+		
+                <!-- /# row -->
+                <section id="main-content">
+                    <div class="row">
+			<!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Website Config Parameter Search Box</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmsearchcarousel' method='POST' action='/admin/searchcarousel/'>
+                                            <div class="form-group">
+                                                {% csrf_token %}
+                                                <div class="input-group input-group-default">
+                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searchcarouselbykeyword();'><i class="ti-search"></i></button></span>
+                                                    <input type="text" placeholder="Search Carousel" name="btncarouselsearch" class="form-control">
+                                                </div>
+                                            </div>
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h3>Add New Carousel Entry</h3>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmcarousel' method='POST' action='/admin/carousel/' id='frmcarousel'>
+					    {% csrf_token %}
+					    <div class="card-title">
+                                    		<h4>Entry Title</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default " placeholder="Entry Title" name='carouselitemname'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Entry Text</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='carouselitemtext'></textarea>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Image</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type='file' name='carouselimage' id='carouselimage' class="form-control input-default">
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Data Type</h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select class="form-control input-default" name='seldatatype' id='seldatatype' onchange='javascript:populateentrydata();'>
+						    <option value=''>Select Type</option>
+						    <option value='gallery'>Gallery</option>
+						    <option value='gevent'>Gallery Event</option>
+						    <option value='museum'>Museum</option>
+						    <option value='mevent'>Museum Event</option>
+						    <option value='auction'>Auction</option>
+						    <option value='artist'>Artist</option>
+						    <option value='auctionhouse'>Auction House</option>
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Select Entry</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <select class="form-control input-default" name='seldataentry' id='seldataentry'>
+						    <option value=''>Select Entry</option>
+						</select>
+                                            </div>
+                                            <div class="card-title">
+                                    		<h4>Priority</h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select class="form-control input-default" name='selpriority' id='selpriority'>
+						    <option value=''>Select Priority</option>
+						    <option value='1'>1 </option>
+						    <option value='2'>2 </option>
+						    <option value='3'>3 </option>
+						    <option value='4'>4 </option>
+						    <option value='5' defaultselected>5 </option>
+						</select>
+                                            </div>			    
+					    <div class="form-group">
+						<input type='button' name='addnewcarousel' class="form-control input-default" value='Add Carousel Entry' onclick='javascript:addcarousel();'>
+					    </div>
+					    <div class="card-title" id='crstatus'>
+                                    		
+                                	    </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- /# row -->
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="footer">
+                                <p>2022 © Eolico Board. - <a href="#">eolico.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    
+    <!-- jquery vendor -->
+    <script src="/static/adminjs/lib/jquery.min.js"></script>
+    <script src="/static/adminjs/lib/jquery.nanoscroller.min.js"></script>
+    <!-- nano scroller -->
+    <script src="/static/adminjs/lib/menubar/sidebar.js"></script>
+    <script src="/static/adminjs/lib/preloader/pace.min.js"></script>
+    <!-- sidebar -->
+    
+    <!-- bootstrap -->
+
+
+    <script src="/static/adminjs/lib/bootstrap.min.js"></script><script src="/static/adminjs/scripts.js"></script>
+    <!-- scripit init-->
+
+
+
+
+
+</body>
+
+</html>

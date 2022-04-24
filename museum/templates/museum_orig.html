@@ -9,20 +9,25 @@
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
 
-    <title>Eolico Auctions</title>
+    <title>Eolico</title>
 
 
     <!-- Additional CSS Files -->
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+
     <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
+
     <link rel="stylesheet" href="/static/css/style.css">
+
     <link rel="stylesheet" href="/static/css/responsive.css">
     <link rel="stylesheet" href="/static/css/owl-carousel.css">
+
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
-
-    <link rel="stylesheet" href="/static/css/newcarousel.css">
-
+	<style>
+		
+ 
+	</style>
 <!--
 
 TemplateMo 571 Hexashop
@@ -30,93 +35,97 @@ TemplateMo 571 Hexashop
 https://templatemo.com/tm-571-hexashop
 
 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script type='text/javascript'>
 	
 	function dofilter(selectid){
 	  //alert("hi");
-	  const artistsdict = {
-	    {% for artist, lotslist in allartists.items %}
-		"{{artist}}" : Array(
-		  {% for lot in lotslist %}
-			Array( "{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}" ),
+	  const museumsdict = {
+	    {% for mtype, museumslist in museumsfull.items %}
+		"{{mtype}}" : Array(
+		  {% for museum in museumslist %}
+			Array( "{{museum.museumname}}", "{{museum.location}}", "{{museum.coverimage}}", "{{museum.museumurl}}", "{{museum.description}}", "{{museum.mid}}" ),
 		  {% endfor %}
 		),
 	    {% endfor %}
 	  };
-          const auctionsdict = {
-	    {% for auction, lotslist in allauctions.items %}
-		"{{auction}}" : Array(
-		  {% for lot in lotslist %}
-			Array( "{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}", "{{lot.artist}}" ),
-		  {% endfor %}
-		),
-	    {% endfor %}
-	  };
-	  sectiontag = document.getElementById("auctions");
+	  sectiontag = document.getElementById("museums");
 	  selecttag = document.getElementById(selectid);
 	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
 	  //alert(selectedoption);
           html = "";
- 	  if(selectid == "byartists"){
-	    for(artst in artistsdict){
-		lotslist = artistsdict[artst];
+ 	  if(selectid == "location"){
+	    for(mtype in museumsdict){
+		museumslist = museumsdict[mtype];
 		starter = 0;
-		for(var i=0; i < lotslist.length; i++){
+		uniquemuseums = {};
+		for(var i=0; i < museumslist.length; i++){
 		  if(selectedoption != "1"){
-		  if(artst.toLowerCase() == selectedoption.toLowerCase()){
+		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
 		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
 			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></a></div></div>";        
+		    if(museumslist[i][0] in uniquemuseums){
+			continue;
+		    }
+		    uniquemuseums[museumslist[i][0]] = 1;
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
 		  }
 		}// if selectedoption != 1
 		else{
 		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
 			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";  
+		    if(museumslist[i][0] in uniquemuseums){
+			continue;
+		    }
+		    uniquemuseums[museumslist[i][0]] = 1;
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";  
 		}
-		} // for lotslist loop ends
+		} // for museumslist loop ends
 		html += "</div></div></div></div></div></section>";
 	    } 
 	  }
-	  if(selectid == "byauctions"){
-	    for(auction in auctionsdict){
-		//if(auction.toLowerCase() == selectedoption.toLowerCase()){
-		  lotslist = auctionsdict[auction];
+	  if(selectid == "speciality"){
+	    for(mtype in museumsdict){
+		if(mtype.toLowerCase() == selectedoption.toLowerCase()){
+		  museumslist = museumsdict[mtype];
 		  starter = 0;
-		for(var i=0; i < lotslist.length; i++){
+		  uniquemuseums = {};
+		for(var i=0; i < museumslist.length; i++){
 		  if(selectedoption != "1"){
-		  if(auction.toLowerCase() == selectedoption.toLowerCase()){
+		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
 		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
 			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";        
+		    if(museumslist[i][0] in uniquemuseums){
+			continue;
+		    }
+		    uniquemuseums[museumslist[i][0]] = 1;
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
 		  }
 		} // if selectedoption != 1
 		else{
 		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
 			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
 		        starter = 1;
 		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";       
+		    if(museumslist[i][0] in uniquemuseums){
+			continue;
+		    }
+		    uniquemuseums[museumslist[i][0]] = 1;
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";       
 		}
-		}  // for lotslist ends
+		}  // for museumslist ends
 		html += "</div></div></div></div></div></section>";
-		//}
+		}
 	    }
 	  }
 	  sectiontag.innerHTML = html;
@@ -152,11 +161,11 @@ https://templatemo.com/tm-571-hexashop
                         <ul class="nav">
                             <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
 				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
-				 <li class="scroll-to-section"><a href="/auction/index/" class="active">Auctions</a></li>
+				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
 				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
 				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+				 <li class="scroll-to-section"><a href="/museum/index/" class="active">Museums</a></li>
 				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
 				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
@@ -193,83 +202,31 @@ https://templatemo.com/tm-571-hexashop
 
     <!-- ***** Main Banner Area Start ***** -->
     
-	   	<!-- Carousel -->
-<section class="testimonials">
-	<div class="container">
-
-      <div class="row">
-        <div class="col-sm-12">
-          <div id="customers-testimonials" class="owl-carousel">
-
-	    {% for d in carousel %}
-            {% if d.datatype == "gallery" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "gevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "museum" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "mevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endif %}
+	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
+		{% for d in carousel %}
+                {% if d.datatype == "gallery" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "gevent" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "museum" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "mevent" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
 		
 	    {% endfor %}
-            
-          </div>
-        </div>
-      </div>
-      </div>
-    </section>
-    <!-- END OF Carousels -->
+		
+	</div>
     <!-- ***** Main Banner Area End ***** -->
 	<section class="section gal-section" id="">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-                        <h2>Browse Auctions</h2>
+                        <h2>Browse Institutions</h2>
 						<hr>
                     </div>
                 </div>
@@ -278,27 +235,28 @@ https://templatemo.com/tm-571-hexashop
 		<div class="container">
             <div class="row">
                 <div class="col-md-4">
-					<!-- <div class="demo"> -->
 					<div class="row">
-					  <select name="byartists" placeholder="Select" class="form-control" id='byartists' onChange="javascript:dofilter('byartists');">
-						<option value="1">All Artists</option>
-						{% for artist, lotlist in allartists.items %}
-						<option value="{{artist}}">{{artist}}</option>
+					<!-- <div class="demo"> -->
+					  <select name="location" placeholder="Select" class="form-control" id='location' onChange="javascript:dofilter('location');">
+						<option value="1">All Locations</option>
+						{% for loc in locations %}
+						<option value="{{loc}}">{{loc}}</option>
 						{% endfor %}
 					  </select>
 					</div>
-				</div>
+		</div>
                 <div class="col-md-4">
-					<!-- <div class="demo"> -->
-					<div class="row">
-					  <select name="byauctions" placeholder="Select" class="form-control" id='byauctions' onChange="javascript:dofilter('byauctions');">
-						<option value="1">All Auctions</option>
-						{% for auctionname, lotslist in allauctions.items %}
-						<option value="{{auctionname}}">{{auctionname}}</option>
+					<!-- 
+					<div class="demo">
+					  <select name="speciality" placeholder="Select" id='speciality' onChange="javascript:dofilter('speciality');">
+						<option value="1">All Specialties</option>
+						{% for mtype in specialities %}
+						<option value="{{mtype}}">{{mtype}}</option>
 						{% endfor %}
 					  </select>
 					</div>
-				</div>
+					-->
+		</div>
                 <div class="col-md-4">
 					<!-- <div class="demo">
 					  <select style="display:none"  placeholder="Select" id='gallery' onchange='javascript:dofilter('gallery');'>
@@ -312,15 +270,16 @@ https://templatemo.com/tm-571-hexashop
 			</div>
 		</div>
 	</section>
-	<!-- Begining of new auctions gallery -->
-	<div id="auctions">
-	{% for auctionname, lotslist in featuredauctions.items %}
+
+	<!-- Begining of new museums gallery -->
+	<div id='museums'>
+	{% for mtype, museumslist in allmuseums.items %}
 	<section class="oth-works mrt-90">
         <div class="container max-container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading section-heading-2 mrb-50">
-                        <h2>{{auctionname}}</h2>
+                        <h2>{{mtype}}</h2>
                         <span>
                             
                         </span>
@@ -328,35 +287,35 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
             <div class="row align-items-end">
-		{% for lot in lotslist %}
+		{% for museum in museumslist %}
                 <div class="column">
                     <div class="img-box">
-			<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
-                        <a href="/auction/details/?lid={{lot.lid}}">
-				<h4>{{lot.title}}</h4>
-				<span>{{lot.artist}}</span>
-				<a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
+			<a href="/museum/details/?mid={{museum.mid}}"><img src="{{museum.coverimage}}" alt=""></a>
+                        <a href="/museum/details/?mid={{museum.mid}}">
+				<h4>{{museum.museumname}}</h4>
+				<span>{{museum.location}}</span>
+				<!-- <a class="btn btn-slider" href="/museum/follow/?mid={{museum.mid}}">Follow</a> -->
 			</a>
 			</a>
                     </div>
                 </div>
 		{% endfor %}
-                
             </div>
         </div>
     	</section>
-    	{% endfor %}
-    	</div>
-	<!-- End of new auctions gallery -->
-	<!-- 
-	<div id="auctions">
-	{% for auctionname, lotslist in featuredauctions.items %}
+	{% endfor %}
+	</div>
+	<!-- End of new museums gallery -->
+
+	<!--
+	<div id='museums'>
+	{% for mtype, museumslist in allmuseums.items %}
 	<section class="section gal-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-                        <h2>{{auctionname}}</h2>
+                        <h2>{{mtype}}</h2>
                         
 						<hr>
                     </div>
@@ -368,16 +327,16 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
-			    {% for lot in lotslist %}
+			    {% for museum in museumslist %}
                             <div class="item">
                                 <div class="thumb">
-                                    <a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
+                                    <a href="/museum/details/?mid={{museum.mid}}"><img src="{{museum.coverimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-									<a href="/auction/details/?lid={{lot.lid}}">
-										<h4>{{lot.title}}</h4>
-										<span>{{lot.artist}}</span>
-										<a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
+									<a href="/museum/details/?mid={{museum.mid}}">
+										<h4>{{museum.museumname}}</h4>
+										<span>{{museum.location}}</span>
+										<a class="btn btn-slider" href="/museum/follow/?mid={{museum.mid}}">Follow</a>
 									</a>
                                 </div>
                             </div>
@@ -388,10 +347,10 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-    </section>
+    	</section>
 	{% endfor %}
-    </div>
-    -->
+   	</div>
+   	-->
     
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -481,33 +440,25 @@ https://templatemo.com/tm-571-hexashop
 		limitCount: 1,
 		input:'<input type="text" maxLength="20" placeholder="Search">'
 	});
-
-jQuery(document).ready(function($) {
-"use strict";
-$('#customers-testimonials').owlCarousel( {
-		loop: true,
-		center: true,
-		items: 3,
-		margin: 30,
-		autoplay: true,
-		dots:true,
-    		nav:true,
-		autoplayTimeout: 8500,
-		smartSpeed: 450,
-  		navText: ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-		responsive: {
-			0: {
-				items: 1
-			},
-			768: {
-				items: 2
-			},
-			1170: {
-				items: 3
+		$('#Top-owl-carousel').owlCarousel({
+			loop:false,
+			rewind: true,
+			margin:1,
+			nav:true,
+			autoplay:true,
+			autoplayTimeout:8000,
+			responsive:{
+				0:{
+					items:1
+				},
+				600:{
+					items:1
+				},
+				1000:{
+					items:1
+				}
 			}
-		}
-	});
-});
+		})
 	</script>
     <script>
 		

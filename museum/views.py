@@ -28,7 +28,7 @@ def index(request):
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
-    chunksize = 9
+    chunksize = 4
     rows = 6
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
