@@ -144,30 +144,18 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-12">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                        <a href="index.html" class="logo">
+                        <a href="/login/index/" class="logo">
                             <img src="/static/images/logo1.png">
                         </a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
-				 <li class="scroll-to-section"><a href="/auction/index/" class="active">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
-				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
 				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
-				 <li class="scroll-to-section"><a href="#">Others</a></li>
-				 <li class="submenu">
-				 <ul>
-				 <li><a href="/about/">About</a></li>
-				 <li><a href="/contactus/">Contact Us</a></li>
-				 </ul>
-				 </li>  
-				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+				 <li class="scroll-to-section"><a href="/auction/index/" class="active">Auctions</a></li>
+				 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -196,11 +184,9 @@ https://templatemo.com/tm-571-hexashop
 	   	<!-- Carousel -->
 <section class="testimonials">
 	<div class="container">
-
       <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel">
-
 	    {% for d in carousel %}
             {% if d.datatype == "gallery" %}
             <div class="item">
@@ -254,9 +240,7 @@ https://templatemo.com/tm-571-hexashop
               </div>
             </div>
 	    {% endif %}
-		
 	    {% endfor %}
-            
           </div>
         </div>
       </div>
@@ -334,7 +318,7 @@ https://templatemo.com/tm-571-hexashop
 			<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
                         <a href="/auction/details/?lid={{lot.lid}}">
 				<h4>{{lot.title}}</h4>
-				<span>{{lot.artist}}</span>
+				<span style="padding-left:10px;">{{lot.artist}}</span>
 				<a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
 			</a>
 			</a>

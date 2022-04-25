@@ -61,11 +61,17 @@ def handleuploadedfile(uploaded_file, targetdir, filename):
     return [ destinationfile, '', filename ]
 
 
-def resizeimage(imgfilepath, targetwidth=300):
+def resizeimage(imgfilepath, targetwidth=1600, targetheight=500):
     im = Image.open(imgfilepath)
-    concat = float(targetwidth/float(im.size[0]))
-    size = int((float(im.size[1])*float(concat)))
-    resized_im = im.resize((targetwidth,size), Image.ANTIALIAS)
+    imheight, imwidth = im.size[1], im.size[0]
+    resizeheight, resizewidth = targetheight, targetwidth
+    if imheight > targetheight:
+        resizeheight = targetheight
+        resizewidth = resizeheight * imwidth/imheight
+    if imwidth > targetwidth:
+        resizewidth = targetwidth
+        resizeheight = resizewidth * imheight/imwidth
+    resized_im = im.resize((resizewidth,resizeheight), Image.ANTIALIAS)
     inputfilename = os.path.basename(imgfilepath)
     imgtype = im.format
     if imgtype == 'JPEG':

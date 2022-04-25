@@ -57,30 +57,18 @@
                 <div class="col-12">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                        <a href="index.html" class="logo">
+                        <a href="/login/index/" class="logo">
                             <img src="/static/images/logo1.png">
                         </a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
-				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
-				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
 				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 				 <li class="scroll-to-section"><a href="/auctionhouse/index/" class="active">Auction Houses</a></li>
-				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
-				 <li class="scroll-to-section"><a href="#">Others</a></li>
-				 <li class="submenu">
-				 <ul>
-				 <li><a href="/about/">About</a></li>
-				 <li><a href="/contactus/">Contact Us</a></li>
-				 </ul>
-				 </li>  
-				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+				 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -106,7 +94,6 @@
 	   	<!-- Carousel -->
     <section class="testimonials">
 	<div class="container">
-
       <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel">
@@ -163,9 +150,7 @@
               </div>
             </div>
 	    {% endif %}
-		
 	    {% endfor %}
-            
           </div>
         </div>
       </div>
@@ -298,8 +283,8 @@
 			<a href='/auctionhouse/details/?aucid={{auction.aucid}}'>
                         <img src="{{auction.coverimage}}" style="width:100%">
                         <h4>{{auction.auctionname}}</h4>
-                        <h6>{{auction.auctiondate}}</h6>
-                        <p>{{auction.location}}</p>
+                        <h6 style="padding-left:10px;">{{auction.auctiondate}}</h6>
+                        <p style="padding-left:10px;">{{auction.location}}</p>
 			</a>
                     </div>
                 </div>

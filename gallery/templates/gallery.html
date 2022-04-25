@@ -265,24 +265,13 @@ https://templatemo.com/tm-571-hexashop
  <!-- ***** Logo End ***** -->
  <!-- ***** Menu Start ***** -->
  <ul class="nav">
- <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
- <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
- <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
- <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
- <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
  <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
  <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
- <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+ <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
  <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
- <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
- <li class="scroll-to-section"><a href="#">Others</a></li>
- <li class="submenu">
- <ul>
- <li><a href="/about/">About</a></li>
- <li><a href="/contactus/">Contact Us</a></li>
- </ul>
- </li>
- <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+ <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+ <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+ 
  <!--<li class="submenu">
  <a href="javascript:;">Pages</a>
  <ul>
@@ -324,11 +313,9 @@ btn-slider" href="#">Explore</a></div></div>
 	   	<!-- Carousel -->
     <section class="testimonials">
 	<div class="container">
-
       <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel">
-
 	    {% for d in carousel %}
             {% if d.datatype == "gallery" %}
             <div class="item">
@@ -382,9 +369,7 @@ btn-slider" href="#">Explore</a></div></div>
               </div>
             </div>
 	    {% endif %}
-		
 	    {% endfor %}
-            
           </div>
         </div>
       </div>
@@ -465,7 +450,7 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
 			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
+			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
 			</a>
@@ -495,7 +480,7 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
 			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
+			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
 			</a>
@@ -525,7 +510,7 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
 			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
+			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
 			</a>
@@ -555,7 +540,7 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
 			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
+			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
 			</a>
@@ -585,7 +570,7 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
 			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
+			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
 			</a>
