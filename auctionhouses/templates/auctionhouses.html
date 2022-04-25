@@ -203,7 +203,7 @@
                         <img src="{{auction.coverimage}}" alt="" />
                     </a>
                     <div class="fea-show align-items-end">
-                        <a href="{{auction.auctionurl}}">
+                        <a href="{{auction.auctionurl}}" style="color:#000000;">
                             <h3>{{auction.auctionname}}</h3>
                             <h4>{{show.housename}} | {{show.location}}</h4>
                             <p>{{auction.auctiondate}}</p>
@@ -280,7 +280,7 @@
 		{% for auction in auctionslist %}
                 <div class="column">
                     <div class="img-box">
-			<a href='/auctionhouse/details/?aucid={{auction.aucid}}'>
+			<a href='/auctionhouse/details/?aucid={{auction.aucid}}' style="color:#000000;">
                         <img src="{{auction.coverimage}}" style="width:100%">
                         <h4>{{auction.auctionname}}</h4>
                         <h6 style="padding-left:10px;">{{auction.auctiondate}}</h6>

@@ -682,7 +682,7 @@
                                     <a href="/gallery/eventdetails/?gevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-									<a href="/gallery/eventdetails/?gevid={{evobj.eventid}}">
+									<a href="/gallery/eventdetails/?gevid={{evobj.eventid}}" style="color:#000000;">
 										<h4>{{eventname}}</h4>
 										<span>{{evobj.eventinfo}}</span>
 										<span>{{evobj.eventperiod}}</span>
@@ -719,7 +719,7 @@
 						<div class="art-list">
 							<div class="list-item">
 							{% for artist in artists %}
-								<p><a href="/artist/details/?aid={{artist.artistid}}">{{artist.artistname}}</a></p>
+								<p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
 							{% endfor %}
 							{% if artists|length == 0%}
 							<span>There are no artists listed for the featured events.</span>
@@ -1281,7 +1281,7 @@
                                 {% for evname, artworkslist in allartworks1.items %}
                                 {% for artwork in artworkslist %}
 				<div class="img-box">
-				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}'>
+				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
 				<img src="{{artwork.image}}" style="width:100%">
 				<h4>{{artwork.artworkname}}</h4>
 				<h6>{{artwork.medium}}</h6>
@@ -1296,7 +1296,7 @@
 				{% for evname, artworkslist in allartworks2.items %}
                                 {% for artwork in artworkslist %}
 				<div class="img-box">
-				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}'>
+				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
 				<img src="{{artwork.image}}" style="width:100%">
 				<h4>{{artwork.artworkname}}</h4>
 				<h6>{{artwork.medium}}</h6>
@@ -1311,7 +1311,7 @@
 				{% for evname, artworkslist in allartworks3.items %}
                                 {% for artwork in artworkslist %}
 				<div class="img-box">
-				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}'>
+				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
 				<img src="{{artwork.image}}" style="width:100%">
 				<h4>{{artwork.artworkname}}</h4>
 				<h6>{{artwork.medium}}</h6>
@@ -1326,7 +1326,7 @@
 				{% for evname, artworkslist in allartworks4.items %}
                                 {% for artwork in artworkslist %}
 				<div class="img-box">
-				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}'>
+				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
 				<img src="{{artwork.image}}" style="width:100%">
 				<h4>{{artwork.artworkname}}</h4>
 				<h6>{{artwork.medium}}</h6>
@@ -1352,7 +1352,7 @@
 						<div class="art-list">
 							<div class="list-item">
 							{% for artist in allartists %}
-								<p><a href="/artist/details/?aid={{artist.artistid}}">{{artist.artistname}}</a></p>
+								<p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
 							{% endfor %}
 							{% if allartists|length == 0%}
 							<span>There are no artists listed for the featured event.</span>

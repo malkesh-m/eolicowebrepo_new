@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from  django.core.validators import validate_email
+from django.contrib.auth.models import User as djUser
 
 def profpicpath(instance, filename):
     return '/'.join([instance.user.displayname, 'images/profile', filename])
@@ -26,7 +27,6 @@ class User(models.Model):
     userpic = models.ImageField(max_length=100, upload_to=profpicpath, help_text='Path to user\'s profile image.')
     newuser = models.BooleanField(default=False, help_text='False if user hasn\'t validated her/his email address')
     #skinpic = models.ImageField(max_length=100, upload_to=profpicpath)
-
 
     class Meta:
         verbose_name = "User Information Table"
@@ -73,7 +73,6 @@ class Privilege(models.Model):
     privdesc = models.TextField(default="")
     createdate = models.DateTimeField(auto_now_add=True) # Date and time at which this privilege was created.
 
-
     class Meta:
         verbose_name = "Authorization Information"
         verbose_name_plural = "Privileges Information"
@@ -91,7 +90,6 @@ class UserPrivilege(models.Model):
     # is not allowed to use it for a certain span of time. For example, a user may be allowed to conduct a test
     # only once in a month (a little far-fetched, but it might be necessary later).
 
-
     class Meta:
         verbose_name = "User Privileges Information"
         db_table = 'Auth_userprivilege'
@@ -105,10 +103,9 @@ class WebConfig(models.Model):
     path = models.TextField()
     paramname = models.CharField(max_length=255)
     paramvalue = models.TextField()
-    adminuser = models.ForeignKey(User, db_column='adminuser_id', on_delete=models.CASCADE)
+    adminuser = models.ForeignKey(djUser, db_column='adminuser_id', on_delete=models.CASCADE)
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
-    
 
     class Meta:
         verbose_name = "Website Configuration Information"

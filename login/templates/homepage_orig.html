@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
-    <link rel="stylesheet" href="/static/css/newcarousel.css">
+    <!-- <link rel="stylesheet" href="/static/css/newcarousel.css"> -->
 
 	<style>
 		#Top-owl-carousel{
@@ -205,12 +205,24 @@ https://templatemo.com/tm-571-hexashop
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                         <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+                         <li class="scroll-to-section"><a href="/login/index/" class="active">Home</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
 				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
+				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
+				 <li class="scroll-to-section"><a href="#">Others</a></li>
+				 <li class="submenu">
+				 <ul>
+				 <li><a href="/about/">About</a></li>
+				 <li><a href="/contactus/">Contact Us</a></li>
+				 </ul>
+				 </li>  
+				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -247,139 +259,35 @@ https://templatemo.com/tm-571-hexashop
 
 <!-- ------------------------------------------------------------------------------------------  -->
 
-   	<!-- Carousel -->
-    <section class="testimonials">
-	<div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div id="customers-testimonials" class="owl-carousel">
-	    {% for d in carousel %}
-            {% if d.datatype == "gallery" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "gevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "museum" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "mevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endif %}
+   	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
+            {% for d in carousel %}
+                {% if d.datatype == "gallery" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "gevent" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "museum" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		{% if d.datatype == "mevent" %}
+		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div></div>
+		{% endif %}
+		
 	    {% endfor %}
-          </div>
-        </div>
-      </div>
-      </div>
-    </section>
-    <!-- END OF Carousels -->
+		
+	</div>
 
+	
     <!-- ***** Main Banner Area End ***** -->
 
-    <!-- ***** Main Area Starts ***** -->
-    <!-- ***** Explore Area Ends ***** -->
-	<section class="section" id="men">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Featured Galleries</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for gname, gdata in galleries.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-		                <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
-					<h4>{{gname}}</h4>
-					<span style="padding-left:10px;">{{gdata.0}}</span>
-					<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-				</a>
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-			<!--
-                        <div class="owl-men-item owl-carousel">
-                            {% for gname, gdata in galleries.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/gallery/details/?gid={{gdata.3}}">
-										<h4>{{gname}}</h4>
-										<span>{{gdata.0}}</span>
-										<a class="btn btn-slider" href="#">Follow</a>
-									</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div> 
-			-->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
+    <!-- ***** Men Area Starts ***** -->
     <section class="section" id="men">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-                        <h2>Featured Museums</h2>
+                        <h2>Featured Shows</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
 						<hr>
                     </div>
@@ -391,14 +299,14 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
 			<div class="row align-items-end">
-			{% for mname, mdata in museums.items %}
+			{% for ename, edata in events.items %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/museum/details/?mid={{mdata.3}}"><img src="{{mdata.4}}" alt=""></a>
-		                <a href="/museum/details/?mid={{mdata.3}}" style="color:#000000;">
-					<h4>{{mname}}</h4>
-					<span style="padding-left:10px;">{{mdata.1}}</span>
-					<span style="padding-left:10px;">{{mdata.2}}</span>
+				<a href="/gallery/eventdetails/?gevid={{edata.3}}"><img src="{{edata.4}}" alt=""></a>
+		                <a href="/gallery/eventdetails/?gevid={{edata.3}}">
+					<h4>{{ename}}</h4>
+					<span>{{edata.1}}</span>
+					<span>{{edata.2}}</span>
 				</a>
 		            </div>
 		        </div>
@@ -512,6 +420,61 @@ https://templatemo.com/tm-571-hexashop
 		</div>
     </section> -->
 	
+    <!-- ***** Explore Area Ends ***** -->
+	<section class="section" id="men">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Featured Galleries</h2>
+                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+						<hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row align-items-end">
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+			<div class="row align-items-end">
+			{% for gname, gdata in galleries.items %}
+		        <div class="column">
+		            <div class="img-box">
+				<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+		                <a href="/gallery/details/?gid={{gdata.3}}">
+					<h4>{{gname}}</h4>
+					<span>{{gdata.0}}</span>
+					<!-- <a class="btn btn-slider" href="#">Follow</a> -->
+				</a>
+		            </div>
+		        </div>
+			{% endfor %}
+		    	</div>
+			<!--
+                        <div class="owl-men-item owl-carousel">
+                            {% for gname, gdata in galleries.items %}
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+                                </div>
+                                <div class="down-content">
+									<a href="/gallery/details/?gid={{gdata.3}}">
+										<h4>{{gname}}</h4>
+										<span>{{gdata.0}}</span>
+										<a class="btn btn-slider" href="#">Follow</a>
+									</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div> 
+			-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
     <section class="section" id="women">
         <div class="container">
             <div class="row">
@@ -533,9 +496,9 @@ https://templatemo.com/tm-571-hexashop
 		        <div class="column">
 		            <div class="img-box">
 				<a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
-		                <a href="/artist/details/?aid={{adata.4}}" style="color:#000000;">
+		                <a href="/artist/details/?aid={{adata.4}}">
 					<h4>{{aname}}</h4>
-					<span style="padding-left:10px;">{{adata.3}}</span>
+					<span>{{adata.3}}</span>
 
 				</a>
 		            </div>
@@ -573,44 +536,6 @@ https://templatemo.com/tm-571-hexashop
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-                        <h2>Auction Houses</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-                        <div class="owl-men-item owl-carousel">
-                            {% for aucdata in auctionhouses %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}" style="color:#000000;">
-						<h4>{{aucdata.housename}}</h4>
-						<span style="padding-left:10px;">{{aucdata.location}}</span>
-						<span style="padding-left:10px;">{{aucdata.description}}</span>
-					</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="men">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
                         <h2>Upcoming Auctions</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
 						<hr>
@@ -627,9 +552,9 @@ https://templatemo.com/tm-571-hexashop
 		        <div class="column">
 		            <div class="img-box">
 				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-		                <a href="/auction/details/?lid={{aucdata.lid}}" style="color:#000000;">
+		                <a href="/auction/details/?lid={{aucdata.lid}}">
 						<h4>{{aucname}}</h4>
-						<span style="padding-left:10px;">{{aucdata.description}}</span>
+						<span>{{aucdata.description}}</span>
 				</a>
 				<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
 		            </div>
@@ -654,6 +579,44 @@ https://templatemo.com/tm-571-hexashop
                             </div>
                             {% endfor %}
                         </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="men">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Auction Houses</h2>
+                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+						<hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row align-items-end">
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+                            {% for aucdata in auctionhouses %}
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
+                                </div>
+                                <div class="down-content">
+					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}">
+						<h4>{{aucdata.housename}}</h4>
+						<span>{{aucdata.location}}</span>
+						<span>{{aucdata.description}}</span>
+					</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -741,32 +704,25 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/custom.js"></script>
 	
 	<script>
-jQuery(document).ready(function($) {
-"use strict";
-$('#customers-testimonials').owlCarousel( {
-		loop: true,
-		center: true,
-		items: 3,
-		margin: 30,
-		autoplay: true,
-		dots:true,
-    		nav:true,
-		autoplayTimeout: 8500,
-		smartSpeed: 450,
-  		navText: ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-		responsive: {
-			0: {
-				items: 1
-			},
-			768: {
-				items: 2
-			},
-			1170: {
-				items: 3
+		$('#Top-owl-carousel').owlCarousel({
+			loop:false,
+			rewind: true,
+			margin:1,
+			nav:true,
+			autoplay:true,
+			autoplayTimeout:8000,
+			responsive:{
+				0:{
+					items:1
+				},
+				600:{
+					items:1
+				},
+				1000:{
+					items:1
+				}
 			}
-		}
-	});
-});
+		})
 
 	</script>
     <script>
