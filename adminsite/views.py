@@ -61,7 +61,7 @@ def handleuploadedfile(uploaded_file, targetdir, filename):
     return [ destinationfile, '', filename ]
 
 
-def resizeimage(imgfilepath, targetwidth=1600, targetheight=500):
+def resizeimage(imgfilepath, mediadir, targetwidth=1600, targetheight=500):
     im = Image.open(imgfilepath)
     imheight, imwidth = im.size[1], im.size[0]
     resizeheight, resizewidth = targetheight, targetwidth
@@ -83,7 +83,7 @@ def resizeimage(imgfilepath, targetwidth=1600, targetheight=500):
     else:
         print("Image type is not supported.")
         return None
-    outfilepath = os.path.dirname(os.path.abspath(inputfilename)) + os.path.sep + "media" + os.path.sep + "carousel" + os.path.sep + outputfilename
+    outfilepath = mediadir + os.path.sep + outputfilename
     #Save the cropped image
     resized_im.save(outfilepath)
     return outfilepath
@@ -176,7 +176,13 @@ def galleries(request):
         if not os.path.exists(imagelocation):
             mkdir_p(imagelocation)
         uploadstatus = handleuploadedfile(request.FILES['gallerycoverimage'], imagelocation, coverimage)
-        gallery.coverimage = uploadstatus[0]
+        resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+        imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+        if imagepathparts.__len__() > 0:
+            imagepath = settings.MEDIA_URL + imagepathparts[1]
+        else:
+            imagepath = resizedimagefile
+        gallery.coverimage = imagepath
         try:
             gallery.save()
             message = "Successfully created gallery named '%s'"%galleryname.title()
@@ -236,7 +242,13 @@ def savegallery(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['gallerycoverimage'], imagelocation, coverimage)
-            gallery.coverimage = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            gallery.coverimage = imagepath
         try:
             gallery.save()
             message = "Successfully saved changes to gallery named '%s'"%galleryname.title()
@@ -365,7 +377,13 @@ def gevents(request):
         if not os.path.exists(imagelocation):
             mkdir_p(imagelocation)
         uploadstatus = handleuploadedfile(request.FILES['geventcoverimage'], imagelocation, coverimage)
-        gevent.eventimage = uploadstatus[0]
+        resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+        imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+        if imagepathparts.__len__() > 0:
+            imagepath = settings.MEDIA_URL + imagepathparts[1]
+        else:
+            imagepath = resizedimagefile
+        gevent.eventimage = imagepath
         try:
             gevent.save()
             message = "Successfully created event named '%s'"%geventname.title()
@@ -494,7 +512,13 @@ def savegevent(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['geventcoverimage'], imagelocation, coverimage)
-            gevent.eventimage = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            gevent.eventimage = imagepath
         try:
             gevent.save()
             message = "Successfully saved event named '%s'"%geventname.title()
@@ -607,7 +631,13 @@ def artworks(request):
                 mkdir_p(imagelocation)
             if 'image1' in request.FILES.keys():
                 uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
-                artwork.image1 = uploadstatus[0]
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                artwork.image1 = imagepath
                 artistimage = artwork.image1
         imgfile2 = request.FILES.get("image1")
         if imgfile2:
@@ -621,7 +651,13 @@ def artworks(request):
                 mkdir_p(imagelocation)
             if 'image2' in request.FILES.keys():
                 uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
-                artwork.image2 = uploadstatus[0]
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                artwork.image2 = imagepath
         imgfile3 = request.FILES.get("image3")
         if imgfile3:
             mimetype = imgfile3.content_type
@@ -634,7 +670,13 @@ def artworks(request):
                 mkdir_p(imagelocation)
             if 'image3' in request.FILES.keys():
                 uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
-                artwork.image3 = uploadstatus[0]
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                artwork.image3 = imagepath
         imgfile4 = request.FILES.get("image4")
         if imgfile4:
             mimetype = imgfile4.content_type
@@ -647,7 +689,13 @@ def artworks(request):
                 mkdir_p(imagelocation)
             if 'image4' in request.FILES.keys():
                 uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
-                artwork.image4 = uploadstatus[0]
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                artwork.image4 = imagepath
         # Check if the given artist exists in the Artist model
         artistobj = None
         try:
@@ -846,7 +894,13 @@ def saveartwork(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
-            artwork.image1 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image1 = imagepath
             artistimage = artwork.image1
         imgfile2 = request.FILES.get("image1")
         if imgfile2:
@@ -859,7 +913,13 @@ def saveartwork(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
-            artwork.image2 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image2 = imagepath
         imgfile3 = request.FILES.get("image3")
         if imgfile3:
             mimetype = imgfile3.content_type
@@ -871,7 +931,13 @@ def saveartwork(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
-            artwork.image3 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image3 = imagepath
         imgfile4 = request.FILES.get("image4")
         if imgfile4:
             mimetype = imgfile4.content_type
@@ -883,7 +949,13 @@ def saveartwork(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
-            artwork.image4 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image4 = imagepath
         # Check if the given artist exists in the Artist model
         artistobj = None
         try:
@@ -1005,7 +1077,13 @@ def artists(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['artistcoverimage'], imagelocation, coverimagename)
-            artist.squareimage = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artist.squareimage = imagepath
         artistlargeimage = request.FILES.get("artistlargeimage")
         if artistlargeimage:
             mimetype = artistlargeimage.content_type
@@ -1017,7 +1095,13 @@ def artists(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['artistlargeimage'], imagelocation, largeimagename)
-            artist.largeimage = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artist.largeimage = imagepath
         try:
             artist.save()
             message = "Successfully created artist named %s"%artistname
@@ -1143,7 +1227,13 @@ def saveartist(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['artistcoverimage'], imagelocation, coverimage)
-            artistobj.squareimage = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artistobj.squareimage = imagepath
         imgfile = request.FILES.get("artistlargeimage")
         if imgfile:
             mimetype = imgfile.content_type
@@ -1155,7 +1245,13 @@ def saveartist(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['artistlargeimage'], imagelocation, largeimage)
-            artistobj.largeimage = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artistobj.largeimage = imagepath
         try:
             artistobj.save()
             message = "Successfully saved artist named '%s'"%artistobj.artistname.title()
@@ -1219,7 +1315,13 @@ def museums(request):
         if not os.path.exists(imagelocation):
             mkdir_p(imagelocation)
         uploadstatus = handleuploadedfile(request.FILES['museumcoverimage'], imagelocation, coverimage)
-        museum.coverimage = uploadstatus[0]
+        resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+        imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+        if imagepathparts.__len__() > 0:
+            imagepath = settings.MEDIA_URL + imagepathparts[1]
+        else:
+            imagepath = resizedimagefile
+        museum.coverimage = imagepath
         try:
             museum.save()
             message = "Successfully created museum named '%s'"%museumname.title()
@@ -1327,7 +1429,13 @@ def savemuseum(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['museumcoverimage'], imagelocation, coverimage)
-            museum.coverimage = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            museum.coverimage = imagepath
         try:
             museum.save()
             message = "Successfully saved changes to museum named '%s'"%museumname.title()
@@ -1407,7 +1515,13 @@ def mevents(request):
         if not os.path.exists(imagelocation):
             mkdir_p(imagelocation)
         uploadstatus = handleuploadedfile(request.FILES['meventcoverimage'], imagelocation, coverimage)
-        mevent.coverimage = uploadstatus[0]
+        resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+        imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+        if imagepathparts.__len__() > 0:
+            imagepath = settings.MEDIA_URL + imagepathparts[1]
+        else:
+            imagepath = resizedimagefile
+        mevent.coverimage = imagepath
         try:
             mevent.save()
             message = "Successfully created museum event named '%s'"%meventname.title()
@@ -1535,7 +1649,13 @@ def savemevent(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['meventcoverimage'], imagelocation, coverimage)
-            mevent.coverimage = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            mevent.coverimage = imagepath
         try:
             mevent.save()
             message = "Successfully saved event named '%s'"%meventname.title()
@@ -1647,7 +1767,13 @@ def museumpieces(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
-            artwork.image1 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image1 = imagepath
             artistimage = artwork.image1
         imgfile2 = request.FILES.get("image1")
         if imgfile2:
@@ -1660,7 +1786,13 @@ def museumpieces(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
-            artwork.image2 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image2 = imagepath
         imgfile3 = request.FILES.get("image3")
         if imgfile3:
             mimetype = imgfile3.content_type
@@ -1672,7 +1804,13 @@ def museumpieces(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
-            artwork.image3 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image3 = imagepath
         imgfile4 = request.FILES.get("image4")
         if imgfile4:
             mimetype = imgfile4.content_type
@@ -1684,7 +1822,13 @@ def museumpieces(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
-            artwork.image4 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image4 = imagepath
         artistobj = None
         try:
             artistobj = Artist.objects.get(artistname=artistname.title())
@@ -1826,7 +1970,13 @@ def savempieces(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image1'], imagelocation, image1name)
-            artwork.image1 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image1 = imagepath
             artistimage = artwork.image1
         imgfile2 = request.FILES.get("image1")
         if imgfile2:
@@ -1839,7 +1989,13 @@ def savempieces(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image2'], imagelocation, image2name)
-            artwork.image2 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image2 = imagepath
         imgfile3 = request.FILES.get("image3")
         if imgfile3:
             mimetype = imgfile3.content_type
@@ -1851,7 +2007,13 @@ def savempieces(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image3'], imagelocation, image3name)
-            artwork.image3 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image3 = imagepath
         imgfile4 = request.FILES.get("image4")
         if imgfile4:
             mimetype = imgfile4.content_type
@@ -1863,7 +2025,13 @@ def savempieces(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['image4'], imagelocation, image4name)
-            artwork.image4 = uploadstatus[0]
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+            imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 0:
+                imagepath = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                imagepath = resizedimagefile
+            artwork.image4 = imagepath
         artistobj = None
         try:
             artistobj = Artist.objects.get(artistname=artistname.title())
@@ -2113,6 +2281,7 @@ def carousel(request):
             selpriority = request.POST['selpriority'].strip()
         carouselobj = Carousel()
         carouselimage = request.FILES.get("carouselimage")
+        carouseldir = settings.MEDIA_ROOT + os.path.sep + "carousel"
         if carouselimage:
             mimetype = carouselimage.content_type
             if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
@@ -2123,7 +2292,7 @@ def carousel(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['carouselimage'], imagelocation, carouselimagename)
-            resizedimagefile = resizeimage(uploadstatus[0], 1500) # Max width is 1500 px.
+            resizedimagefile = resizeimage(uploadstatus[0], carouseldir, 1500) # Max width is 1500 px.
             carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
         else: # Get the image of the entry
             if seldatatype == "gallery":
@@ -2131,7 +2300,7 @@ def carousel(request):
                 dqobj = None
                 try:
                     dqobj = Gallery.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2141,7 +2310,7 @@ def carousel(request):
                 dqobj = None
                 try:
                     dqobj = Event.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.eventimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.eventimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2151,7 +2320,7 @@ def carousel(request):
                 dqobj = None
                 try:
                     dqobj = Museum.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2161,7 +2330,7 @@ def carousel(request):
                 dqobj = None
                 try:
                     dqobj = MuseumEvent.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2171,7 +2340,7 @@ def carousel(request):
                 dqobj = None
                 try:
                     dqobj = Artist.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.squareimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.squareimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2181,7 +2350,7 @@ def carousel(request):
                 dqobj = None
                 try:
                     dqobj = Auction.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2191,7 +2360,7 @@ def carousel(request):
                 dqobj = None
                 try:
                     dqobj = AuctionHouse.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carouselobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2382,6 +2551,7 @@ def savecarousel(request):
         carobj.priority = selpriority
         # Handle image for the carousel entry
         carouselimage = request.FILES.get("carouselimage")
+        carouseldir = settings.MEDIA_ROOT + os.path.sep + "carousel"
         if carouselimage:
             mimetype = carouselimage.content_type
             if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
@@ -2392,7 +2562,7 @@ def savecarousel(request):
             if not os.path.exists(imagelocation):
                 mkdir_p(imagelocation)
             uploadstatus = handleuploadedfile(request.FILES['carouselimage'], imagelocation, carouselimagename)
-            resizedimagefile = resizeimage(uploadstatus[0], 1500) # Max width is 1500 px.
+            resizedimagefile = resizeimage(uploadstatus[0], carouseldir, 1500) # Max width is 1500 px.
             carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
         else: # Get the image of the entry
             if seldatatype == "gallery":
@@ -2400,7 +2570,7 @@ def savecarousel(request):
                 dqobj = None
                 try:
                     dqobj = Gallery.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2410,7 +2580,7 @@ def savecarousel(request):
                 dqobj = None
                 try:
                     dqobj = Event.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.eventimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.eventimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2420,7 +2590,7 @@ def savecarousel(request):
                 dqobj = None
                 try:
                     dqobj = Museum.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2430,7 +2600,7 @@ def savecarousel(request):
                 dqobj = None
                 try:
                     dqobj = MuseumEvent.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2440,7 +2610,7 @@ def savecarousel(request):
                 dqobj = None
                 try:
                     dqobj = Artist.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.squareimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.squareimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2450,7 +2620,7 @@ def savecarousel(request):
                 dqobj = None
                 try:
                     dqobj = Auction.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
@@ -2460,7 +2630,7 @@ def savecarousel(request):
                 dqobj = None
                 try:
                     dqobj = AuctionHouse.objects.get(id=entid)
-                    resizedimagefile = resizeimage(dqobj.coverimage, 1500) # Max width is 1500 px.
+                    resizedimagefile = resizeimage(dqobj.coverimage, carouseldir, 1500) # Max width is 1500 px.
                     shutil.copyfile(resizedimagefile, settings.MEDIA_ROOT + os.path.sep + "carousel" + os.path.sep + os.path.basename(resizedimagefile))
                     carobj.imagepath = settings.MEDIA_URL + "carousel/" + os.path.basename(resizedimagefile)
                 except:
