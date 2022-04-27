@@ -80,7 +80,7 @@ https://templatemo.com/tm-571-hexashop
 			continue;
 		    }
 		    uniquemuseums[museumslist[i][0]] = 1;
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";        
 		  }
 		}// if selectedoption != 1
 		else{
@@ -93,7 +93,7 @@ https://templatemo.com/tm-571-hexashop
 			continue;
 		    }
 		    uniquemuseums[museumslist[i][0]] = 1;
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";  
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";  
 		}
 		} // for museumslist loop ends
 		html += "</div></div></div></div></div></section>";
@@ -117,7 +117,7 @@ https://templatemo.com/tm-571-hexashop
 			continue;
 		    }
 		    uniquemuseums[museumslist[i][0]] = 1;
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";        
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";        
 		  }
 		} // if selectedoption != 1
 		else{
@@ -130,7 +130,7 @@ https://templatemo.com/tm-571-hexashop
 			continue;
 		    }
 		    uniquemuseums[museumslist[i][0]] = 1;
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/follow/?mid=" + museumslist[i][5] + "'>Follow</a></a></div></div>";       
+		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";       
 		}
 		}  // for museumslist ends
 		html += "</div></div></div></div></div></section>";
@@ -339,7 +339,7 @@ https://templatemo.com/tm-571-hexashop
                         <a href="/museum/details/?mid={{museum.mid}}" style="color:#000000;">
 				<h4>{{museum.museumname}}</h4>
 				<span style="padding-left:10px;">{{museum.location}}</span>
-				<!-- <a class="btn btn-slider" href="/museum/follow/?mid={{museum.mid}}">Follow</a> -->
+				<!-- <a class="btn btn-slider" href="/museum/details/?mid={{museum.mid}}">Details</a> -->
 			</a>
 			</a>
                     </div>
@@ -381,7 +381,7 @@ https://templatemo.com/tm-571-hexashop
 									<a href="/museum/details/?mid={{museum.mid}}">
 										<h4>{{museum.museumname}}</h4>
 										<span>{{museum.location}}</span>
-										<a class="btn btn-slider" href="/museum/follow/?mid={{museum.mid}}">Follow</a>
+										<a class="btn btn-slider" href="/museum/details/?mid={{museum.mid}}">Details</a>
 									</a>
                                 </div>
                             </div>
