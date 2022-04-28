@@ -559,8 +559,8 @@
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            	 <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            	 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+				 <li class="scroll-to-section"><a href="/museum/index/" class="active">Museums</a></li>
 				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
@@ -677,7 +677,7 @@
 					 <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
 			{% for eventname, evobj in otherevents.items %}
-                            <div class="item">
+                            <div class="item align-items-end">
                                 <div class="thumb">
                                     <a href="/museum/eventdetails/?mevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt=""></a>
                                 </div>
@@ -707,7 +707,7 @@
                     </div>
 				   </div>
 				</div>
-				<div class="row art-box">
+				<div class="row art-box align-items-end">
 					<div class="col-md-12">
 						<div class="section-heading text-center">
 							<h3>Artists</h3>
@@ -754,7 +754,7 @@
 					   </div>
 				   </div>
 			</div>
-			<div class="row">
+			<div class="row align-items-end">
                                   {% for eventname, evobj in otherevents.items %}
 				  <div class="col-md-4">
 					<div class="item gl-dt-item">
@@ -1278,7 +1278,7 @@
 					  </div>
 				</div>
 				-->
-			<div class="row" id='allworks'>
+			<div class="row align-items-end" id='allworks'>
 			  <div class="column">
                                 {% for evname, artworkslist in allartworks1.items %}
                                 {% for artwork in artworkslist %}

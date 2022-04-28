@@ -677,7 +677,7 @@
 					 <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
 			{% for eventname, evobj in otherevents.items %}
-                            <div class="item">
+                            <div class="item align-items-end">
                                 <div class="thumb">
                                     <a href="/gallery/eventdetails/?gevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt=""></a>
                                 </div>
@@ -715,7 +715,7 @@
 							<hr>
 					   </div>
 					</div>
-					<div class="col-md-12">
+					<div class="col-md-12 align-items-end">
 						<div class="art-list">
 							<div class="list-item">
 							{% for artist in artists %}
@@ -732,7 +732,7 @@
         </div>
         <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
           <div class="container">
-			<div class="row gl-ov-row">
+			<div class="row gl-ov-row align-items-end">
 				<div class="col-md-7">
 					<h2>{{eventinfo.eventname}}</h2>
 					<h4>{{eventinfo.eventperiod}}</h4>
@@ -754,7 +754,7 @@
 					   </div>
 				   </div>
 			</div>
-			<div class="row">
+			<div class="row align-items-end">
                                   {% for eventname, evobj in otherevents.items %}
 				  <div class="col-md-4">
 					<div class="item gl-dt-item">
@@ -1276,7 +1276,7 @@
 					  </div>
 				</div>
 				-->
-			<div class="row" id='allworks'>
+			<div class="row align-items-end" id='allworks'>
 			  <div class="column">
                                 {% for evname, artworkslist in allartworks1.items %}
                                 {% for artwork in artworkslist %}

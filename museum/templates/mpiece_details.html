@@ -225,8 +225,8 @@
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+				 <li class="scroll-to-section"><a href="/museum/index/" class="active">Museums</a></li>
 				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
@@ -349,7 +349,7 @@
 				    
                                     <div id="noteble-works" class="owl-carousel owl-theme owl-d">
 					{% for artwork in allartworks %}
-                                        <div class="item">
+                                        <div class="item align-items-end">
                                             <div class="thumb">
                                                 <a href="/museum/artworkdetails/?mpid={{artwork.mpid}}">
                                                     <img src="{{artwork.artworkimage}}" class="img-fluid" alt="">
@@ -582,7 +582,7 @@
                                     <div class="related-artist mrb-90">
                                         <div id="related-artist" class="owl-carousel owl-theme owl-d">
 					    {% for artist in relatedartists %}
-                                            <div class="item">
+                                            <div class="item align-items-end">
                                                 <div class="thumb">
                                                     <a href="/artist/details/?aid={{artist.aid}}">
                                                         <img src="{{artist.squareimage}}" class="img-fluid" alt="">
@@ -1204,7 +1204,7 @@
                                         <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
                                             <div id="main">
 
-                                                <div class="row">
+                                                <div class="row align-items-end">
                                                     <div class="column">
 							{% for artwork in allartworks1 %}
                                                         <div class="img-box">

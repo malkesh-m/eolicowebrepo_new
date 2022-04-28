@@ -569,8 +569,8 @@
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+				 <li class="scroll-to-section"><a href="/museum/index/" class="active">Museums</a></li>
 				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
@@ -685,7 +685,7 @@
 					 <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
 			    {% for event in overviewevents %}
-                            <div class="item">
+                            <div class="item align-items-end">
                                 <div class="thumb">
                                     <a href="/museum/eventdetails/?mevid={{event.eventid}}"><img src="{{event.coverimage}}" alt=""></a>
                                 </div>
@@ -716,7 +716,7 @@
 					 <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
 			    {% for article in overviewarticles %}
-                            <div class="item">
+                            <div class="item align-items-end">
                                 <div class="thumb">
                                     <a href="{{article.detailurl}}"><img src="{{article.thumbimage}}" alt=""></a>
                                 </div>
@@ -759,7 +759,7 @@
 					   </div>
 				   </div>
 			</div>
-			<div class="row">
+			<div class="row align-items-end">
 				  {% for event in allevents %}
 				  <div class="col-md-4">
 					<div class="item gl-dt-item">
@@ -1189,7 +1189,7 @@
 						</select>
 					  </div>
 				  </div>
-				<div class="row">
+				<div class="row align-items-end">
 			  <div class="column">
 				{% for ename, works in allworks.items %}
 				{% if ename == eventsprioritylist.0 %}
@@ -1267,7 +1267,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row ">
+			<div class="row align-items-end">
 				  {% for art in allarticles %}
 				  <div class="col-md-4">
 					<div class="item gl-dt-item">
