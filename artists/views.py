@@ -34,7 +34,7 @@ def index(request):
     page = pagemap[pageno]
     chunksize = 9
     rows = 6
-    featuredsize = 5
+    featuredsize = 4
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
