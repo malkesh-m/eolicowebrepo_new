@@ -53,11 +53,13 @@ def index(request):
                 d['artworkimage'] = ""
                 d['artworkdate'] = ""
                 d['awid'] = ""
+                d['atype'] = "0" # Artists with no related artwork
             else:
                 d['artworkname'] = artworkqset[0].artworkname
                 d['artworkimage'] = artworkqset[0].image1
                 d['artworkdate'] = artworkqset[0].creationdate
                 d['awid'] = artworkqset[0].id
+                d['atype'] = "1" # Artists with available related artwork
             featuredartists.append(d)
             uniqartists[artist.artistname.title()] = 1
     context['featuredartists'] = featuredartists
