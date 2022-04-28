@@ -80,7 +80,7 @@ class Artist(models.Model):
 
 class Artwork(models.Model):
     artworkname = models.TextField()
-    creationdate = models.CharField(max_length=10, blank=True, null=True)
+    creationdate = models.CharField(max_length=100, blank=True, null=True)
     gallery = models.ForeignKey(Gallery, blank=False, null=False, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, blank=True, null=True, on_delete=models.CASCADE)
     artistname = models.CharField(max_length=255, blank=True, null=True)
