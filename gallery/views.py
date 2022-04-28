@@ -73,7 +73,11 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+        if gloc.__len__() > 27:
+            location = gloc[:27] + "..."
+        else:
+            location = gloc
+        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[0][0]]
         glocparts = gloc.split(",")
         for gloc in glocparts:
             gloc = gloc.strip()
@@ -89,7 +93,11 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[1][0]]
+        if gloc.__len__() > 27:
+            location = gloc[:27] + "..."
+        else:
+            location = gloc
+        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[1][0]]
         glocparts = gloc.split(",")
         for gloc in glocparts:
             gloc = gloc.strip()
@@ -105,7 +113,11 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[2][0]]
+        if gloc.__len__() > 27:
+            location = gloc[:27] + "..."
+        else:
+            location = gloc
+        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[2][0]]
         glocparts = gloc.split(",")
         for gloc in glocparts:
             gloc = gloc.strip()
@@ -121,7 +133,11 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[3][0]]
+        if gloc.__len__() > 27:
+            location = gloc[:27] + "..."
+        else:
+            location = gloc
+        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[3][0]]
         glocparts = gloc.split(",")
         for gloc in glocparts:
             gloc = gloc.strip()
@@ -137,7 +153,11 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        galleriesdict[gname] = [gloc, gimg, gurl, gid, gtypesqset[4][0]]
+        if gloc.__len__() > 27:
+            location = gloc[:27] + "..."
+        else:
+            location = gloc
+        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[4][0]]
         glocparts = gloc.split(",")
         for gloc in glocparts:
             gloc = gloc.strip()
@@ -211,6 +231,7 @@ def details(request):
             previousevents.append(pevent)
             eventsprioritylist.append(eqset.eventname)
     context['previousevents'] = previousevents
+    context['previouseventselection'] = previousevents[0:4]
     # Showing 20 artists from the latest featured event only.
     try:
         artistsqset = Artist.objects.filter(event=eventsqset[0]).order_by('-edited', 'priority')

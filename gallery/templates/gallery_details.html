@@ -675,9 +675,25 @@
 				   </div>
 				   <div class="col-lg-12">
 					 <div class="men-item-carousel">
+			<div class="row align-items-end">
+			{% for evobj in previouseventselection %}
+		        <div class="column">
+		            <div class="img-box">
+				<a href="/gallery/eventdetails/?gevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt=""></a>
+		                <a href="/gallery/eventdetails/?gevid={{evobj.eventid}}" style="color:#000000;">
+					<h4 style="padding-left:0px;">{{evobj.eventname}}</h4>
+					<span>{{evobj.eventinfo}}</span>
+					<span>{{evobj.eventperiod}}</span>
+				</a>
+		            </div>
+		        </div>
+			{% endfor %}
+		        </div>
+
+			<!--
                         <div class="owl-men-item owl-carousel">
 			{% for evobj in previousevents %}
-                            <div class="item align-items-end">
+                            <div class="item">
                                 <div class="thumb">
                                     <a href="/gallery/eventdetails/?gevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt=""></a>
                                 </div>
@@ -690,20 +706,9 @@
                                 </div>
                             </div>
 			{% endfor %}
-			<!--
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="#"><img src="/static/images/men-02.jpg" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<h4>Béchir Boussandel</h4>
-									<span>Taymour Grahne Projects</span>
-									<span>Feb 11 to Apr 15</span>
-								</div>
-                            </div>
-			-->
+			
                             
-                        </div>
+                        </div> -->
                     </div>
 				   </div>
 				</div>
