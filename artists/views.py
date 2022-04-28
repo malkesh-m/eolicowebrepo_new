@@ -187,12 +187,16 @@ def details(request):
     relatedartists = [] # List of artists related to the artist under consideration through an event.
     artistevents = {} # All events featuring the artist under consideration.
     artistgalleries = {} # All galleries where artworks of the artist under consideration are displayed.
-    eventobj = artistobj.event
-    # Related Artists can be sought out based on the 'event' or on 'nationality'. Though 'event' is a better
-    # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
-    # is a query that cannot be cached, so it has to be picked up from the DB every time.
-    relatedartistqset = Artist.objects.filter(event=eventobj)
-    #relatedartistqset = Artist.objects.filter(nationality__icontains=artistobj.nationality)
+    relatedartistqset = None
+    try:
+        eventobj = artistobj.event
+        # Related Artists can be sought out based on the 'event' or on 'nationality'. Though 'event' is a better
+        # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
+        # is a query that cannot be cached, so it has to be picked up from the DB every time.
+        relatedartistqset = Artist.objects.filter(event=eventobj)
+    except:
+        eventobj = None
+        relatedartistqset = Artist.objects.filter(nationality__icontains=artistobj.nationality)
     for artist in relatedartistqset:
         d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
         artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority', '-edited')
