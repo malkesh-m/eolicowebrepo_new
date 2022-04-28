@@ -2583,6 +2583,7 @@ def savecarousel(request):
         carobj.textvalue = carouselitemtext
         carobj.datatype = seldatatype
         carobj.data_id = seldataentry
+        print(seldataentry)
         carobj.priority = selpriority
         # Handle image for the carousel entry
         carouselimage = request.FILES.get("carouselimage")
