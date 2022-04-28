@@ -162,7 +162,7 @@ def details(request):
         return HttpResponse("Could not identify a museum with Id %s"%mid)
     # Find all museum events for the selected museum. Order by 'edited' and 'priority'.
     allmuseumeventsqset = MuseumEvent.objects.filter(museum=museumobj).order_by('-eventstartdate', 'priority')
-    chunksize = 6
+    chunksize = 4
     latestevent = {}
     allevents = []
     overviewevents = []

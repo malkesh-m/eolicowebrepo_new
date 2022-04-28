@@ -683,6 +683,21 @@
 				   </div>
 				   <div class="col-lg-12">
 					 <div class="men-item-carousel">
+			<div class="row align-items-end">
+			{% for event in overviewevents %}
+		        <div class="column">
+		            <div class="img-box">
+				<a href="/museum/eventdetails/?mevid={{event.eventid}}"><img src="{{event.coverimage}}" alt=""></a>
+		                <a href="/museum/eventdetails/?mevid={{event.eventid}}" style="color:#000000;">
+					<h4 style="padding-left:0px;">{{event.eventname}}</h4>
+					<span>{{event.eventinfo}}</span>
+					<span>{{event.eventperiod}}</span>
+				</a>
+		            </div>
+		        </div>
+			{% endfor %}
+		        </div>
+			<!--
                         <div class="owl-men-item owl-carousel">
 			    {% for event in overviewevents %}
                             <div class="item align-items-end">
@@ -699,7 +714,7 @@
                             </div>
 			    {% endfor %}
                             
-                        </div>
+                        </div> -->
                     </div>
 				   </div>
 				</div>
