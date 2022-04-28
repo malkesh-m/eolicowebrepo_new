@@ -28,7 +28,51 @@
     <link href="/static/admincss/lib/helper.css" rel="stylesheet">
     <link href="/static/admincss/style.css" rel="stylesheet">
 
+    <style>
+	img {
+	  border: 1px solid #ddd; /* Gray border */
+	  border-radius: 4px;  /* Rounded border */
+	  padding: 5px; /* Some padding */
+	  width: 150px; /* Set a small width */
+	}
+
+	/* Add a hover effect (blue shadow) */
+	img:hover {
+	  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+	}
+    </style>
+
     <script type='text/javascript'>
+
+	function downloadimage(carid){
+ 	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    
+	  }
+	  };
+	  xmlhttp.open("GET", '/admin/downloadcarouselimage/?carid=' + carid);
+	  xmlhttp.send();
+	}
+
+	function download(source){
+	  const fileName = source.split('/').pop();
+	  var el = document.createElement("a");
+	  el.setAttribute("href", source);
+	  el.setAttribute("download", fileName);
+	  document.body.appendChild(el);
+	  el.click();
+	  el.remove();
+	}
+
  	function populateentrydata(){
 	  csrf = document.frmcarousel.csrfmiddlewaretoken.value;
 	  datatype = document.frmcarousel.seldatatype.options[document.frmcarousel.seldatatype.options.selectedIndex].value;
@@ -204,7 +248,7 @@
             pagetitlediv.innerHTML = "<h3>Edit Carousel Entry</h3>";
 	    gform += "<div class='card-title'><h4>Entry Title</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Entry Title' name='carouselitemname' value='" + cardict['carouselitemname'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Entry Text</h4></div><div class='form-group'><textarea class='form-control input-default' name='carouselitemtext'>" + cardict['carouselitemtext'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Image</h4></div><div class='form-group'><input type='file' name='carouselimage' id='carouselimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Image</h4></div><div class='form-group'><input type='file' name='carouselimage' id='carouselimage' class='form-control input-default'><a href='" + cardict['carouselimage'] + "'><img src='" + cardict['carouselimage'] + "'></a></div>";
 	    gform += "<div class='card-title'><h4>Data Type</h4></div><div class='form-group'><select class='form-control input-default' name='seldatatype' id='seldatatype' onchange='javascript:populateentrydata();'>";
 	    if(cardatatype == "gallery"){
 		gform += "<option value=''>Select Type</option><option value='gallery' 'selected'>Gallery</option><option value='gevent'>Gallery Event</option><option value='museum'>Museum</option><option value='mevent'>Museum Event</option><option value='auction'>Auction</option> <option value='artist'>Artist</option><option value='auctionhouse'>Auction House</option>";

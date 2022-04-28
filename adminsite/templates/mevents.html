@@ -28,6 +28,20 @@
     <link href="/static/admincss/lib/helper.css" rel="stylesheet">
     <link href="/static/admincss/style.css" rel="stylesheet">
 
+    <style>
+	img {
+	  border: 1px solid #ddd; /* Gray border */
+	  border-radius: 4px;  /* Rounded border */
+	  padding: 5px; /* Some padding */
+	  width: 150px; /* Set a small width */
+	}
+
+	/* Add a hover effect (blue shadow) */
+	img:hover {
+	  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+	}
+    </style>
+
     <script type='text/javascript'>
 	function addmevent(){
 	  csrf = document.frmmevents.csrfmiddlewaretoken.value;
@@ -184,7 +198,7 @@
 	    gform += "</select></div>";
 	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventstartdate' value='" + meventsdict['eventstartdate'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Event End Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventenddate' value='" + meventsdict['eventenddate'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Event Cover Image</h4></div><div class='form-group'><input type='file' name='meventcoverimage' id='meventcoverimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Event Cover Image</h4></div><div class='form-group'><input type='file' name='meventcoverimage' id='meventcoverimage' class='form-control input-default'><a href='" + meventsdict['coverimage'] + "'><img src='" + meventsdict['coverimage'] + "'></a></div>";
 	    gform += "<div class='card-title'><input type='button' name='editmevent' class='form-control input-default' value='Save Event' onclick='javascript:savemevent();'></div>";
 	    gform += "<div class='card-title' id='mevstatus'></div>";
 	    gform += "<input type='hidden' name='mevid' value='" + meventsdict['id'] + "'>";

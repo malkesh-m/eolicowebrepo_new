@@ -28,6 +28,20 @@
     <link href="/static/admincss/lib/helper.css" rel="stylesheet">
     <link href="/static/admincss/style.css" rel="stylesheet">
 
+    <style>
+	img {
+	  border: 1px solid #ddd; /* Gray border */
+	  border-radius: 4px;  /* Rounded border */
+	  padding: 5px; /* Some padding */
+	  width: 150px; /* Set a small width */
+	}
+
+	/* Add a hover effect (blue shadow) */
+	img:hover {
+	  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+	}
+    </style>
+
     <script type='text/javascript'>
         function addartist(){
     	  csrf = document.frmartists.csrfmiddlewaretoken.value;
@@ -158,8 +172,8 @@
 		gform += "<option value='none'>Can't Decide</option>";
 		}
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Artist Cover Image</h4></div><div class='form-group'><input type='file' name='artistcoverimage' id='artistcoverimage' class='form-control input-default'></div>";
-	    gform += "<div class='card-title'><h4>Artist Large Image</h4></div><div class='form-group'><input type='file' name='artistlargeimage' id='artistlargeimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Artist Cover Image</h4></div><div class='form-group'><input type='file' name='artistcoverimage' id='artistcoverimage' class='form-control input-default'><a href='" + artistsdict['squareimage'] + "'><img src='" + artistsdict['squareimage'] + "'></a></div>";
+	    gform += "<div class='card-title'><h4>Artist Large Image</h4></div><div class='form-group'><input type='file' name='artistlargeimage' id='artistlargeimage' class='form-control input-default'><a href='" + artistsdict['largeimage'] + "'><img src='" + artistsdict['largeimage'] + "'></a></div>";
 	    gform += "<div class='card-title'><h4>Artist URL</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist URL' name='artistprofileurl' value='" + artistsdict['artistprofileurl'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Artist Priority</h4></div><div class='form-group'>";
 	    gform += "<select name='selartistpriority' id='selartistpriority' class='form-control input-default'><option value=''>Select type </option>";

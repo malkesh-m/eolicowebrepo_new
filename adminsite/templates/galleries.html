@@ -28,6 +28,20 @@
     <link href="/static/admincss/lib/helper.css" rel="stylesheet">
     <link href="/static/admincss/style.css" rel="stylesheet">
 
+    <style>
+	img {
+	  border: 1px solid #ddd; /* Gray border */
+	  border-radius: 4px;  /* Rounded border */
+	  padding: 5px; /* Some padding */
+	  width: 150px; /* Set a small width */
+	}
+
+	/* Add a hover effect (blue shadow) */
+	img:hover {
+	  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+	}
+    </style>
+
     <script type='text/javascript'>
 	function addgallery(){
 	  csrf = document.frmgallery.csrfmiddlewaretoken.value;
@@ -200,7 +214,7 @@
 		}
 	    }
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Gallery Cover Image</h4></div><div class='form-group'><input type='file' name='gallerycoverimage' id='gallerycoverimage' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Gallery Cover Image</h4></div><div class='form-group'><input type='file' name='gallerycoverimage' id='gallerycoverimage' class='form-control input-default'><a href='" + gallerydict['coverimage'] + "'><img src='" + gallerydict['coverimage'] + "'></a></div>";
 	    gform += "<div class='card-title'><input type='button' name='addnewgallery' class='form-control input-default' value='Save Gallery' onclick='javascript:savegallery();'></div>";
 	    gform += "<div class='card-title' id='galstatus'></div>";
 	    gform += "<input type='hidden' name='gid' value='" + gallerydict['id'] + "'>";

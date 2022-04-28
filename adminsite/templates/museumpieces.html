@@ -28,6 +28,20 @@
     <link href="/static/admincss/lib/helper.css" rel="stylesheet">
     <link href="/static/admincss/style.css" rel="stylesheet">
 
+    <style>
+	img {
+	  border: 1px solid #ddd; /* Gray border */
+	  border-radius: 4px;  /* Rounded border */
+	  padding: 5px; /* Some padding */
+	  width: 150px; /* Set a small width */
+	}
+
+	/* Add a hover effect (blue shadow) */
+	img:hover {
+	  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+	}
+    </style>
+
     <script type='text/javascript'>
 	function addartwork(){
 	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
@@ -227,10 +241,10 @@
 	    gform += "<div class='card-title'><h4>Literature</h4></div><div class='form-group'><textarea class='form-control input-default ' name='literature'>" + artwork['literature'] + "</textarea></div>";
 	    gform += "<div class='card-title'><h4>Exhibitions</h4></div><div class='form-group'><textarea class='form-control input-default ' name='exhibitions'>" + artwork['exhibitions'] + "</textarea></div>";
 	    gform += "<div class='card-title'><h4>Artwork URL</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork URL' name='artworkurl' value='" + artwork['workurl'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Artwork Image 1</h4></div><div class='form-group'><input type='file' name='image1' id='image1' class='form-control input-default'></div>";
-	    gform += "<div class='card-title'><h4>Artwork Image 2</h4></div><div class='form-group'><input type='file' name='image2' id='image2' class='form-control input-default'></div>";
-	    gform += "<div class='card-title'><h4>Artwork Image 3</h4></div><div class='form-group'><input type='file' name='image3' id='image3' class='form-control input-default'></div>";
-	    gform += "<div class='card-title'><h4>Artwork Image 4</h4></div><div class='form-group'><input type='file' name='image4' id='image4' class='form-control input-default'></div>";
+	    gform += "<div class='card-title'><h4>Artwork Image 1</h4></div><div class='form-group'><input type='file' name='image1' id='image1' class='form-control input-default'><a href='" + artwork['image1'] + "'><img src='" + artwork['image1'] + "'></a></div>";
+	    gform += "<div class='card-title'><h4>Artwork Image 2</h4></div><div class='form-group'><input type='file' name='image2' id='image2' class='form-control input-default'><a href='" + artwork['image2'] + "'><img src='" + artwork['image2'] + "'></a></div>";
+	    gform += "<div class='card-title'><h4>Artwork Image 3</h4></div><div class='form-group'><input type='file' name='image3' id='image3' class='form-control input-default'><a href='" + artwork['image3'] + "'><img src='" + artwork['image3'] + "'></a></div>";
+	    gform += "<div class='card-title'><h4>Artwork Image 4</h4></div><div class='form-group'><input type='file' name='image4' id='image4' class='form-control input-default'><a href='" + artwork['image4'] + "'><img src='" + artwork['image4'] + "'></a></div>";
 	    gform += "<div class='card-title'><h4>Event Priority</h4></div><div class='form-group'>";
 	    gform += "<select name='selartworkpriority' id='selartworkpriority' class='form-control input-default'><option value=''>Select Priority </option>";
 	    for(i=1; i <= 5; i++){

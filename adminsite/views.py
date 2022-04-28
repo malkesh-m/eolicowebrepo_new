@@ -71,7 +71,7 @@ def resizeimage(imgfilepath, mediadir, targetwidth=1600, targetheight=500):
     if imwidth > targetwidth:
         resizewidth = targetwidth
         resizeheight = resizewidth * imheight/imwidth
-    resized_im = im.resize((resizewidth,resizeheight), Image.ANTIALIAS)
+    resized_im = im.resize((int(resizewidth),int(resizeheight)), Image.ANTIALIAS)
     inputfilename = os.path.basename(imgfilepath)
     imgtype = im.format
     if imgtype == 'JPEG':
@@ -1151,6 +1151,8 @@ def editartist(request):
         artistsdict['artistprofileurl'] = str(artistqset[0].profileurl)
         artistsdict['priority'] = str(artistqset[0].priority)
         artistsdict['id'] = artistqset[0].id
+        artistsdict['squareimage'] = artistqset[0].squareimage
+        artistsdict['largeimage'] = artistqset[0].largeimage
         context['artistsdict'] = artistsdict
         try:
             geventsqset = Event.objects.filter(gallery=artistqset[0].event.gallery.id)
@@ -2466,6 +2468,7 @@ def editcarousel(request):
         carouseldict['carouselitemtext'] = carqset[0].textvalue
         carouseldict['carouseldatatype'] = carqset[0].datatype
         carouseldict['carouseldataentry'] = carqset[0].data_id
+        carouseldict['carouselimage'] = carqset[0].imagepath
         carouseldict['selpriority'] = carqset[0].priority
         carouseldict['id'] = carqset[0].id
         context['carouseldict'] = carouseldict
@@ -2518,6 +2521,38 @@ def editcarousel(request):
     else:
         return HttpResponse("{'Error' : 'Invalid method of call'}")
 
+"""
+@login_required(login_url='/admin/login/')
+def downloadcarouselimage(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    carid = request.GET.get('carid', None)
+    if not carid:
+        return HttpResponse("Could not find carousel id with the request.")
+    try:
+        carouselobj = Carousel.objects.get(id=carid)
+    except:
+        return HttpResponse("Invalid carousel Id sent with request.")
+    carouselimagepath = carouselobj.imagepath
+    abscarouselimagepath = carouselimagepath.replace("/media", settings.MEDIA_ROOT)
+    if 'static' in carouselimagepath:
+        abscarouselimagepath = carouselimagepath.replace("/static", settings.STATIC_ROOT)
+    print(abscarouselimagepath)
+    fp = open(abscarouselimagepath, "rb")
+    carouselimage = fp.read()
+    fp.close()
+    imgfilename = os.path.basename(abscarouselimagepath)
+    img = Image.open(abscarouselimagepath)
+    imgformat = img.format
+    img.close()
+    response = HttpResponse(carouselimage, content_type='image/jpeg')
+    if imgformat == 'PNG':
+        response = HttpResponse(carouselimage, content_type='image/png')
+    elif imgformat == 'GIF':
+        response = HttpResponse(carouselimage, content_type='image/gif')
+    response['Content-Disposition'] = 'attachment; filename={}'.format(imgfilename)
+    return response
+"""
 
 @login_required(login_url='/admin/login/')
 def savecarousel(request):

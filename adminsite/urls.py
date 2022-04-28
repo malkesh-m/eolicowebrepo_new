@@ -49,6 +49,7 @@ urlpatterns = [
     path('searchcarousel/', views.searchcarousel, name='searchcarousel'),
     path('editcarousel/', views.editcarousel, name='editcarousel'),
     path('savecarousel/', views.savecarousel, name='savecarousel'),
+    #path('downloadcarouselimage/', views.downloadcarouselimage, name='downloadcarouselimage'),
 ]
 
 
