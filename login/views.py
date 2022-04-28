@@ -145,6 +145,8 @@ def about(request):
         context = {'aboutcontent' : ''}
         if wcobj is not None:
             context['aboutcontent'] = wcobj.paramvalue
+        carouselentries = getcarouselinfo()
+        context['carousel'] = carouselentries
         template = loader.get_template('about.html')
         return HttpResponse(template.render(context, request))
     else:
@@ -161,6 +163,8 @@ def contactus(request):
         context = {'contactus' : ''}
         if wcobj is not None:
             context['contactus'] = wcobj.paramvalue
+        carouselentries = getcarouselinfo()
+        context['carousel'] = carouselentries
         template = loader.get_template('contactus.html')
         return HttpResponse(template.render(context, request))
     else:

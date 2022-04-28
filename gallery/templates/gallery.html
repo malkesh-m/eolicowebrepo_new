@@ -7,9 +7,10 @@
  <meta name="author" content="">
  <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
  <title>Eolico Galleries</title>
+
  <!-- Additional CSS Files -->
  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
- <link rel="stylesheet" type="text/css" href="/static/css/fontawesome.css">
+ <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
  <link rel="stylesheet" href="/static/css/style.css">
  <link rel="stylesheet" href="/static/css/responsive.css">
  <link rel="stylesheet" href="/static/css/owl-carousel.css">
@@ -19,10 +20,6 @@
  <link rel="stylesheet" href="/static/css/newcarousel.css">
 
 
-<!--
-TemplateMo 571 Hexashop
-https://templatemo.com/tm-571-hexashop
--->
     <style>
 		
  
@@ -180,12 +177,12 @@ btn-slider" href="#">Explore</a></div></div>
 </div>
 -->
 	
-	   	<!-- Carousel -->
+    <!-- Carousel -->
     <section class="testimonials">
-	<div class="container">
+     <div class="container">
       <div class="row">
         <div class="col-sm-12">
-          <div id="customers-testimonials" class="owl-carousel">
+          <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
             {% if d.datatype == "gallery" %}
             <div class="item">
@@ -246,7 +243,7 @@ btn-slider" href="#">Explore</a></div></div>
       </div>
     </section>
     <!-- END OF Carousels -->
-	
+
 <!-- ***** Main Banner Area End ***** -->
 
 <section class="section gal-section" id="">
