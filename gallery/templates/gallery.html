@@ -21,7 +21,18 @@
 
 
     <style>
-		
+	.owl-prev, .owl-next {
+        width: 15px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        display: block !important;
+        border:0px solid black;
+    }
+    .owl-prev { left: -20px; }
+    .owl-next { right: -20px; }
+    .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
  
     </style>
 
@@ -239,6 +250,14 @@ btn-slider" href="#">Explore</a></div></div>
 	    {% endfor %}
           </div>
         </div>
+
+	<div class="owl-controls">
+        <div class="owl-nav">
+            <div class="owl-prev"></div>
+            <div class="owl-next"></div>
+        </div>
+    	</div>
+
       </div>
       </div>
     </section>
@@ -315,11 +334,10 @@ btn-slider" href="#">Explore</a></div></div>
                 <div class="column">
                     <div class="img-box">
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                        <a href="/gallery/details/?gid={{gdata.3}}">
+                        <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
 			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
 			</a>
                     </div>
                 </div>
@@ -345,11 +363,10 @@ btn-slider" href="#">Explore</a></div></div>
                 <div class="column">
                     <div class="img-box">
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                        <a href="/gallery/details/?gid={{gdata.3}}">
+                        <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
 			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
 			</a>
                     </div>
                 </div>
@@ -375,11 +392,10 @@ btn-slider" href="#">Explore</a></div></div>
                 <div class="column">
                     <div class="img-box">
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                        <a href="/gallery/details/?gid={{gdata.3}}">
+                        <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
 			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
 			</a>
                     </div>
                 </div>
@@ -405,11 +421,10 @@ btn-slider" href="#">Explore</a></div></div>
                 <div class="column">
                     <div class="img-box">
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                        <a href="/gallery/details/?gid={{gdata.3}}">
+                        <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
 			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
 			</a>
                     </div>
                 </div>
@@ -435,11 +450,10 @@ btn-slider" href="#">Explore</a></div></div>
                 <div class="column">
                     <div class="img-box">
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                        <a href="/gallery/details/?gid={{gdata.3}}">
+                        <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
 			<span style="padding-left:10px;">{{gdata.0}}</span>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
 			</a>
                     </div>
                 </div>

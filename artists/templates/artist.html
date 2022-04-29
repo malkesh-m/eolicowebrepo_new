@@ -28,6 +28,19 @@
     <link rel="stylesheet" href="/static/css/newcarousel.css">
 
     <style>
+	.owl-prev, .owl-next {
+        width: 15px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        display: block !important;
+        border:0px solid black;
+    }
+    .owl-prev { left: -20px; }
+    .owl-next { right: -20px; }
+    .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
+ 
     </style>
     <!--
 
@@ -218,6 +231,14 @@
 	    {% endfor %}
           </div>
         </div>
+	
+	<div class="owl-controls">
+        <div class="owl-nav">
+            <div class="owl-prev"></div>
+            <div class="owl-next"></div>
+        </div>
+    	</div>
+
       </div>
       </div>
     </section>
@@ -295,7 +316,11 @@
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% if artistobj.birthdate == '' %}
+                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+				{% else %}
+				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
@@ -327,7 +352,11 @@
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% if artistobj.birthdate == '' %}
+                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+				{% else %}
+				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
@@ -359,7 +388,11 @@
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                                {% if artistobj.birthdate == '' %}
+                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+				{% else %}
+				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
@@ -391,7 +424,11 @@
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                                {% if artistobj.birthdate == '' %}
+                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+				{% else %}
+				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
@@ -423,7 +460,11 @@
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                                {% if artistobj.birthdate == '' %}
+                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+				{% else %}
+				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
@@ -455,7 +496,11 @@
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                                {% if artistobj.birthdate == '' %}
+                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+				{% else %}
+				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>
@@ -486,7 +531,11 @@
                           <div class="down-content">
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
-                                  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+                                {% if artistobj.birthdate == '' %}
+                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+				{% else %}
+				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
                       </div>

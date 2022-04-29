@@ -32,7 +32,7 @@ def index(request):
         if 'page' in request.GET.keys():
             pageno = str(request.GET['page'])
     page = pagemap[pageno]
-    chunksize = 9
+    chunksize = 8
     rows = 6
     featuredsize = 4
     rowstartctr = int(page) * rows - rows
