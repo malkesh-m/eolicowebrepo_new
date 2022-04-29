@@ -127,6 +127,10 @@ def index(request):
     context['auctionhouses'] = auctionhouses
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('homepage.html')
     return HttpResponse(template.render(context, request))
 
@@ -147,6 +151,10 @@ def about(request):
             context['aboutcontent'] = wcobj.paramvalue
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
+        if request.user.is_authenticated:
+            context['adminuser'] = 1
+        else:
+            context['adminuser'] = 0
         template = loader.get_template('about.html')
         return HttpResponse(template.render(context, request))
     else:
@@ -165,6 +173,10 @@ def contactus(request):
             context['contactus'] = wcobj.paramvalue
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
+        if request.user.is_authenticated:
+            context['adminuser'] = 1
+        else:
+            context['adminuser'] = 0
         template = loader.get_template('contactus.html')
         return HttpResponse(template.render(context, request))
     else:
