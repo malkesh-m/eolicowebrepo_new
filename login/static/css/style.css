@@ -765,17 +765,17 @@ Men
 */
 
 #men, .gal-section {
-  padding-top: 90px;
-  padding-bottom: 90px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   border-bottom: 3px dotted #eee;
 }
 
 #men .section-heading, .gal-section .section-heading {
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 #men .item .down-content, .gal-section .item .down-content {
-  padding-top: 30px;
+  padding-top: 15px;
   position: relative;
   z-index: 3;
   background-color: #fff;
@@ -937,13 +937,13 @@ Women
 */
 
 #women {
-  padding-top: 90px;
-  padding-bottom: 90px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   border-bottom: 3px dotted #eee;
 }
 
 #women .section-heading {
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 #women .item .down-content {
@@ -1097,8 +1097,8 @@ Kids
 */
 
 #kids {
-  padding-top: 90px;
-  padding-bottom: 90px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   border-bottom: 3px dotted #eee;
 }
 
@@ -1258,8 +1258,8 @@ Explore
 */
 
 #explore {
-  padding-top: 90px;
-  padding-bottom: 90px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   border-bottom: 3px dotted #eee;
 }
 
@@ -1343,7 +1343,7 @@ Explore
   font-size: 24px;
   font-weight: 700;
   color: #2a2a2a;
-  padding-top: 90px;
+  padding-top: 40px;
   margin-bottom: 5px;
 }
 
@@ -1362,8 +1362,8 @@ Social
 */
 
 #social {
-  margin-top: 90px;
-  padding-bottom: 90px;
+  margin-top: 40px;
+  padding-bottom: 40px;
   border-bottom: 3px dotted #eee;
 }
 
@@ -1373,7 +1373,7 @@ Social
 }
 
 #social .images {
-  margin-top: 60px;
+  margin-top: 40px;
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -2011,8 +2011,8 @@ About Us Page
 
 .our-team {
   margin-top: 100px;
-  padding-top: 90px;
-  padding-bottom: 90px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   border-top: 3px dotted #eee;
 }
 
@@ -2102,8 +2102,8 @@ About Us Page
 }
 
 .our-services {
-  padding-top: 90px;
-  padding-bottom: 90px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   border-top: 3px dotted #eee;
   border-bottom: 3px dotted #eee;
 }
@@ -2394,7 +2394,7 @@ footer .under-footer a:hover {
 	margin-bottom:50px;
 }
 .gal-tab-row .section-heading{
-	padding-top:60px;
+	padding-top:40px;
 	padding-bottom:40px;
 	
 }
@@ -2443,7 +2443,7 @@ footer .under-footer a:hover {
 	padding: 20px;
 }
 .pst-ev .section-heading{
-	padding-top:60px;
+	padding-top:40px;
 	padding-bottom:0px;
 }
 .viewing-rooms .section-heading{
@@ -2851,7 +2851,7 @@ responsive
 .establish{padding-top:20px;}
 .establish h4{text-transform:capitalize;font-size:18px;}
 .establish p{color:#a1a1a1;}
-.mrt-90{margin-top:90px;}
+.mrt-90{margin-top:30px;}
 .category-tabs .nav-tabs .nav-item{width:33.33%;text-align:center;padding: 0px 15px;}
 .category-tabs .nav-tabs .nav-item .nav-link{text-transform:capitalize;font-weight:600;color:#2a2a2a;padding: 10px 0px;border-bottom: 1px solid #dee2e6;}
 .category-tabs .nav-tabs .nav-item .nav-link.active, .category-tabs .nav-tabs .nav-item .nav-link:hover{border:none;border-bottom:1px solid #2a2a2a;}
@@ -3084,7 +3084,7 @@ justify-content: space-between;
 .save-share ul li{padding:0 10px;display:inline-table;}
 .save-share ul li button{padding:0;border:none;background:none;font-size:13px;}
 .save-share ul li i{padding-right:6px;}
-.mrb-50{margin-bottom:50px;}
+.mrb-50{margin-bottom:30px;}
 .sec-tow .sec-left{height:45px;width:45px;}
 .sec-tow .sec-right h2{font-size:16px;}
 .sec-tow .sec-right span{font-size:13px;color:#aaa;}
