@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Eolico Admin: Auctions Form </title>
+
+    <!-- ================= Favicon ================== -->
+    <!-- Standard -->
+    <link rel="shortcut icon" href="http://placehold.it/64.png/000/fff">
+    <!-- Retina iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="144x144" href="http://placehold.it/144.png/000/fff">
+    <!-- Retina iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="114x114" href="http://placehold.it/114.png/000/fff">
+    <!-- Standard iPad Touch Icon-->
+    <link rel="apple-touch-icon" sizes="72x72" href="http://placehold.it/72.png/000/fff">
+    <!-- Standard iPhone Touch Icon-->
+    <link rel="apple-touch-icon" sizes="57x57" href="http://placehold.it/57.png/000/fff">
+
+    <!-- Styles -->
+    <link href="/static/admincss/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/themify-icons.css" rel="stylesheet">
+    <link href="/static/admincss/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="/static/admincss/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admincss/lib/helper.css" rel="stylesheet">
+    <link href="/static/admincss/style.css" rel="stylesheet">
+
+    <style>
+	img {
+	  border: 1px solid #ddd; /* Gray border */
+	  border-radius: 4px;  /* Rounded border */
+	  padding: 5px; /* Some padding */
+	  width: 150px; /* Set a small width */
+	}
+
+	/* Add a hover effect (blue shadow) */
+	img:hover {
+	  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+	}
+    </style>
+
+    <script type='text/javascript'>
+	function addauction(){
+	  csrf = document.frmmauctions.csrfmiddlewaretoken.value;
+	  auctionnm = document.frmmauctions.auctionname.value;
+	  auctionloc = document.frmmauctions.auctionlocation.value;
+	  ahid = document.frmmauctions.selauctionhousename.options[document.frmmauctions.selauctionhousename.options.selectedIndex].value;
+	  auctiondesc = document.frmmauctions.auctioninfo.value;
+	  auctionseltype = document.frmmauctions.selauctiontype.options[document.frmmauctions.selauctiontype.options.selectedIndex].value;
+	  auctiontp = document.frmmauctions.auctiontype.value;
+	  auctionpr = document.frmmauctions.selauctionpriority.options[document.frmmauctions.selauctionpriority.options.selectedIndex].value;
+	  auctioncover = document.frmmauctions.auctioncoverimage.value;
+	  auctiondt = document.frmmauctions.auctiondate.value;
+          auctionurl = document.frmmauctions.auction_url.value;
+	  let formData = new FormData();
+	  let coverimage = document.getElementById("auctioncoverimage").files[0];
+	  formData.append("auctioncoverimage", coverimage); 
+          if (auctionseltype == ""){
+	    auctionseltype = auctiontp;
+	  }
+	  if (ahid == ""){
+	    alert("Please select Auction House to proceed");
+	    exit();
+	  }
+	  formData.append("auctionname", auctionnm); 
+	  formData.append("auctionlocation", auctionloc); 
+	  formData.append("auctioninfo", auctiondesc); 
+ 	  formData.append("auctiondate", auctiondt); 
+	  formData.append("selauctionhousename", ahid); 
+	  formData.append("selauctiontype", auctionseltype);
+	  formData.append("selauctionpriority", auctionpr); 
+	  formData.append("auction_url", auctionurl); 
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('aucstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", "/admin/auctions/");
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+
+	function searchauctionsbykeyword(){
+	  keyword = document.frmsearchauctions.btnauctionssearch.value;
+	  //alert(keyword);
+ 	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    aucform = document.getElementById('frmmauctions');
+	    aucform.innerHTML = "";
+	    gform = "";
+	    auctionsdict = JSON.parse(xmlhttp.responseText);
+	    for (const [aucname, aucid] of Object.entries(auctionsdict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editauction(" + aucid + ")'>" +  aucname + "</a></div>";
+	    }
+	    aucform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", '/admin/searchauctions/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.send();
+	}
+
+
+	function editauction(aucid){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    aucform = document.getElementById('frmmauctions');
+	    aucform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchauctions.csrfmiddlewaretoken.value + "'>";
+	    context = JSON.parse(xmlhttp.responseText);
+	    auctiondict = context['auctiondict'];
+	    allauctiontypes = context['allauctiontypes'];
+	    auctionhousesdict = context['auctionhousesdict'];
+	    gform += "<div class='card-title'><h4>Auction Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Auction Name' name='auctionname' value='" + auctiondict['auctionname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Auction House</h4></div><div class='form-group'>";
+	    gform += "<select name='selauctionhousename' id='selauctionhousename' class='form-control input-default'><option value=''>Select Auction House </option>";
+	    for (const [auchousename, auchouseid] of Object.entries(auctionhousesdict)){
+		if(auctiondict['auctionhouse'] == auchousename){
+		gform += "<option value='" + auchouseid + "' selected>" + auchousename + "</option>";
+		}
+		else{
+		gform += "<option value='" + auchouseid + "'>" + auchousename + "</option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Auction Location</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Auction Location' name='auctionlocation' value='" + auctiondict['auctionlocation'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Auction Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='auctioninfo'>" + auctiondict['description'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Auction URL</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Auction URL' name='auction_url' value='" + auctiondict['auctionurl'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Auction Type</h4></div><div class='form-group'>";
+	    gform += "<select name='selauctiontype' id ='selauctiontype' class='form-control input-default'><option value=''>Select type </option>";
+	    for(var i=0; i < allauctiontypes.length; i++){
+		if(allauctiontypes[i] == auctiondict['auctiontype']){
+		gform += "<option value='" + allauctiontypes[i] + "' selected>" + allauctiontypes[i] + "</option>";
+		}
+		else{
+		gform += "<option value='" + allauctiontypes[i] + "'>" + allauctiontypes[i] + "</option>";
+		}
+	    }
+	    gform += "<option value='none'>None of the above</option></select><input type='text' class='form-control input-default' placeholder='Enter Auction Type' name='auctiontype'></div>";
+	    gform += "<div class='card-title'><h4>Auction Priority</h4></div><div class='form-group'>";
+	    gform += "<select name='selauctionpriority' id='selauctionpriority' class='form-control input-default'><option value=''>Select Priority </option>";
+	    for(i=1; i <= 5; i++){
+		if(auctiondict['selpriority'] == i){
+		gform += "<option value='" + i + "' selected>" + i + " </option>";
+		}
+		else{
+		gform += "<option value='" + i + "'>" + i + " </option>";
+		}
+	    }
+	    gform += "</select></div>";
+	    gform += "<div class='card-title'><h4>Auction Date</h4></div><div class='form-group'><input type='date' name='auctiondate' class='form-control input-default' value='" + auctiondict['auctiondate'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Auction Cover Image</h4></div><div class='form-group'><input type='file' name='auctioncoverimage' id='auctioncoverimage' class='form-control input-default'><a href='" + auctiondict['coverimage'] + "'><img src='" + auctiondict['coverimage'] + "'></a></div>";
+	    gform += "<div class='card-title'><input type='button' name='editauction' class='form-control input-default' value='Save Auction' onclick='javascript:saveauction();'></div>";
+	    gform += "<div class='card-title' id='aucstatus'></div>";
+	    gform += "<input type='hidden' name='aucid' value='" + auctiondict['id'] + "'>";
+	    aucform.innerHTML = gform;
+	  }
+	  };
+	  xmlhttp.open("GET", "/admin/editauctions/?aucid=" + aucid);
+	  xmlhttp.send();
+	}
+
+
+	function saveauction(){
+	  csrf = document.frmmauctions.csrfmiddlewaretoken.value;
+	  auctionnm = document.frmmauctions.auctionname.value;
+	  auctionloc = document.frmmauctions.auctionlocation.value;
+	  auchouseid = document.frmmauctions.selauctionhousename.options[document.frmmauctions.selauctionhousename.options.selectedIndex].value;
+	  auctiondesc = document.frmmauctions.auctioninfo.value;
+	  auctionseltype = document.frmmauctions.selauctiontype.options[document.frmmauctions.selauctiontype.options.selectedIndex].value;
+	  auctionpr = document.frmmauctions.selauctionpriority.options[document.frmmauctions.selauctionpriority.options.selectedIndex].value;
+	  auctionurl = document.frmmauctions.auction_url.value;
+	  aucdate = document.frmmauctions.auctiondate.value;
+	  auctionid = document.frmmauctions.aucid.value;
+	  let formData = new FormData();
+	  let coverimage = document.getElementById("auctioncoverimage").files[0];
+	  formData.append("auctioncoverimage", coverimage); 
+	  if (auctionseltype == ""){
+	    auctionseltype = document.frmmauctions.auctiontype.value;
+	  }
+	  if (auchouseid == ""){
+	    alert("Please select Auction House to proceed");
+	    exit();
+	  }
+	  formData.append("auctionname", auctionnm); 
+	  formData.append("auctionlocation", auctionloc); 
+	  formData.append("auctioninfo", auctiondesc); 
+	  formData.append("selauctionhousename", auchouseid); 
+ 	  formData.append("selauctiontype", auctionseltype); 
+	  formData.append("auctiondate", aucdate); 
+	  formData.append("selauctionpriority", auctionpr); 
+	  formData.append("auction_url", auctionurl);
+	  formData.append("aucid", auctionid); 
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    //alert(xmlhttp.responseText);
+	    statusdiv = document.getElementById('aucstatus');
+	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
+	    setTimeout(function() {
+    		document.location.href = document.location.href;
+	    }, 5000);
+	  }
+	  };
+	  xmlhttp.open("POST", '/admin/saveauctions/');
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+	}
+    </script>
+</head>
+
+<body>
+
+<div class="content-wrap">
+        <div class="main">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 p-r-0 title-margin-right">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h1>Hello, <span>Welcome Here</span></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                    <div class="col-lg-15 p-l-0 title-margin-left">
+                        <div class="page-header">
+                            <div class="card">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/admin/dashboard/">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="/admin/artists/">Artists</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/galleries/">Galleries</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/gevents/">Gallery Events</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/artworks/">Artworks</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/museums/">Museums</a></li>
+				    <li class="breadcrumb-item active"><a href="/admin/mevents/">Museum Events</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/museumpieces/">Museum Pieces</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/auctionhouses/">Auction Houses</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/auctions/">Auctions</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/lots/">Lots</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/prices/">Prices</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/webconfig/">Webconfig</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/carousel/">Carousel</a></li>
+				    <li class="breadcrumb-item"><a href="/admin/logout/">Logout</a></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                </div>
+		
+                <!-- /# row -->
+                <section id="main-content">
+                    <div class="row">
+			<!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Auctions Search Box</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmsearchauctions' method='POST' action='/admin/searchauctions/'>
+					    {% csrf_token %}
+                                            <div class="form-group">
+                                                
+                                                <div class="input-group input-group-default">
+                                                    <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick='javascript:searchauctionsbykeyword();'><i class="ti-search"></i></button></span>
+                                                    <input type="text" placeholder="Search Auctions" name="btnauctionssearch" class="form-control">
+                                                </div>
+                                            </div>
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h3>Add New Auction</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="basic-form">
+                                        <form name='frmmauctions' id='frmmauctions' method='POST' action='/admin/auctions/'>
+					    {% csrf_token %}
+					    <div class="card-title">
+                                    		<h4>Auction Name</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default " placeholder="Auction Name" name='auctionname'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Auction House</h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select name='selauctionhousename' id='selauctionhousename' class="form-control input-default">
+						<option value=''>Select Auction House </option>
+						{% for auchouse, ahid in auctionhousesdict.items %}
+						<option value='{{ahid}}'>{{auchouse}}</option>
+						{% endfor %}
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Auction Location</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Auction Location" name='auctionlocation'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Auction Description</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control input-default" name='auctioninfo'></textarea>
+                                            </div>
+                                            <div class="card-title">
+                                    		<h4>Auction URL</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" placeholder="Auction URL" name='auction_url'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Auction Type</h4>
+                                	    </div>
+                                            <div class="form-group">
+						<select name='selauctiontype' id='selauctiontype' class="form-control input-default">
+						<option value=''>Select Type </option>
+						{% for auctype in allauctiontypes %}
+						<option value='{{auctype}}'>{{auctype}}</option>
+						{% endfor %}
+						<option value='none'>None of the above</option>
+						</select>
+                                                <input type="text" class="form-control input-default" placeholder="Enter Auction Type" name='auctiontype'>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Auction Priority</h4>
+                                	    </div>
+                                            <div class="form-group">
+                                                <select name='selauctionpriority' id='selauctionpriority' class="form-control input-default">
+						<option value=''>Select priority </option>
+						<option value='1'>1 </option>
+						<option value='2'>2 </option>
+						<option value='3'>3 </option>
+						<option value='4'>4 </option>
+						<option value='5'>5 </option>
+						</select>
+                                            </div>
+					    <div class="card-title">
+                                    		<h4>Auction Date</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='date' name='auctiondate' class="form-control input-default">
+					    </div>
+					    <div class="card-title">
+                                    		<h4>Auction Cover Image</h4>
+                                	    </div>
+					    <div class="form-group">
+						<input type='file' name='auctioncoverimage' id='auctioncoverimage' class="form-control input-default">
+					    </div>
+					    <div class="form-group">
+						<input type='button' name='addnewauction' class="form-control input-default" value='Add Auction' onclick='javascript:addauction();'>
+					    </div>
+					    <div class="card-title" id='aucstatus'>
+                                    		
+                                	    </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- /# row -->
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="footer">
+                                <p>2022 © Eolico Board. - <a href="#">eolico.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    
+    <!-- jquery vendor -->
+    <script src="/static/adminjs/lib/jquery.min.js"></script>
+    <script src="/static/adminjs/lib/jquery.nanoscroller.min.js"></script>
+    <!-- nano scroller -->
+    <script src="/static/adminjs/lib/menubar/sidebar.js"></script>
+    <script src="/static/adminjs/lib/preloader/pace.min.js"></script>
+    <!-- sidebar -->
+    
+    <!-- bootstrap -->
+
+
+    <script src="/static/adminjs/lib/bootstrap.min.js"></script><script src="/static/adminjs/scripts.js"></script>
+    <!-- scripit init-->
+
+
+
+
+
+</body>
+
+</html>

@@ -150,6 +150,8 @@ MEDIA_URL = '/media/'
 
 GALLERY_FILE_DIR = MEDIA_ROOT + os.path.sep + "images" + os.path.sep + "galleries"
 MUSEUM_FILE_DIR = MEDIA_ROOT + os.path.sep + "images" + os.path.sep + "museums"
+AUCTION_FILE_DIR = MEDIA_ROOT + os.path.sep + "images" + os.path.sep + "auctions"
+AUCTIONHOUSE_FILE_DIR = MEDIA_ROOT + os.path.sep + "images" + os.path.sep + "auctionhouses"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

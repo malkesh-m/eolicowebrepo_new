@@ -26,13 +26,9 @@
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
     <style>
     </style>
-    <!--
+    
+    <script src="/static/js/editfromfront.js"></script>
 
-    TemplateMo 571 Hexashop
-
-    https://templatemo.com/tm-571-hexashop
-
-    -->
 </head>
 
 <body>
@@ -266,6 +262,9 @@
                             <div class="sec-right">
                                 <h2>{{artworkinfo.artworkname}}</h2>
                                 <span>{{artworkinfo.artistname}}, {{artworkinfo.creationdate}}</span>
+				{% if adminuser == 1 %}
+				    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmpiece('{{artworkinfo.mpid}}');">Edit</a>
+				{% endif %}
                             </div>
                         </div>
                         <!-- <div class="follow">
@@ -288,6 +287,9 @@
                                 <p>
                                     {{artworkinfo.description}}
                                 </p>
+				{% if adminuser == 1 %}
+				    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmpiece('{{artworkinfo.mpid}}');">Edit</a>
+				{% endif %}
                                 <!-- <p class="bio-moretext">
                                     It has survived not only five
                                     <a href="">centuries</a>, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
@@ -360,6 +362,9 @@
                                                     <h2>{{artwork.artworkname}}</h2>
                                                     <p>{{artwork.description}}</p>
                                                 </a>
+						{% if adminuser == 1 %}
+						    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmpiece('{{artwork.mpid}}');">Edit</a>
+						{% endif %}
                                             </div>
                                         </div>
 					{% endfor %}
@@ -563,6 +568,9 @@
                                                                 <h4>{{evdata.eventname}}</h4>
                                                                 <span>{{evdata.eventlocation}} {{evdata.eventperiod}}</span>
                                                             </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
+							    {% if adminuser == 1 %}
+							        <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmevent('{{evdata.mevid}}');">Edit</a>
+							    {% endif %}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -593,6 +601,9 @@
                                                         <h2>{{artist.artistname}}</h2>
                                                         <p>{{artist.about}}</p>
                                                     </a>
+						    {% if adminuser == 1 %}
+						        <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artist.aid}}');">Edit</a>
+						    {% endif %}
                                                 </div>
                                             </div>
 					    {% endfor %}
@@ -1214,6 +1225,9 @@
                                                             <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
                                                             <p>{{artwork.description}}</p>
 							    </a>
+							    {% if adminuser == 1 %}
+								<br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmpiece('{{artwork.mpid}}');">Edit</a>
+							    {% endif %}
                                                         </div>
 							{% endfor %}
                                                     </div>
@@ -1226,6 +1240,9 @@
                                                             <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
                                                             <p>{{artwork.description}}</p>
 							    </a>
+							    {% if adminuser == 1 %}
+								<br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmpiece('{{artwork.mpid}}');">Edit</a>
+							    {% endif %}
                                                         </div>
 							{% endfor %}
                                                     </div>
@@ -1238,6 +1255,9 @@
                                                             <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
                                                             <p>{{artwork.description}}</p>
 							    </a>
+							    {% if adminuser == 1 %}
+								<br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmpiece('{{artwork.mpid}}');">Edit</a>
+							    {% endif %}
                                                         </div>
 							{% endfor %}
                                                     </div>
@@ -1250,6 +1270,9 @@
                                                             <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
                                                             <p>{{artwork.description}}</p>
 							    </a>
+							    {% if adminuser == 1 %}
+								<br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmpiece('{{artwork.mpid}}');">Edit</a>
+							    {% endif %}
                                                         </div>
 							{% endfor %}
                                                     </div>
@@ -2051,6 +2074,10 @@
         </div>
     </section>
     <!------- Category Tabs---------->
+
+    <form name='frmedit' id='frmedit'>
+     {% csrf_token %}
+    </form>
 
     <section class="download-app">
         <div class="container max-container">

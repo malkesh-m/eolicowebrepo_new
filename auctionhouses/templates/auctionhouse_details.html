@@ -27,6 +27,9 @@
 
 
 	</style>
+
+    <script src="/static/js/editfromfront.js"></script>
+
     </head>
     
     <body>
@@ -100,6 +103,9 @@
 							<p>{{auctioninfo.auctionlocation}}</p>
 							<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider">View</a>
 						</div>
+						{% if adminuser == 1 %}
+						    <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
+						{% endif %}
                     </div>
                 </div>
             </div>
@@ -143,6 +149,9 @@
 						<h6>Hosted by {{auctioninfo.auctionhouse}}</h6>
 						<!-- <p></p> -->
 						<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider" >Read More</a>
+						{% if adminuser == 1 %}
+						    <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
+						{% endif %}
 					</div>
 					<div class="col-md-5">
 						<img src="{{auctioninfo.coverimage}}" class="img-fluid"/>
@@ -158,35 +167,34 @@
 						</div>
 					</div>
 				</div>
-				<div class="row align-items-end">
-				   <div class="col-lg-12">
+
+
+				<div class="row gal-tab-row pst-ev">
+				<div class="col-lg-12">
 					   <div class="section-heading text-center">
 							<h3>Select Lots</h3>
 							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-							<hr>
+						<hr>
 					   </div>
-				   </div>
-				   <div class="col-lg-12">
-					 <div class="men-item-carousel">
-                        <div class="owl-men-item owl-carousel">
-			    {% for lot in overviewlots %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.lotimage}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/auction/details/?lid={{lot.lid}}" style="color:#000000;">
-										<h4>{{lot.title}}</h4>
-										<span>{{lot.artistname}}</span>
-										<span>{{lot.medium}}</span>
-									</a>
-                                </div>
-                            </div>
-			    {% endfor %}
-                            
-                        </div>
-                    </div>
-				   </div>
+				</div>
+				</div>
+				
+				<div class="row align-items-end">
+				{% for lot in overviewlots %}
+				  <div class="column">
+					<div class="img-box">
+					<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.lotimage}}" alt=""></a>
+					<a href="/auction/details/?lid={{lot.lid}}" style="color:#000000;">
+					<h4>{{lot.title}}</h4>
+					<h6>{{lot.artistname}}</h6>
+					<h6>{{lot.medium}}</h6>
+					</a>
+					{% if adminuser == 1 %}
+					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+					{% endif %}
+					</div>
+				  </div>
+				{% endfor %}  
 				</div>
 				<br>
 				<div class="row articl-row">
@@ -257,6 +265,9 @@
 					<h6>{{auctioninfo.auctionlocation}}</h6>
 					<p>{{auctioninfo.description}}</p>
 					<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider" >Read More</a>
+					{% if adminuser == 1 %}
+					    <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
+					{% endif %}
 				</div>
 				<div class="col-md-5">
 					<img src="{{auctioninfo.coverimage}}" class="img-fluid"/>
@@ -273,24 +284,22 @@
 			</div>
 			<div class="row align-items-end">
 				{% for auction in auctionslist %}
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="/auctionhouse/details/?aucid={{auction.aucid}}"><img src="{{auction.coverimage}}" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<a href="/auctionhouse/details/?aucid={{auction.aucid}}" style="color:#000000;">
-							<h4>{{auction.auctionname}}</h4>
-							<span>{{auction.auctionlocation}}</span>
-							<span>{{auction.auctiondate}}</span>
-							<p>{{auction.description}}</p>
-							</a>
-						</div>
+				  <div class="column">
+					<div class="img-box">
+					<a href="/auctionhouse/details/?aucid={{auction.aucid}}"><img src="{{auction.coverimage}}" alt="" class="img-fluid"></a>
+					<a href="/auctionhouse/details/?aucid={{auction.aucid}}" style="color:#000000;">
+					<h4>{{auction.auctionname}}</h4>
+					<h6>{{auction.auctionlocation}}</h6>
+					<h6>{{auction.auctiondate}}</h6>
+					<p>{{auction.description}}</p>
+					</a>
+					{% if adminuser == 1 %}
+					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
+					{% endif %}
 					</div>
 				  </div>
-				{% endfor %}
-				  
-			  </div>
+				{% endfor %}  
+			</div>
 		  </div>
         </div>
         
@@ -507,14 +516,17 @@
 			  <div class="row align-items-end">
 			{% for lot in alllots %}
 			  <div class="column">
-				<a href='/auction/details/?lid={{lot.lid}}' style="color:#000000;">
 				<div class="img-box">
+				<a href='/auction/details/?lid={{lot.lid}}' style="color:#000000;">
 				<img src="{{lot.lotimage}}" style="width:100%">
 				<h4>{{lot.title}}</h4>
 				<h6>{{lot.artistname}}</h6>
 				<p>{{lot.description}}</p>
-				</div>
 				</a>
+				{% if adminuser == 1 %}
+				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+				{% endif %}
+				</div>
 			  </div>
 			{% endfor %}
 			  
@@ -614,6 +626,10 @@
 		</div>
 		</div>
 	</section>
+
+    <form name='frmedit' id='frmedit'>
+      {% csrf_token %}
+    </form>
 
     <!-- ***** Footer Start ***** -->
     <footer>

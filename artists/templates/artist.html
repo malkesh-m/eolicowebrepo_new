@@ -42,19 +42,14 @@
     .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
  
     </style>
-    <!--
-
-    TemplateMo 571 Hexashop
-
-    https://templatemo.com/tm-571-hexashop
-
-    -->
-
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <script src="/static/js/editfromfront.js"></script>
 
 </head>
     
@@ -185,6 +180,9 @@
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -198,6 +196,9 @@
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -211,6 +212,9 @@
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -224,6 +228,9 @@
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -303,7 +310,7 @@
               <div class="row align-items-end">
 		  {% for artistobj in featuredartists %}
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
-                      <div class="artist-category align-items-end">
+                      <div class="artist-category">
 			  {% if artistobj.atype == '1' %}
                           <div class="thumb">
                               <a href="/gallery/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
@@ -317,12 +324,15 @@
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
 				{% if artistobj.birthdate == '' %}
-                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+                                  <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				  <h6>{{artistobj.nationality}} b.{{artistobj.birthdate}}</h6>
 				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
+			  {% if adminuser == 1 %}
+			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+		          {% endif %}
                       </div>
                   </div>
 		  {% endfor %}
@@ -353,12 +363,15 @@
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
 				{% if artistobj.birthdate == '' %}
-                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+                                  <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				  <h6>{{artistobj.nationality}} b.{{artistobj.birthdate}}</h6>
 				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
+			  {% if adminuser == 1 %}
+			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+		          {% endif %}
                       </div>
                   </div>
 		  {% endfor %}
@@ -389,12 +402,15 @@
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
                                 {% if artistobj.birthdate == '' %}
-                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+                                  <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				  <h6>{{artistobj.nationality}} b.{{artistobj.birthdate}}</h6>
 				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
+			  {% if adminuser == 1 %}
+			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+		          {% endif %}
                       </div>
                   </div>
 		  {% endfor %}
@@ -425,12 +441,15 @@
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
                                 {% if artistobj.birthdate == '' %}
-                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+                                  <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				  <h6>{{artistobj.nationality}} b.{{artistobj.birthdate}}</h6>
 				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
+			  {% if adminuser == 1 %}
+			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+		          {% endif %}
                       </div>
                   </div>
 		  {% endfor %}
@@ -461,12 +480,15 @@
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
                                 {% if artistobj.birthdate == '' %}
-                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+                                  <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				  <h6>{{artistobj.nationality}} b.{{artistobj.birthdate}}</h6>
 				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
+			  {% if adminuser == 1 %}
+			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+		          {% endif %}
                       </div>
                   </div>
 		  {% endfor %}
@@ -497,12 +519,15 @@
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
                                 {% if artistobj.birthdate == '' %}
-                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+                                  <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				  <h6>{{artistobj.nationality}} b.{{artistobj.birthdate}}</h6>
 				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
+			  {% if adminuser == 1 %}
+			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+		          {% endif %}
                       </div>
                   </div>
 		  {% endfor %}
@@ -532,12 +557,15 @@
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}</h4>
                                 {% if artistobj.birthdate == '' %}
-                                  <span style="padding-left:10px;">{{artistobj.nationality}}</span>
+                                  <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <span style="padding-left:10px;">{{artistobj.nationality}} b.{{artistobj.birthdate}}</span>
+				  <h6>{{artistobj.nationality}} b.{{artistobj.birthdate}}</h6>
 				{% endif %}
                               </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
+			  {% if adminuser == 1 %}
+			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+		          {% endif %}
                       </div>
                   </div>
 		  {% endfor %}
@@ -562,6 +590,11 @@
               </div>
           </div>
       </section>
+
+      <form name='frmedit' id='frmedit'>
+        {% csrf_token %}
+      </form>
+
       <!-- ***** Footer Start ***** -->
       <footer>
           <div class="container">

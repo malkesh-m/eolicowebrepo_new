@@ -33,6 +33,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
+from django.shortcuts import redirect
 
 
 def output_path():
@@ -110,6 +111,11 @@ def showlogin(request):
                 return HttpResponseRedirect("/admin/login/?2")
     else:
         return HttpResponseRedirect("/admin/login/?1")
+
+
+def dologout(request):
+    logout(request)
+    return redirect('/admin/login/')
 
 
 @login_required(login_url='/admin/login/')
@@ -2583,7 +2589,7 @@ def savecarousel(request):
         carobj.textvalue = carouselitemtext
         carobj.datatype = seldatatype
         carobj.data_id = seldataentry
-        print(seldataentry)
+        #print(seldataentry)
         carobj.priority = selpriority
         # Handle image for the carousel entry
         carouselimage = request.FILES.get("carouselimage")
@@ -2682,33 +2688,438 @@ def savecarousel(request):
 
 
 @login_required(login_url='/admin/login/')
-def auctionhouses(request):
-    if request.method == 'GET':
-        context = {}
-        template = loader.get_template('auctionhouses.html')
-        return HttpResponse(template.render(context, request))
-    elif request.method == 'POST':
-        pass
-
-
-@login_required(login_url='/admin/login/')
 def auctions(request):
     if request.method == 'GET':
         context = {}
+        auctionhousesdict = {}
+        allauctiontypes = []
+        auctionhousesqset = AuctionHouse.objects.all().order_by('priority', '-edited')
+        for auchouse in auctionhousesqset:
+            auctionhousesdict[auchouse.housename] = auchouse.id
+        context['auctionhousesdict'] = auctionhousesdict
+        auctiontypes = Auction.objects.order_by().values_list('auctiontype').distinct()
+        for auctype in auctiontypes:
+            allauctiontypes.append(auctype[0])
+        context['allauctiontypes'] = allauctiontypes
         template = loader.get_template('auctions.html')
         return HttpResponse(template.render(context, request))
     elif request.method == 'POST':
-        pass
+        auctioncoverimage, auctionname, auctionlocation, auctioninfo, auctiondate, selauctionhousename, selauctiontype, selauctionpriority, auctionurl = "", "", "", "", "", "", "", "", ""
+        if 'auctionname' in request.POST.keys():
+            auctionname = request.POST['auctionname']
+        if 'auctionlocation' in request.POST.keys():
+            auctionlocation = request.POST['auctionlocation']
+        if 'auctioninfo' in request.POST.keys():
+            auctioninfo = request.POST['auctioninfo']
+        if 'auctiondate' in request.POST.keys():
+            auctiondate = request.POST['auctiondate']
+        if 'selauctionhousename' in request.POST.keys():
+            selauctionhousename = request.POST['selauctionhousename']
+        if 'selauctiontype' in request.POST.keys():
+            selauctiontype = request.POST['selauctiontype']
+        selauctionpriority = 5 # Default value is 5 - lowest priority
+        if 'selauctionpriority' in request.POST.keys():
+            selauctionpriority = request.POST['selauctionpriority']
+        if 'auction_url' in request.POST.keys():
+            auctionurl = request.POST['auction_url']
+        selauchouseobj = None
+        try:
+            selauchouseobj = AuctionHouse.objects.get(id=selauctionhousename)
+        except:
+            print("Invalid auction house id %s"%selauctionhousename)
+        auchousename = ""
+        if selauchouseobj is not None:
+            auchousename = selauchouseobj.housename
+        auctionobj = Auction()
+        auctionobj.auctionname = auctionname
+        auctionobj.auctionid = ""
+        auctionobj.auctionhouse = auchousename
+        auctionobj.auctionlocation = auctionlocation
+        auctionobj.description = auctioninfo
+        auctionobj.auctiondate = auctiondate
+        auctionobj.auctionurl = auctionurl
+        auctionobj.auctiontype = selauctiontype
+        auctionobj.priority = selauctionpriority
+        auctionobj.lotslistingurl = ""
+        auctioncoverimage = request.FILES.get("auctioncoverimage")
+        nonalphanumPattern = re.compile("[^a-zA-Z\d_]{1}")
+        if auctioncoverimage:
+            mimetype = auctioncoverimage.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return HttpResponse("Uploaded file is not gif, jpeg or png format.")
+            if 'auctioncoverimage' in request.FILES.keys():
+                auctioncoverimagename = request.FILES['auctioncoverimage'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + nonalphanumPattern.sub("_", auctionname)
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['auctioncoverimage'], imagelocation, auctioncoverimagename)
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 1500 px.
+            coverimagepath = imagelocation + os.path.sep + os.path.basename(resizedimagefile)
+            imagepathparts = coverimagepath.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 1:
+                auctionobj.coverimage = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                auctionobj.coverimage = coverimagepath
+        else:
+            auctionobj.coverimage = ""
+        try:
+            auctionobj.save()
+        except:
+            return HttpResponse("Could not add auction '%s' - Error: %s"%(auctionname, sys.exc_info()[1].__str__()))
+        return HttpResponse("Successfully added auction named '%s'"%auctionname)
+
+
+@login_required(login_url='/admin/login/')
+def searchauctions(request):
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        #print(searchkey)
+        auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey).order_by('priority', '-edited')
+        auctionsdict = {}
+        for aucobj in auctionsqset:
+            auctionsdict[aucobj.auctionname] = aucobj.id
+        auctionsjson = json.dumps(auctionsdict)
+        return HttpResponse(auctionsjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def editauctions(request):
+    if request.method == 'GET':
+        context = {}
+        aucid = request.GET.get('aucid')
+        auctionsqset = Auction.objects.filter(id=int(aucid))
+        if auctionsqset.__len__() == 0:
+            message = {'Error' : 'Could not find auction with Id %s'%aucid}
+            resp = json.dumps(message)
+            return HttpResponse(resp)
+        auctiondict = {}
+        auctiondict['auctionname'] = auctionsqset[0].auctionname
+        auctiondict['auctionhouse'] = auctionsqset[0].auctionhouse
+        auctiondict['auctionlocation'] = auctionsqset[0].auctionlocation
+        auctiondict['description'] = auctionsqset[0].description
+        auctiondict['auctionurl'] = auctionsqset[0].auctionurl
+        auctiondict['auctiondate'] = str(auctionsqset[0].auctiondate)
+        auctiondict['auctiontype'] = auctionsqset[0].auctiontype
+        auctiondict['selpriority'] = auctionsqset[0].priority
+        auctiondict['coverimage'] = auctionsqset[0].coverimage
+        auctiondict['id'] = auctionsqset[0].id
+        context['auctiondict'] = auctiondict
+        auctionhousesdict = {}
+        allauctiontypes = []
+        auctionhousesqset = AuctionHouse.objects.all().order_by('priority', '-edited')
+        for auchouse in auctionhousesqset:
+            auctionhousesdict[auchouse.housename] = auchouse.id
+        context['auctionhousesdict'] = auctionhousesdict
+        auctiontypes = Auction.objects.order_by().values_list('auctiontype').distinct()
+        for auctype in auctiontypes:
+            allauctiontypes.append(auctype[0])
+        context['allauctiontypes'] = allauctiontypes
+        aucjson = json.dumps(context)
+        return HttpResponse(aucjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def saveauctions(request):
+    if request.method == 'POST':
+        auctionname, auctiondesc, auctionlocation, auctiondate, auctionurl, selauctiontype, auchouseid, selpriority, aucid = "", "", "", "", "", "", "", "", ""
+        if 'auctionname' in request.POST.keys():
+            auctionname = request.POST['auctionname'].strip()
+        if 'auctionlocation' in request.POST.keys():
+            auctionlocation = request.POST['auctionlocation'].strip()
+        if 'auctioninfo' in request.POST.keys():
+            auctiondesc = request.POST['auctioninfo'].strip()
+        if 'selauctionhousename' in request.POST.keys():
+            auchouseid = request.POST['selauctionhousename']
+        if 'selauctiontype' in request.POST.keys():
+            selauctiontype = request.POST['selauctiontype'].strip()
+        if 'auctiondate' in request.POST.keys():
+            auctiondate = request.POST['auctiondate'].strip()
+        if 'selauctionpriority' in request.POST.keys():
+            selpriority = request.POST['selauctionpriority']
+        if 'auction_url' in request.POST.keys():
+            auctionurl = request.POST['auction_url']
+        if 'aucid' in request.POST.keys():
+            aucid = request.POST['aucid'].strip()
+        if auctionname == "":
+            message = "Auction name is empty. Can't save auction entry."
+            return HttpResponse(message)
+        auctionobj = None
+        try:
+            auctionobj = Auction.objects.get(id=aucid)
+        except:
+            message = "Could not find Auction entry with Id %s"%aucid
+            return HttpResponse(message)
+        auctionobj.auctionname = auctionname
+        auctionobj.auctionlocation = auctionlocation
+        auchouseobj = None
+        try:
+            auchouseobj = AuctionHouse.objects.get(id=auchouseid)
+        except:
+            message = "Could not find Auction House with Id %s"%auchouseid
+            return HttpResponse(message)
+        auctionobj.auctionhouse = auchouseobj.housename
+        auctionobj.description = auctiondesc
+        auctionobj.auctionurl = auctionurl
+        auctionobj.auctiontype = selauctiontype
+        auctionobj.auctiondate = auctiondate
+        auctionobj.priority = selpriority
+        # Handle coverimage for the auction entry
+        auctioncoverimage = request.FILES.get("auctioncoverimage")
+        nonalphanumPattern = re.compile("[^a-zA-Z\d_]{1}")
+        if auctioncoverimage:
+            mimetype = auctioncoverimage.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return HttpResponse("Uploaded file is not gif, jpeg or png format.")
+            if 'auctioncoverimage' in request.FILES.keys():
+                auctioncoverimagename = request.FILES['auctioncoverimage'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + nonalphanumPattern.sub("_", auctionname)
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['auctioncoverimage'], imagelocation, auctioncoverimagename)
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 1500 px.
+            coverimagepath = imagelocation + os.path.sep + os.path.basename(resizedimagefile)
+            imagepathparts = coverimagepath.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 1:
+                auctionobj.coverimage = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                auctionobj.coverimage = coverimagepath
+        try:
+            auctionobj.save()
+            message = "Successfully saved auction entry named '%s'"%auctionname
+        except:
+            message = "Error: Could not save auction entry - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Invalid method of call")
+
+
+@login_required(login_url='/admin/login/')
+def auctionhouses(request):
+    if request.method == 'GET':
+        context = {}
+        allauctionhousetypes = []
+        auctionhousetypes = AuctionHouse.objects.order_by().values_list('housetype').distinct()
+        for auchousetype in auctionhousetypes:
+            if auchousetype[0].strip() == "":
+                continue
+            allauctionhousetypes.append(auchousetype[0])
+        context['allauctionhousetypes'] = allauctionhousetypes
+        template = loader.get_template('auctionhouse.html')
+        return HttpResponse(template.render(context, request))
+    elif request.method == 'POST':
+        auctionhousename, auctionhouselocation, auctionhousebrief, auctionhouse_url, selauctionhousetype, selauctionhousepriority, auctionhousecoverimage = "", "", "", "", "", "5", ""
+        if 'auctionhousename' in request.POST.keys():
+            auctionhousename = request.POST['auctionhousename'].strip()
+        if 'auctionhouselocation' in request.POST.keys():
+            auctionhouselocation = request.POST['auctionhouselocation'].strip()
+        if 'auctionhousebrief' in request.POST.keys():
+            auctionhousebrief = request.POST['auctionhousebrief']
+        if 'auctionhouse_url' in request.POST.keys():
+            auctionhouse_url = request.POST['auctionhouse_url']
+        if 'selauctionhousetype' in request.POST.keys():
+            selauctionhousetype = request.POST['selauctionhousetype']
+        if 'selauctionhousepriority' in request.POST.keys():
+            selauctionhousepriority = request.POST['selauctionhousepriority']
+        if auctionhousename == "":
+            message = "Could not add auction house - Name is empty"
+            return HttpResponse(message)
+        auchouseobj = AuctionHouse()
+        auchouseobj.housename = auctionhousename
+        auchouseobj.location = auctionhouselocation
+        auchouseobj.description = auctionhousebrief
+        auchouseobj.houseurl = auctionhouse_url
+        auchouseobj.housetype = selauctionhousetype
+        auchouseobj.priority = selauctionhousepriority
+        auctionhousecoverimage = request.FILES.get("auctionhousecoverimage")
+        nonalphanumPattern = re.compile("[^a-zA-Z\d_]{1}")
+        if auctionhousecoverimage:
+            mimetype = auctionhousecoverimage.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return HttpResponse("Uploaded file is not gif, jpeg or png format.")
+            if 'auctionhousecoverimage' in request.FILES.keys():
+                auctionhousecoverimagename = request.FILES['auctionhousecoverimage'].name
+            imagelocation = settings.AUCTIONHOUSE_FILE_DIR + os.path.sep + nonalphanumPattern.sub("_", auctionhousename)
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['auctionhousecoverimage'], imagelocation, auctionhousecoverimagename)
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 1500 px.
+            coverimagepath = imagelocation + os.path.sep + os.path.basename(resizedimagefile)
+            imagepathparts = coverimagepath.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 1:
+                auchouseobj.coverimage = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                auchouseobj.coverimage = coverimagepath
+        else:
+            auchouseobj.coverimage = ""
+        try:
+            auchouseobj.save()
+        except:
+            return HttpResponse("Could not add auction house '%s' - Error: %s"%(auctionhousename, sys.exc_info()[1].__str__()))
+        return HttpResponse("Successfully added auction house named '%s'"%auctionhousename)
+
+
+@login_required(login_url='/admin/login/')
+def searchauctionhouses(request):
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        #print(searchkey)
+        auctionhousesqset = AuctionHouse.objects.filter(housename__icontains=searchkey).order_by('priority', '-edited')
+        auctionhousesdict = {}
+        for auchouseobj in auctionhousesqset:
+            auctionhousesdict[auchouseobj.housename] = auchouseobj.id
+        auctionhousesjson = json.dumps(auctionhousesdict)
+        return HttpResponse(auctionhousesjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def editauctionhouses(request):
+    if request.method == 'GET':
+        context = {}
+        ahid = request.GET.get('ahid')
+        auctionhousesqset = AuctionHouse.objects.filter(id=int(ahid))
+        if auctionhousesqset.__len__() == 0:
+            message = {'Error' : 'Could not find auction house with Id %s'%ahid}
+            resp = json.dumps(message)
+            return HttpResponse(resp)
+        auctionhousedict = {}
+        auctionhousedict['auctionhousename'] = auctionhousesqset[0].housename
+        auctionhousedict['auctionhouselocation'] = auctionhousesqset[0].location
+        auctionhousedict['auctionhousebrief'] = auctionhousesqset[0].description
+        auctionhousedict['auctionhouseurl'] = auctionhousesqset[0].houseurl
+        auctionhousedict['auctionhousetype'] = auctionhousesqset[0].housetype
+        auctionhousedict['auctionhousecoverimage'] = auctionhousesqset[0].coverimage
+        auctionhousedict['auctionhousepriority'] = auctionhousesqset[0].priority
+        auctionhousedict['id'] = auctionhousesqset[0].id
+        context['auctionhousedict'] = auctionhousedict
+        allauctionhousetypes = []
+        auctionhousetypes = AuctionHouse.objects.order_by().values_list('housetype').distinct()
+        for auchousetype in auctionhousetypes:
+            if auchousetype[0].strip() == "":
+                continue
+            allauctionhousetypes.append(auchousetype[0])
+        context['allauctionhousetypes'] = allauctionhousetypes
+        auchousejson = json.dumps(context)
+        return HttpResponse(auchousejson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
+
+
+@login_required(login_url='/admin/login/')
+def saveauctionhouses(request):
+    if request.method == 'POST':
+        auctionhousename, auctionhouselocation, auctionhousebrief, auctionhouse_url, selauctionhousetype, selauctionhousepriority, auctionhousecoverimage, ahid = "", "", "", "", "", "5", "", -1
+        if 'auctionhousename' in request.POST.keys():
+            auctionhousename = request.POST['auctionhousename'].strip()
+        if 'auctionhouselocation' in request.POST.keys():
+            auctionhouselocation = request.POST['auctionhouselocation'].strip()
+        if 'auctionhousebrief' in request.POST.keys():
+            auctionhousebrief = request.POST['auctionhousebrief']
+        if 'auctionhouse_url' in request.POST.keys():
+            auctionhouse_url = request.POST['auctionhouse_url']
+        if 'selauctionhousetype' in request.POST.keys():
+            selauctionhousetype = request.POST['selauctionhousetype']
+        if 'selauctionhousepriority' in request.POST.keys():
+            selauctionhousepriority = request.POST['selauctionhousepriority']
+        if 'ahid' in request.POST.keys():
+            ahid = request.POST['ahid']
+        if ahid == -1 or not ahid:
+            message = "Could not find auction house Id with the request. Could not save changes."
+            return HttpResponse(message)
+        if auctionhousename == "":
+            message = "Could not add auction house - Name is empty"
+            return HttpResponse(message)
+        auctionhouseobj = None
+        try:
+            auctionhouseobj = AuctionHouse.objects.get(id=ahid)
+        except:
+            message = "Could not find Auction House entry with Id %s"%ahid
+            return HttpResponse(message)
+        auctionhouseobj.housename = auctionhousename
+        auctionhouseobj.location = auctionhouselocation
+        auctionhouseobj.description = auctionhousebrief
+        auctionhouseobj.houseurl = auctionhouse_url
+        auctionhouseobj.housetype = selauctionhousetype
+        auctionhouseobj.priority = selauctionhousepriority
+        # Handle coverimage for the auction house entry
+        auctionhousecoverimage = request.FILES.get("auctionhousecoverimage")
+        nonalphanumPattern = re.compile("[^a-zA-Z\d_]{1}")
+        if auctionhousecoverimage:
+            mimetype = auctionhousecoverimage.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return HttpResponse("Uploaded file is not gif, jpeg or png format.")
+            if 'auctionhousecoverimage' in request.FILES.keys():
+                auctionhousecoverimagename = request.FILES['auctionhousecoverimage'].name
+            imagelocation = settings.AUCTIONHOUSE_FILE_DIR + os.path.sep + nonalphanumPattern.sub("_", auctionhousename)
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            uploadstatus = handleuploadedfile(request.FILES['auctionhousecoverimage'], imagelocation, auctionhousecoverimagename)
+            resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 1500 px.
+            coverimagepath = imagelocation + os.path.sep + os.path.basename(resizedimagefile)
+            imagepathparts = coverimagepath.split(settings.MEDIA_URL)
+            if imagepathparts.__len__() > 1:
+                auctionhouseobj.coverimage = settings.MEDIA_URL + imagepathparts[1]
+            else:
+                auctionhouseobj.coverimage = coverimagepath
+        try:
+            auctionhouseobj.save()
+            message = "Successfully saved auction house entry named '%s'"%auctionhousename
+        except:
+            message = "Error: Could not save auction house entry - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Invalid method of call")
 
 
 @login_required(login_url='/admin/login/')
 def lots(request):
     if request.method == 'GET':
         context = {}
+        auctionhousesdict = {}
+        auchousesqset = AuctionHouse.objects.all()
+        for auchouse in auchousesqset:
+            auchousename = auchouse.housename
+            auchouseid = auchouse.id
+            auctionhousesdict[auchousename] = auchouseid
+        context['auctionhousesdict'] = auctionhousesdict
+        alllotcategories = []
+        # Find all distinct lot categories
+        context['alllotcategories'] = alllotcategories
+        allcurrencies = []
+        # Find all distinct currencies
+        context['allcurrencies'] = allcurrencies
         template = loader.get_template('lots.html')
         return HttpResponse(template.render(context, request))
     elif request.method == 'POST':
         pass
+
+
+@login_required(login_url='/admin/login/')
+def getauctions(request):
+    pass
+
+
+@login_required(login_url='/admin/login/')
+def searchlots(request):
+    pass
+
+
+@login_required(login_url='/admin/login/')
+def editlots(request):
+    pass
+
+
+@login_required(login_url='/admin/login/')
+def savelots(request):
+    pass
+
 
 
 

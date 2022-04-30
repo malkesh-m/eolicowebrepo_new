@@ -27,13 +27,9 @@
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
     <style>
     </style>
-    <!--
+    
+    <script src="/static/js/editfromfront.js"></script>
 
-    TemplateMo 571 Hexashop
-
-    https://templatemo.com/tm-571-hexashop
-
-    -->
 </head>
     
 <body>
@@ -286,6 +282,9 @@
                                                                         <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span>
                                                                     </div>
                                                                 </div>
+								{% if adminuser == 1 %}
+								    <div class="follow"><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editlot('{{lotinfo.lotid}}');">Edit</a></div>
+								{% endif %}
                                                                 <div class="follow">
                                                                     <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                                                                 </div>
@@ -338,6 +337,9 @@
                                                                         <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span>
                                                                     </div>
                                                                 </div>
+								{% if adminuser == 1 %}
+								    <div class="follow"><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editlot('{{lotinfo.lotid}}');">Edit</a></div>
+								{% endif %}
                                                                 <div class="follow">
                                                                     <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                                                                 </div>
@@ -446,6 +448,9 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			{% if adminuser == 1 %}
+		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
+		        {% endif %}
                     </div>
 		    {% endfor %}
                 </div>
@@ -458,6 +463,9 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			{% if adminuser == 1 %}
+		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
+		        {% endif %}
                     </div>
 		    {% endfor %}
                 </div>
@@ -470,6 +478,9 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			{% if adminuser == 1 %}
+		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
+		        {% endif %}
                     </div>
 		    {% endfor %}
                 </div>
@@ -482,6 +493,9 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			{% if adminuser == 1 %}
+		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
+		        {% endif %}
                     </div>
 		    {% endfor %}
                 </div>
@@ -510,6 +524,9 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			{% if adminuser == 1 %}
+		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
+		        {% endif %}
                     </div>
 		    {% endfor %}
                 </div>
@@ -522,6 +539,9 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			{% if adminuser == 1 %}
+		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
+		        {% endif %}
                     </div>
 		    {% endfor %}
                 </div>
@@ -534,6 +554,9 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			{% if adminuser == 1 %}
+		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
+		        {% endif %}
                     </div>
 		    {% endfor %}
                 </div>
@@ -546,6 +569,9 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			{% if adminuser == 1 %}
+		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
+		        {% endif %}
                     </div>
 		    {% endfor %}
                 </div>
@@ -577,6 +603,9 @@
                                 <h2>{{artistname}}</h2>
                                 <span>{{infolist.0.nationality}}, {{infolist.0.birth}}-{{infolist.0.death}}</span>
 				</a>
+				{% if adminuser == 1 %}
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editartist('{{infolist.0.aid}}');">Edit</a>
+				{% endif %}
                             </div>
                         </div>
                         <div class="follow">
@@ -614,6 +643,11 @@
             </div>
         </div>
     </section>
+
+    <form name='frmedit' id='frmedit'>
+      {% csrf_token %}
+    </form>
+
     <!-- ***** Footer Start ***** -->
     <footer>
         <div class="container">

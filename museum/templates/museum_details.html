@@ -541,6 +541,8 @@
       }
     </script>
 
+    <script src="/static/js/editfromfront.js"></script>
+
     </head>
     
     <body>
@@ -614,6 +616,9 @@
 							 </a>
 							<p>{{latestevent.eventperiod}}</p>
 							<!-- <a href="#" class="btn btn-slider">Follow</a> -->
+							{% if adminuser == 1 %}
+							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
+							{% endif %}
 						</div>
                     </div>
                 </div>
@@ -658,6 +663,9 @@
 						<h6>{{latestevent.presenter}}</h6>
 						<p>{{latestevent.eventinfo}}</p>
 						<a href="/museum/eventdetails/?mevid={{latestevent.eventid}}" class="btn btn-slider" >Read More</a>
+						{% if adminuser == 1 %}
+						    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
+						{% endif %}
 					</div>
 					<div class="col-md-5">
 						<img src="{{latestevent.coverimage}}" class="img-fluid"/>
@@ -692,6 +700,9 @@
 					<h4 style="padding-left:0px;">{{event.eventname}}</h4>
 					<span>{{event.eventinfo}}</span>
 					<span>{{event.eventperiod}}</span>
+					{% if adminuser == 1 %}
+					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{event.eventid}}');">Edit</a>
+					{% endif %}
 				</a>
 		            </div>
 		        </div>
@@ -736,11 +747,14 @@
                                     <a href="{{article.detailurl}}"><img src="{{article.thumbimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-									<a href="{{article.detailurl}}" style="color:#000000;">
-										<h4>{{article.articlename}}</h4>
-										<span>{{article.writername}}</span>
-										<span>{{article.published}}</span>
-									</a>
+					<a href="{{article.detailurl}}" style="color:#000000;">
+						<h4>{{article.articlename}}</h4>
+						<span>{{article.writername}}</span>
+						<span>{{article.published}}</span>
+					</a>
+					{% if adminuser == 1 %}
+					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmarticle('{{article.articleid}}');">Edit</a>
+					{% endif %}			
                                 </div>
                             </div>
 			    {% endfor %}
@@ -759,7 +773,10 @@
 					<h4>{{latestevent.eventperiod}}</h4>
 					<h6>{{latestevent.presenter}}</h6>
 					<p>{{latestevent.eventinfo}}</p>
-					<a href="" class="btn btn-slider" >Read More</a>
+					<!-- <a href="" class="btn btn-slider" >Read More</a> -->
+					{% if adminuser == 1 %}
+					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
+					{% endif %}
 				</div>
 				<div class="col-md-5">
 					<img src="{{latestevent.coverimage}}" class="img-fluid"/>
@@ -787,6 +804,9 @@
 							<span>{{event.presenter}}</span>
 							<span>{{event.eventperiod}}</span>
 							</a>
+							{% if adminuser == 1 %}
+							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{event.eventid}}');">Edit</a>
+							{% endif %}
 						</div>
 					</div>
 				  </div>
@@ -1216,6 +1236,9 @@
 				<h6>{{work.artistname}}</h6>
 				<p>{{work.description}}</p>
 				</a>
+				{% if adminuser == 1 %}
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
+				{% endif %}
 				</div>
 				{% endfor %}
 				{% endif %}
@@ -1232,6 +1255,9 @@
 				<h6>{{work.artistname}}</h6>
 				<p>{{work.description}}</p>
 				</a>
+				{% if adminuser == 1 %}
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
+				{% endif %}
 				</div>
 				{% endfor %}
 				{% endif %}
@@ -1248,6 +1274,9 @@
 				<h6>{{work.artistname}}</h6>
 				<p>{{work.description}}</p>
 				</a>
+				{% if adminuser == 1 %}
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
+				{% endif %}
 				</div>
 				{% endfor %}
 				{% endif %}
@@ -1264,6 +1293,9 @@
 				<h6>{{work.artistname}}</h6>
 				<p>{{work.description}}</p>
 				</a>
+				{% if adminuser == 1 %}
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
+				{% endif %}
 				</div>
 				{% endfor %}
 				{% endif %}
@@ -1293,11 +1325,13 @@
 							<h4>{{art.articlename}}</h4>
 							<span>{{art.writername}}</span>
 							<span>{{art.published}}</span>
+							{% if adminuser == 1 %}
+							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmarticle('{{art.articleid}}');">Edit</a>
+							{% endif %}
 						</div>
 					</div>
 				  </div>
 				  {% endfor %}
-				  
 			</div>
         </div>
         <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
@@ -1308,6 +1342,10 @@
 		</div>
 		</div>
 	</section>
+
+    <form name='frmedit' id='frmedit'>
+     {% csrf_token %}
+    </form>
 
     <!-- ***** Footer Start ***** -->
     <footer>

@@ -81,6 +81,10 @@ def index(request):
     context['currentmngshows'] = currentmngshows
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('auctionhouses.html')
     return HttpResponse(template.render(context, request))
 
@@ -140,6 +144,10 @@ def details(request):
         auctionslist.append(d)
     context['auctionslist'] = auctionslist
     context['relatedartists'] = relatedartists
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('auctionhouse_details.html')
     return HttpResponse(template.render(context, request))
 

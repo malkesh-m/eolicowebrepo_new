@@ -26,13 +26,9 @@
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
     <style>
     </style>
-    <!--
+    
+    <script src="/static/js/editfromfront.js"></script>
 
-    TemplateMo 571 Hexashop
-
-    https://templatemo.com/tm-571-hexashop
-
-    -->
 </head>
 
 <body>
@@ -266,6 +262,9 @@
                             <div class="sec-right">
                                 <h2>{{artistinfo.name}}</h2>
                                 <span>{{artistinfo.nationality}}, {{artistinfo.birthdate}}</span>
+				{% if adminuser == 1 %}
+				  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artistinfo.artistid}}');">Edit</a>
+			      	{% endif %}
                             </div>
                         </div>
                         <!-- <div class="follow">
@@ -354,6 +353,9 @@
                                                     <h2>{{artwork.artworkname}}</h2>
                                                     <p>{{artwork.description}}</p>
                                                 </a>
+						{% if adminuser == 1 %}
+						  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+					      	{% endif %}
                                             </div>
                                         </div>
 					{% endfor %}
@@ -557,6 +559,9 @@
                                                                 <h4>{{evname}}</h4>
                                                                 <span>{{evdata.eventlocation}} {{evdata.eventperiod}}</span>
                                                             </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
+							    {% if adminuser == 1 %}
+							      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{evdata.evid}}');">Edit</a>
+						      	    {% endif %}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -586,6 +591,9 @@
                                                         <h2>{{artist.artistname}}</h2>
                                                         <p>{{artist.about}}</p>
                                                     </a>
+						    {% if adminuser == 1 %}
+						      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artist.aid}}');">Edit</a>
+					      	    {% endif %}
                                                 </div>
                                             </div>
 					    {% endfor %}
@@ -2032,6 +2040,11 @@
             </div>
         </div>
     </section>
+
+    <form name='frmedit' id='frmedit'>
+        {% csrf_token %}
+    </form>
+
     <!-- ***** Footer Start ***** -->
     <footer>
         <div class="container">

@@ -531,6 +531,8 @@
       }
     </script>
 
+    <script src="/static/js/editfromfront.js"></script>
+
     </head>
     
     <body>
@@ -602,9 +604,12 @@
 							<a href="/gallery/index/?gid={{gallery.gid}}" class="">
 								<img src="{{gallery.galleryimage}}">
 								<h2>{{gallery.galleryname}}</h2>
-							 </a>
+							</a>
 							<p>{{gallery.gallerylocation}}</p>
 							<!-- <a href="{{gallery.galleryurl}}" class="btn btn-slider">Follow</a> -->
+							{% if adminuser == 1 %}
+			    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgallery('{{gallery.gid}}');">Edit</a>
+							{% endif %}
 						</div>
                     </div>
                 </div>
@@ -648,8 +653,11 @@
 						<h2>{{latestevent.eventname}}</h2>
 						<h4>{{latestevent.eventperiod}}</h4>
 						<h6>{{latestevent.eventlocation}}</h6>
-						<p></p>
 						<!-- <a href="" class="btn btn-slider" >Read More</a> -->
+						{% if adminuser == 1 %}
+			    			    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{latestevent.eventid}}');">Edit</a>
+						{% endif %}
+						<p></p>
 					</div>
 					<div class="col-md-5">
 						<img src="{{latestevent.eventimage}}" class="img-fluid"/>
@@ -685,6 +693,9 @@
 					<span>{{evobj.eventinfo}}</span>
 					<span>{{evobj.eventperiod}}</span>
 				</a>
+				{% if adminuser == 1 %}
+	    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a>
+				{% endif %}
 		            </div>
 		        </div>
 			{% endfor %}
@@ -725,6 +736,9 @@
 							<div class="list-item">
 							{% for artist in artists %}
 								<p><a href="{{artist.artisturl}}" style="color:#000000;">{{artist.artistname}}</a></p>
+							{% if adminuser == 1 %}
+				    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a>
+							{% endif %}
 							{% endfor %}
 							{% if artists|length == 0%}
 							<span>There are no artists listed for the featured events.</span>
@@ -743,6 +757,9 @@
 					<h4>{{latestevent.eventperiod}}</h4>
 					<h6>{{latestevent.eventlocation}}</h6>
 					<p>{{latestevent.eventinfo}}</p>
+					{% if adminuser == 1 %}
+		    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{latestevent.eventid}}');">Edit</a>
+					{% endif %}
 					<!-- <a href="" class="btn btn-slider" >Read More</a> -->
 				</div>
 				<div class="col-md-5">
@@ -770,6 +787,9 @@
 							<h4>{{evobj.eventname}}</h4>
 							<span>{{evobj.eventinfo}}</span>
 							<span>{{evobj.eventperiod}}</span>
+							{% if adminuser == 1 %}
+				    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a>
+							{% endif %}
 						</div>
 					</div>
 				  </div>
@@ -1282,10 +1302,12 @@
 				<h6>{{artwork.medium}}</h6>
 				<p>{{artwork.description}}</p>
 				</a>
+				{% if adminuser == 1 %}
+	    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+				{% endif %}
 				</div>
 				{% endfor %}
 				{% endfor %}
-				
 			  </div>
 			  <div class="column">
 				{% for evname, artworkslist in allartworks2.items %}
@@ -1297,10 +1319,12 @@
 				<h6>{{artwork.medium}}</h6>
 				<p>{{artwork.description}}</p>
 				</a>
+				{% if adminuser == 1 %}
+	    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+				{% endif %}
 				</div>
 				{% endfor %}
 				{% endfor %}
-				
 			  </div>
 			  <div class="column">
 				{% for evname, artworkslist in allartworks3.items %}
@@ -1312,10 +1336,12 @@
 				<h6>{{artwork.medium}}</h6>
 				<p>{{artwork.description}}</p>
 				</a>
+				{% if adminuser == 1 %}
+	    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+				{% endif %}
 				</div>
 				{% endfor %}
 				{% endfor %}
-				
 			  </div>
 			  <div class="column">
 				{% for evname, artworkslist in allartworks4.items %}
@@ -1327,10 +1353,12 @@
 				<h6>{{artwork.medium}}</h6>
 				<p>{{artwork.description}}</p>
 				</a>
+				{% if adminuser == 1 %}
+	    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+				{% endif %}
 				</div>
 				{% endfor %}
 				{% endfor %}
-				
 			  </div>
 			  </div>
 			</div>
@@ -1348,6 +1376,9 @@
 							<div class="list-item">
 							{% for artist in allartists %}
 								<p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
+								{% if adminuser == 1 %}
+					    			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a>
+								{% endif %}
 							{% endfor %}
 							{% if allartists|length == 0%}
 							<span>There are no artists listed for the featured event.</span>
@@ -1365,7 +1396,9 @@
 		</div>
 		</div>
 	</section>
-
+    <form name='frmedit' id='frmedit'>
+	{% csrf_token %}
+    </form>
     <!-- ***** Footer Start ***** -->
     <footer>
         <div class="container">

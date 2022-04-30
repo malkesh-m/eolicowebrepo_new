@@ -42,6 +42,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
+    <script src="/static/js/editfromfront.js"></script>
+
     <script type='text/javascript'>
 	
 	function dofilter(selectid){
@@ -204,6 +206,9 @@ btn-slider" href="#">Explore</a></div></div>
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -217,6 +222,9 @@ btn-slider" href="#">Explore</a></div></div>
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -230,6 +238,9 @@ btn-slider" href="#">Explore</a></div></div>
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -243,6 +254,9 @@ btn-slider" href="#">Explore</a></div></div>
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -336,9 +350,12 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
-			<span style="padding-left:10px;">{{gdata.0}}</span>
-			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
+			<h6>{{gdata.0}}</h6>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgallery('{{gdata.3}}');">Edit</a>
+			{% endif %}
+			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
                     </div>
                 </div>
 		{% endfor %}
@@ -365,9 +382,12 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
-			<span style="padding-left:10px;">{{gdata.0}}</span>
+			<h6>{{gdata.0}}</h6>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgallery('{{gdata.3}}');">Edit</a>
+			{% endif %}
                     </div>
                 </div>
 		{% endfor %}
@@ -394,9 +414,12 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
-			<span style="padding-left:10px;">{{gdata.0}}</span>
+			<h6>{{gdata.0}}</h6>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgallery('{{gdata.3}}');">Edit</a>
+			{% endif %}
                     </div>
                 </div>
 		{% endfor %}
@@ -423,9 +446,12 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
-			<span style="padding-left:10px;">{{gdata.0}}</span>
+			<h6>{{gdata.0}}</h6>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgallery('{{gdata.3}}');">Edit</a>
+			{% endif %}
                     </div>
                 </div>
 		{% endfor %}
@@ -452,9 +478,12 @@ btn-slider" href="#">Explore</a></div></div>
 			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 			<h4>{{galleryname}}</h4>
-			<span style="padding-left:10px;">{{gdata.0}}</span>
+			<h6>{{gdata.0}}</h6>
 			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgallery('{{gdata.3}}');">Edit</a>
+			{% endif %}
                     </div>
                 </div>
 		{% endfor %}
@@ -655,6 +684,9 @@ btn-slider" href="#">Explore</a></div></div>
  </section>
  </div>
 -->
+ <form name='frmedit' id='frmedit'>
+     {% csrf_token %}
+ </form>
  <!-- ***** Footer Start ***** -->
  <footer>
  <div class="container">

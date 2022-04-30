@@ -138,6 +138,9 @@ https://templatemo.com/tm-571-hexashop
 	  sectiontag.innerHTML = html;
 	}
     </script>
+
+    <script src="/static/js/editfromfront.js"></script>
+
     </head>
     
     <body>
@@ -213,6 +216,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -226,6 +232,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -239,6 +248,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -252,6 +264,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -343,13 +358,14 @@ https://templatemo.com/tm-571-hexashop
                         <a href="/auction/details/?lid={{lot.lid}}" style="color:#000000;">
 				<h4>{{lot.title}}</h4>
 				<span style="padding-left:10px;">{{lot.artist}}</span>
-				<a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
+				<!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
 			</a>
-			</a>
+			{% if adminuser == 1 %}
+			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+			{% endif %}
                     </div>
                 </div>
 		{% endfor %}
-                
             </div>
         </div>
     	</section>
@@ -400,6 +416,10 @@ https://templatemo.com/tm-571-hexashop
 	{% endfor %}
     </div>
     -->
+
+    <form name='frmedit' id='frmedit'>
+      {% csrf_token %}
+    </form>
     
     <!-- ***** Footer Start ***** -->
     <footer>

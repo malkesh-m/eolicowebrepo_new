@@ -161,21 +161,14 @@ footer .under-footer a:hover {
 }
  
 	</style>
-<!--
 
-TemplateMo 571 Hexashop
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
-https://templatemo.com/tm-571-hexashop
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
--->
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-
-
+    <script src="/static/js/editfromfront.js"></script>
 
     </head>
     
@@ -263,6 +256,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -276,6 +272,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -289,6 +288,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -302,6 +304,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -344,6 +349,9 @@ https://templatemo.com/tm-571-hexashop
 					<span style="padding-left:10px;">{{gdata.0}}</span>
 					<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 				</a>
+				{% if adminuser == 1 %}
+				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgallery('{{gdata.3}}');">Edit</a></div>
+				{% endif %}
 		            </div>
 		        </div>
 			{% endfor %}
@@ -400,6 +408,9 @@ https://templatemo.com/tm-571-hexashop
 					<span style="padding-left:10px;">{{mdata.1}}</span>
 					<span style="padding-left:10px;">{{mdata.2}}</span>
 				</a>
+				{% if adminuser == 1 %}
+				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmuseum('{{mdata.3}}');">Edit</a></div>
+				{% endif %}
 		            </div>
 		        </div>
 			{% endfor %}
@@ -538,6 +549,9 @@ https://templatemo.com/tm-571-hexashop
 					<span style="padding-left:10px;">{{adata.3}}</span>
 
 				</a>
+				{% if adminuser == 1 %}
+				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{adata.4}}');">Edit</a></div>
+				{% endif %}
 		            </div>
 		        </div>
 			{% endfor %}
@@ -596,6 +610,9 @@ https://templatemo.com/tm-571-hexashop
 						<span style="padding-left:10px;">{{aucdata.location}}</span>
 						<span style="padding-left:10px;">{{aucdata.description}}</span>
 					</a>
+					{% if adminuser == 1 %}
+					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editauctionhouse('{{aucdata.aucid}}');">Edit</a></div>
+					{% endif %}
                                 </div>
                             </div>
                             {% endfor %}
@@ -632,6 +649,9 @@ https://templatemo.com/tm-571-hexashop
 						<span style="padding-left:10px;">{{aucdata.description}}</span>
 				</a>
 				<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
+				{% if adminuser == 1 %}
+				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editauction('{{aucdata.aucid}}');">Edit</a></div>
+				{% endif %}
 		            </div>
 		        </div>
 			{% endfor %}
@@ -659,6 +679,11 @@ https://templatemo.com/tm-571-hexashop
             </div>
         </div>
     </section>
+
+    <form name='frmedit' id='frmedit'>
+      {% csrf_token %}
+    </form>
+
     <!-- ***** Footer Start ***** -->
     <footer>
         <div class="container">

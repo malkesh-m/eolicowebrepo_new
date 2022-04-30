@@ -7,6 +7,7 @@ from adminsite import views
 
 urlpatterns = [
     path('login/', views.showlogin, name='showlogin'),
+    path('logout/', views.dologout, name='dologout'),
     path('galleries/', views.galleries, name='galleries'),
     path('gevents/', views.gevents, name='gevents'),
     path('artists/', views.artists, name='artists'),
@@ -50,6 +51,16 @@ urlpatterns = [
     path('editcarousel/', views.editcarousel, name='editcarousel'),
     path('savecarousel/', views.savecarousel, name='savecarousel'),
     #path('downloadcarouselimage/', views.downloadcarouselimage, name='downloadcarouselimage'),
+    path('searchauctions/', views.searchauctions, name='searchauctions'),
+    path('editauctions/', views.editauctions, name='editauctions'),
+    path('saveauctions/', views.saveauctions, name='saveauctions'),
+    path('searchauctionhouses/', views.searchauctionhouses, name='searchauctionhouses'),
+    path('editauctionhouses/', views.editauctionhouses, name='editauctionhouses'),
+    path('saveauctionhouses/', views.saveauctionhouses, name='saveauctionhouses'),
+    path('searchlots/', views.searchlots, name='searchlots'),
+    path('editlots/', views.editlots, name='editlots'),
+    path('savelots/', views.savelots, name='savelots'),
+    path('getauctions/', views.getauctions, name='getauctions'),
 ]
 
 

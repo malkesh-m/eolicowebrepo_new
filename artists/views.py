@@ -32,7 +32,7 @@ def index(request):
         if 'page' in request.GET.keys():
             pageno = str(request.GET['page'])
     page = pagemap[pageno]
-    chunksize = 8
+    chunksize = 4
     rows = 6
     featuredsize = 4
     rowstartctr = int(page) * rows - rows
@@ -131,6 +131,10 @@ def index(request):
     context['uniqueartworks'] = uniqueartworks
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('artist.html')
     return HttpResponse(template.render(context, request))
 
@@ -179,7 +183,7 @@ def details(request):
                 actr = 0
                 continue
             actr += 1
-    artistinfo = {'name' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthdate, 'deathdate' : artistobj.deathdate, 'profileurl' : artistobj.profileurl, 'desctiption' : artistobj.about, 'image' : artistobj.largeimage, 'gender' : artistobj.gender, 'about' : artistobj.about}
+    artistinfo = {'name' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthdate, 'deathdate' : artistobj.deathdate, 'profileurl' : artistobj.profileurl, 'desctiption' : artistobj.about, 'image' : artistobj.largeimage, 'gender' : artistobj.gender, 'about' : artistobj.about, 'artistid' : artistobj.id}
     context['allartworks'] = allartworks
     context['allartworks1'] = allartworks1
     context['allartworks2'] = allartworks2
@@ -233,6 +237,10 @@ def details(request):
     context['relatedartists'] = relatedartists
     context['artistevents'] = artistevents
     context['artistgalleries'] = artistgalleries
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('artist_details.html')
     return HttpResponse(template.render(context, request))
 

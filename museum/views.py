@@ -141,6 +141,10 @@ def index(request):
     context['carousel'] = carouselentries
     context['locations'] = locationslist
     context['specialities'] = museumtypes
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('museum.html')
     return HttpResponse(template.render(context, request))
 
@@ -246,12 +250,17 @@ def details(request):
         a['detailurl'] = article.detailurl
         a['published'] = article.published
         a['thumbimage'] = article.thumbimage
+        a['articleid'] = article.id
         allarticles.append(a)
         if actr < chunksize:
             overviewarticles.append(a)
         actr += 1
     context['allarticles'] = allarticles
     context['overviewarticles'] = overviewarticles
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('museum_details.html')
     return HttpResponse(template.render(context, request))
 
@@ -276,7 +285,7 @@ def eventdetails(request):
     except:
         return HttpResponse("Could not identify a museum event with Id %s"%mevid)
     context = {}
-    eventdata = {'eventname' : meventobj.eventname, 'eventinfo' : meventobj.eventinfo, 'eventperiod' : meventobj.eventperiod, 'eventtype' : meventobj.eventtype, 'eventimage' : meventobj.coverimage, 'eventlocation' : meventobj.presenter, 'mid' : meventobj.museum.id}
+    eventdata = {'eventname' : meventobj.eventname, 'eventinfo' : meventobj.eventinfo, 'eventperiod' : meventobj.eventperiod, 'eventtype' : meventobj.eventtype, 'eventimage' : meventobj.coverimage, 'eventlocation' : meventobj.presenter, 'mid' : meventobj.museum.id, 'mevid' : meventobj.id}
     context['eventinfo'] = eventdata
     musobj = meventobj.museum
     otherevents = {} # These will be events from the same museum as the one in eventinfo.
@@ -363,6 +372,10 @@ def eventdetails(request):
         d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : artist.birthdate, 'deathdate' : artist.deathdate, 'about' : artist.about, 'artistimage' : artist.squareimage, 'artistid' : artist.id}
         allartists.append(d)
     context['allartists'] = allartists
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('mevent_details.html')
     return HttpResponse(template.render(context, request))
 
@@ -383,7 +396,7 @@ def artworkdetails(request):
     except:
         return HttpResponse("Could not identify a museum piece with Id %s"%mpid)
     context = {}
-    artworkinfo = {'artworkname' : artworkobj.piecename, 'creationdate' : artworkobj.creationdate, 'artistname' : artworkobj.artistname, 'artistbirthyear' : artworkobj.artistbirthyear, 'artistdeathyear' : artworkobj.artistdeathyear, 'artistnationality' : artworkobj.artistnationality, 'size' : artworkobj.size, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'provenance' : artworkobj.provenance, 'artworkimage' : artworkobj.image1, 'estimate' : "", 'soldprice' : ""}
+    artworkinfo = {'artworkname' : artworkobj.piecename, 'creationdate' : artworkobj.creationdate, 'artistname' : artworkobj.artistname, 'artistbirthyear' : artworkobj.artistbirthyear, 'artistdeathyear' : artworkobj.artistdeathyear, 'artistnationality' : artworkobj.artistnationality, 'size' : artworkobj.size, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'provenance' : artworkobj.provenance, 'artworkimage' : artworkobj.image1, 'estimate' : "", 'soldprice' : "", 'mpid' : artworkobj.id}
     context['artworkinfo'] = artworkinfo
     # Get all artworks by the same artist
     allartworks = []
@@ -458,6 +471,10 @@ def artworkdetails(request):
     context['allartworks2'] = allartworks2
     context['allartworks3'] = allartworks3
     context['allartworks4'] = allartworks4
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('mpiece_details.html')
     return HttpResponse(template.render(context, request))
 

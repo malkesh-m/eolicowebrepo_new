@@ -173,13 +173,9 @@ footer .under-footer a:hover {
 }
  
 	</style>
-<!--
 
-TemplateMo 571 Hexashop
+    <script src="/static/js/editfromfront.js"></script>
 
-https://templatemo.com/tm-571-hexashop
-
--->
     </head>
     
     <body>
@@ -263,6 +259,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -276,6 +275,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -289,6 +291,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -302,6 +307,9 @@ https://templatemo.com/tm-571-hexashop
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -353,11 +361,19 @@ https://templatemo.com/tm-571-hexashop
 			<div class="row align-items-end">
 			    {{aboutcontent}}
 		    	</div>
+			{% if adminuser == 1 %}
+			    <div><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editwebconfig('{{aboutid}}');">Edit</a></div>
+			{% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+
+    <form name='frmedit' id='frmedit'>
+      {% csrf_token %}
+    </form>
     
     <!-- ***** Footer Start ***** -->
     <footer>

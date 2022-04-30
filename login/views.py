@@ -149,6 +149,7 @@ def about(request):
         context = {'aboutcontent' : ''}
         if wcobj is not None:
             context['aboutcontent'] = wcobj.paramvalue
+            context['aboutid'] = wcobj.id
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
         if request.user.is_authenticated:
@@ -171,6 +172,7 @@ def contactus(request):
         context = {'contactus' : ''}
         if wcobj is not None:
             context['contactus'] = wcobj.paramvalue
+            context['contactid'] = wcobj.id
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
         if request.user.is_authenticated:

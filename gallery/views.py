@@ -73,8 +73,8 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        if gloc.__len__() > 27:
-            location = gloc[:27] + "..."
+        if gloc.__len__() > 23:
+            location = gloc[:23] + "..."
         else:
             location = gloc
         galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[0][0]]
@@ -93,8 +93,8 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        if gloc.__len__() > 27:
-            location = gloc[:27] + "..."
+        if gloc.__len__() > 23:
+            location = gloc[:23] + "..."
         else:
             location = gloc
         galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[1][0]]
@@ -113,8 +113,8 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        if gloc.__len__() > 27:
-            location = gloc[:27] + "..."
+        if gloc.__len__() > 23:
+            location = gloc[:23] + "..."
         else:
             location = gloc
         galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[2][0]]
@@ -133,8 +133,8 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        if gloc.__len__() > 27:
-            location = gloc[:27] + "..."
+        if gloc.__len__() > 23:
+            location = gloc[:23] + "..."
         else:
             location = gloc
         galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[3][0]]
@@ -153,8 +153,8 @@ def index(request):
         gimg = g.coverimage
         gurl = g.galleryurl
         gid = g.id
-        if gloc.__len__() > 27:
-            location = gloc[:27] + "..."
+        if gloc.__len__() > 23:
+            location = gloc[:23] + "..."
         else:
             location = gloc
         galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[4][0]]
@@ -171,6 +171,10 @@ def index(request):
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     context['gallerytypes'] = [gtypesqset[0][0], gtypesqset[1][0], gtypesqset[2][0], gtypesqset[3][0], gtypesqset[4][0]]
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('gallery.html')
     return HttpResponse(template.render(context, request))
 
@@ -213,6 +217,7 @@ def details(request):
         latestevent['eventperiod'] = eventsqset[0].eventperiod
         latestevent['eventimage'] = eventsqset[0].eventimage
         latestevent['eventlocation'] = eventsqset[0].eventlocation
+        latestevent['eventid'] = eventsqset[0].id
         eventsprioritylist.append(eventsqset[0].eventname)
     context['latestevent'] = latestevent
     previousevents = []
@@ -242,7 +247,7 @@ def details(request):
     if artistsqset.__len__() < max_len:
         max_len = artistsqset.__len__()
     for artist in artistsqset[:max_len]:
-        adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl}
+        adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl, 'artistid' : artist.id}
         artistslist.append(adict)
     context['artists'] = artistslist
     nationalities = []
@@ -314,6 +319,10 @@ def details(request):
     context['allartworks'] = allartworks
     context['filterartists'] = filterartists
     context['eventsprioritylist'] = eventsprioritylist
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('gallery_details.html')
     return HttpResponse(template.render(context, request))
 
@@ -334,7 +343,7 @@ def eventdetails(request):
     except:
         return HttpResponse("Could not identify a gallery event with Id %s"%gevid)
     context = {}
-    eventdata = {'eventname' : geventobj.eventname, 'eventinfo' : geventobj.eventinfo, 'eventperiod' : geventobj.eventperiod, 'eventtype' : geventobj.eventtype, 'eventimage' : geventobj.eventimage, 'eventlocation' : geventobj.eventlocation, 'gid' : geventobj.gallery.id}
+    eventdata = {'eventname' : geventobj.eventname, 'eventinfo' : geventobj.eventinfo, 'eventperiod' : geventobj.eventperiod, 'eventtype' : geventobj.eventtype, 'eventimage' : geventobj.eventimage, 'eventlocation' : geventobj.eventlocation, 'gid' : geventobj.gallery.id, 'gevid' : geventobj.id}
     context['eventinfo'] = eventdata
     galobj = geventobj.gallery
     otherevents = {} # These will be events from the same gallery as the one in eventinfo.
@@ -417,6 +426,10 @@ def eventdetails(request):
         d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : artist.birthdate, 'deathdate' : artist.deathdate, 'about' : artist.about, 'artistimage' : artist.squareimage, 'artistid' : artist.id}
         allartists.append(d)
     context['allartists'] = allartists
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('event_details.html')
     return HttpResponse(template.render(context, request))
 
@@ -437,7 +450,7 @@ def artworkdetails(request):
     except:
         return HttpResponse("Could not identify a artwork with Id %s"%awid)
     context = {}
-    artworkinfo = {'artworkname' : artworkobj.artworkname, 'creationdate' : artworkobj.creationdate, 'artistname' : artworkobj.artistname, 'artistbirthyear' : artworkobj.artistbirthyear, 'artistdeathyear' : artworkobj.artistdeathyear, 'artistnationality' : artworkobj.artistnationality, 'size' : artworkobj.size, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'provenance' : artworkobj.provenance, 'artworkimage' : artworkobj.image1, 'estimate' : artworkobj.estimate, 'soldprice' : artworkobj.soldprice}
+    artworkinfo = {'artworkname' : artworkobj.artworkname, 'creationdate' : artworkobj.creationdate, 'artistname' : artworkobj.artistname, 'artistbirthyear' : artworkobj.artistbirthyear, 'artistdeathyear' : artworkobj.artistdeathyear, 'artistnationality' : artworkobj.artistnationality, 'size' : artworkobj.size, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'provenance' : artworkobj.provenance, 'artworkimage' : artworkobj.image1, 'estimate' : artworkobj.estimate, 'soldprice' : artworkobj.soldprice, 'awid' : artworkobj.id}
     context['artworkinfo'] = artworkinfo
     # Get all artworks by the same artist
     allartworks = []
@@ -508,6 +521,10 @@ def artworkdetails(request):
     context['allartworks2'] = allartworks2
     context['allartworks3'] = allartworks3
     context['allartworks4'] = allartworks4
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
     template = loader.get_template('artwork_details.html')
     return HttpResponse(template.render(context, request))
 

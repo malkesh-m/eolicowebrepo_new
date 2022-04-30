@@ -145,6 +145,9 @@
 	  sectiontag.innerHTML = html;
 	}
     </script>
+
+    <script src="/static/js/editfromfront.js"></script>
+
     </head>
     
     <body>
@@ -220,6 +223,9 @@
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -233,6 +239,9 @@
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -246,6 +255,9 @@
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -259,6 +271,9 @@
 			<h5>{{d.title}}</h5>
 			<p>{{d.text}}</p>
 			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
+			{% endif %}
 		</div>
               </div>
             </div>
@@ -351,10 +366,12 @@
 			<a href="/museum/details/?mid={{museum.mid}}"><img src="{{museum.coverimage}}" alt=""></a>
                         <a href="/museum/details/?mid={{museum.mid}}" style="color:#000000;">
 				<h4>{{museum.museumname}}</h4>
-				<span style="padding-left:10px;">{{museum.location}}</span>
+				<h6>{{museum.location}}</h6>
 				<!-- <a class="btn btn-slider" href="/museum/details/?mid={{museum.mid}}">Details</a> -->
 			</a>
-			</a>
+			{% if adminuser == 1 %}
+			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmuseum('{{museum.mid}}');">Edit</a>
+			{% endif %}
                     </div>
                 </div>
 		{% endfor %}
@@ -409,6 +426,10 @@
 	{% endfor %}
    	</div>
    	-->
+
+    <form name='frmedit' id='frmedit'>
+     {% csrf_token %}
+    </form>
     
     <!-- ***** Footer Start ***** -->
     <footer>
