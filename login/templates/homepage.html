@@ -346,7 +346,7 @@ footer .under-footer a:hover {
 				<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
 		                <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
 					<h4>{{gname}}</h4>
-					<span style="padding-left:10px;">{{gdata.0}}</span>
+					<h6>{{gdata.0}}</h6>
 					<!-- <a class="btn btn-slider" href="#">Follow</a> -->
 				</a>
 				{% if adminuser == 1 %}
@@ -405,8 +405,8 @@ footer .under-footer a:hover {
 				<a href="/museum/details/?mid={{mdata.3}}"><img src="{{mdata.4}}" alt=""></a>
 		                <a href="/museum/details/?mid={{mdata.3}}" style="color:#000000;">
 					<h4>{{mname}}</h4>
-					<span style="padding-left:10px;">{{mdata.1}}</span>
-					<span style="padding-left:10px;">{{mdata.2}}</span>
+					<h6>{{mdata.1}}</h6>
+					<h6>{{mdata.2}}</h6>
 				</a>
 				{% if adminuser == 1 %}
 				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editmuseum('{{mdata.3}}');">Edit</a></div>
@@ -546,7 +546,7 @@ footer .under-footer a:hover {
 				<a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
 		                <a href="/artist/details/?aid={{adata.4}}" style="color:#000000;">
 					<h4>{{aname}}</h4>
-					<span style="padding-left:10px;">{{adata.3}}</span>
+					<h6>{{adata.3}}</h6>
 
 				</a>
 				{% if adminuser == 1 %}
@@ -607,8 +607,8 @@ footer .under-footer a:hover {
                                 <div class="down-content">
 					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}" style="color:#000000;">
 						<h4>{{aucdata.housename}}</h4>
-						<span style="padding-left:10px;">{{aucdata.location}}</span>
-						<span style="padding-left:10px;">{{aucdata.description}}</span>
+						<h6>{{aucdata.location}}</h6>
+						<h6>{{aucdata.description}}</h6>
 					</a>
 					{% if adminuser == 1 %}
 					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editauctionhouse('{{aucdata.aucid}}');">Edit</a></div>
@@ -646,7 +646,7 @@ footer .under-footer a:hover {
 				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
 		                <a href="/auction/details/?lid={{aucdata.lid}}" style="color:#000000;">
 						<h4>{{aucname}}</h4>
-						<span style="padding-left:10px;">{{aucdata.description}}</span>
+						<h6>{{aucdata.description}}</h6>
 				</a>
 				<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
 				{% if adminuser == 1 %}
