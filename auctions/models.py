@@ -51,6 +51,8 @@ class Lot(models.Model):
     priority = models.IntegerField(default=0)
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
+    #signature = models.TextField()
+    #creationdate = models.CharField(max_length=50, blank=True, default='')
     
 
     class Meta:

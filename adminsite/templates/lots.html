@@ -44,62 +44,72 @@
 
     <script type='text/javascript'>
 	function addlot(){
-	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
-	  artworknm = document.frmartwork.artworkname.value;
-	  artistnm = document.frmartwork.artistname.value;
-	  galleryid = document.frmartwork.selgalleryname.options[document.frmartwork.selgalleryname.options.selectedIndex].value;
-	  eventid = document.frmartwork.selgeventname.options[document.frmartwork.selgeventname.options.selectedIndex].value;
-	  abirth = document.frmartwork.artistbirth.value;
-	  adeath = document.frmartwork.artistdeath.value;
-	  anationality = document.frmartwork.artistnationality.value;
-	  medium = document.frmartwork.medium.value;
-	  sz = document.frmartwork.size.value;
-	  artdesc = document.frmartwork.artworkdescription.value;
-	  artsig = document.frmartwork.signature.value;
-	  artauth = document.frmartwork.authenticity.value;
-	  artestimate = document.frmartwork.estimate.value;
-	  artsoldprice = document.frmartwork.soldprice.value;
-	  artprovenance = document.frmartwork.provenance.value;
-	  artliterature = document.frmartwork.literature.value;
-	  artexhibitions = document.frmartwork.exhibitions.value;
-	  arturl = document.frmartwork.artworkurl.value;
-	  artpriority = document.frmartwork.selartworkpriority.options[document.frmartwork.selartworkpriority.options.selectedIndex].value;
+	  csrf = document.frmlot.csrfmiddlewaretoken.value;
+	  lotnm = document.frmlot.lottitle.value;
+	  artistnm = document.frmlot.artistname.value;
+	  auchouseid = document.frmlot.selauctionhousename.options[document.frmlot.selauctionhousename.options.selectedIndex].value;
+	  auctionid = document.frmlot.selauctionname.options[document.frmlot.selauctionname.options.selectedIndex].value;
+	  abirth = document.frmlot.artistbirth.value;
+	  adeath = document.frmlot.artistdeath.value;
+	  anationality = document.frmlot.artistnationality.value;
+	  medium = document.frmlot.medium.value;
+	  sz = document.frmlot.size.value;
+	  lotdesc = document.frmlot.lotdescription.value;
+	  //lotsig = document.frmlot.signature.value;
+	  //lotauth = document.frmlot.authenticity.value;
+	  lotestimate = document.frmlot.estimate.value;
+	  lotsoldprice = document.frmlot.soldprice.value;
+	  lotprovenance = document.frmlot.provenance.value;
+	  lotliterature = document.frmlot.literature.value;
+	  lotexhibitions = document.frmlot.exhibitions.value;
+          lotcat = document.frmlot.sellotcategory.options[document.frmlot.sellotcategory.options.selectedIndex].value;
+          if(lotcat == ""){
+            lotcat = document.frmlot.lotcategory.value;
+          }
+          currency = document.frmlot.sellotcurrency.options[document.frmlot.sellotcurrency.options.selectedIndex].value;
+          if(currency == ""){
+            currency = document.frmlot.lotcurrency.value;
+          }
+	  loturl = document.frmlot.loturl.value;
+	  lotpriority = document.frmlot.sellotpriority.options[document.frmlot.sellotpriority.options.selectedIndex].value;
 	  let formData = new FormData();
-	  if(document.getElementById("image1").files.length > 0){
-	  let image1 = document.getElementById("image1").files[0];
-	  formData.append("image1", image1);
+	  if(document.getElementById("lotimage1").files.length > 0){
+	  let lotimage1 = document.getElementById("lotimage1").files[0];
+	  formData.append("lotimage1", lotimage1);
 	  }
-	  if(document.getElementById("image2").files.length > 0){
-	  let image2 = document.getElementById("image2").files[0];
-	  formData.append("image2", image2); 
+	  if(document.getElementById("lotimage2").files.length > 0){
+	  let lotimage2 = document.getElementById("lotimage2").files[0];
+	  formData.append("lotimage2", lotimage2); 
 	  }
-	  if(document.getElementById("image3").files.length > 0){
-	  let image3 = document.getElementById("image3").files[0];
-	  formData.append("image3", image3); 
+	  if(document.getElementById("lotimage3").files.length > 0){
+	  let lotimage3 = document.getElementById("lotimage3").files[0];
+	  formData.append("lotimage3", lotimage3); 
 	  }
-	  if(document.getElementById("image4").files.length > 0){
-	  let image4 = document.getElementById("image4").files[0];
-	  formData.append("image4", image4); 
+	  if(document.getElementById("lotimage4").files.length > 0){
+	  let lotimage4 = document.getElementById("lotimage4").files[0];
+	  formData.append("lotimage4", lotimage4); 
 	  }
-	  formData.append("artworkname", artworknm); 
+	  formData.append("lottitle", lotnm); 
 	  formData.append("artistname", artistnm); 
-	  formData.append("selgalleryname", galleryid); 
- 	  formData.append("selgeventname", eventid); 
+	  formData.append("selauctionhousename", auchouseid); 
+ 	  formData.append("selauctionname", auctionid); 
 	  formData.append("artistbirth", abirth); 
 	  formData.append("artistdeath", adeath); 
 	  formData.append("artistnationality", anationality);
 	  formData.append("medium", medium); 
 	  formData.append("size", sz); 
-	  formData.append("artworkdescription", artdesc); 
-	  formData.append("signature", artsig); 
-	  formData.append("authenticity", artauth); 
-	  formData.append("estimate", artestimate); 
-	  formData.append("soldprice", artsoldprice); 
-	  formData.append("provenance", artprovenance); 
-	  formData.append("literature", artliterature); 
-	  formData.append("exhibitions", artexhibitions); 
-	  formData.append("artworkurl", arturl); 
-	  formData.append("selartworkpriority", artpriority); 
+	  formData.append("lotdescription", lotdesc); 
+	  //formData.append("signature", lotsig); 
+	  //formData.append("authenticity", lotauth); 
+	  formData.append("estimate", lotestimate); 
+	  formData.append("soldprice", lotsoldprice); 
+	  formData.append("provenance", lotprovenance); 
+	  formData.append("literature", lotliterature); 
+	  formData.append("exhibitions", lotexhibitions); 
+	  formData.append("loturl", loturl); 
+	  formData.append("sellotcategory", lotcat); 
+	  formData.append("sellotcurrency", currency); 
+	  formData.append("sellotpriority", lotpriority); 
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -111,21 +121,21 @@
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    //alert(xmlhttp.responseText);
-	    statusdiv = document.getElementById('artworkstatus');
+	    statusdiv = document.getElementById('lotstatus');
 	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
 	    setTimeout(function() {
     		document.location.href = document.location.href;
 	    }, 5000);
 	  }
 	  };
-	  xmlhttp.open("POST", "/admin/artworks/");
+	  xmlhttp.open("POST", "/admin/lots/");
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	}
 
 	function populateauctions(){
-	  selectedgalleryid = document.frmartwork.selgalleryname.options[document.frmartwork.selgalleryname.options.selectedIndex].value;
-	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
+	  selectedauchouseid = document.frmlot.selauctionhousename.options[document.frmlot.selauctionhousename.options.selectedIndex].value;
+	  csrf = document.frmlot.csrfmiddlewaretoken.value;
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -134,17 +144,17 @@
 	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	  }
 	  // Register the handler
-          postdata = "gid=" + selectedgalleryid + "&csrfmiddlewaretoken=" + csrf;
+          postdata = "ahid=" + selectedauchouseid + "&csrfmiddlewaretoken=" + csrf;
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    // create the options
-	    eventsdict = JSON.parse(xmlhttp.responseText);
-	    var select = document.getElementById("selgeventname");
+	    auctionsdict = JSON.parse(xmlhttp.responseText);
+	    var select = document.getElementById("selauctionname");
 	    select.options.length = 0;
-	    for (const [eventname, eventid] of Object.entries(eventsdict)){
+	    for (const [auctionname, auctionid] of Object.entries(auctionsdict)){
 	    	var option = document.createElement("option");
-	    	option.text = eventname;
-	    	option.value = eventid;
+	    	option.text = auctionname;
+	    	option.value = auctionid;
 	    	select.appendChild(option);
 	    }
 	  }
@@ -156,8 +166,8 @@
 	}
 
 
-	function searchartworksbykeyword(){
-	  keyword = document.frmsearchartworks.btnartworkssearch.value;
+	function searchlotsbykeyword(){
+	  keyword = document.frmsearchlots.btnlotssearch.value;
 	  //alert(keyword);
  	  var xmlhttp;
 	  if (window.XMLHttpRequest){
@@ -169,21 +179,21 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    artform = document.getElementById('frmartwork');
-	    artform.innerHTML = "";
+	    lotform = document.getElementById('frmlot');
+	    lotform.innerHTML = "";
 	    gform = "";
-	    artworksdict = JSON.parse(xmlhttp.responseText);
-	    for (const [artname, artid] of Object.entries(artworksdict)){
-	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editartwork(" + artid + ")'>" +  artname + "</a></div>";
+	    lotsdict = JSON.parse(xmlhttp.responseText);
+	    for (const [lottitle, lotid] of Object.entries(lotsdict)){
+	    	gform += "<div class='card-title'><a href='#' onclick='javascript:editlot(" + lotid + ")'>" +  lottitle + "</a></div>";
 	    }
-	    artform.innerHTML = gform;
+	    lotform.innerHTML = gform;
 	  }
 	  };
-	  xmlhttp.open("GET", '/admin/searchartworks/?searchkey=' + encodeURI(keyword));
+	  xmlhttp.open("GET", '/admin/searchlots/?searchkey=' + encodeURI(keyword));
 	  xmlhttp.send();
 	}
 
-	function editartwork(awid){
+	function editlot(lid){
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -194,59 +204,81 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    awform = document.getElementById('frmartwork');
-	    awform.innerHTML = "";
-	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchartworks.csrfmiddlewaretoken.value + "'>";
+	    lotform = document.getElementById('frmlot');
+	    lotform.innerHTML = "";
+	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchlots.csrfmiddlewaretoken.value + "'>";
 	    context = JSON.parse(xmlhttp.responseText);
-	    geventsdict = context['gevents'];
-	    artwork = context['artwork'];
-	    galleries = context['galleriesdict'];
-	    gform += "<div class='card-title'><h4>Artwork Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork Name' name='artworkname' value='" + artwork['artworkname'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Gallery Name</h4></div><div class='form-group'>";
-	    gform += "<select name='selgalleryname' id ='selgalleryname' class='form-control input-default' onchange='javascript:populategevents();'><option value=''>Select Gallery </option>";
-	    for (const [galname, galid] of Object.entries(galleries)){
-		if(artwork['gallery'] == galid){
-		gform += "<option value='" + galid + "' selected>" + galname + "</option>";
+	    auctionsdict = context['auctionsdict'];
+	    lot = context['lot'];
+	    auctionhouses = context['auctionhousesdict'];
+    	    alllotcategories = context['alllotcategories'];
+	    allcurrencies = context['allcurrencies'];
+	    gform += "<div class='card-title'><h4>Lot Title</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Lot Title' name='lottitle' value='" + lot['lottitle'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Auction House Name</h4></div><div class='form-group'>";
+	    gform += "<select name='selauctionhousename' id ='selauctionhousename' class='form-control input-default' onchange='javascript:populateauctions();'><option value=''>Select Auction House </option>";
+	    for (const [ahname, ahid] of Object.entries(auctionhouses)){
+		if(lot['auctionhouse'] == ahid){
+		gform += "<option value='" + ahid + "' selected>" + ahname + "</option>";
 		}
 		else{
-		gform += "<option value='" + galid + "'>" + galname + "</option>";
+		gform += "<option value='" + ahid + "'>" + ahname + "</option>";
 		}
 	    }
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Event Name</h4></div><div class='form-group'>";
-	    gform += "<select name='selgeventname' id ='selgeventname' class='form-control input-default'><option value=''>Select Event </option>";
-	    for (const [gevname, gevid] of Object.entries(geventsdict)){
-		if(artwork['event'] == gevid){
-		gform += "<option value='" + gevid + "' selected>" + gevname + "</option>";
+	    gform += "<div class='card-title'><h4>Auction</h4></div><div class='form-group'>";
+	    gform += "<select name='selauctionname' id ='selauctionname' class='form-control input-default'><option value=''>Select Auction </option>";
+	    for (const [aucname, aucid] of Object.entries(auctionsdict)){
+		if(lot['auction'] == aucid){
+		gform += "<option value='" + aucid + "' selected>" + aucname + "</option>";
 		}
 		else{
-		gform += "<option value='" + gevid + "'>" + gevname + "</option>";
+		gform += "<option value='" + aucid + "'>" + aucname + "</option>";
 		}
 	    }
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Artist Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Name' name='artistname' value='" + artwork['artistname'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Artist Birth Year</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Birth Year' name='artistbirth' value='" + artwork['artistbirthyear'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Artist Death Year</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Death Year' name='artistdeath' value='" + artwork['artistdeathyear'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Artist Nationality</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Nationality' name='artistnationality' value='" + artwork['artistnationality'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Medium</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Medium' name='medium' value='" + artwork['medium'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Size</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Size' name='size' value='" + artwork['size'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='artworkdescription'>" + artwork['description'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Signature</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Signature' name='signature' value='" + artwork['signature'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Letter of Authenticity</h4></div><div class='form-group'><textarea class='form-control input-default ' name='authenticity'>" + artwork['letterofauthenticity'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Estimate</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Estimate' name='estimate' value='" + artwork['estimate'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Sold Price</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Sold Price' name='soldprice' value='" + artwork['soldprice'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Provenance</h4></div><div class='form-group'><textarea class='form-control input-default ' name='provenance'>" + artwork['provenance'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Literature</h4></div><div class='form-group'><textarea class='form-control input-default ' name='literature'>" + artwork['literature'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Exhibitions</h4></div><div class='form-group'><textarea class='form-control input-default ' name='exhibitions'>" + artwork['exhibitions'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Artwork URL</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artwork URL' name='artworkurl' value='" + artwork['workurl'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Artwork Image 1</h4></div><div class='form-group'><input type='file' name='image1' id='image1' class='form-control input-default'><a href='" + artwork['image1'] + "'><img src='" + artwork['image1'] + "'></a></div>";
-	    gform += "<div class='card-title'><h4>Artwork Image 2</h4></div><div class='form-group'><input type='file' name='image2' id='image2' class='form-control input-default'><a href='" + artwork['image2'] + "'><img src='" + artwork['image2'] + "'></a></div>";
-	    gform += "<div class='card-title'><h4>Artwork Image 3</h4></div><div class='form-group'><input type='file' name='image3' id='image3' class='form-control input-default'><a href='" + artwork['image3'] + "'><img src='" + artwork['image3'] + "'></a></div>";
-	    gform += "<div class='card-title'><h4>Artwork Image 4</h4></div><div class='form-group'><input type='file' name='image4' id='image4' class='form-control input-default'><a href='" + artwork['image4'] + "'><img src='" + artwork['image4'] + "'></a></div>";
-	    gform += "<div class='card-title'><h4>Event Priority</h4></div><div class='form-group'>";
-	    gform += "<select name='selartworkpriority' id='selartworkpriority' class='form-control input-default'><option value=''>Select Priority </option>";
+	    gform += "<div class='card-title'><h4>Artist Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Name' name='artistname' value='" + lot['artistname'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Birth Year</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Birth Year' name='artistbirth' value='" + lot['artistbirth'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Death Year</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Death Year' name='artistdeath' value='" + lot['artistdeath'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Artist Nationality</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Artist Nationality' name='artistnationality' value='" + lot['artistnationality'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Medium</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Medium' name='medium' value='" + lot['medium'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Size</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Size' name='size' value='" + lot['size'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Lot Category </h4></div><div class='form-group'><select name='sellotcategory' id='sellotcategory' class='form-control input-default'><option value=''>Select Category </option>";
+	    for(var i=0; i < alllotcategories.length; i++){
+		if(lot['lotcategory'] == alllotcategories[i]){
+		    gform += "<option value='" + alllotcategories[i] + "' selected>" + alllotcategories[i] + "</option>";
+		}
+		else{
+		    gform += "<option value='" + alllotcategories[i] + "'>" + alllotcategories[i] + "</option>";
+		}
+	    }
+	    gform += "<option value=''>None of the above</option></select><input type='text' class='form-control input-default' placeholder='Lot Category' name='lotcategory'></div>";
+	    gform += "<div class='card-title'><h4>Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='lotdescription'>" + lot['description'] + "</textarea></div>";
+	    //gform += "<div class='card-title'><h4>Signature</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Signature' name='signature' value='" + lot['signature'] + "'></div>";
+	    //gform += "<div class='card-title'><h4>Letter of Authenticity</h4></div><div class='form-group'><textarea class='form-control input-default ' name='authenticity'>" + lot['letterofauthenticity'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Currency </h4></div><div class='form-group'><select name='sellotcurrency' id='sellotcurrency' class='form-control input-default'><option value=''>Select Currency </option>";
+	    for(var i=0; i < allcurrencies.length; i++){
+		if(lot['currency'] == allcurrencies[i]){
+		    gform += "<option value='" + allcurrencies[i] + "' selected>" + allcurrencies[i] + "</option>";
+		}
+		else{
+		    gform += "<option value='" + allcurrencies[i] + "'>" + allcurrencies[i] + "</option>";
+		}
+	    }
+	    gform += "<option value=''>None of the above</option></select><input type='text' class='form-control input-default' placeholder='Lot Currency' name='lotcurrency'></div>";
+	    gform += "<div class='card-title'><h4>Estimate</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Estimate' name='estimate' value='" + lot['estimate'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Sold Price</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Sold Price' name='soldprice' value='" + lot['soldprice'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Provenance</h4></div><div class='form-group'><textarea class='form-control input-default ' name='provenance'>" + lot['provenance'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Literature</h4></div><div class='form-group'><textarea class='form-control input-default ' name='literature'>" + lot['literature'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Exhibitions</h4></div><div class='form-group'><textarea class='form-control input-default ' name='exhibitions'>" + lot['exhibited'] + "</textarea></div>";
+	    gform += "<div class='card-title'><h4>Lot URL</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Lot URL' name='loturl' value='" + lot['loturl'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Lot Image 1</h4></div><div class='form-group'><input type='file' name='lotimage1' id='lotimage1' class='form-control input-default'><a href='" + lot['lotimage1'] + "'><img src='" + lot['lotimage1'] + "'></a></div>";
+	    gform += "<div class='card-title'><h4>Lot Image 2</h4></div><div class='form-group'><input type='file' name='lotimage2' id='lotimage2' class='form-control input-default'><a href='" + lot['lotimage2'] + "'><img src='" + lot['lotimage2'] + "'></a></div>";
+	    gform += "<div class='card-title'><h4>Lot Image 3</h4></div><div class='form-group'><input type='file' name='lotimage3' id='lotimage3' class='form-control input-default'><a href='" + lot['lotimage3'] + "'><img src='" + lot['lotimage3'] + "'></a></div>";
+	    gform += "<div class='card-title'><h4>Lot Image 4</h4></div><div class='form-group'><input type='file' name='lotimage4' id='lotimage4' class='form-control input-default'><a href='" + lot['lotimage4'] + "'><img src='" + lot['lotimage4'] + "'></a></div>";
+	    gform += "<div class='card-title'><h4>Lot Priority</h4></div><div class='form-group'>";
+	    gform += "<select name='sellotpriority' id='sellotpriority' class='form-control input-default'><option value=''>Select Priority </option>";
 	    for(i=1; i <= 5; i++){
-		if(artwork['priority'] == i){
+		if(lot['priority'] == i){
 		gform += "<option value='" + i + "' selected>" + i + " </option>";
 		}
 		else{
@@ -255,70 +287,86 @@
 	    }
 	    gform += "</select></div>";
 
-	    gform += "<div class='card-title'><input type='button' name='editartwork' class='form-control input-default' value='Save Artwork' onclick='javascript:saveartwork();'></div>";
-	    gform += "<div class='card-title' id='artworkstatus'></div>";
-	    gform += "<input type='hidden' name='awid' value='" + artwork['id'] + "'>";
-	    awform.innerHTML = gform;
+	    gform += "<div class='card-title'><input type='button' name='editlot' class='form-control input-default' value='Save Lot' onclick='javascript:savelot();'></div>";
+	    gform += "<div class='card-title' id='lotstatus'></div>";
+	    gform += "<input type='hidden' name='lid' value='" + lot['id'] + "'>";
+	    lotform.innerHTML = gform;
 	  }
 	  };
-	  xmlhttp.open("GET", "/admin/editartwork/?awid=" + awid);
+	  xmlhttp.open("GET", "/admin/editlots/?lid=" + lid);
 	  xmlhttp.send();
 	}
 
 
-	function saveartwork(){
-	  csrf = document.frmartwork.csrfmiddlewaretoken.value;
-	  artworknm = document.frmartwork.artworkname.value;
-	  selgalleryname = document.getElementById('selgalleryname').value;
-	  selgeventname = document.getElementById('selgeventname').value;
-	  artistname = document.frmartwork.artistname.value;
-	  artistbirth = document.frmartwork.artistbirth.value;
-	  artistdeath = document.frmartwork.artistdeath.value;
-	  artistnationality = document.frmartwork.artistnationality.value;
-	  medium = document.frmartwork.medium.value;
-	  size = document.frmartwork.size.value;
-	  artworkdesc = document.frmartwork.artworkdescription.value;
-	  //alert(artworkdesc);
-	  signature = document.frmartwork.signature.value;
-	  authenticity = document.frmartwork.authenticity.value;
-	  estimate = document.frmartwork.estimate.value;
-	  soldprice = document.frmartwork.soldprice.value;
-	  provenance = document.frmartwork.provenance.value;
-	  literature = document.frmartwork.literature.value;
-	  exhibitions = document.frmartwork.exhibitions.value;
-	  artworkurl = document.frmartwork.artworkurl.value;
-	  priority = document.getElementById('selartworkpriority').value;
-	  awid = document.frmartwork.awid.value;
+	function savelot(){
+	  csrf = document.frmlot.csrfmiddlewaretoken.value;
+	  lotnm = document.frmlot.lottitle.value;
+	  artistnm = document.frmlot.artistname.value;
+	  auchouseid = document.frmlot.selauctionhousename.options[document.frmlot.selauctionhousename.options.selectedIndex].value;
+	  auctionid = document.frmlot.selauctionname.options[document.frmlot.selauctionname.options.selectedIndex].value;
+	  abirth = document.frmlot.artistbirth.value;
+	  adeath = document.frmlot.artistdeath.value;
+	  anationality = document.frmlot.artistnationality.value;
+	  medium = document.frmlot.medium.value;
+	  sz = document.frmlot.size.value;
+	  lotdesc = document.frmlot.lotdescription.value;
+	  //lotsig = document.frmlot.signature.value;
+	  //lotauth = document.frmlot.authenticity.value;
+	  lotestimate = document.frmlot.estimate.value;
+	  lotsoldprice = document.frmlot.soldprice.value;
+	  lotprovenance = document.frmlot.provenance.value;
+	  lotliterature = document.frmlot.literature.value;
+	  lotexhibitions = document.frmlot.exhibitions.value;
+          lotcat = document.frmlot.sellotcategory.options[document.frmlot.sellotcategory.options.selectedIndex].value;
+          if(lotcat == ""){
+            lotcat = document.frmlot.lotcategory.value;
+          }
+          currency = document.frmlot.sellotcurrency.options[document.frmlot.sellotcurrency.options.selectedIndex].value;
+          if(currency == ""){
+            currency = document.frmlot.lotcurrency.value;
+          }
+	  loturl = document.frmlot.loturl.value;
+          lotid = document.frmlot.lid.value
+	  lotpriority = document.frmlot.sellotpriority.options[document.frmlot.sellotpriority.options.selectedIndex].value;
 	  let formData = new FormData();
-	  //alert(formData);
-	  let image1 = document.getElementById("image1").files[0];
-	  let image2 = document.getElementById("image2").files[0];
-	  let image3 = document.getElementById("image3").files[0];
-	  let image4 = document.getElementById("image4").files[0];
-	  formData.append("image1", image1); 
-	  formData.append("image2", image2);
-	  formData.append("image3", image3);
-	  formData.append("image4", image4);
-	  formData.append("artworkname", artworknm); 
-	  formData.append("galleryid", selgalleryname); 
-	  formData.append("eventid", selgeventname); 
- 	  formData.append("artistname", artistname); 
-	  formData.append("artistbirth", artistbirth); 
-	  formData.append("artistdeath", artistdeath); 
-	  formData.append("artistnationality", artistnationality); 
+	  if(document.getElementById("lotimage1").files.length > 0){
+	  let lotimage1 = document.getElementById("lotimage1").files[0];
+	  formData.append("lotimage1", lotimage1);
+	  }
+	  if(document.getElementById("lotimage2").files.length > 0){
+	  let lotimage2 = document.getElementById("lotimage2").files[0];
+	  formData.append("lotimage2", lotimage2); 
+	  }
+	  if(document.getElementById("lotimage3").files.length > 0){
+	  let lotimage3 = document.getElementById("lotimage3").files[0];
+	  formData.append("lotimage3", lotimage3); 
+	  }
+	  if(document.getElementById("lotimage4").files.length > 0){
+	  let lotimage4 = document.getElementById("lotimage4").files[0];
+	  formData.append("lotimage4", lotimage4); 
+	  }
+	  formData.append("lottitle", lotnm); 
+	  formData.append("artistname", artistnm); 
+	  formData.append("selauctionhousename", auchouseid); 
+ 	  formData.append("selauctionname", auctionid); 
+	  formData.append("artistbirth", abirth); 
+	  formData.append("artistdeath", adeath); 
+	  formData.append("artistnationality", anationality);
 	  formData.append("medium", medium); 
-	  formData.append("size", size); 
-	  formData.append("artworkdescription", artworkdesc); 
-	  formData.append("signature", signature); 
-	  formData.append("authenticity", authenticity); 
-	  formData.append("estimate", estimate); 
-	  formData.append("soldprice", soldprice); 
-	  formData.append("provenance", provenance); 
-	  formData.append("literature", literature); 
-	  formData.append("exhibitions", exhibitions); 
-	  formData.append("artworkurl", artworkurl); 
-	  formData.append("priority", priority); 
-	  formData.append("awid", awid);
+	  formData.append("size", sz); 
+	  formData.append("lotdescription", lotdesc); 
+	  //formData.append("signature", lotsig); 
+	  //formData.append("authenticity", lotauth); 
+	  formData.append("estimate", lotestimate); 
+	  formData.append("soldprice", lotsoldprice); 
+	  formData.append("provenance", lotprovenance); 
+	  formData.append("literature", lotliterature); 
+	  formData.append("exhibitions", lotexhibitions); 
+	  formData.append("loturl", loturl); 
+	  formData.append("sellotcategory", lotcat); 
+	  formData.append("sellotcurrency", currency); 
+	  formData.append("sellotpriority", lotpriority); 
+	  formData.append("lid", lotid); 
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -330,14 +378,14 @@
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    //alert(xmlhttp.responseText);
-	    statusdiv = document.getElementById('artworkstatus');
+	    statusdiv = document.getElementById('lotstatus');
 	    statusdiv.innerHTML = "<p style='color:0000AA'>" + xmlhttp.responseText + "</p>";
 	    setTimeout(function() {
     		document.location.href = document.location.href;
 	    }, 5000);
 	  }
 	  };
-	  xmlhttp.open("POST", '/admin/saveartwork/');
+	  xmlhttp.open("POST", '/admin/savelots/');
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	}
@@ -428,7 +476,7 @@
                                     		<h4>Lot Title</h4>
                                 	    </div>
                                             <div class="form-group">
-                                                <input type="text" class="form-control input-default " placeholder="Lot Name" name='lottitle'>
+                                                <input type="text" class="form-control input-default " placeholder="Lot Title" name='lottitle'>
                                             </div>
 					    <div class="card-title">
                                     		<h4>Auction House </h4>
@@ -505,6 +553,7 @@
                                             <div class="form-group">
                                                 <textarea class="form-control input-default" name='lotdescription'></textarea>
                                             </div>
+					    <!--
                                             <div class="card-title">
                                     		<h4>Signature</h4>
                                 	    </div>
@@ -517,6 +566,7 @@
                                             <div class="form-group">
                                                 <textarea class="form-control input-default" name='authenticity'></textarea>
                                             </div>
+					    -->
 					    <div class="card-title">
                                     		<h4>Currency </h4>
                                 	    </div>

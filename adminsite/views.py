@@ -3091,34 +3091,540 @@ def lots(request):
         context['auctionhousesdict'] = auctionhousesdict
         alllotcategories = []
         # Find all distinct lot categories
+        lotcategories = Lot.objects.order_by().values_list('category').distinct()
+        for category in lotcategories:
+            alllotcategories.append(category[0])
         context['alllotcategories'] = alllotcategories
         allcurrencies = []
-        # Find all distinct currencies
+        # Find all distinct currencies (from settings.py)
+        for cur in settings.CURRENCIES:
+            allcurrencies.append(cur)
         context['allcurrencies'] = allcurrencies
         template = loader.get_template('lots.html')
         return HttpResponse(template.render(context, request))
     elif request.method == 'POST':
-        pass
+        lottitle, artistname, auctionhouseid, auctionid, artistbirth, artistdeath, artistnationality, medium, size, lotdescription, signature, authenticity, estimate, soldprice, provenance, literature, exhibitions, loturl, priority, lotcat, lotcurrency = "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+        if 'lottitle' in request.POST.keys():
+            lottitle = request.POST['lottitle'].strip()
+        if 'artistname' in request.POST.keys():
+            artistname = request.POST['artistname'].strip()
+        if 'selauctionhousename' in request.POST.keys():
+            auctionhouseid = request.POST['selauctionhousename'].strip()
+        if 'selauctionname' in request.POST.keys():
+            auctionid = request.POST['selauctionname'].strip()
+        if 'artistbirth' in request.POST.keys():
+            artistbirth = request.POST['artistbirth'].strip()
+        if 'artistdeath' in request.POST.keys():
+            artistdeath = request.POST['artistdeath'].strip()
+        if 'artistnationality' in request.POST.keys():
+            artistnationality = request.POST['artistnationality']
+        if 'medium' in request.POST.keys():
+            medium = request.POST['medium']
+        if 'size' in request.POST.keys():
+            size = request.POST['size']
+        if 'lotdescription' in request.POST.keys():
+            lotdescription = request.POST['lotdescription']
+        #if 'signature' in request.POST.keys():
+        #    signature = request.POST['signature']
+        #if 'authenticity' in request.POST.keys():
+        #    authenticity = request.POST['authenticity']
+        if 'estimate' in request.POST.keys():
+            estimate = request.POST['estimate']
+        if 'soldprice' in request.POST.keys():
+            soldprice = request.POST['soldprice']
+        if 'provenance' in request.POST.keys():
+            provenance = request.POST['provenance']
+        if 'literature' in request.POST.keys():
+            literature = request.POST['literature']
+        if 'exhibitions' in request.POST.keys():
+            exhibitions = request.POST['exhibitions']
+        if 'loturl' in request.POST.keys():
+            loturl = request.POST['loturl']
+        if 'sellotpriority' in request.POST.keys():
+            priority = request.POST['sellotpriority']
+        if 'sellotcategory' in request.POST.keys():
+            lotcat = request.POST['sellotcategory']
+        if 'sellotcurrency' in request.POST.keys():
+            lotcurrency = request.POST['sellotcurrency']
+        if lottitle == "" or artistname == "":
+            message = "Lot title or Artist's name is empty. Can't create Lot."
+            return HttpResponse(message)
+        auchouseobj = None
+        try:
+            auchouseobj = AuctionHouse.objects.get(id=auctionhouseid)
+        except:
+            message = "Could not find auction house with Id %s"%auctionhouseid
+            return HttpResponse(message)
+        auctionobj = None
+        try:
+            auctionobj = Auction.objects.get(id=auctionid)
+        except:
+            message = "Could not find auction with Id %s"%auctionid
+            return HttpResponse(message)
+        lotobj = Lot()
+        lotobj.lottitle = lottitle
+        lotobj.auction = auctionobj
+        lotobj.artistname = artistname.title()
+        lotobj.artistbirth = artistbirth
+        lotobj.artistdeath = artistdeath
+        lotobj.artistnationality = artistnationality
+        lotobj.size = size
+        lotobj.estimate = estimate
+        lotobj.soldprice = soldprice
+        lotobj.medium = medium
+        #lotobj.signature = signature
+        #lotobj.letterofauthenticity = authenticity
+        lotobj.lotdescription = lotdescription
+        lotobj.provenance = provenance
+        lotobj.literature = literature
+        lotobj.exhibited = exhibitions
+        lotobj.loturl = loturl
+        lotobj.priority = priority
+        lotobj.category = lotcat
+        lotobj.currency = lotcurrency
+        #lotobj.creationdate = ""
+        nonalphanumPattern = re.compile("[^a-zA-Z\d_]{1}")
+        artistimage = ""
+        auctionid = str(auctionobj.id)
+        if lotobj.priority == "":
+            lotobj.priority = 5
+        # Check if the given artist exists in the Artist model
+        artistobj = None
+        try:
+            artistqset = Artist.objects.filter(artistname=artistname.title())
+            if artistqset.__len__() > 0:
+                artistobj = artistqset[0]
+            else:
+                artistobj = Artist()
+        except:
+            artistobj = Artist()
+        artistobj.artistname = artistname.title()
+        artistobj.birthdate = artistbirth
+        artistobj.deathdate = artistdeath
+        artistobj.nationality = artistnationality
+        artistobj.about = ""
+        artistobj.squareimage = artistimage
+        artistobj.largeimage = artistimage
+        artistobj.event = None # Don't have gallery event associated with this. TO DO: Implement a method to cast an Auction object to a Event (gallery event) object.
+        artistobj.priority = priority # Priority of this artist will be the same as the priority of the artwork.
+        try:
+            lotobj.save()
+            artistobj.save()
+        except:
+            message = "Error: Could not create lot object - %s"%sys.exc_info()[1].__str__()
+            return HttpResponse(message)
+        lotid = str(lotobj.id)
+        imgfile1 = request.FILES.get("lotimage1")
+        if imgfile1:
+            mimetype = imgfile1.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'lotimage1' in request.FILES.keys():
+                image1name = request.FILES['lotimage1'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + auctionid + os.path.sep + lotid
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            if 'lotimage1' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['lotimage1'], imagelocation, image1name)
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                lotobj.lotimage1 = imagepath
+                artistimage = lotobj.lotimage1
+        imgfile2 = request.FILES.get("lotimage2")
+        if imgfile2:
+            mimetype = imgfile2.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'lotimage2' in request.FILES.keys():
+                image2name = request.FILES['lotimage2'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + auctionid + os.path.sep + lotid
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            if 'lotimage2' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['lotimage2'], imagelocation, image2name)
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                lotobj.lotimage2 = imagepath
+        imgfile3 = request.FILES.get("lotimage3")
+        if imgfile3:
+            mimetype = imgfile3.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'lotimage3' in request.FILES.keys():
+                image3name = request.FILES['lotimage3'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + auctionid + os.path.sep + lotid
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            if 'lotimage3' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['lotimage3'], imagelocation, image3name)
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                lotobj.lotimage3 = imagepath
+        imgfile4 = request.FILES.get("lotimage4")
+        if imgfile4:
+            mimetype = imgfile4.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'lotimage4' in request.FILES.keys():
+                image4name = request.FILES['lotimage4'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + auctionid + os.path.sep + lotid
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            if 'lotimage4' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['lotimage4'], imagelocation, image4name)
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                lotobj.lotimage4 = imagepath
+        artistobj.squareimage = artistimage
+        artistobj.largeimage = artistimage
+        try:
+            lotobj.save()
+            artistobj.save()
+            message = "Successfully added lot named '%s'"%lottitle
+        except:
+            message = "Error: Could not create lot - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
 
 
 @login_required(login_url='/admin/login/')
 def getauctions(request):
-    pass
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'Error' : "Invalid method of call"}))
+    ahid = ""
+    requestbody = str(request.body)
+    bodycomponents = requestbody.split("&")
+    requestdict = {}
+    for comp in bodycomponents:
+        compparts = comp.split("=")
+        if compparts.__len__() > 1:
+            compparts[0] = compparts[0].replace("b'", "")
+            requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+    if 'ahid' in requestdict.keys():
+        ahid = requestdict['ahid']
+    if ahid == "" or not ahid:
+        return HttpResponse(json.dumps({'Error' : "Could not find auction house Id in request"}))
+    try:
+        auchouseobj = AuctionHouse.objects.get(id=int(ahid))
+    except:
+        return HttpResponse(json.dumps({'Error' : 'Could not find AuctionHouse object for Id %s'%ahid}))
+    auchousename = auchouseobj.housename
+    auctionsdict = {}
+    auctionsqset = Auction.objects.filter(auctionhouse=auchousename)
+    for aucobj in auctionsqset:
+        auctionsdict[aucobj.auctionname] = aucobj.id
+    auctionsjson = json.dumps(auctionsdict)
+    return HttpResponse(auctionsjson)
+    
 
 
 @login_required(login_url='/admin/login/')
 def searchlots(request):
-    pass
+    if request.method == 'GET':
+        context = {}
+        searchkey = request.GET.get('searchkey')
+        #print(searchkey)
+        lotsqset = Lot.objects.filter(lottitle__icontains=searchkey).order_by('priority', '-edited')
+        lotsdict = {}
+        i = 0
+        for lotobj in lotsqset:
+            if lotobj.lottitle not in lotsdict.keys():
+                lotsdict[lotobj.lottitle] = lotobj.id
+                i = 1
+            else:
+                i += 1
+                lotsdict[lotobj.lottitle + " (%s)"%i] = lotobj.id
+        lotsjson = json.dumps(lotsdict)
+        return HttpResponse(lotsjson)
+    else:
+        return HttpResponse("{'Error' : 'Invalid method of call'}")
 
 
 @login_required(login_url='/admin/login/')
 def editlots(request):
-    pass
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'Error' : 'Invalid method of call'}))
+    lid = ""
+    if 'lid' in request.GET.keys():
+        lid = request.GET['lid']
+    if not lid or lid == "":
+        return HttpResponse(json.dumps({'Error' : 'Could not get lot Id from request'}))
+    lotobj = None
+    try:
+        lotobj = Lot.objects.get(id=int(lid))
+    except:
+        return HttpResponse(json.dumps({'Error' : 'Could not find lot identified by Id %s'%lid}))
+    context = {'auctionsdict' : {}, 'auctionhousesdict' : {}, 'lot' : {}, 'allcurrencies' : [], 'alllotcategories' : []}
+    auctionsdict = {}
+    lot = {}
+    allcurrencies = []
+    auctionhousesdict = {}
+    alllotcategories = []
+    auchousesqset = AuctionHouse.objects.all()
+    for auchouse in auchousesqset:
+        auchousename = auchouse.housename
+        auchouseid = auchouse.id
+        auctionhousesdict[auchousename] = auchouseid
+    context['auctionhousesdict'] = auctionhousesdict
+    # Find all distinct lot categories
+    lotcategories = Lot.objects.order_by().values_list('category').distinct()
+    for category in lotcategories:
+        alllotcategories.append(category[0])
+    context['alllotcategories'] = alllotcategories
+    # Find all distinct currencies (from settings.py)
+    for cur in settings.CURRENCIES:
+        allcurrencies.append(cur)
+    context['allcurrencies'] = allcurrencies
+    auctionsqset = Auction.objects.filter(auctionhouse=lotobj.auction.auctionhouse)
+    for aucobj in auctionsqset:
+        auctionsdict[aucobj.auctionname] = aucobj.id
+    context['auctionsdict'] = auctionsdict
+    lot['lottitle'] = lotobj.lottitle
+    lot['auctionhouse'] = -1
+    if lotobj.auction.auctionhouse in auctionhousesdict.keys():
+        lot['auctionhouse'] = auctionhousesdict[lotobj.auction.auctionhouse]
+    lot['auction'] = lotobj.auction.id
+    lot['artistname'] = lotobj.artistname
+    lot['artistbirth'] = lotobj.artistbirth
+    lot['artistdeath'] = lotobj.artistdeath
+    lot['artistnationality'] = lotobj.artistnationality
+    lot['medium'] = lotobj.medium
+    lot['size'] = lotobj.size
+    lot['lotcategory'] = lotobj.category
+    lot['description'] = lotobj.lotdescription
+    lot['currency'] = lotobj.currency
+    lot['estimate'] = lotobj.estimate
+    lot['soldprice'] = lotobj.soldprice
+    lot['provenance'] = lotobj.provenance
+    lot['literature'] = lotobj.literature
+    lot['exhibited'] = lotobj.exhibited
+    lot['loturl'] = lotobj.loturl
+    lot['priority'] = lotobj.priority
+    lot['lotimage1'] = lotobj.lotimage1
+    lot['lotimage2'] = lotobj.lotimage2
+    lot['lotimage3'] = lotobj.lotimage3
+    lot['lotimage4'] = lotobj.lotimage4
+    lot['id'] = lotobj.id
+    context['lot'] = lot
+    contextjson = json.dumps(context)
+    return HttpResponse(contextjson)
+
 
 
 @login_required(login_url='/admin/login/')
 def savelots(request):
-    pass
+    if request.method == 'POST':
+        lottitle, artistname, auctionhouseid, auctionid, artistbirth, artistdeath, artistnationality, medium, size, lotdescription, signature, authenticity, estimate, soldprice, provenance, literature, exhibitions, loturl, priority, lotcat, lotcurrency, lid = "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", -1
+        if 'lottitle' in request.POST.keys():
+            lottitle = request.POST['lottitle'].strip()
+        if 'artistname' in request.POST.keys():
+            artistname = request.POST['artistname'].strip()
+        if 'selauctionhousename' in request.POST.keys():
+            auctionhouseid = request.POST['selauctionhousename'].strip()
+        if 'selauctionname' in request.POST.keys():
+            auctionid = request.POST['selauctionname'].strip()
+        if 'artistbirth' in request.POST.keys():
+            artistbirth = request.POST['artistbirth'].strip()
+        if 'artistdeath' in request.POST.keys():
+            artistdeath = request.POST['artistdeath'].strip()
+        if 'artistnationality' in request.POST.keys():
+            artistnationality = request.POST['artistnationality']
+        if 'medium' in request.POST.keys():
+            medium = request.POST['medium']
+        if 'size' in request.POST.keys():
+            size = request.POST['size']
+        if 'lotdescription' in request.POST.keys():
+            lotdescription = request.POST['lotdescription']
+        #if 'signature' in request.POST.keys():
+        #    signature = request.POST['signature']
+        #if 'authenticity' in request.POST.keys():
+        #    authenticity = request.POST['authenticity']
+        if 'estimate' in request.POST.keys():
+            estimate = request.POST['estimate']
+        if 'soldprice' in request.POST.keys():
+            soldprice = request.POST['soldprice']
+        if 'provenance' in request.POST.keys():
+            provenance = request.POST['provenance']
+        if 'literature' in request.POST.keys():
+            literature = request.POST['literature']
+        if 'exhibitions' in request.POST.keys():
+            exhibitions = request.POST['exhibitions']
+        if 'loturl' in request.POST.keys():
+            loturl = request.POST['loturl']
+        if 'sellotpriority' in request.POST.keys():
+            priority = request.POST['sellotpriority']
+        if 'sellotcategory' in request.POST.keys():
+            lotcat = request.POST['sellotcategory']
+        if 'sellotcurrency' in request.POST.keys():
+            lotcurrency = request.POST['sellotcurrency']
+        if 'lid' in request.POST.keys():
+            lid = request.POST['lid']
+        if lottitle == "" or artistname == "":
+            message = "Lot title or Artist's name is empty. Can't create Lot."
+            return HttpResponse(message)
+        auchouseobj = None
+        try:
+            auchouseobj = AuctionHouse.objects.get(id=auctionhouseid)
+        except:
+            message = "Could not find auction house with Id %s"%auctionhouseid
+            return HttpResponse(message)
+        auctionobj = None
+        try:
+            auctionobj = Auction.objects.get(id=auctionid)
+        except:
+            message = "Could not find auction with Id %s"%auctionid
+            return HttpResponse(message)
+        lotobj = None
+        try:
+            lotobj = Lot.objects.get(id=int(lid))
+        except:
+            return HttpResponse("Could not find lot object identified by Id %s"%lid)
+        lotobj.lottitle = lottitle
+        lotobj.auction = auctionobj
+        lotobj.artistname = artistname.title()
+        lotobj.artistbirth = artistbirth
+        lotobj.artistdeath = artistdeath
+        lotobj.artistnationality = artistnationality
+        lotobj.size = size
+        lotobj.estimate = estimate
+        lotobj.soldprice = soldprice
+        lotobj.medium = medium
+        #lotobj.signature = signature
+        #lotobj.letterofauthenticity = authenticity
+        lotobj.lotdescription = lotdescription
+        lotobj.provenance = provenance
+        lotobj.literature = literature
+        lotobj.exhibited = exhibitions
+        lotobj.loturl = loturl
+        lotobj.priority = priority
+        lotobj.category = lotcat
+        lotobj.currency = lotcurrency
+        #lotobj.creationdate = ""
+        artistimage = ""
+        auctionid = str(auctionobj.id)
+        if lotobj.priority == "":
+            lotobj.priority = 5
+        # Check if the given artist exists in the Artist model
+        artistobj = None
+        try:
+            artistqset = Artist.objects.filter(artistname=artistname.title())
+            if artistqset.__len__() > 0:
+                artistobj = artistqset[0]
+            else:
+                artistobj = Artist()
+        except:
+            artistobj = Artist()
+        artistobj.artistname = artistname.title()
+        artistobj.birthdate = artistbirth
+        artistobj.deathdate = artistdeath
+        artistobj.nationality = artistnationality
+        artistobj.about = ""
+        artistobj.event = None # Don't have gallery event associated with this. TO DO: Implement a method to cast an Auction object to a Event (gallery event) object.
+        artistobj.priority = priority # Priority of this artist will be the same as the priority of the artwork.
+        imgfile1 = request.FILES.get("lotimage1")
+        if imgfile1:
+            mimetype = imgfile1.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'lotimage1' in request.FILES.keys():
+                image1name = request.FILES['lotimage1'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + auctionid + os.path.sep + lid
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            if 'lotimage1' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['lotimage1'], imagelocation, image1name)
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                lotobj.lotimage1 = imagepath
+                artistimage = lotobj.lotimage1
+        imgfile2 = request.FILES.get("lotimage2")
+        if imgfile2:
+            mimetype = imgfile2.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'lotimage2' in request.FILES.keys():
+                image2name = request.FILES['lotimage2'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + auctionid + os.path.sep + lid
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            if 'lotimage2' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['lotimage2'], imagelocation, image2name)
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                lotobj.lotimage2 = imagepath
+        imgfile3 = request.FILES.get("lotimage3")
+        if imgfile3:
+            mimetype = imgfile3.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'lotimage3' in request.FILES.keys():
+                image3name = request.FILES['lotimage3'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + auctionid + os.path.sep + lid
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            if 'lotimage3' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['lotimage3'], imagelocation, image3name)
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                lotobj.lotimage3 = imagepath
+        imgfile4 = request.FILES.get("lotimage4")
+        if imgfile4:
+            mimetype = imgfile4.content_type
+            if mimetype != "image/gif" and mimetype != "image/jpeg" and mimetype != "image/png":
+                return None
+            if 'lotimage4' in request.FILES.keys():
+                image4name = request.FILES['lotimage4'].name
+            imagelocation = settings.AUCTION_FILE_DIR + os.path.sep + auctionid + os.path.sep + lid
+            if not os.path.exists(imagelocation):
+                mkdir_p(imagelocation)
+            if 'lotimage4' in request.FILES.keys():
+                uploadstatus = handleuploadedfile(request.FILES['lotimage4'], imagelocation, image4name)
+                resizedimagefile = resizeimage(uploadstatus[0], imagelocation, 640, 480) # Max width is 640 px.
+                imagepathparts = resizedimagefile.split(settings.MEDIA_URL)
+                if imagepathparts.__len__() > 0:
+                    imagepath = settings.MEDIA_URL + imagepathparts[1]
+                else:
+                    imagepath = resizedimagefile
+                lotobj.lotimage4 = imagepath
+        artistobj.squareimage = artistimage
+        artistobj.largeimage = artistimage
+        try:
+            lotobj.save()
+            artistobj.save()
+            message = "Successfully saved changes to lot named '%s'"%lottitle
+        except:
+            message = "Error: Could not save lot object - %s"%sys.exc_info()[1].__str__()
+        return HttpResponse(message)
+    else:
+        return HttpResponse("Invalid method of call")
+    
 
 
 
