@@ -24,7 +24,59 @@
 
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
-    <style>
+    
+
+    <style type="text/css">
+    .button
+    {
+      width: 150px;
+      padding: 10px;
+      background-color: #FF8C00;
+      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
+      font-weight:bold;
+      text-decoration:none;
+    }
+    #cover{
+      position:fixed;
+      top:0;
+      left:0;
+      background:rgba(0,0,0,0.6);
+      z-index:5;
+      width:100%;
+      height:100%;
+      display:none;
+    }
+    #adminScreen
+    {
+      height:680px;
+      width:640px;
+      margin:0 auto;
+      position:relative;
+      z-index:10;
+      display:none;
+      background: url(login.png) no-repeat;
+      border:5px solid #cccccc;
+      border-radius:10px;
+    }
+    #adminScreen:target, #adminScreen:target + #cover{
+      display:block;
+      opacity:2;
+    }
+    .cancel
+    {
+      display:block;
+      position:absolute;
+      top:3px;
+      right:2px;
+      background:rgb(245,245,245);
+      color:black;
+      height:30px;
+      width:35px;
+      font-size:30px;
+      text-decoration:none;
+      text-align:center;
+      font-weight:bold;
+    }
     </style>
     
     <script src="/static/js/editfromfront.js"></script>
@@ -263,7 +315,7 @@
                                 <h2>{{artistinfo.name}}</h2>
                                 <span>{{artistinfo.nationality}}, {{artistinfo.birthdate}}</span>
 				{% if adminuser == 1 %}
-				  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artistinfo.artistid}}');">Edit</a>
+				  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artistinfo.artistid}}');">Edit</a>
 			      	{% endif %}
                             </div>
                         </div>
@@ -354,7 +406,7 @@
                                                     <p>{{artwork.description}}</p>
                                                 </a>
 						{% if adminuser == 1 %}
-						  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+						  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 					      	{% endif %}
                                             </div>
                                         </div>
@@ -560,7 +612,7 @@
                                                                 <span>{{evdata.eventlocation}} {{evdata.eventperiod}}</span>
                                                             </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
 							    {% if adminuser == 1 %}
-							      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{evdata.evid}}');">Edit</a>
+							      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{evdata.evid}}');">Edit</a>
 						      	    {% endif %}
                                                         </div>
                                                     </div>
@@ -592,7 +644,7 @@
                                                         <p>{{artist.about}}</p>
                                                     </a>
 						    {% if adminuser == 1 %}
-						      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artist.aid}}');">Edit</a>
+						      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artist.aid}}');">Edit</a>
 					      	    {% endif %}
                                                 </div>
                                             </div>
@@ -2041,9 +2093,14 @@
         </div>
     </section>
 
-    <form name='frmedit' id='frmedit'>
-        {% csrf_token %}
-    </form>
+      <div id="adminScreen">
+	  <a href="#" class="cancel">×</a>
+	  <form name='frmedit' id='frmedit'>
+	    {% csrf_token %}
+          </form>
+      </div>
+      <div id="cover" >
+      </div>
 
     <!-- ***** Footer Start ***** -->
     <footer>

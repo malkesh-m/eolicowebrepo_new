@@ -541,6 +541,59 @@
       }
     </script>
 
+    <style type="text/css">
+    .button
+    {
+      width: 150px;
+      padding: 10px;
+      background-color: #FF8C00;
+      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
+      font-weight:bold;
+      text-decoration:none;
+    }
+    #cover{
+      position:fixed;
+      top:0;
+      left:0;
+      background:rgba(0,0,0,0.6);
+      z-index:5;
+      width:100%;
+      height:100%;
+      display:none;
+    }
+    #adminScreen
+    {
+      height:680px;
+      width:640px;
+      margin:0 auto;
+      position:relative;
+      z-index:10;
+      display:none;
+      background: url(login.png) no-repeat;
+      border:5px solid #cccccc;
+      border-radius:10px;
+    }
+    #adminScreen:target, #adminScreen:target + #cover{
+      display:block;
+      opacity:2;
+    }
+    .cancel
+    {
+      display:block;
+      position:absolute;
+      top:3px;
+      right:2px;
+      background:rgb(245,245,245);
+      color:black;
+      height:30px;
+      width:35px;
+      font-size:30px;
+      text-decoration:none;
+      text-align:center;
+      font-weight:bold;
+    }
+    </style>
+
     <script src="/static/js/editfromfront.js"></script>
 
     </head>
@@ -617,7 +670,7 @@
 							<p>{{latestevent.eventperiod}}</p>
 							<!-- <a href="#" class="btn btn-slider">Follow</a> -->
 							{% if adminuser == 1 %}
-							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
+							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
 							{% endif %}
 						</div>
                     </div>
@@ -664,7 +717,7 @@
 						<p>{{latestevent.eventinfo}}</p>
 						<a href="/museum/eventdetails/?mevid={{latestevent.eventid}}" class="btn btn-slider" >Read More</a>
 						{% if adminuser == 1 %}
-						    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
+						    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
 						{% endif %}
 					</div>
 					<div class="col-md-5">
@@ -701,7 +754,7 @@
 					<span>{{event.eventinfo}}</span>
 					<span>{{event.eventperiod}}</span>
 					{% if adminuser == 1 %}
-					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{event.eventid}}');">Edit</a>
+					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmevent('{{event.eventid}}');">Edit</a>
 					{% endif %}
 				</a>
 		            </div>
@@ -753,7 +806,7 @@
 						<span>{{article.published}}</span>
 					</a>
 					{% if adminuser == 1 %}
-					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmarticle('{{article.articleid}}');">Edit</a>
+					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmarticle('{{article.articleid}}');">Edit</a>
 					{% endif %}			
                                 </div>
                             </div>
@@ -775,7 +828,7 @@
 					<p>{{latestevent.eventinfo}}</p>
 					<!-- <a href="" class="btn btn-slider" >Read More</a> -->
 					{% if adminuser == 1 %}
-					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
+					    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmevent('{{latestevent.eventid}}');">Edit</a>
 					{% endif %}
 				</div>
 				<div class="col-md-5">
@@ -805,7 +858,7 @@
 							<span>{{event.eventperiod}}</span>
 							</a>
 							{% if adminuser == 1 %}
-							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmevent('{{event.eventid}}');">Edit</a>
+							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmevent('{{event.eventid}}');">Edit</a>
 							{% endif %}
 						</div>
 					</div>
@@ -1237,7 +1290,7 @@
 				<p>{{work.description}}</p>
 				</a>
 				{% if adminuser == 1 %}
-				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
 				{% endif %}
 				</div>
 				{% endfor %}
@@ -1256,7 +1309,7 @@
 				<p>{{work.description}}</p>
 				</a>
 				{% if adminuser == 1 %}
-				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
 				{% endif %}
 				</div>
 				{% endfor %}
@@ -1275,7 +1328,7 @@
 				<p>{{work.description}}</p>
 				</a>
 				{% if adminuser == 1 %}
-				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
 				{% endif %}
 				</div>
 				{% endfor %}
@@ -1294,7 +1347,7 @@
 				<p>{{work.description}}</p>
 				</a>
 				{% if adminuser == 1 %}
-				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
+				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmpiece('{{work.pid}}');">Edit</a>
 				{% endif %}
 				</div>
 				{% endfor %}
@@ -1326,7 +1379,7 @@
 							<span>{{art.writername}}</span>
 							<span>{{art.published}}</span>
 							{% if adminuser == 1 %}
-							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editmarticle('{{art.articleid}}');">Edit</a>
+							    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmarticle('{{art.articleid}}');">Edit</a>
 							{% endif %}
 						</div>
 					</div>
@@ -1343,9 +1396,14 @@
 		</div>
 	</section>
 
-    <form name='frmedit' id='frmedit'>
-     {% csrf_token %}
-    </form>
+      <div id="adminScreen">
+	  <a href="#" class="cancel">×</a>
+	  <form name='frmedit' id='frmedit'>
+	    {% csrf_token %}
+          </form>
+      </div>
+      <div id="cover" >
+      </div>
 
     <!-- ***** Footer Start ***** -->
     <footer>

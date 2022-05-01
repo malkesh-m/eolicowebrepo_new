@@ -531,6 +531,59 @@
       }
     </script>
 
+    <style type="text/css">
+    .button
+    {
+      width: 150px;
+      padding: 10px;
+      background-color: #FF8C00;
+      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
+      font-weight:bold;
+      text-decoration:none;
+    }
+    #cover{
+      position:fixed;
+      top:0;
+      left:0;
+      background:rgba(0,0,0,0.6);
+      z-index:5;
+      width:100%;
+      height:100%;
+      display:none;
+    }
+    #adminScreen
+    {
+      height:680px;
+      width:640px;
+      margin:0 auto;
+      position:relative;
+      z-index:10;
+      display:none;
+      background: url(login.png) no-repeat;
+      border:5px solid #cccccc;
+      border-radius:10px;
+    }
+    #adminScreen:target, #adminScreen:target + #cover{
+      display:block;
+      opacity:2;
+    }
+    .cancel
+    {
+      display:block;
+      position:absolute;
+      top:3px;
+      right:2px;
+      background:rgb(245,245,245);
+      color:black;
+      height:30px;
+      width:35px;
+      font-size:30px;
+      text-decoration:none;
+      text-align:center;
+      font-weight:bold;
+    }
+    </style>
+
     <script src="/static/js/editfromfront.js"></script>
 
     </head>
@@ -607,7 +660,7 @@
 							<p>{{eventinfo.eventperiod}}</p>
 							<p>{{eventinfo.eventlocation}}</p>
 							{% if adminuser == 1 %}
-			    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
+			    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
 							{% endif %}
 							<!-- <a href="{{gallery.galleryurl}}" class="btn btn-slider">Follow</a> -->
 						</div>
@@ -660,7 +713,7 @@
 						<img src="{{eventinfo.eventimage}}" class="img-fluid"/>
 					</div>
 					{% if adminuser == 1 %}
-	    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
+	    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
 					{% endif %}
 				</div>
 				<div class="row gal-tab-row">
@@ -696,7 +749,7 @@
 										<span>{{evobj.eventperiod}}</span>
 									</a>
 									{% if adminuser == 1 %}
-					    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a>
+					    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a>
 									{% endif %}
                                 </div>
                             </div>
@@ -732,7 +785,7 @@
 							{% for artist in artists %}
 								<p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
 								{% if adminuser == 1 %}
-				    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a>
+				    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a>
 								{% endif %}
 							{% endfor %}
 							{% if artists|length == 0%}
@@ -754,7 +807,7 @@
 					<p>{{eventinfo.eventinfo}}</p>
 					<!-- <a href="" class="btn btn-slider" >Read More</a> -->
 					{% if adminuser == 1 %}
-	    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
+	    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
 					{% endif %}
 				</div>
 				<div class="col-md-5">
@@ -783,7 +836,7 @@
 							<span>{{evobj.eventinfo}}</span>
 							<span>{{evobj.eventperiod}}</span>
 							{% if adminuser == 1 %}
-			    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a>
+			    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a>
 							{% endif %}
 						</div>
 					</div>
@@ -1308,7 +1361,7 @@
 				<p>{{artwork.description}}</p>
 				</a>
 				{% if adminuser == 1 %}
-    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 				{% endif %}
 				</div>
 				{% endfor %}
@@ -1326,7 +1379,7 @@
 				<p>{{artwork.description}}</p>
 				</a>
 				{% if adminuser == 1 %}
-    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 				{% endif %}
 				</div>
 				{% endfor %}
@@ -1344,7 +1397,7 @@
 				<p>{{artwork.description}}</p>
 				</a>
 				{% if adminuser == 1 %}
-    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 				{% endif %}
 				</div>
 				{% endfor %}
@@ -1362,7 +1415,7 @@
 				<p>{{artwork.description}}</p>
 				</a>
 				{% if adminuser == 1 %}
-    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 				{% endif %}
 				</div>
 				{% endfor %}
@@ -1386,7 +1439,7 @@
 							{% for artist in allartists %}
 								<p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
 								{% if adminuser == 1 %}
-				    				    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a>
+				    				    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a>
 								{% endif %}
 							{% endfor %}
 							{% if allartists|length == 0%}
@@ -1406,9 +1459,14 @@
 		</div>
 	</section>
 
-    <form name='frmedit' id='frmedit'>
-	{% csrf_token %}
-    </form>
+      <div id="adminScreen">
+	  <a href="#" class="cancel">×</a>
+	  <form name='frmedit' id='frmedit'>
+	    {% csrf_token %}
+          </form>
+      </div>
+      <div id="cover" >
+      </div>
 
     <!-- ***** Footer Start ***** -->
     <footer>

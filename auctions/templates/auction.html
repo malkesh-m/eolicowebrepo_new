@@ -139,6 +139,59 @@ https://templatemo.com/tm-571-hexashop
 	}
     </script>
 
+    <style type="text/css">
+    .button
+    {
+      width: 150px;
+      padding: 10px;
+      background-color: #FF8C00;
+      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
+      font-weight:bold;
+      text-decoration:none;
+    }
+    #cover{
+      position:fixed;
+      top:0;
+      left:0;
+      background:rgba(0,0,0,0.6);
+      z-index:5;
+      width:100%;
+      height:100%;
+      display:none;
+    }
+    #adminScreen
+    {
+      height:680px;
+      width:640px;
+      margin:0 auto;
+      position:relative;
+      z-index:10;
+      display:none;
+      background: url(login.png) no-repeat;
+      border:5px solid #cccccc;
+      border-radius:10px;
+    }
+    #adminScreen:target, #adminScreen:target + #cover{
+      display:block;
+      opacity:2;
+    }
+    .cancel
+    {
+      display:block;
+      position:absolute;
+      top:3px;
+      right:2px;
+      background:rgb(245,245,245);
+      color:black;
+      height:30px;
+      width:35px;
+      font-size:30px;
+      text-decoration:none;
+      text-align:center;
+      font-weight:bold;
+    }
+    </style>
+
     <script src="/static/js/editfromfront.js"></script>
 
     </head>
@@ -217,7 +270,7 @@ https://templatemo.com/tm-571-hexashop
 			<p>{{d.text}}</p>
 			</a>
 			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
 			{% endif %}
 		</div>
               </div>
@@ -233,7 +286,7 @@ https://templatemo.com/tm-571-hexashop
 			<p>{{d.text}}</p>
 			</a>
 			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
 			{% endif %}
 		</div>
               </div>
@@ -249,7 +302,7 @@ https://templatemo.com/tm-571-hexashop
 			<p>{{d.text}}</p>
 			</a>
 			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
 			{% endif %}
 		</div>
               </div>
@@ -265,7 +318,7 @@ https://templatemo.com/tm-571-hexashop
 			<p>{{d.text}}</p>
 			</a>
 			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
+			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
 			{% endif %}
 		</div>
               </div>
@@ -361,7 +414,7 @@ https://templatemo.com/tm-571-hexashop
 				<!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
 			</a>
 			{% if adminuser == 1 %}
-			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
 			{% endif %}
                     </div>
                 </div>
@@ -417,9 +470,14 @@ https://templatemo.com/tm-571-hexashop
     </div>
     -->
 
-    <form name='frmedit' id='frmedit'>
-      {% csrf_token %}
-    </form>
+    <div id="adminScreen">
+	  <a href="#" class="cancel">×</a>
+	  <form name='frmedit' id='frmedit'>
+	    {% csrf_token %}
+          </form>
+      </div>
+      <div id="cover" >
+      </div>
     
     <!-- ***** Footer Start ***** -->
     <footer>
