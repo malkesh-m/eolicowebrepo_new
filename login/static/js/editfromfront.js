@@ -80,7 +80,7 @@ function t_editcarousel(entity, entity_id){
 		gform += "<option value=''>Select Priority</option><option value='1'>1 </option><option value='2'>2 </option><option value='3'>3 </option><option value='4'>4 </option><option value='5' selected>5 </option>";
 	    }
     	    gform += "</select></div>";
-	    gform += "<div class='card-title'><input type='button' name='addnewcarousel' class='form-control input-default' value='Save Carousel' onclick='javascript:t_savecarousel();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewcarousel' class='form-control input-default' value='Save Carousel' onclick='javascript:t_savecarousel(\"" + entity + "\", " + entity_id + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='crstatus'></div>";
 	    gform += "<input type='hidden' name='carid' value='" + entity_id + "'>";
 	    carform.innerHTML = gform;
@@ -93,10 +93,10 @@ function t_editcarousel(entity, entity_id){
 	  xmlhttp.send();
 }
 
-function t_savecarousel(entity, entity_id){
+function t_savecarousel(entity, entity_id, csrf){
     //alert(entity_id);
     //alert(document.getElementById('frmedit').csrfmiddlewaretoken.value);
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  carouselnm = document.frmedit.carouselitemname.value;
 	  carouselval = document.frmedit.carouselitemtext.value;
 	  carouseldt = document.frmedit.seldatatype.options[document.frmedit.seldatatype.options.selectedIndex].value;
@@ -183,7 +183,7 @@ function t_editgallery(gid){
 	    }
 	    gform += "</select></div>";
 	    gform += "<div class='card-title'><h4>Gallery Cover Image</h4></div><div class='form-group'><input type='file' name='gallerycoverimage' id='gallerycoverimage' class='form-control input-default'><a href='" + gallerydict['coverimage'] + "'><img src='" + gallerydict['coverimage'] + "'></a></div>";
-	    gform += "<div class='card-title'><input type='button' name='addnewgallery' class='form-control input-default' value='Save Gallery' onclick='javascript:savegallery();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewgallery' class='form-control input-default' value='Save Gallery' onclick='javascript:t_savegallery(" + gallerydict['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='galstatus'></div>";
 	    gform += "<input type='hidden' name='gid' value='" + gallerydict['id'] + "'>";
 	    galform.innerHTML = gform;
@@ -197,8 +197,8 @@ function t_editgallery(gid){
 
 }
 
-function t_savegallery(gid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_savegallery(gid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  gallerynm = document.frmedit.galleryname.value;
 	  galleryloc = document.frmedit.gallerylocation.value;
 	  gallerydesc = document.frmedit.gallerydescription.value;
@@ -327,7 +327,7 @@ function t_editgevent(gevid){
 	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='geventstartdate' value='" + geventsdict['eventstartdate'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Event End Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='geventenddate' value='" + geventsdict['eventenddate'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Event Cover Image</h4></div><div class='form-group'><input type='file' name='geventcoverimage' id='geventcoverimage' class='form-control input-default'><a href='" + geventsdict['coverimage'] + "'><img src='" + geventsdict['coverimage'] + "'></a></div>";
-	    gform += "<div class='card-title'><input type='button' name='editgevent' class='form-control input-default' value='Save Event' onclick='javascript:savegevent();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='editgevent' class='form-control input-default' value='Save Event' onclick='javascript:t_savegevent(" + geventsdict['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='gevstatus'></div>";
 	    gform += "<input type='hidden' name='gevid' value='" + geventsdict['id'] + "'>";
 	    gevform.innerHTML = gform;
@@ -340,8 +340,8 @@ function t_editgevent(gevid){
 	  xmlhttp.send();
 }
 
-function t_savegevent(gevid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_savegevent(gevid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  eventnm = document.frmedit.geventname.value;
 	  eventloc = document.frmedit.geventlocation.value;
 	  galleryid = document.frmedit.selgalleryname.options[document.frmedit.selgalleryname.options.selectedIndex].value;
@@ -463,7 +463,7 @@ function t_editartist(artistid){
 		}
 	    }
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><input type='button' name='addnewartist' class='form-control input-default' value='Save Artist' onclick='javascript:saveartist();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewartist' class='form-control input-default' value='Save Artist' onclick='javascript:t_saveartist(" + artistsdict['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='artiststatus'></div>";
 	    gform += "<input type='hidden' name='aid' value='" + artistsdict['id'] + "'>";
 	    artform.innerHTML = gform;
@@ -476,8 +476,8 @@ function t_editartist(artistid){
 	  xmlhttp.send();
 }
 
-function t_saveartist(aid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_saveartist(aid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  artistnm = document.frmedit.artistname.value;
 	  aboutartist = document.frmedit.aboutartist.value;
 	  artistnationality = document.frmedit.artistnationality.value;
@@ -602,7 +602,7 @@ function t_editartwork(awid){
 	    }
 	    gform += "</select></div>";
 
-	    gform += "<div class='card-title'><input type='button' name='editartwork' class='form-control input-default' value='Save Artwork' onclick='javascript:saveartwork();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='editartwork' class='form-control input-default' value='Save Artwork' onclick='javascript:t_saveartwork(" + artwork['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='artworkstatus'></div>";
 	    gform += "<input type='hidden' name='awid' value='" + artwork['id'] + "'>";
 	    awform.innerHTML = gform;
@@ -615,8 +615,8 @@ function t_editartwork(awid){
 	  xmlhttp.send();
 }
 
-function t_saveartwork(awid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_saveartwork(awid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  artworknm = document.frmedit.artworkname.value;
 	  selgalleryname = document.getElementById('selgalleryname').value;
 	  selgeventname = document.getElementById('selgeventname').value;
@@ -737,7 +737,7 @@ function t_editmuseum(mid){
 	    }
 	    gform += "</select></div>";
 	    gform += "<div class='card-title'><h4>Museum Cover Image</h4></div><div class='form-group'><input type='file' name='museumcoverimage' id='museumcoverimage' class='form-control input-default'><a href='" + museumdict['coverimage'] + "'><img src='" + museumdict['coverimage'] + "'></a></div>";
-	    gform += "<div class='card-title'><input type='button' name='addnewmuseum' class='form-control input-default' value='Save Museum' onclick='javascript:savemuseum();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewmuseum' class='form-control input-default' value='Save Museum' onclick='javascript:t_savemuseum(" + museumdict['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='musstatus'></div>";
 	    gform += "<input type='hidden' name='mid' value='" + museumdict['id'] + "'>";
 	    musform.innerHTML = gform;
@@ -750,8 +750,8 @@ function t_editmuseum(mid){
 	  xmlhttp.send();
 }
 
-function t_savemuseum(mid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_savemuseum(mid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  museumnm = document.frmedit.museumname.value;
 	  museumloc = document.frmedit.museumlocation.value;
 	  museumdesc = document.frmedit.museumdescription.value;
@@ -878,7 +878,7 @@ function t_editmevent(mevid){
 	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventstartdate' value='" + meventsdict['eventstartdate'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Event End Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventenddate' value='" + meventsdict['eventenddate'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Event Cover Image</h4></div><div class='form-group'><input type='file' name='meventcoverimage' id='meventcoverimage' class='form-control input-default'><a href='" + meventsdict['coverimage'] + "'><img src='" + meventsdict['coverimage'] + "'></a></div>";
-	    gform += "<div class='card-title'><input type='button' name='editmevent' class='form-control input-default' value='Save Event' onclick='javascript:savemevent();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='editmevent' class='form-control input-default' value='Save Event' onclick='javascript:t_savemevent(" + meventsdict['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='mevstatus'></div>";
 	    gform += "<input type='hidden' name='mevid' value='" + meventsdict['id'] + "'>";
 	    mevform.innerHTML = gform;
@@ -891,8 +891,8 @@ function t_editmevent(mevid){
 	  xmlhttp.send();
 }
 
-function t_savemevent(mevid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_savemevent(mevid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  eventnm = document.frmedit.meventname.value;
 	  eventloc = document.frmedit.meventlocation.value;
 	  museumid = document.frmedit.selmuseumname.options[document.frmedit.selmuseumname.options.selectedIndex].value;
@@ -1026,7 +1026,7 @@ function t_editmpiece(awid){
 	    }
 	    gform += "</select></div>";
 
-	    gform += "<div class='card-title'><input type='button' name='editartwork' class='form-control input-default' value='Save Artwork' onclick='javascript:saveartwork();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='editartwork' class='form-control input-default' value='Save Artwork' onclick='javascript:t_savempiece(" + artwork['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='artworkstatus'></div>";
 	    gform += "<input type='hidden' name='awid' value='" + artwork['id'] + "'>";
 	    awform.innerHTML = gform;
@@ -1039,8 +1039,8 @@ function t_editmpiece(awid){
 	  xmlhttp.send();
 }
 
-function t_savempiece(awid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_savempiece(awid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  artworknm = document.frmedit.artworkname.value;
 	  selmuseumname = document.getElementById('selmuseumname').value;
 	  selmeventname = document.getElementById('selmeventname').value;
@@ -1161,7 +1161,7 @@ function t_editauctionhouse(auchouseid){
 	    }
 	    gform += "</select></div>";
 	    gform += "<div class='card-title'><h4>Auction House Cover Image</h4></div><div class='form-group'><input type='file' name='auctionhousecoverimage' id='auctionhousecoverimage' class='form-control input-default'><a href='" + auctionhousedict['auctionhousecoverimage'] + "'><img src='" + auctionhousedict['auctionhousecoverimage'] + "'></a></div>";
-	    gform += "<div class='card-title'><input type='button' name='editauctionhouse' class='form-control input-default' value='Save Auction House' onclick='javascript:saveauctionhouse();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='editauctionhouse' class='form-control input-default' value='Save Auction House' onclick='javascript:t_saveauctionhouse(" + auctionhousedict['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='aucstatus'></div>";
 	    gform += "<input type='hidden' name='ahid' value='" + auctionhousedict['id'] + "'>";
 	    auchouseform.innerHTML = gform;
@@ -1174,8 +1174,8 @@ function t_editauctionhouse(auchouseid){
 	  xmlhttp.send();
 }
 
-function t_saveauctionhouse(ahid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_saveauctionhouse(ahid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  auctionhousenm = document.frmedit.auctionhousename.value;
 	  auctionhouseloc = document.frmedit.auctionhouselocation.value;
 	  auctionhousedesc = document.frmedit.auctionhousebrief.value;
@@ -1279,7 +1279,7 @@ function t_editauction(aucid){
 	    gform += "</select></div>";
 	    gform += "<div class='card-title'><h4>Auction Date</h4></div><div class='form-group'><input type='date' name='auctiondate' class='form-control input-default' value='" + auctiondict['auctiondate'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Auction Cover Image</h4></div><div class='form-group'><input type='file' name='auctioncoverimage' id='auctioncoverimage' class='form-control input-default'><a href='" + auctiondict['coverimage'] + "'><img src='" + auctiondict['coverimage'] + "'></a></div>";
-	    gform += "<div class='card-title'><input type='button' name='editauction' class='form-control input-default' value='Save Auction' onclick='javascript:saveauction();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='editauction' class='form-control input-default' value='Save Auction' onclick='javascript:t_saveauction(" + auctiondict['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='aucstatus'></div>";
 	    gform += "<input type='hidden' name='aucid' value='" + auctiondict['id'] + "'>";
 	    aucform.innerHTML = gform;
@@ -1292,8 +1292,8 @@ function t_editauction(aucid){
 	  xmlhttp.send();
 }
 
-function t_saveauction(aucid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_saveauction(aucid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  auctionnm = document.frmedit.auctionname.value;
 	  auctionloc = document.frmedit.auctionlocation.value;
 	  auchouseid = document.frmedit.selauctionhousename.options[document.frmedit.selauctionhousename.options.selectedIndex].value;
@@ -1441,7 +1441,7 @@ function t_editlot(lid){
 	    }
 	    gform += "</select></div>";
 
-	    gform += "<div class='card-title'><input type='button' name='editlot' class='form-control input-default' value='Save Lot' onclick='javascript:savelot();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='editlot' class='form-control input-default' value='Save Lot' onclick='javascript:t_savelot(" + lot['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='lotstatus'></div>";
 	    gform += "<input type='hidden' name='lid' value='" + lot['id'] + "'>";
 	    lotform.innerHTML = gform;
@@ -1454,8 +1454,9 @@ function t_editlot(lid){
 	  xmlhttp.send();
 }
 
-function t_savelot(lid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_savelot(lid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
+	//alert(csrf);
 	  lotnm = document.frmedit.lottitle.value;
 	  artistnm = document.frmedit.artistname.value;
 	  auchouseid = document.frmedit.selauctionhousename.options[document.frmedit.selauctionhousename.options.selectedIndex].value;
@@ -1571,7 +1572,7 @@ function t_editwebconfig(wcid){
 	    gform += "<div class='card-title'><h4>Page Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Page Name' name='webconfigpagename' value='" + wcdict['webconfigpagename'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Config Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='webconfigdescription'>" + wcdict['webconfigdescription'] + "</textarea></div>";
 	    
-	    gform += "<div class='card-title'><input type='button' name='addnewwebconfig' class='form-control input-default' value='Save Config Param' onclick='javascript:savewebconfig();'></div>";
+	    gform += "<div class='card-title'><input type='button' name='addnewwebconfig' class='form-control input-default' value='Save Config Param' onclick='javascript:t_savewebconfig(" + wcdict['id'] + ", \"" + csrf + "\");'></div>";
 	    gform += "<div class='card-title' id='wcstatus'></div>";
 	    gform += "<input type='hidden' name='wcid' value='" + wcdict['id'] + "'>";
 	    wcform.innerHTML = gform;
@@ -1584,8 +1585,8 @@ function t_editwebconfig(wcid){
 	  xmlhttp.send();
 }
 
-function t_savewebconfig(wcid){
-	csrf = document.frmedit.csrfmiddlewaretoken.value;
+function t_savewebconfig(wcid, csrf){
+	//csrf = document.frmedit.csrfmiddlewaretoken.value;
 	  webconfignm = document.frmedit.webconfigname.value;
 	  webconfigval = document.frmedit.webconfigvalue.value;
 	  webconfigpth = document.frmedit.webconfigpath.value;
