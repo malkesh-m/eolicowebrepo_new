@@ -196,8 +196,12 @@
 		gform += "<option value='past'>Past </option>";
 	    }
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='geventstartdate' value='" + geventsdict['eventstartdate'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Event End Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='geventenddate' value='" + geventsdict['eventenddate'] + "'></div>";
+            startdateparts = geventsdict['eventstartdate'].split("-");
+            const startdate = `${startdateparts[0]}-${startdateparts[1]}-${startdateparts[2]}`;
+	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='geventstartdate' value=" + startdate + "></div>";
+	    enddateparts = geventsdict['eventenddate'].split("-");
+            const enddate = `${enddateparts[0]}-${enddateparts[1]}-${enddateparts[2]}`;
+	    gform += "<div class='card-title'><h4>Event End Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='geventenddate' value=" + enddate + "></div>";
 	    gform += "<div class='card-title'><h4>Event Cover Image</h4></div><div class='form-group'><input type='file' name='geventcoverimage' id='geventcoverimage' class='form-control input-default'><a href='" + geventsdict['coverimage'] + "'><img src='" + geventsdict['coverimage'] + "'></a></div>";
 	    gform += "<div class='card-title'><input type='button' name='editgevent' class='form-control input-default' value='Save Event' onclick='javascript:savegevent();'></div>";
 	    gform += "<div class='card-title' id='gevstatus'></div>";

@@ -22,6 +22,12 @@ from login.models import User, Session, WebConfig, Carousel
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 
+# Caching related imports and variables
+from django.views.decorators.cache import cache_page
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.conf import settings
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
 
 def getcarouselinfo():
     entrieslist = []
@@ -39,6 +45,7 @@ def getcarouselinfo():
     return entrieslist
 
 
+#@cache_page(CACHE_TTL)
 def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
@@ -135,10 +142,12 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+#@cache_page(CACHE_TTL)
 def showlogin(request):
     return HttpResponse("")
 
 
+#@cache_page(CACHE_TTL)
 def about(request):
     if request.method == 'GET':
         wcqset = WebConfig.objects.filter(paramname="About")
@@ -162,6 +171,7 @@ def about(request):
         return HttpResponse("Incorrect request method")
 
 
+#@cache_page(CACHE_TTL)
 def contactus(request):
     if request.method == 'GET':
         wcqset = WebConfig.objects.filter(paramname="ContactUs")

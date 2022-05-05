@@ -21,8 +21,14 @@ from login.models import User, Session, WebConfig, Carousel
 from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 
+# Caching related imports and variables
+from django.views.decorators.cache import cache_page
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.conf import settings
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
+#@cache_page(CACHE_TTL)
 def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
@@ -139,6 +145,7 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+#@cache_page(CACHE_TTL)
 def details(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
@@ -245,7 +252,7 @@ def details(request):
     return HttpResponse(template.render(context, request))
 
 
-
+#@cache_page(CACHE_TTL)
 def follow(request):
     return HttpResponse("")
 

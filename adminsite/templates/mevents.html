@@ -196,8 +196,12 @@
 		gform += "<option value='past'>Past </option>";
 	    }
 	    gform += "</select></div>";
-	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventstartdate' value='" + meventsdict['eventstartdate'] + "'></div>";
-	    gform += "<div class='card-title'><h4>Event End Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventenddate' value='" + meventsdict['eventenddate'] + "'></div>";
+	    startdateparts = meventsdict['eventstartdate'].split("-");
+            const startdate = `${startdateparts[0]}-${startdateparts[1]}-${startdateparts[2]}`;
+	    gform += "<div class='card-title'><h4>Event Start Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventstartdate' value=" + startdate + "></div>";
+	    enddateparts = meventsdict['eventenddate'].split("-");
+            const enddate = `${enddateparts[0]}-${enddateparts[1]}-${enddateparts[2]}`;
+	    gform += "<div class='card-title'><h4>Event End Date</h4></div><div class='form-group'><input type='date' class='form-control input-default ' placeholder='' name='meventenddate' value=" + enddate + "></div>";
 	    gform += "<div class='card-title'><h4>Event Cover Image</h4></div><div class='form-group'><input type='file' name='meventcoverimage' id='meventcoverimage' class='form-control input-default'><a href='" + meventsdict['coverimage'] + "'><img src='" + meventsdict['coverimage'] + "'></a></div>";
 	    gform += "<div class='card-title'><input type='button' name='editmevent' class='form-control input-default' value='Save Event' onclick='javascript:savemevent();'></div>";
 	    gform += "<div class='card-title' id='mevstatus'></div>";
