@@ -204,6 +204,8 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    hdrdiv = document.getElementById("adminheader");
+	    hdrdiv.innerHTML = "<h3>Edit Lot (Artwork)</h3>";
 	    lotform = document.getElementById('frmlot');
 	    lotform.innerHTML = "";
 	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchlots.csrfmiddlewaretoken.value + "'>";
@@ -464,7 +466,7 @@
                         <!-- /# column -->
                         <div class="col-lg-6">
                             <div class="card">
-                                <div class="card-title">
+                                <div class="card-title" id="adminheader">
                                     <h3>Add New Lot (Artwork in Auction)</h3>
                                     
                                 </div>

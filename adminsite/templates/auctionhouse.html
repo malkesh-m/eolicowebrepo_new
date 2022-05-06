@@ -126,6 +126,8 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    hdrdiv = document.getElementById("adminheader");
+	    hdrdiv.innerHTML = "<h3>Edit Auction House</h3>";
 	    auchouseform = document.getElementById('frmauctionhouses');
 	    auchouseform.innerHTML = "";
 	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchauctionhouses.csrfmiddlewaretoken.value + "'>";
@@ -287,7 +289,7 @@
                         <!-- /# column -->
                         <div class="col-lg-6">
                             <div class="card">
-                                <div class="card-title">
+                                <div class="card-title" id="adminheader">
                                     <h3>Add New Auction</h3>
                                 </div>
                                 <div class="card-body">

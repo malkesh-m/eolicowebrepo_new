@@ -167,7 +167,7 @@
 	    carform = document.getElementById('frmcarousel');
 	    carform.innerHTML = "";
 	    gform = "";
-	    pagetitlediv = document.getElementById("pagetitle");
+	    pagetitlediv = document.getElementById("adminheader");
             pagetitlediv.innerHTML = "<h3>Choose Carousel Entry</h3>";
 	    carouseldict = JSON.parse(xmlhttp.responseText);
 	    for (const [entname, entid] of Object.entries(carouseldict)){
@@ -244,7 +244,7 @@
             cardataentry = cardict['carouseldataentry'];
             cardatadict = context['carouseldatadict'];
 	    carpriority = cardict['selpriority'];
-	    pagetitlediv = document.getElementById("pagetitle");
+	    pagetitlediv = document.getElementById("adminheader");
             pagetitlediv.innerHTML = "<h3>Edit Carousel Entry</h3>";
 	    gform += "<div class='card-title'><h4>Entry Title</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Entry Title' name='carouselitemname' value='" + cardict['carouselitemname'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Entry Text</h4></div><div class='form-group'><textarea class='form-control input-default' name='carouselitemtext'>" + cardict['carouselitemtext'] + "</textarea></div>";
@@ -379,7 +379,7 @@
                         <!-- /# column -->
                         <div class="col-lg-6">
                             <div class="card">
-                                <div class="card-title" id="pagetitle">
+                                <div class="card-title" id="adminheader">
                                     <h3>Add New Carousel Entry</h3>
                                     
                                 </div>

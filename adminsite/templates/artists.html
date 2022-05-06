@@ -129,6 +129,8 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    hdrdiv = document.getElementById("adminheader");
+	    hdrdiv.innerHTML = "<h3>Edit Artist</h3>";
 	    artform = document.getElementById('frmartists');
 	    artform.innerHTML = "";
 	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchartists.csrfmiddlewaretoken.value + "'>";
@@ -324,7 +326,7 @@
                         <!-- /# column -->
                         <div class="col-lg-6">
                             <div class="card">
-                                <div class="card-title">
+                                <div class="card-title" id="adminheader">
                                     <h3>Add New Artist</h3>
                                     
                                 </div>

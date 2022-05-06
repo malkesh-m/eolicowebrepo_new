@@ -178,6 +178,8 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    hdrdiv = document.getElementById("adminheader");
+	    hdrdiv.innerHTML = "<h3>Edit Museum</h3>";
 	    musform = document.getElementById('frmmuseum');
 	    musform.innerHTML = "";
 	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchmuseum.csrfmiddlewaretoken.value + "'>";
@@ -187,7 +189,7 @@
 	    gform += "<div class='card-title'><h4>Museum Name</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Name' name='museumname' value='" + museumdict['museumname'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Museum Location</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Location' name='museumlocation' value='" + museumdict['location'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Museum Description</h4></div><div class='form-group'><textarea class='form-control input-default ' name='museumdescription'>" + museumdict['description'] + "</textarea></div>";
-	    gform += "<div class='card-title'><h4>Museum Website</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Website' name='museumwebsite' value='" + museumdict['website'] + "'></div>";
+	    gform += "<div class='card-title'><h4>Museum Website</h4></div><div class='form-group'><input type='text' class='form-control input-default ' placeholder='Museum Website' name='museumwebsite' value='" + museumdict['museumurl'] + "'></div>";
 	    gform += "<div class='card-title'><h4>Museum Type</h4></div><div class='form-group'>";
 	    gform += "<select name='selmuseumtype' id ='selmuseumtype' class='form-control input-default'><option value=''>Select type </option>";
 	    for(var i=0; i < museumtypes.length; i++){
@@ -292,7 +294,7 @@
                         <!-- /# column -->
                         <div class="col-lg-6">
                             <div class="card">
-                                <div class="card-title">
+                                <div class="card-title" id="adminheader">
                                     <h3>Add New Museum</h3>
                                     
                                 </div>

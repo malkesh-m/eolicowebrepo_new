@@ -48,7 +48,7 @@
 	  eventnm = document.frmgevents.geventname.value;
 	  eventloc = document.frmgevents.geventlocation.value;
 	  galleryid = document.frmgevents.selgalleryname.options[document.frmgevents.selgalleryname.options.selectedIndex].value;
-	  eventinfo = document.frmgevents.geventinfo.innerHTML;
+	  eventinfo = document.frmgevents.geventinfo.value;
 	  eventtype = document.frmgevents.selgeventtype.options[document.frmgevents.selgeventtype.options.selectedIndex].value;
 	  eventseltype = document.frmgevents.selgeventtype.options[document.frmgevents.selgeventtype.options.selectedIndex].value;
 	  eventpr = document.frmgevents.selgeventpriority.options[document.frmgevents.selgeventpriority.options.selectedIndex].value;
@@ -133,6 +133,8 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+            hdrdiv = document.getElementById("adminheader");
+  	    hdrdiv.innerHTML = "<h3>Edit Gallery Event</h3>";
 	    gevform = document.getElementById('frmgevents');
 	    gevform.innerHTML = "";
 	    gform = "<input type='hidden' name='csrfmiddlewaretoken' value='" + document.frmsearchgevents.csrfmiddlewaretoken.value + "'>";
@@ -219,7 +221,7 @@
 	  eventnm = document.frmgevents.geventname.value;
 	  eventloc = document.frmgevents.geventlocation.value;
 	  galleryid = document.frmgevents.selgalleryname.options[document.frmgevents.selgalleryname.options.selectedIndex].value;
-	  eventinfo = document.frmgevents.geventinfo.innerHTML;
+	  eventinfo = document.frmgevents.geventinfo.value;
 	  eventtype = document.frmgevents.selgeventtype.options[document.frmgevents.selgeventtype.options.selectedIndex].value;
 	  eventseltype = document.frmgevents.selgeventtype.options[document.frmgevents.selgeventtype.options.selectedIndex].value;
 	  eventpr = document.frmgevents.selgeventpriority.options[document.frmgevents.selgeventpriority.options.selectedIndex].value;
@@ -338,7 +340,7 @@
                         <!-- /# column -->
                         <div class="col-lg-6">
                             <div class="card">
-                                <div class="card-title">
+                                <div class="card-title" id="adminheader">
                                     <h3>Add New Gallery Event</h3>
                                     
                                 </div>
