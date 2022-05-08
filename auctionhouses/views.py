@@ -15,6 +15,7 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.template import loader
 
 import os, sys, re, time, datetime
+import simplejson as json
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -162,6 +163,23 @@ def details(request):
 #@cache_page(CACHE_TTL)
 def follow(request):
     return HttpResponse("")
+
+
+def search(request):
+    """
+    This should return a json response containing a list of dicts.
+    The dict keys would be the attributes of an auctionhouse object.
+    """
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
+    searchkey = None
+    if request.method == 'GET':
+        if 'q' in request.GET.keys():
+            searchkey = str(request.GET['q']).strip()
+    if not searchkey:
+        return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
+    #print(searchkey)
+    return HttpResponse("{}")
 
 
 # Presents information on lots available for sale at the given auction

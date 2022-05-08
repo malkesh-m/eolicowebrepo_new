@@ -18,6 +18,7 @@
  <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
  <link rel="stylesheet" href="/static/css/newcarousel.css">
+ <link rel="stylesheet" href="/static/css/autocomplete.css">
 
 
     <style>
@@ -98,7 +99,6 @@
     <script src="/static/js/editfromfront.js"></script>
 
     <script type='text/javascript'>
-	
 	function dofilter(selectid){
 	  //alert("hi");
 	  const galleriesdict = {
@@ -170,9 +170,39 @@
 	  sectiontag.innerHTML = html;
 	}
     </script>
+
+    <script src="/static/js/autocomplete.js"></script>
+    <script>
+	galleries = [
+		{% for galleryname in filtergalleries %}
+		    "{{galleryname}}",
+		{% endfor %}
+		]; // Should get populated during page load.
+	
+    </script>
+
+    <script>
+	function searchgallery(){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	  }
+	  };
+	  searchkey = document.getElementById('gallerysearch').value;
+	  xmlhttp.open("GET", "/gallery/search/?q=" + searchkey);
+	  xmlhttp.send();
+	}
+    </script>
  </head>
 
- <body>
+ <body onload="javascript:autocomplete(document.getElementById('gallerysearch'), galleries);">
 
  <!-- ***** Preloader Start ***** -->
  <div id="preloader">
@@ -329,7 +359,34 @@ btn-slider" href="#">Explore</a></div></div>
       </div>
     </section>
     <!-- END OF Carousels -->
-
+    <section class="section gal-section" id="">
+      	<div class="container">
+	    <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <!-- <h2>Emerging Art</h2> -->
+                          <span>
+			      <form autocomplete="off" name='frmsearchgalleries' id='frmsearchgalleries' method='POST' action="">
+				  {% csrf_token %}
+				  <div class="autocomplete">
+				    <span class="input-group"><input type="search" class='form-control' name='gallerysearch' id='gallerysearch' maxLength="200" placeholder="Search galleries" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchgallery();'><i class="fa fa-search"></i></button>&nbsp;&nbsp;
+				    <select name="bylocation" placeholder="Select" id='bylocation' class="form-control" onChange="javascript:dofilter('bylocation');" style="width:300px;">
+				    <option value="1">All Locations</option>
+				    {% for gloc, v in gallerylocations.items %}
+				    <option value="{{gloc}}">{{gloc}}</option>
+				    {% endfor %}
+				    </select>
+				    </span>
+				  </div>
+				   
+			      </form>
+                              <!-- <a href="">View All</a> -->
+                          </span>
+                      </div>
+                  </div>
+              </div>
+	</div>
+      </section>
 <!-- ***** Main Banner Area End ***** -->
 
 <section class="section gal-section" id="">
@@ -343,11 +400,11 @@ btn-slider" href="#">Explore</a></div></div>
  </div>
  </div>
  </div>
-<div class="container">
+ <!-- <div class="container">
  <div class="row">
  <div class="col-md-4">
 <div class="row">
-<!-- <div class="demo"> -->
+
  <select name="bylocation" placeholder="Select" id='bylocation' class="form-control" onChange="javascript:dofilter('bylocation');">
 <option value="1">All Locations</option>
 {% for gloc, v in gallerylocations.items %}
@@ -356,7 +413,7 @@ btn-slider" href="#">Explore</a></div></div>
  </select>
 </div>
 </div>
-<!-- 
+
  <div class="col-md-4">
 <div class="demo">
  <select style="display:none" name="byspeciality" placeholder="Select" id='byspeciality' onChange="javascript:dofilter('byspeciality');">
@@ -378,9 +435,9 @@ btn-slider" href="#">Explore</a></div></div>
  </select>
 </div>
 </div>
- -->
+ 
 </div>
-</div>
+</div> -->
 </section>
 <!-- Begining of addition -->
   <div id="galleries">

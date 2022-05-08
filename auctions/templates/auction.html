@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
     <link rel="stylesheet" href="/static/css/newcarousel.css">
+    <link rel="stylesheet" href="/static/css/autocomplete.css">
 
     <style>
 	.owl-prev, .owl-next {
@@ -193,10 +194,39 @@ https://templatemo.com/tm-571-hexashop
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
+    <script src="/static/js/autocomplete.js"></script>
+
+    <script>
+	auctions = [
+		{% for auctionname in filterauctions %}
+		    "{{auctionname}}",
+		{% endfor %}
+		]; // Should get populated during page load.
+	
+    </script> 
+    <script>
+	function searchauction(){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	  }
+	  };
+	  searchkey = document.getElementById('auctionsearch').value;
+	  xmlhttp.open("GET", "/auction/search/?q=" + searchkey);
+	  xmlhttp.send();
+	}
+    </script>
 
     </head>
     
-    <body>
+    <body onload="javascript:autocomplete(document.getElementById('auctionsearch'), auctions);">
     
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
@@ -339,6 +369,26 @@ https://templatemo.com/tm-571-hexashop
       </div>
     </section>
     <!-- END OF Carousels -->
+    <section class="section gal-section" id="">
+      	<div class="container">
+	    <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <!-- <h2>Emerging Art</h2> -->
+                          <span>
+			      <form autocomplete="off" name='frmsearchauctions' id='frmsearchauctions' method='POST' action="">
+				  {% csrf_token %}
+				  <div class="autocomplete">
+				    <span class="input-group"><input type="search" class='form-control' name='auctionsearch' id='auctionsearch' maxLength="200" placeholder="Search auctions" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchauction();'><i class="fa fa-search"></i></button></span>
+				  </div>
+			      </form>
+                              <!-- <a href="">View All</a> -->
+                          </span>
+                      </div>
+                  </div>
+              </div>
+	</div>
+      </section>
     <!-- ***** Main Banner Area End ***** -->
 	<section class="section gal-section" id="">
         <div class="container">
@@ -351,10 +401,10 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-		<div class="container">
+	<!-- <div class="container">
             <div class="row">
                 <div class="col-md-4">
-					<!-- <div class="demo"> -->
+					
 					<div class="row">
 					  <select name="byartists" placeholder="Select" class="form-control" id='byartists' onChange="javascript:dofilter('byartists');">
 						<option value="1">All Artists</option>
@@ -365,7 +415,7 @@ https://templatemo.com/tm-571-hexashop
 					</div>
 				</div>
                 <div class="col-md-4">
-					<!-- <div class="demo"> -->
+					
 					<div class="row">
 					  <select name="byauctions" placeholder="Select" class="form-control" id='byauctions' onChange="javascript:dofilter('byauctions');">
 						<option value="1">All Auctions</option>
@@ -375,18 +425,12 @@ https://templatemo.com/tm-571-hexashop
 					  </select>
 					</div>
 				</div>
-                <div class="col-md-4">
-					<!-- <div class="demo">
-					  <select style="display:none"  placeholder="Select" id='gallery' onchange='javascript:dofilter('gallery');'>
-						<option value="1">All Galleries</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-					  </select>
-					</div> -->
+                		<div class="col-md-4">
+					
 				</div>
 			</div>
 		</div>
+	-->
 	</section>
 	<!-- Begining of new auctions gallery -->
 	<div id="auctions">
