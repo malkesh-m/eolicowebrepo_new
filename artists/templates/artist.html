@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
     <link rel="stylesheet" href="/static/css/newcarousel.css">
+    <link rel="stylesheet" href="/static/css/autocomplete.css">
 
     <style>
 	.owl-prev, .owl-next {
@@ -103,10 +104,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script src="/static/js/editfromfront.js"></script>
+    <script src="/static/js/autocomplete.js"></script>
+    <!-- Autocomplete is inspired by the content in https://www.w3schools.com/howto/howto_js_autocomplete.asp -->
+    <script>
+	artists = [
+		{% for artistname in filterartists %}
+		    "{{artistname}}",
+		{% endfor %}
+		]; // Should get populated during page load.
+	
+    </script> 
+    <script>
+	function searchartist(){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	  }
+	  };
+	  searchkey = document.getElementById('artistsearch').value;
+	  xmlhttp.open("GET", "/artist/search/?q=" + searchkey);
+	  xmlhttp.send();
+	}
+    </script>
 
 </head>
     
-  <body>
+  <body onload="javascript:autocomplete(document.getElementById('artistsearch'), artists);">
 
       <!-- ***** Preloader Start ***** -->
       <div id="preloader">
@@ -304,6 +334,26 @@
     </section>
     <!-- END OF Carousels -->
       <!------ Featured Artist ------->
+      <section class="section gal-section" id="">
+      	<div class="container">
+	    <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+                          <!-- <h2>Emerging Art</h2> -->
+                          <span>
+			      <form autocomplete="off" name='frmsearchartists' id='frmsearchartists' method='POST' action="">
+				  {% csrf_token %}
+				  <div class="autocomplete">
+				    <span class="input-group"><input type="search" class='form-control' name='artistsearch' id='artistsearch' maxLength="100" placeholder="Search over 5,00,000 artists" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchartist();'><i class="fa fa-search"></i></button></span>
+				  </div>
+			      </form>
+                              <!-- <a href="">View All</a> -->
+                          </span>
+                      </div>
+                  </div>
+              </div>
+	</div>
+      </section>
       <section class="featured-artist">
           <div class="container">
               <div class="row d-flex">

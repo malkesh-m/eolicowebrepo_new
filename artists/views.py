@@ -48,6 +48,7 @@ def index(request):
     context = {}
     featuredartists = []
     artistsqset = Artist.objects.filter(artistname__istartswith=pageno).order_by('priority', '-edited')
+    allartistsqset = Artist.objects.all()
     uniqartists = {}
     for artist in artistsqset[0:featuredsize]:
         if artist.artistname.title() not in uniqartists.keys():
@@ -135,6 +136,10 @@ def index(request):
     context['eventtypes'] = eventtypesdict
     context['uniqueartists'] = uniqueartists
     context['uniqueartworks'] = uniqueartworks
+    filterartists = []
+    for artist in allartistsqset[:2000]:
+        filterartists.append(artist.artistname)
+    context['filterartists'] = filterartists
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     if request.user.is_authenticated:
@@ -255,5 +260,20 @@ def details(request):
 #@cache_page(CACHE_TTL)
 def follow(request):
     return HttpResponse("")
+
+
+def search(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    searchkey = None
+    if request.method == 'GET':
+        if 'q' in request.GET.keys():
+            searchkey = str(request.GET['q'])
+    if not searchkey:
+        return HttpResponse("Invalid Request: Request is missing search key")
+    print(searchkey)
+    return HttpResponse("")
+
+
 
 
