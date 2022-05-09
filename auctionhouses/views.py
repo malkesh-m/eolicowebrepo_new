@@ -17,6 +17,7 @@ from django.template import loader
 import os, sys, re, time, datetime
 import simplejson as json
 import redis
+import pickle
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -54,9 +55,9 @@ def index(request):
     featuredshows = [] # Featured shows section, will show 5 top priority auctions only.
     currentmngshows = {} # Current museum and gallery shows section - keys are auction houses, values are list of priority auctions in each house. Will need association of auctions to galleries and museums, which is to be implemented later.
     try:
-        filterauctionhouses = redis_instance.get('ah_filterauctionhouses')
-        auctionhouses = redis_instance.get('ah_auctionhouses')
-        featuredshows = redis_instance.get('ah_featuredshows')
+        filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
+        auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))
+        featuredshows = pickle.loads(redis_instance.get('ah_featuredshows'))
     except:
         filterauctionhouses = []
         auctionhouses = []
@@ -78,8 +79,8 @@ def index(request):
         context['auctionhouses'] = auctionhouses
         context['filterauctionhouses'] = filterauctionhouses
         try:
-            redis_instance.set('ah_auctionhouses', auctionhouses)
-            redis_instance.set('ah_filterauctionhouses', filterauctionhouses)
+            redis_instance.set('ah_auctionhouses', pickle.dumps(auctionhouses))
+            redis_instance.set('ah_filterauctionhouses', pickle.dumps(filterauctionhouses))
         except:
             pass
         for auctionhouse in auctionhousesqset[:fstartctr]:
@@ -93,7 +94,7 @@ def index(request):
             featuredshows.append(d)
         context['featuredshows'] = featuredshows
         try:
-            redis_instance.set('ah_featuredshows', featuredshows)
+            redis_instance.set('ah_featuredshows', pickle.dumps(featuredshows))
         except:
             pass
     else:
@@ -101,7 +102,7 @@ def index(request):
         context['filterauctionhouses'] = filterauctionhouses
         context['featuredshows'] = featuredshows
     try:
-        currentmngshows = redis_instance.get('ah_currentmngshows')
+        currentmngshows = pickle.loads(redis_instance.get('ah_currentmngshows'))
     except:
         currentmngshows = {}
     if currentmngshows.keys().__len__() == 0:
@@ -120,7 +121,7 @@ def index(request):
                 currentmngshows[auctionhouse] = l
         context['currentmngshows'] = currentmngshows
         try:
-            redis_instance.set('ah_currentmngshows', currentmngshows)
+            redis_instance.set('ah_currentmngshows', pickle.dumps(currentmngshows))
         except:
             pass
     else:
@@ -157,24 +158,24 @@ def details(request):
     auctioninfo = {}
     chunksize = 4
     try:
-        auctioninfo = redis_instance.get('ah_auctioninfo_%s'%auctionobj.id)
+        auctioninfo = pickle.loads(redis_instance.get('ah_auctioninfo_%s'%auctionobj.id))
     except:
         auctioninfo = {}
     if auctioninfo.keys().__len__() == 0:
         auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionobj.auctionhouse).order_by('priority', '-edited')
         auctioninfo = {'auctionname' : auctionobj.auctionname, 'auctionhouse' : auctionobj.auctionhouse, 'auctionlocation' : auctionobj.auctionlocation, 'description' : auctionobj.description, 'auctionurl' : auctionobj.auctionurl, 'lotsurl' : auctionobj.lotslistingurl, 'coverimage' : auctionobj.coverimage, 'auctiondate' : auctionobj.auctiondate, 'auctionid' : auctionobj.auctionid, 'aucid' : auctionobj.id}
         try:
-            redis_instance.set('ah_auctioninfo_%s'%auctionobj.id, auctioninfo)
+            redis_instance.set('ah_auctioninfo_%s'%auctionobj.id, pickle.dumps(auctioninfo))
         except:
             pass
     context['auctioninfo'] = auctioninfo
     overviewlots = []
     alllots = []
     try:
-        alllots = redis_instance.get('ah_alllots_%s'%auctionobj.id)
-        overviewlots = redis_instance.get('ah_overviewlots_%s'%auctionobj.id)
-        auctionslist = redis_instance.get('ah_auctionslist_%s'%auctionobj.id)
-        relatedartists = redis_instance.get('ah_relatedartists_%s'%auctionobj.id)
+        alllots = pickle.loads(redis_instance.get('ah_alllots_%s'%auctionobj.id))
+        overviewlots = pickle.loads(redis_instance.get('ah_overviewlots_%s'%auctionobj.id))
+        auctionslist = pickle.loads(redis_instance.get('ah_auctionslist_%s'%auctionobj.id))
+        relatedartists = pickle.loads(redis_instance.get('ah_relatedartists_%s'%auctionobj.id))
     except:
         alllots = []
         overviewlots = []
@@ -190,8 +191,8 @@ def details(request):
                 alllots.append(d)
             lctr += 1
         try:
-            redis_instance.set('ah_overviewlots_%s'%auctionobj.id, overviewlots)
-            redis_instance.set('ah_alllots_%s'%auctionobj.id, alllots)
+            redis_instance.set('ah_overviewlots_%s'%auctionobj.id, pickle.dumps(overviewlots))
+            redis_instance.set('ah_alllots_%s'%auctionobj.id, pickle.dumps(alllots))
         except:
             pass
         for auction in auctionsqset:
@@ -212,8 +213,8 @@ def details(request):
             d['lots'] = lots
             auctionslist.append(d)
         try:
-            redis_instance.set('ah_auctionslist_%s'%auctionobj.id, auctionslist)
-            redis_instance.set('ah_relatedartists_%s'%auctionobj.id, relatedartists)
+            redis_instance.set('ah_auctionslist_%s'%auctionobj.id, pickle.dumps(auctionslist))
+            redis_instance.set('ah_relatedartists_%s'%auctionobj.id, pickle.dumps(relatedartists))
         except:
             pass
     context['overviewlots'] = overviewlots

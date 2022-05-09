@@ -17,6 +17,7 @@ from django.template import loader
 import os, sys, re, time, datetime
 import simplejson as json
 import redis
+import pickle
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -41,153 +42,205 @@ def index(request):
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
     chunksize = 4
-    # Find out the distinct gallery types available
-    gtypesqset = Gallery.objects.order_by().values_list('gallerytype').distinct()
-    lastctr1 = int(page) * chunksize
-    lastctr2 = int(page) * chunksize
-    lastctr3 = int(page) * chunksize
-    lastctr4 = int(page) * chunksize
-    lastctr5 = int(page) * chunksize
-    #print(gtypesqset)
-    galleries1 = Gallery.objects.filter(gallerytype=gtypesqset[0][0])
-    galleries2 = Gallery.objects.filter(gallerytype=gtypesqset[1][0])
-    galleries3 = Gallery.objects.filter(gallerytype=gtypesqset[2][0])
-    galleries4 = Gallery.objects.filter(gallerytype=gtypesqset[3][0])
-    galleries5 = Gallery.objects.filter(gallerytype=gtypesqset[4][0])
-    startctr1 = lastctr1 - chunksize
-    startctr2 = lastctr2 - chunksize
-    startctr3 = lastctr3 - chunksize
-    startctr4 = lastctr4 - chunksize
-    startctr5 = lastctr5 - chunksize
-    if lastctr1 > galleries1.__len__():
-        lastctr1 = galleries1.__len__()
-    if lastctr2 > galleries2.__len__():
-        lastctr2 = galleries2.__len__()
-    if lastctr3 > galleries3.__len__():
-        lastctr3 = galleries3.__len__()
-    if lastctr4 > galleries4.__len__():
-        lastctr4 = galleries4.__len__()
-    if lastctr5 > galleries5.__len__():
-        lastctr5 = galleries5.__len__()
-    gallerieslist1 = galleries1[startctr1:lastctr1]
-    gallerieslist2 = galleries2[startctr2:lastctr2]
-    gallerieslist3 = galleries3[startctr3:lastctr3]
-    gallerieslist4 = galleries4[startctr4:lastctr4]
-    gallerieslist5 = galleries5[startctr5:lastctr5]
-    galleriesdict = {}
+    context = {}
+    gallerytypes = []
     gallerylocations = {}
     allgalleries = {}
     filtergalleries = []
-    for g in gallerieslist1[startctr1:lastctr1]:
-        gname = g.galleryname
-        gloc = g.location
-        gimg = g.coverimage
-        gurl = g.galleryurl
-        gid = g.id
-        if gloc.__len__() > 23:
-            location = gloc[:23] + "..."
-        else:
-            location = gloc
-        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[0][0]]
-        glocparts = gloc.split(",")
-        for gloc in glocparts:
-            gloc = gloc.strip()
-            if gloc == "":
-                continue
-            gallerylocations[gloc] = 1
-        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
-        filtergalleries.append(gname)
-    context = {'galleries1' : galleriesdict}
-    galleriesdict = {}
-    for g in gallerieslist2[startctr2:lastctr2]:
-        gname = g.galleryname
-        gloc = g.location
-        gimg = g.coverimage
-        gurl = g.galleryurl
-        gid = g.id
-        if gloc.__len__() > 23:
-            location = gloc[:23] + "..."
-        else:
-            location = gloc
-        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[1][0]]
-        glocparts = gloc.split(",")
-        for gloc in glocparts:
-            gloc = gloc.strip()
-            if gloc == "":
-                continue
-            gallerylocations[gloc] = 1
-        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
-        filtergalleries.append(gname)
-    context['galleries2'] = galleriesdict
-    galleriesdict = {}
-    for g in gallerieslist3[startctr3:lastctr3]:
-        gname = g.galleryname
-        gloc = g.location
-        gimg = g.coverimage
-        gurl = g.galleryurl
-        gid = g.id
-        if gloc.__len__() > 23:
-            location = gloc[:23] + "..."
-        else:
-            location = gloc
-        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[2][0]]
-        glocparts = gloc.split(",")
-        for gloc in glocparts:
-            gloc = gloc.strip()
-            if gloc == "":
-                continue
-            gallerylocations[gloc] = 1
-        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
-        filtergalleries.append(gname)
-    context['galleries3'] = galleriesdict
-    galleriesdict = {}
-    for g in gallerieslist4[startctr4:lastctr4]:
-        gname = g.galleryname
-        gloc = g.location
-        gimg = g.coverimage
-        gurl = g.galleryurl
-        gid = g.id
-        if gloc.__len__() > 23:
-            location = gloc[:23] + "..."
-        else:
-            location = gloc
-        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[3][0]]
-        glocparts = gloc.split(",")
-        for gloc in glocparts:
-            gloc = gloc.strip()
-            if gloc == "":
-                continue
-            gallerylocations[gloc] = 1
-        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
-        filtergalleries.append(gname)
-    context['galleries4'] = galleriesdict
-    galleriesdict = {}
-    for g in gallerieslist5[startctr5:lastctr5]:
-        gname = g.galleryname
-        gloc = g.location
-        gimg = g.coverimage
-        gurl = g.galleryurl
-        gid = g.id
-        if gloc.__len__() > 23:
-            location = gloc[:23] + "..."
-        else:
-            location = gloc
-        galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[4][0]]
-        glocparts = gloc.split(",")
-        for gloc in glocparts:
-            gloc = gloc.strip()
-            if gloc == "":
-                continue
-            gallerylocations[gloc] = 1
-        allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
-        filtergalleries.append(gname)
-    context['galleries5'] = galleriesdict
-    context['gallerylocations'] = gallerylocations
-    context['allgalleries'] = allgalleries
-    context['filtergalleries'] = filtergalleries
+    try:
+        galleriesdict1 = pickle.loads(redis_instance.get('g_galleries1'))
+        galleriesdict2 = pickle.loads(redis_instance.get('g_galleries2'))
+        galleriesdict3 = pickle.loads(redis_instance.get('g_galleries3'))
+        galleriesdict4 = pickle.loads(redis_instance.get('g_galleries4'))
+        galleriesdict5 = pickle.loads(redis_instance.get('g_galleries5'))
+        gallerytypes = pickle.loads(redis_instance.get('g_gallerytypes'))
+        gallerylocations = pickle.loads(redis_instance.get('g_gallerylocations'))
+        allgalleries = pickle.loads(redis_instance.get('g_allgalleries'))
+        filtergalleries = pickle.loads(redis_instance.get('g_filtergalleries'))
+        context['galleries1'] = galleriesdict1
+        context['galleries2'] = galleriesdict2
+        context['galleries3'] = galleriesdict3
+        context['galleries4'] = galleriesdict4
+        context['galleries5'] = galleriesdict5
+        context['gallerytypes'] = gallerytypes
+        context['gallerylocations'] = gallerylocations
+        context['allgalleries'] = allgalleries
+        context['filtergalleries'] = filtergalleries
+    except:
+        pass
+    if gallerytypes.__len__() == 0 and filtergalleries.__len__() == 0:
+        # Find out the distinct gallery types available
+        gtypesqset = Gallery.objects.order_by().values_list('gallerytype').distinct()
+        lastctr1 = int(page) * chunksize
+        lastctr2 = int(page) * chunksize
+        lastctr3 = int(page) * chunksize
+        lastctr4 = int(page) * chunksize
+        lastctr5 = int(page) * chunksize
+        #print(gtypesqset)
+        galleries1 = Gallery.objects.filter(gallerytype=gtypesqset[0][0])
+        galleries2 = Gallery.objects.filter(gallerytype=gtypesqset[1][0])
+        galleries3 = Gallery.objects.filter(gallerytype=gtypesqset[2][0])
+        galleries4 = Gallery.objects.filter(gallerytype=gtypesqset[3][0])
+        galleries5 = Gallery.objects.filter(gallerytype=gtypesqset[4][0])
+        startctr1 = lastctr1 - chunksize
+        startctr2 = lastctr2 - chunksize
+        startctr3 = lastctr3 - chunksize
+        startctr4 = lastctr4 - chunksize
+        startctr5 = lastctr5 - chunksize
+        if lastctr1 > galleries1.__len__():
+            lastctr1 = galleries1.__len__()
+        if lastctr2 > galleries2.__len__():
+            lastctr2 = galleries2.__len__()
+        if lastctr3 > galleries3.__len__():
+            lastctr3 = galleries3.__len__()
+        if lastctr4 > galleries4.__len__():
+            lastctr4 = galleries4.__len__()
+        if lastctr5 > galleries5.__len__():
+            lastctr5 = galleries5.__len__()
+        gallerieslist1 = galleries1[startctr1:lastctr1]
+        gallerieslist2 = galleries2[startctr2:lastctr2]
+        gallerieslist3 = galleries3[startctr3:lastctr3]
+        gallerieslist4 = galleries4[startctr4:lastctr4]
+        gallerieslist5 = galleries5[startctr5:lastctr5]
+        galleriesdict = {}
+        for g in gallerieslist1[startctr1:lastctr1]:
+            gname = g.galleryname
+            gloc = g.location
+            gimg = g.coverimage
+            gurl = g.galleryurl
+            gid = g.id
+            if gloc.__len__() > 23:
+                location = gloc[:23] + "..."
+            else:
+                location = gloc
+            galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[0][0]]
+            glocparts = gloc.split(",")
+            for gloc in glocparts:
+                gloc = gloc.strip()
+                if gloc == "":
+                    continue
+                gallerylocations[gloc] = 1
+            allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+            filtergalleries.append(gname)
+        context = {'galleries1' : galleriesdict}
+        try:
+            redis_instance.set('g_galleries1', pickle.dumps(galleriesdict))
+        except:
+            pass
+        galleriesdict = {}
+        for g in gallerieslist2[startctr2:lastctr2]:
+            gname = g.galleryname
+            gloc = g.location
+            gimg = g.coverimage
+            gurl = g.galleryurl
+            gid = g.id
+            if gloc.__len__() > 23:
+                location = gloc[:23] + "..."
+            else:
+                location = gloc
+            galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[1][0]]
+            glocparts = gloc.split(",")
+            for gloc in glocparts:
+                gloc = gloc.strip()
+                if gloc == "":
+                    continue
+                gallerylocations[gloc] = 1
+            allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+            filtergalleries.append(gname)
+        context['galleries2'] = galleriesdict
+        try:
+            redis_instance.set('g_galleries2', pickle.dumps(galleriesdict))
+        except:
+            pass
+        galleriesdict = {}
+        for g in gallerieslist3[startctr3:lastctr3]:
+            gname = g.galleryname
+            gloc = g.location
+            gimg = g.coverimage
+            gurl = g.galleryurl
+            gid = g.id
+            if gloc.__len__() > 23:
+                location = gloc[:23] + "..."
+            else:
+                location = gloc
+            galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[2][0]]
+            glocparts = gloc.split(",")
+            for gloc in glocparts:
+                gloc = gloc.strip()
+                if gloc == "":
+                    continue
+                gallerylocations[gloc] = 1
+            allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+            filtergalleries.append(gname)
+        context['galleries3'] = galleriesdict
+        try:
+            redis_instance.set('g_galleries3', pickle.dumps(galleriesdict))
+        except:
+            pass
+        galleriesdict = {}
+        for g in gallerieslist4[startctr4:lastctr4]:
+            gname = g.galleryname
+            gloc = g.location
+            gimg = g.coverimage
+            gurl = g.galleryurl
+            gid = g.id
+            if gloc.__len__() > 23:
+                location = gloc[:23] + "..."
+            else:
+                location = gloc
+            galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[3][0]]
+            glocparts = gloc.split(",")
+            for gloc in glocparts:
+                gloc = gloc.strip()
+                if gloc == "":
+                    continue
+                gallerylocations[gloc] = 1
+            allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+            filtergalleries.append(gname)
+        context['galleries4'] = galleriesdict
+        try:
+            redis_instance.set('g_galleries4', pickle.dumps(galleriesdict))
+        except:
+            pass
+        galleriesdict = {}
+        for g in gallerieslist5[startctr5:lastctr5]:
+            gname = g.galleryname
+            gloc = g.location
+            gimg = g.coverimage
+            gurl = g.galleryurl
+            gid = g.id
+            if gloc.__len__() > 23:
+                location = gloc[:23] + "..."
+            else:
+                location = gloc
+            galleriesdict[gname] = [location, gimg, gurl, gid, gtypesqset[4][0]]
+            glocparts = gloc.split(",")
+            for gloc in glocparts:
+                gloc = gloc.strip()
+                if gloc == "":
+                    continue
+                gallerylocations[gloc] = 1
+            allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+            filtergalleries.append(gname)
+        context['galleries5'] = galleriesdict
+        try:
+            redis_instance.set('g_galleries5', pickle.dumps(galleriesdict))
+        except:
+            pass
+        context['gallerylocations'] = gallerylocations
+        context['allgalleries'] = allgalleries
+        context['filtergalleries'] = filtergalleries
+        context['gallerytypes'] = [gtypesqset[0][0], gtypesqset[1][0], gtypesqset[2][0], gtypesqset[3][0], gtypesqset[4][0]]
+        gallerytypeslist = [gtypesqset[0][0], gtypesqset[1][0], gtypesqset[2][0], gtypesqset[3][0], gtypesqset[4][0]]
+        try:
+            redis_instance.set('g_gallerylocations', pickle.dumps(gallerylocations))
+            redis_instance.set('g_allgalleries', pickle.dumps(allgalleries))
+            redis_instance.set('g_filtergalleries', pickle.dumps(filtergalleries))
+            redis_instance.set('g_gallerytypes', pickle.dumps(gallerytypeslist))
+        except:
+            pass
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
-    context['gallerytypes'] = [gtypesqset[0][0], gtypesqset[1][0], gtypesqset[2][0], gtypesqset[3][0], gtypesqset[4][0]]
     if request.user.is_authenticated:
         context['adminuser'] = 1
     else:
@@ -222,68 +275,112 @@ def details(request):
     gimage = galleryobj.coverimage
     gid = galleryobj.id
     context['gallery'] = {'galleryname' : galleryname, 'gallerylocation' : glocation, 'galleryurl' : gurl, 'galleryimage' : gimage, 'gid' : gid}
-    # Get latest events for this gallery. Also order by 'priority'.
-    eventsqset = Event.objects.filter(gallery=galleryobj).order_by('-eventstartdate', 'priority')
     latestevent = {}
     eventsprioritylist = []
-    if eventsqset.__len__() > 0:
-        latestevent['eventname'] = eventsqset[0].eventname
-        latestevent['eventurl'] = eventsqset[0].eventurl
-        latestevent['eventinfo'] = eventsqset[0].eventinfo
-        latestevent['eventtype'] = eventsqset[0].eventtype
-        latestevent['eventstatus'] = eventsqset[0].eventstatus
-        latestevent['eventperiod'] = eventsqset[0].eventperiod
-        latestevent['eventimage'] = eventsqset[0].eventimage
-        latestevent['eventlocation'] = eventsqset[0].eventlocation
-        latestevent['eventid'] = eventsqset[0].id
-        eventsprioritylist.append(eventsqset[0].eventname)
-    context['latestevent'] = latestevent
     previousevents = []
-    if eventsqset.__len__() > 1:
-        for eqset in eventsqset[1:]:
-            pevent = {}
-            pevent['eventname'] = eqset.eventname
-            pevent['eventurl'] = eqset.eventurl
-            pevent['eventinfo'] = eqset.eventinfo
-            pevent['eventtype'] = eqset.eventtype
-            pevent['eventstatus'] = eqset.eventstatus
-            pevent['eventperiod'] = eqset.eventperiod
-            pevent['eventimage'] = eqset.eventimage
-            pevent['eventlocation'] = eqset.eventlocation
-            pevent['eventid'] = eqset.id
-            previousevents.append(pevent)
-            eventsprioritylist.append(eqset.eventname)
+    try:
+        latestevent = pickle.loads(redis_instance.get('g_latestevent_%s'%gid))
+        eventsprioritylist = pickle.loads(redis_instance.get('g_eventsprioritylist_%s'%gid))
+        previousevents = pickle.loads(redis_instance.get('g_previousevents_%s'%gid))
+    except:
+        pass
+    eventsqset = []
+    if latestevent.keys().__len__() == 0 or previousevents.__len__() == 0:
+        # Get latest events for this gallery. Also order by 'priority'.
+        eventsqset = Event.objects.filter(gallery=galleryobj).order_by('-eventstartdate', 'priority')
+        if eventsqset.__len__() > 0:
+            latestevent['eventname'] = eventsqset[0].eventname
+            latestevent['eventurl'] = eventsqset[0].eventurl
+            latestevent['eventinfo'] = eventsqset[0].eventinfo
+            latestevent['eventtype'] = eventsqset[0].eventtype
+            latestevent['eventstatus'] = eventsqset[0].eventstatus
+            latestevent['eventperiod'] = eventsqset[0].eventperiod
+            latestevent['eventimage'] = eventsqset[0].eventimage
+            latestevent['eventlocation'] = eventsqset[0].eventlocation
+            latestevent['eventid'] = eventsqset[0].id
+            eventsprioritylist.append(eventsqset[0].eventname)
+        try:
+            redis_instance.set('g_latestevent_%s'%gid, pickle.dumps(latestevent))
+        except:
+            pass
+        if eventsqset.__len__() > 1:
+            for eqset in eventsqset[1:]:
+                pevent = {}
+                pevent['eventname'] = eqset.eventname
+                pevent['eventurl'] = eqset.eventurl
+                pevent['eventinfo'] = eqset.eventinfo
+                pevent['eventtype'] = eqset.eventtype
+                pevent['eventstatus'] = eqset.eventstatus
+                pevent['eventperiod'] = eqset.eventperiod
+                pevent['eventimage'] = eqset.eventimage
+                pevent['eventlocation'] = eqset.eventlocation
+                pevent['eventid'] = eqset.id
+                previousevents.append(pevent)
+                eventsprioritylist.append(eqset.eventname)
+        try:
+            redis_instance.set('g_previousevents_%s'%gid, pickle.dumps(previousevents))
+            redis_instance.set('g_previouseventselection_%s'%gid, pickle.dumps(previousevents[0:4]))
+        except:
+            pass
+    context['latestevent'] = latestevent
     context['previousevents'] = previousevents
     context['previouseventselection'] = previousevents[0:4]
-    # Showing 20 artists from the latest featured event only.
-    try:
-        artistsqset = Artist.objects.filter(event=eventsqset[0]).order_by('-edited', 'priority')
-    except:
-        artistsqset = []
     artistslist = []
-    max_len = 20
-    if artistsqset.__len__() < max_len:
-        max_len = artistsqset.__len__()
-    for artist in artistsqset[:max_len]:
-        adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl, 'artistid' : artist.id}
-        artistslist.append(adict)
+    try:
+        artistslist = pickle.loads(redis_instance.get('g_artistslist_%s'%gid))
+    except:
+        pass
+    if artistslist.__len__() == 0:
+        # Showing 20 artists from the latest featured event only.
+        try:
+            artistsqset = Artist.objects.filter(event=eventsqset[0]).order_by('-edited', 'priority')
+        except:
+            artistsqset = []
+        max_len = 20
+        if artistsqset.__len__() < max_len:
+            max_len = artistsqset.__len__()
+        for artist in artistsqset[:max_len]:
+            adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl, 'artistid' : artist.id}
+            artistslist.append(adict)
+        try:
+            redis_instance.set('g_artistslist_%s'%gid, pickle.dumps(artistslist))
+        except:
+            pass
     context['artists'] = artistslist
     nationalities = []
     try:
-        natqset = Artist.objects.filter(event=eventsqset[0]).order_by().values_list('nationality').distinct()
+        nationalities = pickle.loads(redis_instance.get('g_nationalities_%s'%gid))
     except:
-        natqset = []
-    for nat in natqset:
-        nationalities.append(nat[0])
+        pass
+    if nationalities.__len__() == 0:
+        try:
+            natqset = Artist.objects.filter(event=eventsqset[0]).order_by().values_list('nationality').distinct()
+        except:
+            natqset = []
+        for nat in natqset:
+            nationalities.append(nat[0])
+        try:
+            redis_instance.set('g_nationalities_%s'%gid, pickle.dumps(nationalities))
+        except:
+            pass
     context['nationalities'] = nationalities
     # Find all artists belonging to this gallery
     allartists = []
-    for evobj in eventsqset:
-        artistsqset = Artist.objects.filter(event=evobj).order_by('-edited', 'priority')
-        for artist in artistsqset:
-            adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl, 'artistid' : artist.id}
-            allartists.append(adict)
-    context['allartists'] = artistslist
+    try:
+        allartists = pickle.loads(redis_instance.get('g_allartists_%s'%gid))
+    except:
+        pass
+    if eventsqset.__len__() > 0:
+        for evobj in eventsqset:
+            artistsqset = Artist.objects.filter(event=evobj).order_by('-edited', 'priority')
+            for artist in artistsqset:
+                adict = {'artistname' : artist.artistname, 'artisturl' : artist.profileurl, 'artistid' : artist.id}
+                allartists.append(adict)
+        try:
+            redis_instance.set('g_allartists_%s'%gid, pickle.dumps(allartists))
+        except:
+            pass
+    context['allartists'] = allartists
     # Find all artworks belonging to the gallery in an eventwise manner. Artworks will be listed as per 'priority' values.
     # This, along with 'eventsprioritylist' values will list artworks in an eventwise manner, with top priority events on top.
     artcollen = 4
@@ -292,44 +389,63 @@ def details(request):
     endctr = startctr + (artcollen * artrowlen)
     allartworks1, allartworks2, allartworks3, allartworks4, allartworks = {}, {}, {}, {}, {} # Event names as keys and list of artworks as values.
     filterartists = {}
-    artworksqset = Artwork.objects.filter(gallery=galleryobj).order_by('-edited', 'priority')
-    for ename in eventsprioritylist:
-        allartworks1[ename] = []
-        allartworks2[ename] = []
-        allartworks3[ename] = []
-        allartworks4[ename] = []
-        allartworks[ename] = []
-    ctr = 1
-    for awork in artworksqset[startctr:endctr]:
-        evname = awork.event.eventname
-        l0 = allartworks[evname]
-        d0 = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
-        filterartists[str(awork.artistname)] = 1
-        l0.append(d0)
-        allartworks[evname] = l0
-        if ctr % 4 == 0:
-            l = allartworks4[evname]
-            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
-            l.append(d)
-            allartworks4[evname] = l
-        elif ctr % 3 == 0:
-            l = allartworks3[evname]
-            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
-            l.append(d)
-            allartworks3[evname] = l
-        elif ctr % 2 == 0:
-            l = allartworks2[evname]
-            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
-            l.append(d)
-            allartworks2[evname] = l
-        elif ctr % 1 == 0:
-            l = allartworks1[evname]
-            d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
-            l.append(d)
-            allartworks1[evname] = l
-        ctr += 1
-        if ctr > 1 and ctr % 4 == 1: # Basically, if ctr==5, then reset to 1.
-            ctr = 1
+    try:
+        allartworks1 = pickle.loads(redis_instance.get('g_allartworks1_%s'%gid))
+        allartworks2 = pickle.loads(redis_instance.get('g_allartworks2_%s'%gid))
+        allartworks3 = pickle.loads(redis_instance.get('g_allartworks3_%s'%gid))
+        allartworks4 = pickle.loads(redis_instance.get('g_allartworks4_%s'%gid))
+        allartworks = pickle.loads(redis_instance.get('g_allartworks_%s'%gid))
+        filterartists = pickle.loads(redis_instance.get('g_filterartists_%s'%gid))
+    except:
+        pass
+    if allartworks.keys().__len__() == 0 or filterartists.keys().__len__() == 0:
+        artworksqset = Artwork.objects.filter(gallery=galleryobj).order_by('-edited', 'priority')
+        for ename in eventsprioritylist:
+            allartworks1[ename] = []
+            allartworks2[ename] = []
+            allartworks3[ename] = []
+            allartworks4[ename] = []
+            allartworks[ename] = []
+        ctr = 1
+        for awork in artworksqset[startctr:endctr]:
+            evname = awork.event.eventname
+            l0 = allartworks[evname]
+            d0 = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
+            filterartists[str(awork.artistname)] = 1
+            l0.append(d0)
+            allartworks[evname] = l0
+            if ctr % 4 == 0:
+                l = allartworks4[evname]
+                d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
+                l.append(d)
+                allartworks4[evname] = l
+            elif ctr % 3 == 0:
+                l = allartworks3[evname]
+                d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
+                l.append(d)
+                allartworks3[evname] = l
+            elif ctr % 2 == 0:
+                l = allartworks2[evname]
+                d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
+                l.append(d)
+                allartworks2[evname] = l
+            elif ctr % 1 == 0:
+                l = allartworks1[evname]
+                d = {'artworkname' : str(awork.artworkname), 'creationdate' : str(awork.creationdate), 'gallery' : awork.gallery.galleryname, 'artistname' : str(awork.artistname), 'artistbirthyear' : str(awork.artistbirthyear), 'artistdeathyear' : str(awork.artistdeathyear), 'artistnationality' : str(awork.artistnationality), 'size' : str(awork.size), 'estimate' : str(awork.estimate), 'soldprice' : str(awork.soldprice), 'medium' : str(awork.medium), 'signature' : str(awork.signature), 'letterofauthenticity' : str(awork.letterofauthenticity), 'description' : str(awork.description), 'provenance' : str(awork.provenance), 'literature' : str(awork.literature), 'exhibitions' : str(awork.exhibitions), 'image' : str(awork.image1), 'workurl' : str(awork.workurl), 'awid' : awork.id}
+                l.append(d)
+                allartworks1[evname] = l
+            ctr += 1
+            if ctr > 1 and ctr % 4 == 1: # Basically, if ctr==5, then reset to 1.
+                ctr = 1
+        try:
+            redis_instance.set('g_allartworks1_%s'%gid, pickle.dumps(allartworks1))
+            redis_instance.set('g_allartworks2_%s'%gid, pickle.dumps(allartworks2))
+            redis_instance.set('g_allartworks3_%s'%gid, pickle.dumps(allartworks3))
+            redis_instance.set('g_allartworks4_%s'%gid, pickle.dumps(allartworks4))
+            redis_instance.set('g_allartworks_%s'%gid, pickle.dumps(allartworks))
+            redis_instance.set('g_filterartists_%s'%gid, pickle.dumps(filterartists))
+        except:
+            pass
     context['allartworks1'] = allartworks1
     context['allartworks2'] = allartworks2
     context['allartworks3'] = allartworks3

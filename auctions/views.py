@@ -17,6 +17,7 @@ from django.template import loader
 import os, sys, re, time, datetime
 import simplejson as json
 import redis
+import pickle
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -55,7 +56,7 @@ def index(request):
     featuredauctions = {}
     filterauctions = []
     try:
-        highlightslist = redis_instance.get('ac_highlightslist')
+        highlightslist = pickle.loads(redis_instance.get('ac_highlightslist'))
     except:
         highlightslist = []
     if highlightslist.__len__() == 0:
@@ -64,15 +65,15 @@ def index(request):
             d = {'title' : hlobj.lottitle, 'loturl' : hlobj.loturl, 'image' : hlobj.lotimage1, 'description' : hlobj.lotdescription, 'artist' : hlobj.artistname}
             highlightslist.append(d)
         try:
-            redis_instance.set('ac_highlightslist', highlightslist)
+            redis_instance.set('ac_highlightslist', pickle.dumps(highlightslist))
         except:
             pass
     context['highlights'] = highlightslist
     try:
-        featuredauctions = redis_instance.get('ac_featuredauctions')
-        filterauctions = redis_instance.get('ac_filterauctions')
-        allartists = redis_instance.get('ac_allartists')
-        allauctions = redis_instance.get('ac_allauctions')
+        featuredauctions = pickle.loads(redis_instance.get('ac_featuredauctions'))
+        filterauctions = pickle.loads(redis_instance.get('ac_filterauctions'))
+        allartists = pickle.loads(redis_instance.get('ac_allartists'))
+        allauctions = pickle.loads(redis_instance.get('ac_allauctions'))
     except:
         featuredauctions = {}
         filterauctions = []
@@ -99,8 +100,8 @@ def index(request):
         context['featuredauctions'] = featuredauctions
         context['filterauctions'] = filterauctions
         try:
-            redis_instance.set('ac_featuredauctions', featuredauctions)
-            redis_instance.set('ac_filterauctions', filterauctions)
+            redis_instance.set('ac_featuredauctions', pickle.dumps(featuredauctions))
+            redis_instance.set('ac_filterauctions', pickle.dumps(filterauctions))
         except:
             pass
         for auction in auctionsqset:
@@ -124,8 +125,8 @@ def index(request):
         context['allartists'] = allartists
         context['allauctions'] = allauctions
         try:
-            redis_instance.set('ac_allartists', allartists)
-            redis_instance.set('ac_allauctions', allauctions)
+            redis_instance.set('ac_allartists', pickle.dumps(allartists))
+            redis_instance.set('ac_allauctions', pickle.dumps(allauctions))
         except:
             pass
     carouselentries = getcarouselinfo()
@@ -159,7 +160,7 @@ def details(request):
     lotinfo = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artist' : lotobj.artistname, 'birth' : lotobj.artistbirth, 'death' : lotobj.artistdeath, 'nationality' : lotobj.artistnationality, 'medium' : lotobj.medium, 'size' : lotobj.size, 'auctionname' : lotobj.auction.auctionname, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'provenance' : lotobj.provenance, 'literature' : lotobj.literature, 'exhibitions' : lotobj.exhibited, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.loturl, 'category' : lotobj.category, 'created' : '', 'lotid' : lotobj.id}
     context['lotinfo'] = lotinfo
     try:
-        aboutartist = redis_instance.get('ac_aboutartist_%s'%lotobj.auction.id)
+        aboutartist = pickle.loads(redis_instance.get('ac_aboutartist_%s'%lotobj.auction.id))
     except:
         aboutartist = {}
     if aboutartist.keys().__len__() == 0:
@@ -169,16 +170,16 @@ def details(request):
             aboutartist = {'artistname' : artistqset[0].artistname, 'nationality' : artistqset[0].nationality, 'birth' : artistqset[0].birthdate, 'death' : artistqset[0].deathdate, 'about' : artistqset[0].about, 'image' : artistqset[0].squareimage, 'aid' : artistqset[0].id}
         context['aboutartist'] = aboutartist
         try:
-            redis_instance.set('ac_aboutartist_%s'%lotobj.auction.id, aboutartist)
+            redis_instance.set('ac_aboutartist_%s'%lotobj.auction.id, pickle.dumps(aboutartist))
         except:
             pass
     otherworks = [[], [], [], []]
     relatedworks = [[], [], [], []]
     allartists = {}
     try:
-        otherworks = redis_instance.get('ac_otherworks_%s'%lotobj.auction.id)
-        relatedworks = redis_instance.get('ac_relatedworks_%s'%lotobj.auction.id)
-        allartists = redis_instance.get('ac_allartists_%s'%lotobj.auction.id)
+        otherworks = pickle.loads(redis_instance.get('ac_otherworks_%s'%lotobj.auction.id))
+        relatedworks = pickle.loads(redis_instance.get('ac_relatedworks_%s'%lotobj.auction.id))
+        allartists = pickle.loads(redis_instance.get('ac_allartists_%s'%lotobj.auction.id))
     except:
         otherworks = [[], [], [], []]
         relatedworks = [[], [], [], []]
@@ -216,7 +217,7 @@ def details(request):
                 allartists[lot.artistname] = l
         context['otherworks'] = otherworks
         try:
-            redis_instance.set('ac_otherworks_%s'%lotobj.auction.id, otherworks)
+            redis_instance.set('ac_otherworks_%s'%lotobj.auction.id, pickle.dumps(otherworks))
         except:
             pass
     if relatedworks[0].__len__() == 0:
@@ -252,8 +253,8 @@ def details(request):
         context['relatedworks'] = relatedworks
         context['allartists'] = allartists
         try:
-            redis_instance.set('ac_relatedworks_%s'%lotobj.auction.id, relatedworks)
-            redis_instance.set('ac_allartists_%s'%lotobj.auction.id, allartists)
+            redis_instance.set('ac_relatedworks_%s'%lotobj.auction.id, pickle.dumps(relatedworks))
+            redis_instance.set('ac_allartists_%s'%lotobj.auction.id, pickle.dumps(allartists))
         except:
             pass
     if request.user.is_authenticated:

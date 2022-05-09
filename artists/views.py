@@ -17,6 +17,7 @@ from django.template import loader
 import os, sys, re, time, datetime
 import simplejson as json
 import redis
+import pickle
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -52,7 +53,7 @@ def index(request):
     context = {}
     featuredartists = []
     try:
-        featuredartists = redis_instance.get('at_featuredartists')
+        featuredartists = pickle.loads(redis_instance.get('at_featuredartists'))
     except:
         featuredartists = []
     uniqartists = {}
@@ -79,7 +80,7 @@ def index(request):
                 featuredartists.append(d)
                 uniqartists[artist.artistname.title()] = 1
         try:
-            redis_instance.set('at_featuredartists', featuredartists)
+            redis_instance.set('at_featuredartists', pickle.dumps(featuredartists))
         except:
             pass
     else:
@@ -97,10 +98,10 @@ def index(request):
     eventtypesdict = {}
     eventtypeslist = []
     try:
-        uniqueartists = redis_instance.get('at_uniqueartists')
-        uniqueartworks = redis_instance.get('at_uniqueartworks')
-        eventtypes = redis_instance.get('at_eventtypes')
-        allartists = redis_instance.get('at_allartists')
+        uniqueartists = pickle.loads(redis_instance.get('at_uniqueartists'))
+        uniqueartworks = pickle.loads(redis_instance.get('at_uniqueartworks'))
+        eventtypes = pickle.loads(redis_instance.get('at_eventtypes'))
+        allartists = pickle.loads(redis_instance.get('at_allartists'))
     except:
         pass
     if allartists[0].__len__() == 0:
@@ -156,10 +157,10 @@ def index(request):
                 if rctr == rows:
                     break
             try:
-                redis_instance.set('at_allartists', allartists)
-                redis_instance.set('at_eventtypes', eventtypes)
-                redis_instance.set('at_uniqueartists', uniqueartists)
-                redis_instance.set('at_uniqueartworks', uniqueartworks)
+                redis_instance.set('at_allartists', pickle.dumps(allartists))
+                redis_instance.set('at_eventtypes', pickle.dumps(eventtypes))
+                redis_instance.set('at_uniqueartists', pickle.dumps(uniqueartists))
+                redis_instance.set('at_uniqueartworks', pickle.dumps(uniqueartworks))
             except:
                 pass    
     context['allartists'] = allartists
@@ -168,14 +169,14 @@ def index(request):
     context['uniqueartworks'] = uniqueartworks
     filterartists = []
     try:
-        filterartists = redis_instance.get('at_filterartists')
+        filterartists = pickle.loads(redis_instance.get('at_filterartists'))
     except:
         pass
     if filterartists.__len__() == 0:
         for artist in allartistsqset[:2000]:
             filterartists.append(artist.artistname)
         try:
-            redis_instance.set('at_filterartists', filterartists)
+            redis_instance.set('at_filterartists', pickle.dumps(filterartists))
         except:
             pass
     context['filterartists'] = filterartists
@@ -216,11 +217,11 @@ def details(request):
     allartworks3 = []
     allartworks4 = []
     try:
-        allartworks = redis_instance.get('at_allartworks_%s'%artistobj.id)
-        allartworks1 = redis_instance.get('at_allartworks1_%s'%artistobj.id)
-        allartworks2 = redis_instance.get('at_allartworks2_%s'%artistobj.id)
-        allartworks3 = redis_instance.get('at_allartworks3_%s'%artistobj.id)
-        allartworks4 = redis_instance.get('at_allartworks4_%s'%artistobj.id)
+        allartworks = pickle.loads(redis_instance.get('at_allartworks_%s'%artistobj.id))
+        allartworks1 = pickle.loads(redis_instance.get('at_allartworks1_%s'%artistobj.id))
+        allartworks2 = pickle.loads(redis_instance.get('at_allartworks2_%s'%artistobj.id))
+        allartworks3 = pickle.loads(redis_instance.get('at_allartworks3_%s'%artistobj.id))
+        allartworks4 = pickle.loads(redis_instance.get('at_allartworks4_%s'%artistobj.id))
     except:
         pass
     uniqueartworks = {}
@@ -244,11 +245,11 @@ def details(request):
                     continue
                 actr += 1
         try:
-            redis_instance.set('at_allartworks_%s'%artistobj.id, allartworks)
-            redis_instance.set('at_allartworks1_%s'%artistobj.id, allartworks1)
-            redis_instance.set('at_allartworks2_%s'%artistobj.id, allartworks2)
-            redis_instance.set('at_allartworks3_%s'%artistobj.id, allartworks3)
-            redis_instance.set('at_allartworks4_%s'%artistobj.id, allartworks4)
+            redis_instance.set('at_allartworks_%s'%artistobj.id, pickle.dumps(allartworks))
+            redis_instance.set('at_allartworks1_%s'%artistobj.id, pickle.dumps(allartworks1))
+            redis_instance.set('at_allartworks2_%s'%artistobj.id, pickle.dumps(allartworks2))
+            redis_instance.set('at_allartworks3_%s'%artistobj.id, pickle.dumps(allartworks3))
+            redis_instance.set('at_allartworks4_%s'%artistobj.id, pickle.dumps(allartworks4))
         except:
             pass
     artistinfo = {'name' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthdate, 'deathdate' : artistobj.deathdate, 'profileurl' : artistobj.profileurl, 'desctiption' : artistobj.about, 'image' : artistobj.largeimage, 'gender' : artistobj.gender, 'about' : artistobj.about, 'artistid' : artistobj.id}
@@ -263,9 +264,9 @@ def details(request):
     artistgalleries = {} # All galleries where artworks of the artist under consideration are displayed.
     relatedartistqset = None
     try:
-        relatedartists = redis_instance.get('at_relatedartists_%s'%artistobj.id)
-        artistevents = redis_instance.get('at_artistevents_%s'%artistobj.id)
-        artistgalleries = redis_instance.get('at_artistgalleries_%s'%artistobj.id)
+        relatedartists = pickle.loads(redis_instance.get('at_relatedartists_%s'%artistobj.id))
+        artistevents = pickle.loads(redis_instance.get('at_artistevents_%s'%artistobj.id))
+        artistgalleries = pickle.loads(redis_instance.get('at_artistgalleries_%s'%artistobj.id))
     except:
         pass
     if relatedartists.__len__() == 0:
@@ -310,9 +311,9 @@ def details(request):
             if l.__len__() < chunksize and galleryname not in l:
                 artistgalleries[galleryname] = {'location' : location, 'description' : description, 'galleryurl' : galleryurl, 'coverimage' : coverimage}
         try:
-            redis_instance.set('at_relatedartists_%s'%artistobj.id, relatedartists)
-            redis_instance.set('at_artistevents_%s'%artistobj.id, artistevents)
-            redis_instance.set('at_artistgalleries_%s'%artistobj.id, artistgalleries)
+            redis_instance.set('at_relatedartists_%s'%artistobj.id, pickle.dumps(relatedartists))
+            redis_instance.set('at_artistevents_%s'%artistobj.id, pickle.dumps(artistevents))
+            redis_instance.set('at_artistgalleries_%s'%artistobj.id, pickle.dumps(artistgalleries))
         except:
             pass
     context['relatedartists'] = relatedartists

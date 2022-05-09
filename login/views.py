@@ -18,6 +18,7 @@ from django.template import loader
 import os, sys, re, time, datetime
 import simplejson as json
 import redis
+import pickle
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from museum.models import Museum, MuseumEvent, MuseumPieces
@@ -39,7 +40,7 @@ def getcarouselinfo():
     countqset = WebConfig.objects.filter(paramname="carousel entries count")
     entriescount = countqset[0].paramvalue
     try:
-        entrieslist = redis_instance.get('carouselentries')
+        entrieslist = pickle.loads(redis_instance.get('carouselentries'))
     except:
         pass
     if entrieslist.__len__() == 0:
@@ -53,7 +54,7 @@ def getcarouselinfo():
             d = {'img' : imgpath, 'title' : title, 'text' : text, 'datatype' : datatype, 'data_id' : dataid}
             entrieslist.append(d)
         try:
-            redis_instance.set('carouselentries', entrieslist)
+            redis_instance.set('carouselentries', pickle.dumps(entrieslist))
         except:
             pass
     return entrieslist
@@ -66,7 +67,7 @@ def index(request):
     chunksize = 3
     galleriesdict = {}
     try:
-        galleriesdict = redis_instance.get('h_galleriesdict')
+        galleriesdict = pickle.loads(redis_instance.get('h_galleriesdict'))
     except:
         pass
     if galleriesdict.keys().__len__() == 0:
@@ -80,13 +81,13 @@ def index(request):
             gid = g.id
             galleriesdict[gname] = [gloc, gimg, gurl, gid]
         try:
-            redis_instance.set('h_galleriesdict', galleriesdict)
+            redis_instance.set('h_galleriesdict', pickle.dumps(galleriesdict))
         except:
             pass
     context = {'galleries' : galleriesdict}
     artistsdict = {}
     try:
-        artistsdict = redis_instance.get('h_artistsdict')
+        artistsdict = pickle.loads(redis_instance.get('h_artistsdict'))
     except:
         pass
     if artistsdict.keys().__len__() == 0:
@@ -101,13 +102,13 @@ def index(request):
             aid = a.id
             artistsdict[aname] = [about, aurl, aimg, anat, aid]
         try:
-            redis_instance.set('h_artistsdict', artistsdict)
+            redis_instance.set('h_artistsdict', pickle.dumps(artistsdict))
         except:
             pass
     context['artists'] = artistsdict
     eventsdict = {}
     try:
-        eventsdict = redis_instance.get('h_eventsdict')
+        eventsdict = pickle.loads(redis_instance.get('h_eventsdict'))
     except:
         pass
     if eventsdict.keys().__len__() == 0:
@@ -122,13 +123,13 @@ def index(request):
             eventimage = e.eventimage
             eventsdict[ename] = [eurl, einfo, eperiod, eid, eventimage ]
         try:
-            redis_instance.set('h_eventsdict', eventsdict)
+            redis_instance.set('h_eventsdict', pickle.dumps(eventsdict))
         except:
             pass
     context['events'] = eventsdict
     museumsdict = {}
     try:
-        museumsdict = redis_instance.get('h_museumsdict')
+        museumsdict = pickle.loads(redis_instance.get('h_museumsdict'))
     except:
         pass
     if museumsdict.keys().__len__() == 0:
@@ -143,13 +144,13 @@ def index(request):
             mimage = mus.coverimage
             museumsdict[mname] = [murl, minfo, mlocation, mid, mimage ]
         try:
-            redis_instance.set('h_museumsdict', museumsdict)
+            redis_instance.set('h_museumsdict', pickle.dumps(museumsdict))
         except:
             pass
     context['museums'] = museumsdict
     upcomingauctions = {}
     try:
-        upcomingauctions = redis_instance.get('h_upcomingauctions')
+        upcomingauctions = pickle.loads(redis_instance.get('h_upcomingauctions'))
     except:
         pass
     if upcomingauctions.keys().__len__() == 0:
@@ -172,13 +173,13 @@ def index(request):
             if actr >= chunksize:
                 break
         try:
-            redis_instance.set('h_upcomingauctions', upcomingauctions)
+            redis_instance.set('h_upcomingauctions', pickle.dumps(upcomingauctions))
         except:
             pass
     context['upcomingauctions'] = upcomingauctions
     auctionhouses = []
     try:
-        auctionhouses = redis_instance.get('h_auctionhouses')
+        auctionhouses = pickle.loads(redis_instance.get('h_auctionhouses'))
     except:
         pass
     if auctionhouses.__len__() == 0:
@@ -196,7 +197,7 @@ def index(request):
             if actr >= chunksize:
                 break
         try:
-            redis_instance.set('h_auctionhouses', auctionhouses)
+            redis_instance.set('h_auctionhouses', pickle.dumps(auctionhouses))
         except:
             pass
     context['auctionhouses'] = auctionhouses
