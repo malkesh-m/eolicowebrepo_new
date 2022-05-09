@@ -16,6 +16,9 @@ from django.contrib.auth import logout
 from django.template import loader
 
 import os, sys, re, time, datetime
+import simplejson as json
+import redis
+
 from gallery.models import Gallery, Event, Artist, Artwork
 from museum.models import Museum, MuseumEvent, MuseumPieces
 from login.models import User, Session, WebConfig, Carousel
@@ -28,20 +31,31 @@ from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.conf import settings
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
+redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
+
 
 def getcarouselinfo():
     entrieslist = []
     countqset = WebConfig.objects.filter(paramname="carousel entries count")
     entriescount = countqset[0].paramvalue
-    carouselqset = Carousel.objects.all().order_by('priority', '-edited')
-    for e in range(0, int(entriescount)):
-        imgpath = carouselqset[e].imagepath
-        title = carouselqset[e].title
-        text = carouselqset[e].textvalue
-        datatype = carouselqset[e].datatype
-        dataid = carouselqset[e].data_id
-        d = {'img' : imgpath, 'title' : title, 'text' : text, 'datatype' : datatype, 'data_id' : dataid}
-        entrieslist.append(d)
+    try:
+        entrieslist = redis_instance.get('carouselentries')
+    except:
+        pass
+    if entrieslist.__len__() == 0:
+        carouselqset = Carousel.objects.all().order_by('priority', '-edited')
+        for e in range(0, int(entriescount)):
+            imgpath = carouselqset[e].imagepath
+            title = carouselqset[e].title
+            text = carouselqset[e].textvalue
+            datatype = carouselqset[e].datatype
+            dataid = carouselqset[e].data_id
+            d = {'img' : imgpath, 'title' : title, 'text' : text, 'datatype' : datatype, 'data_id' : dataid}
+            entrieslist.append(d)
+        try:
+            redis_instance.set('carouselentries', entrieslist)
+        except:
+            pass
     return entrieslist
 
 
@@ -50,87 +64,141 @@ def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     chunksize = 3
-    galleries = Gallery.objects.all().order_by('priority', '-edited')
-    gallerieslist = galleries[0:4]
     galleriesdict = {}
-    for g in gallerieslist:
-        gname = g.galleryname
-        gloc = g.location
-        gimg = g.coverimage
-        gurl = g.galleryurl
-        gid = g.id
-        galleriesdict[gname] = [gloc, gimg, gurl, gid]
+    try:
+        galleriesdict = redis_instance.get('h_galleriesdict')
+    except:
+        pass
+    if galleriesdict.keys().__len__() == 0:
+        galleries = Gallery.objects.all().order_by('priority', '-edited')
+        gallerieslist = galleries[0:4]
+        for g in gallerieslist:
+            gname = g.galleryname
+            gloc = g.location
+            gimg = g.coverimage
+            gurl = g.galleryurl
+            gid = g.id
+            galleriesdict[gname] = [gloc, gimg, gurl, gid]
+        try:
+            redis_instance.set('h_galleriesdict', galleriesdict)
+        except:
+            pass
     context = {'galleries' : galleriesdict}
-    artists = Artist.objects.all().order_by('-edited')
-    artistslist = artists[0:4]
     artistsdict = {}
-    for a in artistslist:
-        aname = a.artistname
-        about = a.about
-        aurl = a.profileurl
-        aimg = a.squareimage
-        anat = a.nationality
-        aid = a.id
-        artistsdict[aname] = [about, aurl, aimg, anat, aid]
+    try:
+        artistsdict = redis_instance.get('h_artistsdict')
+    except:
+        pass
+    if artistsdict.keys().__len__() == 0:
+        artists = Artist.objects.all().order_by('-edited')
+        artistslist = artists[0:4]
+        for a in artistslist:
+            aname = a.artistname
+            about = a.about
+            aurl = a.profileurl
+            aimg = a.squareimage
+            anat = a.nationality
+            aid = a.id
+            artistsdict[aname] = [about, aurl, aimg, anat, aid]
+        try:
+            redis_instance.set('h_artistsdict', artistsdict)
+        except:
+            pass
     context['artists'] = artistsdict
-    events = Event.objects.all().order_by('priority', '-edited')
-    eventslist = events[0:4]
     eventsdict = {}
-    for e in eventslist:
-        ename = e.eventname
-        eurl = e.eventurl
-        einfo = str(e.eventinfo[0:20]) + "..."
-        eperiod = e.eventperiod
-        eid = e.id
-        eventimage = e.eventimage
-        eventsdict[ename] = [eurl, einfo, eperiod, eid, eventimage ]
+    try:
+        eventsdict = redis_instance.get('h_eventsdict')
+    except:
+        pass
+    if eventsdict.keys().__len__() == 0:
+        events = Event.objects.all().order_by('priority', '-edited')
+        eventslist = events[0:4]
+        for e in eventslist:
+            ename = e.eventname
+            eurl = e.eventurl
+            einfo = str(e.eventinfo[0:20]) + "..."
+            eperiod = e.eventperiod
+            eid = e.id
+            eventimage = e.eventimage
+            eventsdict[ename] = [eurl, einfo, eperiod, eid, eventimage ]
+        try:
+            redis_instance.set('h_eventsdict', eventsdict)
+        except:
+            pass
     context['events'] = eventsdict
-    museumsqset = Museum.objects.all().order_by('priority', '-edited')
-    museumslist = museumsqset[0:4]
     museumsdict = {}
-    for mus in museumslist:
-        mname = mus.museumname
-        murl = mus.museumurl
-        minfo = str(mus.description[0:20]) + "..."
-        mlocation = mus.location
-        mid = mus.id
-        mimage = mus.coverimage
-        museumsdict[mname] = [murl, minfo, mlocation, mid, mimage ]
+    try:
+        museumsdict = redis_instance.get('h_museumsdict')
+    except:
+        pass
+    if museumsdict.keys().__len__() == 0:
+        museumsqset = Museum.objects.all().order_by('priority', '-edited')
+        museumslist = museumsqset[0:4]
+        for mus in museumslist:
+            mname = mus.museumname
+            murl = mus.museumurl
+            minfo = str(mus.description[0:20]) + "..."
+            mlocation = mus.location
+            mid = mus.id
+            mimage = mus.coverimage
+            museumsdict[mname] = [murl, minfo, mlocation, mid, mimage ]
+        try:
+            redis_instance.set('h_museumsdict', museumsdict)
+        except:
+            pass
     context['museums'] = museumsdict
     upcomingauctions = {}
-    auctionsqset = Auction.objects.all().order_by('priority', '-edited')
-    actr = 0
-    srcPattern = re.compile("src=(.*)$")
-    for auction in auctionsqset:
-        lotsqset = Lot.objects.filter(auction=auction).order_by('priority', '-edited')
-        if lotsqset.__len__() == 0:
-            continue
-        lotobj = lotsqset[0]
-        imageloc = lotobj.lotimage1
-        spc = re.search(srcPattern, imageloc)
-        if spc:
-            imageloc = spc.groups()[0]
-            imageloc = imageloc.replace("%3A", ":").replace("%2F", "/")
-        d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auction.auctionhouse, 'location' : auction.auctionlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'description' : auction.description, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id}
-        upcomingauctions[auction.auctionname] = d
-        actr += 1
-        if actr >= chunksize:
-            break
+    try:
+        upcomingauctions = redis_instance.get('h_upcomingauctions')
+    except:
+        pass
+    if upcomingauctions.keys().__len__() == 0:
+        auctionsqset = Auction.objects.all().order_by('priority', '-edited')
+        actr = 0
+        srcPattern = re.compile("src=(.*)$")
+        for auction in auctionsqset:
+            lotsqset = Lot.objects.filter(auction=auction).order_by('priority', '-edited')
+            if lotsqset.__len__() == 0:
+                continue
+            lotobj = lotsqset[0]
+            imageloc = lotobj.lotimage1
+            spc = re.search(srcPattern, imageloc)
+            if spc:
+                imageloc = spc.groups()[0]
+                imageloc = imageloc.replace("%3A", ":").replace("%2F", "/")
+            d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auction.auctionhouse, 'location' : auction.auctionlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'description' : auction.description, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id}
+            upcomingauctions[auction.auctionname] = d
+            actr += 1
+            if actr >= chunksize:
+                break
+        try:
+            redis_instance.set('h_upcomingauctions', upcomingauctions)
+        except:
+            pass
     context['upcomingauctions'] = upcomingauctions
     auctionhouses = []
-    auchousesqset = AuctionHouse.objects.all().order_by('priority', '-edited')
-    actr = 0
-    for auchouse in auchousesqset:
-        auchousename = auchouse.housename
-        auctionsqset = Auction.objects.filter(auctionhouse__iexact=auchousename)
-        if auctionsqset.__len__() == 0:
-            continue
-        print(auctionsqset[0].coverimage)
-        d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : auchouse.description, 'coverimage' : auctionsqset[0].coverimage}
-        auctionhouses.append(d)
-        actr += 1
-        if actr >= chunksize:
-            break
+    try:
+        auctionhouses = redis_instance.get('h_auctionhouses')
+    except:
+        pass
+    if auctionhouses.__len__() == 0:
+        auchousesqset = AuctionHouse.objects.all().order_by('priority', '-edited')
+        actr = 0
+        for auchouse in auchousesqset:
+            auchousename = auchouse.housename
+            auctionsqset = Auction.objects.filter(auctionhouse__iexact=auchousename)
+            if auctionsqset.__len__() == 0:
+                continue
+            print(auctionsqset[0].coverimage)
+            d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : auchouse.description, 'coverimage' : auctionsqset[0].coverimage}
+            auctionhouses.append(d)
+            actr += 1
+            if actr >= chunksize:
+                break
+        try:
+            redis_instance.set('h_auctionhouses', auctionhouses)
+        except:
+            pass
     context['auctionhouses'] = auctionhouses
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries

@@ -16,6 +16,7 @@ from django.template import loader
 
 import os, sys, re, time, datetime
 import simplejson as json
+import redis
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -27,6 +28,8 @@ from django.views.decorators.cache import cache_page
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.conf import settings
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
 
 #@cache_page(CACHE_TTL)
@@ -74,6 +77,7 @@ def index(request):
     context = {}
     allmtypes = []
     museumsfull = {}
+    filtermuseums = []
     for mtype in mtypesqset[rowstartctr:rowendctr]:
         museumtypes.append(mtype[0])
         allmuseums[mtype[0]] = []
@@ -115,6 +119,9 @@ def index(request):
             allmuseums[m.museumtype] = l
         else:
             continue
+    for musobj in museumqset:
+        filtermuseums.append(musobj.museumname)
+    context['filtermuseums'] = filtermuseums
     emptytypes = []
     for mt in allmuseums.keys():
         if allmuseums[mt].__len__() == 0:

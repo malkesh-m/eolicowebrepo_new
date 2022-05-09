@@ -16,6 +16,7 @@ from django.template import loader
 
 import os, sys, re, time, datetime
 import simplejson as json
+import redis
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -27,6 +28,8 @@ from django.views.decorators.cache import cache_page
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.conf import settings
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
 
 #@cache_page(CACHE_TTL)
@@ -48,28 +51,39 @@ def index(request):
     endctr = (chunksize * rows) * int(page) + featuredsize
     context = {}
     featuredartists = []
-    artistsqset = Artist.objects.filter(artistname__istartswith=pageno).order_by('priority', '-edited')
-    allartistsqset = Artist.objects.all()
+    try:
+        featuredartists = redis_instance.get('at_featuredartists')
+    except:
+        featuredartists = []
     uniqartists = {}
-    for artist in artistsqset[0:featuredsize]:
-        if artist.artistname.title() not in uniqartists.keys():
-            d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority')
-            if artworkqset.__len__() == 0:
-                #continue
-                d['artworkname'] = ""
-                d['artworkimage'] = ""
-                d['artworkdate'] = ""
-                d['awid'] = ""
-                d['atype'] = "0" # Artists with no related artwork
-            else:
-                d['artworkname'] = artworkqset[0].artworkname
-                d['artworkimage'] = artworkqset[0].image1
-                d['artworkdate'] = artworkqset[0].creationdate
-                d['awid'] = artworkqset[0].id
-                d['atype'] = "1" # Artists with available related artwork
-            featuredartists.append(d)
-            uniqartists[artist.artistname.title()] = 1
+    if featuredartists.__len__() == 0:
+        artistsqset = Artist.objects.filter(artistname__istartswith=pageno).order_by('priority', '-edited')
+        allartistsqset = Artist.objects.all()
+        for artist in artistsqset[0:featuredsize]:
+            if artist.artistname.title() not in uniqartists.keys():
+                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
+                artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority')
+                if artworkqset.__len__() == 0:
+                    #continue
+                    d['artworkname'] = ""
+                    d['artworkimage'] = ""
+                    d['artworkdate'] = ""
+                    d['awid'] = ""
+                    d['atype'] = "0" # Artists with no related artwork
+                else:
+                    d['artworkname'] = artworkqset[0].artworkname
+                    d['artworkimage'] = artworkqset[0].image1
+                    d['artworkdate'] = artworkqset[0].creationdate
+                    d['awid'] = artworkqset[0].id
+                    d['atype'] = "1" # Artists with available related artwork
+                featuredartists.append(d)
+                uniqartists[artist.artistname.title()] = 1
+        try:
+            redis_instance.set('at_featuredartists', featuredartists)
+        except:
+            pass
+    else:
+        pass
     context['featuredartists'] = featuredartists
     allartists = []
     rctr = 0
@@ -82,64 +96,88 @@ def index(request):
     uniqueartworks = {}
     eventtypesdict = {}
     eventtypeslist = []
-    if artistsqset.__len__() > featuredsize:
-        for artist in artistsqset[startctr:endctr]:
-            #print(artist.artistname)
-            d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by() # Ordered by 'priority' - descending.
-            if artworkqset.__len__() == 0:
-                continue
-            if artist.artistname.title() not in uniqueartists.keys():
-                uniqueartists[artist.artistname.title()] = 1
-            else:
-                continue
-            artworkobj = artworkqset[0]
-            eventtype = artworkobj.event.eventtype
-            if artworkobj.artworkname.title() not in uniqueartworks.keys():
-                d['artworkname'] = artworkobj.artworkname.title()
-                #print(d['artworkname'])
-                uniqueartworks[artworkobj.artworkname.title()] = 1
-            else:
-                awctr = 0
-                awfound = 0
-                while awctr < artworkqset.__len__() - 1: # Iterate over all artworks by the artist under consideration
-                    awctr += 1
-                    artworkobj = artworkqset[awctr]
-                    if artworkobj.artworkname.title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
-                        awfound = 1
-                        break
-                if awfound: # Add artwork if it has not been encountered before.
-                    uniqueartworks[artworkobj.artworkname.title()] = 1
-                    d['artworkname'] = artworkobj.artworkname.title()
-                else: # Skip this artist if no new artworks could be found.
+    try:
+        uniqueartists = redis_instance.get('at_uniqueartists')
+        uniqueartworks = redis_instance.get('at_uniqueartworks')
+        eventtypes = redis_instance.get('at_eventtypes')
+        allartists = redis_instance.get('at_allartists')
+    except:
+        pass
+    if allartists[0].__len__() == 0:
+        if artistsqset.__len__() > featuredsize:
+            for artist in artistsqset[startctr:endctr]:
+                #print(artist.artistname)
+                d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
+                artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by() # Ordered by 'priority' - descending.
+                if artworkqset.__len__() == 0:
                     continue
-            d['artworkimage'] = artworkobj.image1
-            d['artworkdate'] = artworkobj.creationdate
-            d['awid'] = artworkobj.id
-            d['artworkmedium'] = artworkobj.medium
-            d['artworkestimate'] = artworkobj.estimate
-            d['eventtype'] = eventtype
-            if actr < chunksize:
-                l = allartists[rctr]
-                l.append(d)
-                allartists[rctr] = l
-                actr += 1
-                if eventtype in eventtypesdict.keys():
-                    eventtypesdict[eventtype] += 1
+                if artist.artistname.title() not in uniqueartists.keys():
+                    uniqueartists[artist.artistname.title()] = 1
                 else:
-                    eventtypesdict[eventtype] = 1
-            else:
-                actr = 0
-                rctr += 1
-            if rctr == rows:
-                break
+                    continue
+                artworkobj = artworkqset[0]
+                eventtype = artworkobj.event.eventtype
+                if artworkobj.artworkname.title() not in uniqueartworks.keys():
+                    d['artworkname'] = artworkobj.artworkname.title()
+                    #print(d['artworkname'])
+                    uniqueartworks[artworkobj.artworkname.title()] = 1
+                else:
+                    awctr = 0
+                    awfound = 0
+                    while awctr < artworkqset.__len__() - 1: # Iterate over all artworks by the artist under consideration
+                        awctr += 1
+                        artworkobj = artworkqset[awctr]
+                        if artworkobj.artworkname.title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
+                            awfound = 1
+                            break
+                    if awfound: # Add artwork if it has not been encountered before.
+                        uniqueartworks[artworkobj.artworkname.title()] = 1
+                        d['artworkname'] = artworkobj.artworkname.title()
+                    else: # Skip this artist if no new artworks could be found.
+                        continue
+                d['artworkimage'] = artworkobj.image1
+                d['artworkdate'] = artworkobj.creationdate
+                d['awid'] = artworkobj.id
+                d['artworkmedium'] = artworkobj.medium
+                d['artworkestimate'] = artworkobj.estimate
+                d['eventtype'] = eventtype
+                if actr < chunksize:
+                    l = allartists[rctr]
+                    l.append(d)
+                    allartists[rctr] = l
+                    actr += 1
+                    if eventtype in eventtypesdict.keys():
+                        eventtypesdict[eventtype] += 1
+                    else:
+                        eventtypesdict[eventtype] = 1
+                else:
+                    actr = 0
+                    rctr += 1
+                if rctr == rows:
+                    break
+            try:
+                redis_instance.set('at_allartists', allartists)
+                redis_instance.set('at_eventtypes', eventtypes)
+                redis_instance.set('at_uniqueartists', uniqueartists)
+                redis_instance.set('at_uniqueartworks', uniqueartworks)
+            except:
+                pass    
     context['allartists'] = allartists
     context['eventtypes'] = eventtypesdict
     context['uniqueartists'] = uniqueartists
     context['uniqueartworks'] = uniqueartworks
     filterartists = []
-    for artist in allartistsqset[:2000]:
-        filterartists.append(artist.artistname)
+    try:
+        filterartists = redis_instance.get('at_filterartists')
+    except:
+        pass
+    if filterartists.__len__() == 0:
+        for artist in allartistsqset[:2000]:
+            filterartists.append(artist.artistname)
+        try:
+            redis_instance.set('at_filterartists', filterartists)
+        except:
+            pass
     context['filterartists'] = filterartists
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
@@ -177,25 +215,42 @@ def details(request):
     allartworks2 = []
     allartworks3 = []
     allartworks4 = []
-    artworksqset = Artwork.objects.filter(artistname=artistname.title()).order_by('priority')
+    try:
+        allartworks = redis_instance.get('at_allartworks_%s'%artistobj.id)
+        allartworks1 = redis_instance.get('at_allartworks1_%s'%artistobj.id)
+        allartworks2 = redis_instance.get('at_allartworks2_%s'%artistobj.id)
+        allartworks3 = redis_instance.get('at_allartworks3_%s'%artistobj.id)
+        allartworks4 = redis_instance.get('at_allartworks4_%s'%artistobj.id)
+    except:
+        pass
     uniqueartworks = {}
     actr = 0
-    for artwork in artworksqset:
-        d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : artwork.provenance, 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : artwork.workurl, 'estimate' : artwork.estimate, 'awid' : artwork.id}
-        if artwork.artworkname not in uniqueartworks.keys():
-            allartworks.append(d)
-            uniqueartworks[artwork.artworkname] = artwork.id
-            if actr == 0:
-                allartworks1.append(d)
-            elif actr == 1:
-                allartworks2.append(d)
-            elif actr == 2:
-                allartworks3.append(d)
-            elif actr == 3:
-                allartworks4.append(d)
-                actr = 0
-                continue
-            actr += 1
+    if allartworks.__len__() == 0:
+        artworksqset = Artwork.objects.filter(artistname=artistname.title()).order_by('priority')
+        for artwork in artworksqset:
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : artwork.provenance, 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : artwork.workurl, 'estimate' : artwork.estimate, 'awid' : artwork.id}
+            if artwork.artworkname not in uniqueartworks.keys():
+                allartworks.append(d)
+                uniqueartworks[artwork.artworkname] = artwork.id
+                if actr == 0:
+                    allartworks1.append(d)
+                elif actr == 1:
+                    allartworks2.append(d)
+                elif actr == 2:
+                    allartworks3.append(d)
+                elif actr == 3:
+                    allartworks4.append(d)
+                    actr = 0
+                    continue
+                actr += 1
+        try:
+            redis_instance.set('at_allartworks_%s'%artistobj.id, allartworks)
+            redis_instance.set('at_allartworks1_%s'%artistobj.id, allartworks1)
+            redis_instance.set('at_allartworks2_%s'%artistobj.id, allartworks2)
+            redis_instance.set('at_allartworks3_%s'%artistobj.id, allartworks3)
+            redis_instance.set('at_allartworks4_%s'%artistobj.id, allartworks4)
+        except:
+            pass
     artistinfo = {'name' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthdate, 'deathdate' : artistobj.deathdate, 'profileurl' : artistobj.profileurl, 'desctiption' : artistobj.about, 'image' : artistobj.largeimage, 'gender' : artistobj.gender, 'about' : artistobj.about, 'artistid' : artistobj.id}
     context['allartworks'] = allartworks
     context['allartworks1'] = allartworks1
@@ -208,45 +263,58 @@ def details(request):
     artistgalleries = {} # All galleries where artworks of the artist under consideration are displayed.
     relatedartistqset = None
     try:
-        eventobj = artistobj.event
-        # Related Artists can be sought out based on the 'event' or on 'nationality'. Though 'event' is a better
-        # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
-        # is a query that cannot be cached, so it has to be picked up from the DB every time.
-        relatedartistqset = Artist.objects.filter(event=eventobj)
+        relatedartists = redis_instance.get('at_relatedartists_%s'%artistobj.id)
+        artistevents = redis_instance.get('at_artistevents_%s'%artistobj.id)
+        artistgalleries = redis_instance.get('at_artistgalleries_%s'%artistobj.id)
     except:
-        eventobj = None
-        relatedartistqset = Artist.objects.filter(nationality__icontains=artistobj.nationality)
-    for artist in relatedartistqset:
-        d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-        artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority', '-edited')
-        if artworkqset.__len__() == 0:
-            continue
-        d['artworkname'] = artworkqset[0].artworkname
-        d['artworkimage'] = artworkqset[0].image1
-        d['artworkdate'] = artworkqset[0].creationdate
-        d['artworkdescription'] = artworkqset[0].description
-        d['awid'] = artworkqset[0].id
-        if relatedartists.__len__() < chunksize:
-            relatedartists.append(d)
-    for artwork in artworksqset:
-        eventname = artwork.event.eventname
-        eventurl = artwork.event.eventurl
-        eventinfo = artwork.event.eventinfo
-        eventperiod = artwork.event.eventperiod
-        eventimage = artwork.event.eventimage
-        eventlocation = artwork.event.eventlocation
-        evid = artwork.event.id
-        l = artistevents.keys()
-        if l.__len__() < chunksize and eventname not in l:
-            artistevents[eventname] = {'eventurl' : eventurl, 'eventinfo' : eventinfo, 'eventperiod' : eventperiod, 'eventimage' : eventimage, 'eventlocation' : eventlocation, 'evid' : evid}
-        galleryname = artwork.gallery.galleryname
-        location = artwork.gallery.location
-        description = artwork.gallery.description
-        galleryurl = artwork.gallery.galleryurl
-        coverimage = artwork.gallery.coverimage
-        l = artistgalleries.keys()
-        if l.__len__() < chunksize and galleryname not in l:
-            artistgalleries[galleryname] = {'location' : location, 'description' : description, 'galleryurl' : galleryurl, 'coverimage' : coverimage}
+        pass
+    if relatedartists.__len__() == 0:
+        try:
+            eventobj = artistobj.event
+            # Related Artists can be sought out based on the 'event' or on 'nationality'. Though 'event' is a better
+            # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
+            # is a query that cannot be cached, so it has to be picked up from the DB every time.
+            relatedartistqset = Artist.objects.filter(event=eventobj)
+        except:
+            eventobj = None
+            relatedartistqset = Artist.objects.filter(nationality__icontains=artistobj.nationality)
+        for artist in relatedartistqset:
+            d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
+            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority', '-edited')
+            if artworkqset.__len__() == 0:
+                continue
+            d['artworkname'] = artworkqset[0].artworkname
+            d['artworkimage'] = artworkqset[0].image1
+            d['artworkdate'] = artworkqset[0].creationdate
+            d['artworkdescription'] = artworkqset[0].description
+            d['awid'] = artworkqset[0].id
+            if relatedartists.__len__() < chunksize:
+                relatedartists.append(d)
+        for artwork in artworksqset:
+            eventname = artwork.event.eventname
+            eventurl = artwork.event.eventurl
+            eventinfo = artwork.event.eventinfo
+            eventperiod = artwork.event.eventperiod
+            eventimage = artwork.event.eventimage
+            eventlocation = artwork.event.eventlocation
+            evid = artwork.event.id
+            l = artistevents.keys()
+            if l.__len__() < chunksize and eventname not in l:
+                artistevents[eventname] = {'eventurl' : eventurl, 'eventinfo' : eventinfo, 'eventperiod' : eventperiod, 'eventimage' : eventimage, 'eventlocation' : eventlocation, 'evid' : evid}
+            galleryname = artwork.gallery.galleryname
+            location = artwork.gallery.location
+            description = artwork.gallery.description
+            galleryurl = artwork.gallery.galleryurl
+            coverimage = artwork.gallery.coverimage
+            l = artistgalleries.keys()
+            if l.__len__() < chunksize and galleryname not in l:
+                artistgalleries[galleryname] = {'location' : location, 'description' : description, 'galleryurl' : galleryurl, 'coverimage' : coverimage}
+        try:
+            redis_instance.set('at_relatedartists_%s'%artistobj.id, relatedartists)
+            redis_instance.set('at_artistevents_%s'%artistobj.id, artistevents)
+            redis_instance.set('at_artistgalleries_%s'%artistobj.id, artistgalleries)
+        except:
+            pass
     context['relatedartists'] = relatedartists
     context['artistevents'] = artistevents
     context['artistgalleries'] = artistgalleries

@@ -16,6 +16,7 @@ from django.template import loader
 
 import os, sys, re, time, datetime
 import simplejson as json
+import redis
 
 from gallery.models import Gallery, Event, Artist, Artwork
 from login.models import User, Session, WebConfig, Carousel
@@ -26,6 +27,8 @@ from django.views.decorators.cache import cache_page
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.conf import settings
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
 
 #@login_required(login_url='/login/show/')
@@ -74,6 +77,7 @@ def index(request):
     galleriesdict = {}
     gallerylocations = {}
     allgalleries = {}
+    filtergalleries = []
     for g in gallerieslist1[startctr1:lastctr1]:
         gname = g.galleryname
         gloc = g.location
@@ -92,6 +96,7 @@ def index(request):
                 continue
             gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+        filtergalleries.append(gname)
     context = {'galleries1' : galleriesdict}
     galleriesdict = {}
     for g in gallerieslist2[startctr2:lastctr2]:
@@ -112,6 +117,7 @@ def index(request):
                 continue
             gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+        filtergalleries.append(gname)
     context['galleries2'] = galleriesdict
     galleriesdict = {}
     for g in gallerieslist3[startctr3:lastctr3]:
@@ -132,6 +138,7 @@ def index(request):
                 continue
             gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+        filtergalleries.append(gname)
     context['galleries3'] = galleriesdict
     galleriesdict = {}
     for g in gallerieslist4[startctr4:lastctr4]:
@@ -152,6 +159,7 @@ def index(request):
                 continue
             gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+        filtergalleries.append(gname)
     context['galleries4'] = galleriesdict
     galleriesdict = {}
     for g in gallerieslist5[startctr5:lastctr5]:
@@ -172,9 +180,11 @@ def index(request):
                 continue
             gallerylocations[gloc] = 1
         allgalleries[gname] = [gloc, gimg, gurl, gid, gtypesqset[0][0]]
+        filtergalleries.append(gname)
     context['galleries5'] = galleriesdict
     context['gallerylocations'] = gallerylocations
     context['allgalleries'] = allgalleries
+    context['filtergalleries'] = filtergalleries
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     context['gallerytypes'] = [gtypesqset[0][0], gtypesqset[1][0], gtypesqset[2][0], gtypesqset[3][0], gtypesqset[4][0]]
