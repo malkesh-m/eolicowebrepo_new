@@ -19,10 +19,12 @@ import simplejson as json
 import redis
 import pickle
 
-from gallery.models import Gallery, Event, Artist, Artwork
+from gallery.models import Gallery, Event
 from login.models import User, Session, WebConfig, Carousel
 from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
+from artists.models import Artist, Artwork
+from auctions.models import Auction, Lot
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -62,8 +64,15 @@ def index(request):
         allartistsqset = Artist.objects.all()
         for artist in artistsqset[0:featuredsize]:
             if artist.artistname.title() not in uniqartists.keys():
-                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-                artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority')
+                if artist.nationality == "na":
+                    artist.nationality = ""
+                if artist.birthyear == 0:
+                    artist.birthyear = ""
+                prefix = ""
+                if artist.prefix != "" and artist.prefix != "na":
+                    prefix = artist.prefix + " "
+                d = {'artistname' : prefix + artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id)}
+                artworkqset = Artwork.objects.filter(artist_id=artist.id).order_by('priority')
                 if artworkqset.__len__() == 0:
                     #continue
                     d['artworkname'] = ""
@@ -74,7 +83,7 @@ def index(request):
                 else:
                     d['artworkname'] = artworkqset[0].artworkname
                     d['artworkimage'] = artworkqset[0].image1
-                    d['artworkdate'] = artworkqset[0].creationdate
+                    d['artworkdate'] = artworkqset[0].creationenddate
                     d['awid'] = artworkqset[0].id
                     d['atype'] = "1" # Artists with available related artwork
                 featuredartists.append(d)
@@ -95,12 +104,10 @@ def index(request):
     actr = 0
     uniqueartists = {}
     uniqueartworks = {}
-    eventtypesdict = {}
     eventtypeslist = []
     try:
         uniqueartists = pickle.loads(redis_instance.get('at_uniqueartists'))
         uniqueartworks = pickle.loads(redis_instance.get('at_uniqueartworks'))
-        eventtypes = pickle.loads(redis_instance.get('at_eventtypes'))
         allartists = pickle.loads(redis_instance.get('at_allartists'))
     except:
         pass
@@ -108,8 +115,15 @@ def index(request):
         if artistsqset.__len__() > featuredsize:
             for artist in artistsqset[startctr:endctr]:
                 #print(artist.artistname)
-                d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-                artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by() # Ordered by 'priority' - descending.
+                if artist.nationality == "na":
+                    artist.nationality = ""
+                if artist.birthyear == 0:
+                    artist.birthyear = ""
+                prefix = ""
+                if artist.prefix != "" and artist.prefix != "na":
+                    prefix = artist.prefix + " "
+                d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id)}
+                artworkqset = Artwork.objects.filter(artist_id=artist.id).order_by() # Ordered by 'priority' - descending.
                 if artworkqset.__len__() == 0:
                     continue
                 if artist.artistname.title() not in uniqueartists.keys():
@@ -117,7 +131,6 @@ def index(request):
                 else:
                     continue
                 artworkobj = artworkqset[0]
-                eventtype = artworkobj.event.eventtype
                 if artworkobj.artworkname.title() not in uniqueartworks.keys():
                     d['artworkname'] = artworkobj.artworkname.title()
                     #print(d['artworkname'])
@@ -137,20 +150,14 @@ def index(request):
                     else: # Skip this artist if no new artworks could be found.
                         continue
                 d['artworkimage'] = artworkobj.image1
-                d['artworkdate'] = artworkobj.creationdate
+                d['artworkdate'] = artworkobj.creationenddate
                 d['awid'] = artworkobj.id
                 d['artworkmedium'] = artworkobj.medium
-                d['artworkestimate'] = artworkobj.estimate
-                d['eventtype'] = eventtype
                 if actr < chunksize:
                     l = allartists[rctr]
                     l.append(d)
                     allartists[rctr] = l
                     actr += 1
-                    if eventtype in eventtypesdict.keys():
-                        eventtypesdict[eventtype] += 1
-                    else:
-                        eventtypesdict[eventtype] = 1
                 else:
                     actr = 0
                     rctr += 1
@@ -158,13 +165,11 @@ def index(request):
                     break
             try:
                 redis_instance.set('at_allartists', pickle.dumps(allartists))
-                redis_instance.set('at_eventtypes', pickle.dumps(eventtypes))
                 redis_instance.set('at_uniqueartists', pickle.dumps(uniqueartists))
                 redis_instance.set('at_uniqueartworks', pickle.dumps(uniqueartworks))
             except:
                 pass    
     context['allartists'] = allartists
-    context['eventtypes'] = eventtypesdict
     context['uniqueartists'] = uniqueartists
     context['uniqueartworks'] = uniqueartworks
     filterartists = []
@@ -227,9 +232,9 @@ def details(request):
     uniqueartworks = {}
     actr = 0
     if allartworks.__len__() == 0:
-        artworksqset = Artwork.objects.filter(artistname=artistname.title()).order_by('priority')
+        artworksqset = Artwork.objects.filter(artist_id=aid).order_by('priority')
         for artwork in artworksqset:
-            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationdate, 'size' : artwork.size, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : artwork.provenance, 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : artwork.workurl, 'estimate' : artwork.estimate, 'awid' : artwork.id}
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id}
             if artwork.artworkname not in uniqueartworks.keys():
                 allartworks.append(d)
                 uniqueartworks[artwork.artworkname] = artwork.id
@@ -252,7 +257,10 @@ def details(request):
             redis_instance.set('at_allartworks4_%s'%artistobj.id, pickle.dumps(allartworks4))
         except:
             pass
-    artistinfo = {'name' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthdate, 'deathdate' : artistobj.deathdate, 'profileurl' : artistobj.profileurl, 'desctiption' : artistobj.about, 'image' : artistobj.largeimage, 'gender' : artistobj.gender, 'about' : artistobj.about, 'artistid' : artistobj.id}
+    prefix = ""
+    if artistobj.prefix != "" and artistobj.prefix != "na":
+        prefix = artistobj.prefix + " "
+    artistinfo = {'name' : prefix + artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthyear, 'deathdate' : artistobj.deathyear, 'profileurl' : '', 'desctiption' : artistobj.description, 'image' : artistobj.artistimage, 'gender' : '', 'about' : artistobj.bio, 'artistid' : artistobj.id}
     context['allartworks'] = allartworks
     context['allartworks1'] = allartworks1
     context['allartworks2'] = allartworks2
@@ -261,64 +269,62 @@ def details(request):
     context['artistinfo'] = artistinfo
     relatedartists = [] # List of artists related to the artist under consideration through an event.
     artistevents = {} # All events featuring the artist under consideration.
-    artistgalleries = {} # All galleries where artworks of the artist under consideration are displayed.
     relatedartistqset = None
     try:
         relatedartists = pickle.loads(redis_instance.get('at_relatedartists_%s'%artistobj.id))
         artistevents = pickle.loads(redis_instance.get('at_artistevents_%s'%artistobj.id))
-        artistgalleries = pickle.loads(redis_instance.get('at_artistgalleries_%s'%artistobj.id))
     except:
         pass
     if relatedartists.__len__() == 0:
         try:
-            eventobj = artistobj.event
-            # Related Artists can be sought out based on the 'event' or on 'nationality'. Though 'event' is a better
+            genre = artistobj.genre
+            # Related Artists can be sought out based on the 'genre' or on 'nationality'. Though 'genre' is a better
             # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
             # is a query that cannot be cached, so it has to be picked up from the DB every time.
-            relatedartistqset = Artist.objects.filter(event=eventobj)
+            relatedartistqset = Artist.objects.filter(genre__icontains=genre)
         except:
-            eventobj = None
+            genre = None
             relatedartistqset = Artist.objects.filter(nationality__icontains=artistobj.nationality)
         for artist in relatedartistqset:
-            d = {'artistname' : artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthdate), 'deathdate' : str(artist.deathdate), 'about' : artist.about, 'profileurl' : artist.profileurl, 'squareimage' : artist.squareimage, 'aid' : str(artist.id)}
-            artworkqset = Artwork.objects.filter(artistname__icontains=artist.artistname).order_by('priority', '-edited')
+            prefix = ""
+            if artist.prefix != "" and artist.prefix != "na":
+                prefix = artist.prefix + " "
+            d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.id)}
+            artworkqset = Artwork.objects.filter(artist_id=artist.id).order_by('priority', '-edited')
             if artworkqset.__len__() == 0:
                 continue
             d['artworkname'] = artworkqset[0].artworkname
             d['artworkimage'] = artworkqset[0].image1
-            d['artworkdate'] = artworkqset[0].creationdate
+            d['artworkdate'] = artworkqset[0].creationstartdate
             d['artworkdescription'] = artworkqset[0].description
             d['awid'] = artworkqset[0].id
             if relatedartists.__len__() < chunksize:
                 relatedartists.append(d)
         for artwork in artworksqset:
-            eventname = artwork.event.eventname
-            eventurl = artwork.event.eventurl
-            eventinfo = artwork.event.eventinfo
-            eventperiod = artwork.event.eventperiod
-            eventimage = artwork.event.eventimage
-            eventlocation = artwork.event.eventlocation
-            evid = artwork.event.id
+            lotqset = Lot.objects.filter(artwork_id=artwork.id)
+            if lotqset.__len__() == 0:
+                continue
+            auctionid = lotqset[0].auction_id
+            auctionsqset = Auction.objects.filter(id=auctionid)
+            if auctionsqset.__len__() == 0:
+                continue
+            eventname = auctionsqset[0].auctionname
+            eventurl = auctionsqset[0].auctionurl
+            eventinfo = ''
+            eventperiod = auctionsqset[0].auctionstartdate.strftime("%d %b, %Y") + " - " + auctionsqset[0].auctionenddate.strftime("%d %b, %Y")
+            eventimage = auctionsqset[0].coverimage
+            eventlocation = ''
+            aucid = auctionsqset[0].id
             l = artistevents.keys()
             if l.__len__() < chunksize and eventname not in l:
-                artistevents[eventname] = {'eventurl' : eventurl, 'eventinfo' : eventinfo, 'eventperiod' : eventperiod, 'eventimage' : eventimage, 'eventlocation' : eventlocation, 'evid' : evid}
-            galleryname = artwork.gallery.galleryname
-            location = artwork.gallery.location
-            description = artwork.gallery.description
-            galleryurl = artwork.gallery.galleryurl
-            coverimage = artwork.gallery.coverimage
-            l = artistgalleries.keys()
-            if l.__len__() < chunksize and galleryname not in l:
-                artistgalleries[galleryname] = {'location' : location, 'description' : description, 'galleryurl' : galleryurl, 'coverimage' : coverimage}
+                artistevents[eventname] = {'eventurl' : eventurl, 'eventinfo' : eventinfo, 'eventperiod' : eventperiod, 'eventimage' : eventimage, 'eventlocation' : eventlocation, 'aucid' : aucid}
         try:
             redis_instance.set('at_relatedartists_%s'%artistobj.id, pickle.dumps(relatedartists))
             redis_instance.set('at_artistevents_%s'%artistobj.id, pickle.dumps(artistevents))
-            redis_instance.set('at_artistgalleries_%s'%artistobj.id, pickle.dumps(artistgalleries))
         except:
             pass
     context['relatedartists'] = relatedartists
     context['artistevents'] = artistevents
-    context['artistgalleries'] = artistgalleries
     if request.user.is_authenticated:
         context['adminuser'] = 1
     else:
@@ -346,7 +352,160 @@ def search(request):
     if not searchkey:
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
     #print(searchkey)
-    return HttpResponse("{}")
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            pageno = str(request.GET['page'])
+    page = int(pageno)
+    chunksize = 4
+    rows = 6
+    featuredsize = 4
+    rowstartctr = int(page) * rows - rows
+    rowendctr = int(page) * rows
+    startctr = (chunksize * rows) * (int(page) -1) + featuredsize
+    endctr = (chunksize * rows) * int(page) + featuredsize
+    context = {}
+    featuredartists = []
+    uniqartists = {}
+    try:
+        featuredartists = pickle.loads(redis_instance.get('at_featuredartists_%s'%searchkey.lower()))
+    except:
+        featuredartists = []
+    uniqartists = {}
+    if featuredartists.__len__() == 0:
+        matchingartistsqset = Artist.objects.filter(artistname__icontains=searchkey).order_by('priority')
+        allartistsqset = Artist.objects.all()
+        for artist in matchingartistsqset[0:featuredsize]:
+            if artist.artistname.title() not in uniqartists.keys():
+                if artist.nationality == "na":
+                    artist.nationality = ""
+                if artist.birthyear == 0:
+                    artist.birthyear = ""
+                prefix = ""
+                if artist.prefix != "" and artist.prefix != "na":
+                    prefix = artist.prefix + " "
+                d = {'artistname' : prefix + artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id)}
+                artworkqset = Artwork.objects.filter(artist_id=artist.id).order_by('priority')
+                if artworkqset.__len__() == 0:
+                    #continue
+                    d['artworkname'] = ""
+                    d['artworkimage'] = ""
+                    d['artworkdate'] = ""
+                    d['awid'] = ""
+                    d['atype'] = "0" # Artists with no related artwork
+                else:
+                    d['artworkname'] = artworkqset[0].artworkname
+                    d['artworkimage'] = artworkqset[0].image1
+                    d['artworkdate'] = artworkqset[0].creationenddate
+                    d['awid'] = artworkqset[0].id
+                    d['atype'] = "1" # Artists with available related artwork
+                featuredartists.append(d)
+                uniqartists[artist.artistname.title()] = 1
+        try:
+            redis_instance.set('at_featuredartists_%s'%searchkey.lower(), pickle.dumps(featuredartists))
+        except:
+            pass
+    else:
+        pass
+    context['featuredartists'] = featuredartists
+    allartists = []
+    rctr = 0
+    while rctr < rows:
+        allartists.append([]) # 'allartists' is a list of lists, and the inner list contains dicts specified by the variable 'd' below.
+        rctr += 1
+    rctr = 0
+    actr = 0
+    uniqueartists = {}
+    uniqueartworks = {}
+    eventtypeslist = []
+    try:
+        uniqueartists = pickle.loads(redis_instance.get('at_uniqueartists_%s'%searchkey.lower()))
+        uniqueartworks = pickle.loads(redis_instance.get('at_uniqueartworks_%s'%searchkey.lower()))
+        allartists = pickle.loads(redis_instance.get('at_allartists_%s'%searchkey.lower()))
+    except:
+        pass
+    if allartists[0].__len__() == 0:
+        if matchingartistsqset.__len__() > featuredsize:
+            for artist in matchingartistsqset[startctr:endctr]:
+                #print(artist.artistname)
+                if artist.nationality == "na":
+                    artist.nationality = ""
+                if artist.birthyear == 0:
+                    artist.birthyear = ""
+                prefix = ""
+                if artist.prefix != "" and artist.prefix != "na":
+                    prefix = artist.prefix + " "
+                d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id)}
+                artworkqset = Artwork.objects.filter(artist_id=artist.id).order_by() # Ordered by 'priority' - descending.
+                if artworkqset.__len__() == 0:
+                    continue
+                if artist.artistname.title() not in uniqueartists.keys():
+                    uniqueartists[artist.artistname.title()] = 1
+                else:
+                    continue
+                artworkobj = artworkqset[0]
+                if artworkobj.artworkname.title() not in uniqueartworks.keys():
+                    d['artworkname'] = artworkobj.artworkname.title()
+                    #print(d['artworkname'])
+                    uniqueartworks[artworkobj.artworkname.title()] = 1
+                else:
+                    awctr = 0
+                    awfound = 0
+                    while awctr < artworkqset.__len__() - 1: # Iterate over all artworks by the artist under consideration
+                        awctr += 1
+                        artworkobj = artworkqset[awctr]
+                        if artworkobj.artworkname.title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
+                            awfound = 1
+                            break
+                    if awfound: # Add artwork if it has not been encountered before.
+                        uniqueartworks[artworkobj.artworkname.title()] = 1
+                        d['artworkname'] = artworkobj.artworkname.title()
+                    else: # Skip this artist if no new artworks could be found.
+                        continue
+                d['artworkimage'] = artworkobj.image1
+                d['artworkdate'] = artworkobj.creationenddate
+                d['awid'] = artworkobj.id
+                d['artworkmedium'] = artworkobj.medium
+                if actr < chunksize:
+                    l = allartists[rctr]
+                    l.append(d)
+                    allartists[rctr] = l
+                    actr += 1
+                else:
+                    actr = 0
+                    rctr += 1
+                if rctr == rows:
+                    break
+            try:
+                redis_instance.set('at_allartists_%s'%searchkey.lower(), pickle.dumps(allartists))
+                redis_instance.set('at_uniqueartists_%s'%searchkey.lower(), pickle.dumps(uniqueartists))
+                redis_instance.set('at_uniqueartworks_%s'%searchkey.lower(), pickle.dumps(uniqueartworks))
+            except:
+                pass    
+    context['allartists'] = allartists
+    context['uniqueartists'] = uniqueartists
+    context['uniqueartworks'] = uniqueartworks
+    filterartists = []
+    try:
+        filterartists = pickle.loads(redis_instance.get('at_filterartists'))
+    except:
+        pass
+    if filterartists.__len__() == 0:
+        for artist in allartistsqset[:2000]:
+            filterartists.append(artist.artistname)
+        try:
+            redis_instance.set('at_filterartists', pickle.dumps(filterartists))
+        except:
+            pass
+    context['filterartists'] = filterartists
+    carouselentries = getcarouselinfo()
+    context['carousel'] = carouselentries
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    #template = loader.get_template('artist.html')
+    #return HttpResponse(template.render(context, request))
+    return HttpResponse(json.dumps(context))
 
 
 

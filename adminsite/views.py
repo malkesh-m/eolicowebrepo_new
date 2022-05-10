@@ -19,12 +19,13 @@ import os, sys, re, time, datetime
 import shutil
 from PIL import Image
 
-from gallery.models import Gallery, Event, Artist, Artwork
+from gallery.models import Gallery, Event
 from login.models import User, Session, WebConfig, Carousel
 from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
+from artists.models import Artist, Artwork
 
 import simplejson as json
 import urllib

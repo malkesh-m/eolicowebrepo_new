@@ -20,11 +20,12 @@ import simplejson as json
 import redis
 import pickle
 
-from gallery.models import Gallery, Event, Artist, Artwork
+from gallery.models import Gallery, Event
 from museum.models import Museum, MuseumEvent, MuseumPieces
 from login.models import User, Session, WebConfig, Carousel
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
+from artists.models import Artist, Artwork
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page

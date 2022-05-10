@@ -98,9 +98,9 @@ WSGI_APPLICATION = 'eolicowebsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'artsydb', 
-        'USER': 'artsyuser',  
-        'PASSWORD': 'artbankpasswd', 
+        'NAME': 'gaidbpure', 
+        'USER': 'eolicouser',  
+        'PASSWORD': 'secretpasswd', 
         'HOST': 'localhost',  
         'PORT': '3306',
     }
