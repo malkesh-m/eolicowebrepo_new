@@ -130,6 +130,56 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    context = JSON.parse(xmlhttp.responseText);
+	    featureddiv = document.getElementById('featuredartistsdiv');
+	    featureddiv.innerHTML = "";
+	    searchtext = "";
+	    alldiv0 = document.getElementById('allartistsdiv0');
+	    alldiv1 = document.getElementById('allartistsdiv1');
+	    alldiv2 = document.getElementById('allartistsdiv2');
+	    alldiv3 = document.getElementById('allartistsdiv3');
+	    alldiv4 = document.getElementById('allartistsdiv4');
+	    alldiv5 = document.getElementById('allartistsdiv5');
+	    alldiv0.innerHTML = "";
+	    alldiv1.innerHTML = "";
+	    alldiv2.innerHTML = "";
+ 	    alldiv3.innerHTML = "";
+	    alldiv4.innerHTML = "";
+	    alldiv5.innerHTML = "";
+	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+            searchartists = context['featuredartists'];
+    	    adminuser = context['adminuser'];
+            for(var i=0; i < searchartists.length; i++){
+                artistobj = searchartists[i];
+		searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+                if(artistobj.atype == '1'){
+		    searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artworkimage + "'></a></div>";
+		}
+		else{
+		    searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artistimage + "'></a></div>";
+		}
+		searchtext += "<div class='down-content'><a href='/artist/details/?aid=" + artistobj.aid + "' style='color:#000000;'><h4>" + artistobj.artistname +"</h4>";
+		if (artistobj.birthdate == ''){
+		    searchtext += "<h6>" + artistobj.nationality + "</h6>";
+		}
+		else{
+		    if (artistobj.deathdate == '0'){
+		      searchtext += "<h6>" + artistobj.nationality + " b." + artistobj.birthdate + "</h6>";
+		    }
+		    else{
+		      searchtext += "<h6>" + artistobj.nationality + ", " + artistobj.birthdate + " - " + artistobj.deathdate + "</h6>";
+		    }
+		}
+		searchtext += "</a></div>";
+		if(adminuser == 1){
+		    searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editartist('" + artistobj.aid + "');\">Edit</a></div>";
+		}
+		searchtext += "</div></div>";
+	    }
+	    searchtext += "</div></div>";
+	    featureddiv.innerHTML = searchtext;
+	    //featureddiv.innerHTML = featureddiv.innerHTML.replace("<div class=\"row align-items-end\"></div></div>", "<div class=\"row align-items-end\">");
+	    //alert(featureddiv.innerHTML);
 	  }
 	  };
 	  searchkey = document.getElementById('artistsearch').value;
@@ -402,7 +452,7 @@
       </section>
       <!------ Featured Artist ------->
       <!-- ***** Main Banner Area End ***** -->
-      <section class="section gal-section br-none">
+      <section class="section gal-section br-none" id='featuredartistsdiv'>
           <div class="container">
               <div class="row">
                   <div class="col-lg-12">
@@ -447,7 +497,7 @@
           </div>
       </section>
 
-      <section class="section gal-section br-none pdt-0">
+      <section class="section gal-section br-none pdt-0" id='allartistsdiv0'>
           <div class="container">
               <div class="row">
                   <div class="col-lg-12">
@@ -486,7 +536,7 @@
               </div>
           </div>
       </section>
-      <section class="section gal-section br-none pdt-0">
+      <section class="section gal-section br-none pdt-0" id='allartistsdiv1'>
           <div class="container">
               <div class="row">
                   <div class="col-lg-12">
@@ -525,7 +575,7 @@
               </div>
           </div>
       </section>
-      <section class="section gal-section br-none pdt-0">
+      <section class="section gal-section br-none pdt-0" id='allartistsdiv2'>
           <div class="container">
               <div class="row">
                   <div class="col-lg-12">
@@ -564,7 +614,7 @@
               </div>
           </div>
       </section>
-      <section class="section gal-section br-none pdt-0">
+      <section class="section gal-section br-none pdt-0" id='allartistsdiv3'>
           <div class="container">
               <div class="row">
                   <div class="col-lg-12">
@@ -603,7 +653,7 @@
               </div>
           </div>
       </section>
-      <section class="section gal-section br-none pdt-0">
+      <section class="section gal-section br-none pdt-0" id='allartistsdiv4'>
           <div class="container">
               <div class="row">
                   <div class="col-lg-12">
@@ -641,7 +691,7 @@
               </div>
           </div>
       </section>
-      <section class="section gal-section br-none pdt-0">
+      <section class="section gal-section br-none pdt-0" id='allartistsdiv5'>
           <div class="container">
               <div class="row">
                   <div class="col-lg-12">

@@ -341,8 +341,11 @@
                             <!-- <a class="moreless-button" href="#">Read more</a> -->
                         </div>
                         <div class="establish">
-                            <h4>Established representation</h4>
-                            <p>Represented by industry leading galleries.</p>
+                            <h4>Artist Statistics</h4>
+                            <p>Yearly Lots Sold: {{yearlylotssold}}</p>
+			    <p>Sell Through Rate: {{sellthrurate}}</p>
+			    <p>Average Sale Price (USD): {{avgsaleprice}}</p>
+			    <p>Price Over Estimate: {{salepriceoverestimate}}</p>
                         </div>
                     </div>
                 </div>
@@ -396,12 +399,12 @@
 					{% for artwork in allartworks %}
                                         <div class="item">
                                             <div class="thumb">
-                                                <a href="/gallery/artworkdetails/?awid={{artwork.awid}}">
+                                                <a href="/artist/artworkdetails/?awid={{artwork.awid}}">
                                                     <img src="{{artwork.artworkimage}}" class="img-fluid" alt="">
                                                 </a>
                                             </div>
                                             <div class="slide-cap">
-                                                <a href="/gallery/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
+                                                <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
                                                     <h2>{{artwork.artworkname}}</h2>
                                                     <p>{{artwork.description}}</p>
                                                 </a>
@@ -411,7 +414,6 @@
                                             </div>
                                         </div>
 					{% endfor %}
-                                        
                                     </div>
 				    <!--
                                     <div class="career-highlight mrt-90">
@@ -604,15 +606,15 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                                                     <div class="artist-category">
                                                         <div class="thumb">
-                                                            <a href="/gallery/eventdetails/?gevid={{evdata.evid}}"><img src="{{evdata.eventimage}}" alt=""></a>
+                                                            <a href="/auction/details/?aucid={{evdata.aucid}}"><img src="{{evdata.eventimage}}" alt=""></a>
                                                         </div>
                                                         <div class="down-content">
-                                                            <a href="/gallery/eventdetails/?gevid={{evdata.evid}}" style="color:#000000;">
+                                                            <a href="/auction/details/?aucid={{evdata.aucid}}" style="color:#000000;">
                                                                 <h4>{{evname}}</h4>
                                                                 <span>{{evdata.eventlocation}} {{evdata.eventperiod}}</span>
                                                             </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
 							    {% if adminuser == 1 %}
-							      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{evdata.evid}}');">Edit</a>
+							      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{evdata.aucid}}');">Edit</a>
 						      	    {% endif %}
                                                         </div>
                                                     </div>
