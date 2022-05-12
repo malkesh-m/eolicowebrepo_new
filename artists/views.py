@@ -72,8 +72,8 @@ def index(request):
         dbconn.commit()
         whereclause = ""
         if page != 1:
-            whereclause = "where artist_name like '" + str(pageno) + "%'"
-        getview_sql = "select artist_id, artist_name, sum(artist_price_usd) as price, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre from featured_artists %s group by artist_id order by price desc"%whereclause
+            whereclause = "and artist_name like '" + str(pageno) + "%'"
+        getview_sql = "select artist_id, artist_name, sum(artist_price_usd) as price, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre from featured_artists where artistimage is not NULL and artistimage != '' %s group by artist_id order by price desc"%whereclause
         #print(getview_sql)
         cursor.execute(getview_sql)
         artistsqset = cursor.fetchall()
@@ -275,6 +275,8 @@ def details(request):
     allartworks2 = []
     allartworks3 = []
     allartworks4 = []
+    lotsinupcomingauctions = []
+    lotsinpastauctions = []
     yearlylotssold = 0
     sellthrurate = 0.0
     avgsaleprice = 0.00
@@ -288,6 +290,8 @@ def details(request):
         allartworks2 = pickle.loads(redis_instance.get('at_allartworks2_%s'%artistobj.id))
         allartworks3 = pickle.loads(redis_instance.get('at_allartworks3_%s'%artistobj.id))
         allartworks4 = pickle.loads(redis_instance.get('at_allartworks4_%s'%artistobj.id))
+        lotsinupcomingauctions = pickle.loads(redis_instance.get('at_lotsinupcomingauctions_%s'%artistobj.id))
+        lotsinpastauctions = pickle.loads(redis_instance.get('at_lotsinpastauctions_%s'%artistobj.id))
         yearlylotssold = redis_instance.get('at_yearlylotssold_%s'%artistobj.id)
         sellthrurate = redis_instance.get('at_sellthrurate_%s'%artistobj.id)
         avgsaleprice = redis_instance.get('at_avgsaleprice_%s'%artistobj.id)
@@ -302,6 +306,7 @@ def details(request):
         artworksqset = Artwork.objects.filter(artist_id=aid).order_by('priority')
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
+        curdatetime = datetime.datetime.now()
         for artwork in artworksqset:
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
             for lotobj in lotqset:
@@ -314,6 +319,31 @@ def details(request):
                         delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
                         totaldelta += delta
                 totalartworks += 1
+                auctionobj = None
+                try:
+                    auctionobj = Auction.objects.get(id=lotobj.auction_id)
+                except:
+                    continue # If we fail to find the auction, there is no use going ahead.
+                auctionstartdate = auctionobj.auctionstartdate
+                auctionname = auctionobj.auctionname
+                if auctionstartdate > curdatetime: # This is an upcoming auction
+                    auchouseobj = None
+                    try:
+                        auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                        auchousename = auchouseobj.housename
+                    except:
+                        auchousename = ""
+                    d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate)}
+                    lotsinupcomingauctions.append(d)
+                else: # Past auction case
+                    auchouseobj = None
+                    try:
+                        auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                        auchousename = auchouseobj.housename
+                    except:
+                        auchousename = ""
+                    d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotobj.soldpriceUSD), 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate)}
+                    lotsinpastauctions.append(d)
             d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid}
             if artwork.artworkname not in uniqueartworks.keys():
                 allartworks.append(d)
@@ -342,6 +372,8 @@ def details(request):
             redis_instance.set('at_allartworks2_%s'%artistobj.id, pickle.dumps(allartworks2))
             redis_instance.set('at_allartworks3_%s'%artistobj.id, pickle.dumps(allartworks3))
             redis_instance.set('at_allartworks4_%s'%artistobj.id, pickle.dumps(allartworks4))
+            redis_instance.set('at_lotsinupcomingauctions_%s'%artistobj.id, pickle.dumps(lotsinupcomingauctions))
+            redis_instance.set('at_lotsinpastauctions_%s'%artistobj.id, pickle.dumps(lotsinpastauctions))
             redis_instance.set('at_yearlylotssold_%s'%artistobj.id, yearlylotssold)
             redis_instance.set('at_sellthrurate_%s'%artistobj.id, sellthrurate)
             redis_instance.set('at_avgsaleprice_%s'%artistobj.id, avgsaleprice)
@@ -362,6 +394,8 @@ def details(request):
     context['allartworks2'] = allartworks2
     context['allartworks3'] = allartworks3
     context['allartworks4'] = allartworks4
+    context['lotsinupcomingauctions'] = lotsinupcomingauctions
+    context['lotsinpastauctions'] = lotsinpastauctions
     context['artistinfo'] = artistinfo
     relatedartists = [] # List of artists related to the artist under consideration through an event.
     artistevents = {} # All events featuring the artist under consideration.
@@ -557,7 +591,7 @@ def showartwork(request):
         artistname = artistobj.artistname
     else:
         artistname = ""
-    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'awid' : artworkobj.id}
+    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'awid' : artworkobj.id, 'aid' : artistobj.id}
     allartworks = []
     allartworks1 = []
     allartworks2 = []

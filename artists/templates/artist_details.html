@@ -309,7 +309,7 @@
                     <div class="section-heading">
                         <div class="sec-content">
                             <div class="sec-left">
-                                <img src="{{artistinfo.image}}" alt="" class="img-fluid" />
+                                <img src="/media/artists/{{artistinfo.artistid}}/{{artistinfo.image}}" alt="" class="img-fluid" />
                             </div>
                             <div class="sec-right">
                                 <h2>{{artistinfo.name}}</h2>
@@ -343,9 +343,9 @@
                         <div class="establish">
                             <h4>Artist Statistics</h4>
                             <p>Yearly Lots Sold: {{yearlylotssold}}</p>
-			    <p>Sell Through Rate: {{sellthrurate}}</p>
+			    <p>Sell Through Rate: {{sellthrurate}}%</p>
 			    <p>Average Sale Price (USD): {{avgsaleprice}}</p>
-			    <p>Price Over Estimate: {{salepriceoverestimate}}</p>
+			    <p>Price Over Estimate: {{salepriceoverestimate}}%</p>
                         </div>
                     </div>
                 </div>
@@ -363,10 +363,10 @@
                         <div class="tabbable">
                             <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Overview</a>
+                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Upcoming Auctions</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Works for Sale</a>
+                                    <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Past Auctions</a>
                                 </li>
 
                                 <!-- <li class="nav-item">
@@ -396,16 +396,19 @@
                                     </div>
 				    
                                     <div id="noteble-works" class="owl-carousel owl-theme owl-d">
-					{% for artwork in allartworks %}
+					{% for artwork in lotsinupcomingauctions %}
                                         <div class="item">
                                             <div class="thumb">
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}">
-                                                    <img src="{{artwork.artworkimage}}" class="img-fluid" alt="">
+                                                    <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" class="img-fluid" alt="">
                                                 </a>
                                             </div>
                                             <div class="slide-cap">
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
                                                     <h2>{{artwork.artworkname}}</h2>
+						    <h2>in 
+						    <a href="/auction/details/?aucid={{artwork.aucid}}">{{artwork.auctionname}}</a>
+						    </h2>
                                                     <p>{{artwork.description}}</p>
                                                 </a>
 						{% if adminuser == 1 %}
@@ -606,7 +609,7 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                                                     <div class="artist-category">
                                                         <div class="thumb">
-                                                            <a href="/auction/details/?aucid={{evdata.aucid}}"><img src="{{evdata.eventimage}}" alt=""></a>
+                                                            <a href="/auction/details/?aucid={{evdata.aucid}}"><img src="/media/auctions/{{evdata.aucid}}/{{evdata.eventimage}}" alt=""></a>
                                                         </div>
                                                         <div class="down-content">
                                                             <a href="/auction/details/?aucid={{evdata.aucid}}" style="color:#000000;">
@@ -637,7 +640,7 @@
                                             <div class="item">
                                                 <div class="thumb">
                                                     <a href="/artist/details/?aid={{artist.aid}}">
-                                                        <img src="{{artist.artworkimage}}" class="img-fluid" alt="">
+                                                        <img src="/media/artists/artworks/{{artist.aid}}/{{artist.artworkimage}}" class="img-fluid" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="slide-cap">
@@ -1617,32 +1620,27 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
                                             <div id="main">
                                                 <div id="accordion" class="accordion">
+						    {% for artwork in lotsinpastauctions %}
                                                     <div class="acc-auctions auction-pdb">
                                                         <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
                                                             <a class="card-title auc-det d-flex">
                                                                 <div class="auctions-img">
-                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
+								    <a href="/artist/artworkdetails/?awid={{artwork.awid}}">
+                                                                    <img src="/media/artists/artwork/{{artwork.aid}}/{{artwork.image}}" alt="" class="img-fluid" />
+								    </a>
                                                                 </div>
                                                                 <div class="auctions-name">
-                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
-                                                                    <p>
-                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                        (iii) acrylic, nail polish and collage on paper
-                                                                    </p>
-                                                                </div>
-                                                                <div class="date-auctions">
-                                                                    <h4>Mar 9, 2022</h4>
-                                                                    <p>Phillips</p>
+                                                                    <h4>{{artwork.artworkname}}</h4>
+                                                                    
                                                                 </div>
                                                                 <div class="auction-price">
-                                                                    <h4>US$18,900</h4>
+                                                                    <h4>US${{artwork.soldprice}}</h4>
                                                                     <p>Realized price</p>
-                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
+                                                                    <!-- <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p> -->
                                                                 </div>
                                                             </a>
                                                         </div>
@@ -1655,392 +1653,36 @@
                                                                                 <h6>Artwork Info</h6>
                                                                             </div>
                                                                             <div class="auctions-name">
-                                                                                <p>Work on Paper</p>
+                                                                                <p>Medium</p>
                                                                                 <p>
-                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                                    (iii) acrylic, nail polish and collage on paper
+                                                                                    {{artwork.medium}}
                                                                                 </p>
                                                                             </div>
                                                                             <div class="date-auctions">
                                                                                 <h6>Estimate</h6>
                                                                             </div>
                                                                             <div class="auction-price">
-                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
+										{{artwork.estimate}}
+                                                                                <!-- <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a> -->
                                                                             </div>
                                                                         </li>
                                                                         <li>
                                                                             <div class="auctions-img">
                                                                                 <h6>Auction Sale</h6>
                                                                             </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Mar 9, 2022</p>
-                                                                                <p>
-                                                                                    Phillips
-                                                                                </p>
-                                                                            </div>
                                                                             <div class="date-auctions">
-                                                                                <h6>Realized Price</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <p>US$18,900</p>
-                                                                            </div>
+                                                                    		<h4>{{artwork.auctionstartdate}}</h4>
+                                                                    		<p><a href="/auction/details/?aucid={{artwork.aucid}}">{{artwork.auctionname}}</a></p>
+                                                                	    </div>
+                                                                            
                                                                         </li>
                                                                     </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="acc-auctions auction-pdb">
-                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
-                                                            <a class="card-title auc-det d-flex">
-                                                                <div class="auctions-img">
-                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
-                                                                </div>
-                                                                <div class="auctions-name">
-                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
-                                                                    <p>
-                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                        (iii) acrylic, nail polish and collage on paper
-                                                                    </p>
-                                                                </div>
-                                                                <div class="date-auctions">
-                                                                    <h4>Mar 9, 2022</h4>
-                                                                    <p>Phillips</p>
-                                                                </div>
-                                                                <div class="auction-price">
-                                                                    <h4>US$18,900</h4>
-                                                                    <p>Realized price</p>
-                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
-                                                            <div class="card-body">
-                                                                <div class="card-body-inner">
-                                                                    <ul>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Artwork Info</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Work on Paper</p>
-                                                                                <p>
-                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                                    (iii) acrylic, nail polish and collage on paper
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Estimate</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Auction Sale</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Mar 9, 2022</p>
-                                                                                <p>
-                                                                                    Phillips
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Realized Price</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <p>US$18,900</p>
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="acc-auctions auction-pdb">
-                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
-                                                            <a class="card-title auc-det d-flex">
-                                                                <div class="auctions-img">
-                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
-                                                                </div>
-                                                                <div class="auctions-name">
-                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
-                                                                    <p>
-                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                        (iii) acrylic, nail polish and collage on paper
-                                                                    </p>
-                                                                </div>
-                                                                <div class="date-auctions">
-                                                                    <h4>Mar 9, 2022</h4>
-                                                                    <p>Phillips</p>
-                                                                </div>
-                                                                <div class="auction-price">
-                                                                    <h4>US$18,900</h4>
-                                                                    <p>Realized price</p>
-                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
-                                                            <div class="card-body">
-                                                                <div class="card-body-inner">
-                                                                    <ul>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Artwork Info</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Work on Paper</p>
-                                                                                <p>
-                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                                    (iii) acrylic, nail polish and collage on paper
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Estimate</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Auction Sale</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Mar 9, 2022</p>
-                                                                                <p>
-                                                                                    Phillips
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Realized Price</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <p>US$18,900</p>
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="acc-auctions auction-pdb">
-                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
-                                                            <a class="card-title auc-det d-flex">
-                                                                <div class="auctions-img">
-                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
-                                                                </div>
-                                                                <div class="auctions-name">
-                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
-                                                                    <p>
-                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                        (iii) acrylic, nail polish and collage on paper
-                                                                    </p>
-                                                                </div>
-                                                                <div class="date-auctions">
-                                                                    <h4>Mar 9, 2022</h4>
-                                                                    <p>Phillips</p>
-                                                                </div>
-                                                                <div class="auction-price">
-                                                                    <h4>US$18,900</h4>
-                                                                    <p>Realized price</p>
-                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
-                                                            <div class="card-body">
-                                                                <div class="card-body-inner">
-                                                                    <ul>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Artwork Info</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Work on Paper</p>
-                                                                                <p>
-                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                                    (iii) acrylic, nail polish and collage on paper
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Estimate</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Auction Sale</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Mar 9, 2022</p>
-                                                                                <p>
-                                                                                    Phillips
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Realized Price</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <p>US$18,900</p>
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="acc-auctions auction-pdb">
-                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
-                                                            <a class="card-title auc-det d-flex">
-                                                                <div class="auctions-img">
-                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
-                                                                </div>
-                                                                <div class="auctions-name">
-                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
-                                                                    <p>
-                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                        (iii) acrylic, nail polish and collage on paper
-                                                                    </p>
-                                                                </div>
-                                                                <div class="date-auctions">
-                                                                    <h4>Mar 9, 2022</h4>
-                                                                    <p>Phillips</p>
-                                                                </div>
-                                                                <div class="auction-price">
-                                                                    <h4>US$18,900</h4>
-                                                                    <p>Realized price</p>
-                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
-                                                            <div class="card-body">
-                                                                <div class="card-body-inner">
-                                                                    <ul>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Artwork Info</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Work on Paper</p>
-                                                                                <p>
-                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                                    (iii) acrylic, nail polish and collage on paper
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Estimate</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Auction Sale</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Mar 9, 2022</p>
-                                                                                <p>
-                                                                                    Phillips
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Realized Price</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <p>US$18,900</p>
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="acc-auctions auction-pdb">
-                                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
-                                                            <a class="card-title auc-det d-flex">
-                                                                <div class="auctions-img">
-                                                                    <img src="/static/images/art2.jpg" alt="" class="img-fluid" />
-                                                                </div>
-                                                                <div class="auctions-name">
-                                                                    <h4>Three works: (i) Avante Sky, S for Science?; (ii) How Many Good Pauls Do You Know; (iii) Read the Wet</h4>
-                                                                    <p>
-                                                                        (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                        (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                        (iii) acrylic, nail polish and collage on paper
-                                                                    </p>
-                                                                </div>
-                                                                <div class="date-auctions">
-                                                                    <h4>Mar 9, 2022</h4>
-                                                                    <p>Phillips</p>
-                                                                </div>
-                                                                <div class="auction-price">
-                                                                    <h4>US$18,900</h4>
-                                                                    <p>Realized price</p>
-                                                                    <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        <div id="collapseacutions1" class="collapse" data-parent="#accordion">
-                                                            <div class="card-body">
-                                                                <div class="card-body-inner">
-                                                                    <ul>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Artwork Info</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Work on Paper</p>
-                                                                                <p>
-                                                                                    (i) acrylic, spray paint, nail polish, graphite and oil pastel on paper
-                                                                                    (ii) spray paint, Sharpie, collage, ink and nail polish on paper
-                                                                                    (iii) acrylic, nail polish and collage on paper
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Estimate</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li>
-                                                                            <div class="auctions-img">
-                                                                                <h6>Auction Sale</h6>
-                                                                            </div>
-                                                                            <div class="auctions-name">
-                                                                                <p>Mar 9, 2022</p>
-                                                                                <p>
-                                                                                    Phillips
-                                                                                </p>
-                                                                            </div>
-                                                                            <div class="date-auctions">
-                                                                                <h6>Realized Price</h6>
-                                                                            </div>
-                                                                            <div class="auction-price">
-                                                                                <p>US$18,900</p>
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+						    {% endfor %}
+                                                    <!-- 
                                                     <div class="auction-pagination">
                                                         <nav aria-label="Page navigation example">
                                                             <ul class="pagination">
@@ -2061,13 +1703,13 @@
                                                                 </li>
                                                             </ul>
                                                         </nav>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                 </div>
