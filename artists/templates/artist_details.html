@@ -327,10 +327,10 @@
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <div class="bio-des">
-                        <div class="bio-artist">Bio</div>
+                        <div class="bio-artist">About {{artistinfo.name}}</div>
                         <div id="bio-section">
                             <div class="bio-article">
-                                <p>
+                                <p class="bio-moretext">
                                     {{artistinfo.about}}
                                 </p>
                                 <!-- <p class="bio-moretext">
@@ -338,7 +338,7 @@
                                     <a href="">centuries</a>, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
                                 </p>  -->
                             </div>
-                            <!-- <a class="moreless-button" href="#">Read more</a> -->
+                            <a class="moreless-button" href="#">Read more</a>
                         </div>
                         <div class="establish">
                             <h4>Artist Statistics</h4>
@@ -405,12 +405,11 @@
                                             </div>
                                             <div class="slide-cap">
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
-                                                    <h2>{{artwork.artworkname}}</h2>
+                                                    <h2>{{artwork.artworkname}}</h2></a>
 						    <h2>in 
 						    <a href="/auction/details/?aucid={{artwork.aucid}}">{{artwork.auctionname}}</a>
 						    </h2>
-                                                    <p>{{artwork.description}}</p>
-                                                </a>
+                                                    <p>{{artwork.medium}}, {{artwork.size}}</p>
 						{% if adminuser == 1 %}
 						  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 					      	{% endif %}
@@ -646,7 +645,7 @@
                                                 <div class="slide-cap">
                                                     <a href="/artist/details/?aid={{artist.aid}}" style="color:#000000;">
                                                         <h2>{{artist.artistname}}</h2>
-                                                        <p>{{artist.about}}</p>
+                                                        <p>{{artist.nationality}}, {{artist.aliveperiod}}</p>
                                                     </a>
 						    {% if adminuser == 1 %}
 						      <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artist.aid}}');">Edit</a>

@@ -416,10 +416,15 @@ def details(request):
             genre = None
             relatedartistqset = Artist.objects.filter(nationality__icontains=artistobj.nationality)
         for artist in relatedartistqset:
+            if artistobj.id == artist.id: # Same artist, so just skip.
+                continue
             prefix = ""
             if artist.prefix != "" and artist.prefix != "na":
                 prefix = artist.prefix + " "
-            d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.id)}
+            aliveperiod = "b. " + str(artist.birthyear)
+            if str(artist.deathyear) != "":
+                aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
+            d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.id), 'aliveperiod' : aliveperiod}
             artworkqset = Artwork.objects.filter(artist_id=artist.id).order_by('priority', '-edited')
             if artworkqset.__len__() == 0:
                 continue
@@ -562,8 +567,6 @@ def search(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
-    #template = loader.get_template('artist.html')
-    #return HttpResponse(template.render(context, request))
     return HttpResponse(json.dumps(context))
 
 
@@ -591,7 +594,14 @@ def showartwork(request):
         artistname = artistobj.artistname
     else:
         artistname = ""
-    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'awid' : artworkobj.id, 'aid' : artistobj.id}
+    description = artworkobj.description
+    description = description.replace("<strong><br>Description:</strong>", "")
+    description = description.replace("<br>", "")
+    shortlen = 30
+    if description.__len__() < 30:
+        shortlen = description.__len__()
+    shortdescription = description[:shortlen] + "..."
+    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : description, 'awid' : artworkobj.id, 'aid' : artistobj.id, 'shortdescription' : shortdescription}
     allartworks = []
     allartworks1 = []
     allartworks2 = []
@@ -612,7 +622,10 @@ def showartwork(request):
         artworksqset = Artwork.objects.filter(artist_id=artistobj.id)
         actr = 0
         for artwork in artworksqset:
-            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : artwork.artist_id}
+            creationdate = str(artwork.creationstartdate)
+            if creationdate == "0":
+                creationdate = ""
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : creationdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : artwork.artist_id}
             if artwork.artworkname not in uniqueartworks.keys():
                 allartworks.append(d)
                 uniqueartworks[artwork.artworkname] = artwork.id
@@ -663,10 +676,15 @@ def showartwork(request):
     if relatedartists.__len__() == 0:
         artistqset = Artist.objects.filter(genre__icontains=artistobj.genre).order_by('priority')
         for artist in artistqset:
-            d = {'artistname' : artist.artistname, 'about' : artist.description, 'squareimage' : artist.artistimage, 'aid' : artist.id}
+            if artistobj.id == artist.id: # Same artist, skip.
+                continue
+            aliveperiod = "b. " + str(artist.birthyear)
+            if str(artist.deathyear) != "":
+                aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
+            d = {'artistname' : artist.artistname, 'about' : artist.description, 'nationality' : artist.nationality, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'squareimage' : artist.artistimage, 'aid' : artist.id, 'aliveperiod' : aliveperiod}
             relatedartists.append(d)
-        context['relatedartists'] = relatedartists
-    template = loader.get_template('artwork_details.html')
+    context['relatedartists'] = relatedartists
+    template = loader.get_template('artist_artworkdetails.html')
     return HttpResponse(template.render(context, request))
 
 
