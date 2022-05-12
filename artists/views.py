@@ -542,7 +542,98 @@ def showartwork(request):
             awid = str(request.GET['awid']).strip()
     if not awid or awid == "":
         return HttpResponse("Invalid Request: Request is missing artwork identifier")
-    return HttpResponse("")
+    artworkobj = None
+    try:
+        artworkobj = Artwork.objects.get(id=awid)
+    except:
+        return HttpResponse("Couldn't find artwork identified by the given ID")
+    context = {}
+    artistobj = None
+    try:
+        artistobj = Artist.objects.get(id=artworkobj.artist_id)
+    except:
+        pass
+    if artistobj is not None:
+        artistname = artistobj.artistname
+    else:
+        artistname = ""
+    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'awid' : artworkobj.id}
+    allartworks = []
+    allartworks1 = []
+    allartworks2 = []
+    allartworks3 = []
+    allartworks4 = []
+    allevents = []
+    try:
+        allartworks = pickle.loads(redis_instance.get('at_allartworks_%s'%artistobj.id))
+        allartworks1 = pickle.loads(redis_instance.get('at_allartworks1_%s'%artistobj.id))
+        allartworks2 = pickle.loads(redis_instance.get('at_allartworks2_%s'%artistobj.id))
+        allartworks3 = pickle.loads(redis_instance.get('at_allartworks3_%s'%artistobj.id))
+        allartworks4 = pickle.loads(redis_instance.get('at_allartworks4_%s'%artistobj.id))
+        allevents = pickle.loads(redis_instance.get('at_allevents_%s'%artworkobj.id))
+    except:
+        pass
+    uniqueartworks = {}
+    if allartworks.__len__() == 0:
+        artworksqset = Artwork.objects.filter(artist_id=artistobj.id)
+        actr = 0
+        for artwork in artworksqset:
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : artwork.artist_id}
+            if artwork.artworkname not in uniqueartworks.keys():
+                allartworks.append(d)
+                uniqueartworks[artwork.artworkname] = artwork.id
+                if actr == 0:
+                    allartworks1.append(d)
+                elif actr == 1:
+                    allartworks2.append(d)
+                elif actr == 2:
+                    allartworks3.append(d)
+                elif actr == 3:
+                    allartworks4.append(d)
+                    actr = 0
+                    continue
+                actr += 1
+            lotqset = Lot.objects.filter(artwork_id=artwork.id)
+            for lot in lotqset:
+                auctionid = lot.auction_id
+                auctionobj = None
+                try:
+                    auctionobj = Auction.objects.get(id=auctionid)
+                except:
+                    continue
+                eventperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+                if auctionobj.auctionenddate.strftime("%d %b, %Y") != '01 Jan, 0001' and auctionobj.auctionenddate.strftime("%d %b, %Y") != '01 Jan, 1':
+                    eventperiod = eventperiod + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+                d2 = {'eventname' : auctionobj.auctionname, 'eventimage' : auctionobj.coverimage, 'eventperiod' : eventperiod, 'aucid' : auctionobj.id}
+                allevents.append(d2)
+        context['allartworks'] = allartworks
+        context['allartworks1'] = allartworks1
+        context['allartworks2'] = allartworks2
+        context['allartworks3'] = allartworks3
+        context['allartworks4'] = allartworks4
+        context['allevents'] = allevents
+        try:
+            redis_instance.set('at_allartworks_%s'%artistobj.id, pickle.dumps(allartworks))
+            redis_instance.set('at_allartworks1_%s'%artistobj.id, pickle.dumps(allartworks1))
+            redis_instance.set('at_allartworks2_%s'%artistobj.id, pickle.dumps(allartworks2))
+            redis_instance.set('at_allartworks3_%s'%artistobj.id, pickle.dumps(allartworks3))
+            redis_instance.set('at_allartworks4_%s'%artistobj.id, pickle.dumps(allartworks4))
+            redis_instance.set('at_allevents_%s'%artworkobj.id, pickle.dumps(allevents))
+        except:
+            pass
+    relatedartists = []
+    try:
+        relatedartists = pickle.loads(redis_instance.get('at_relatedartists_%s'%artistobj.id))
+    except:
+        pass
+    if relatedartists.__len__() == 0:
+        artistqset = Artist.objects.filter(genre__icontains=artistobj.genre).order_by('priority')
+        for artist in artistqset:
+            d = {'artistname' : artist.artistname, 'about' : artist.description, 'squareimage' : artist.artistimage, 'aid' : artist.id}
+            relatedartists.append(d)
+        context['relatedartists'] = relatedartists
+    template = loader.get_template('artwork_details.html')
+    return HttpResponse(template.render(context, request))
 
 
 
