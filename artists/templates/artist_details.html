@@ -78,6 +78,125 @@
       font-weight:bold;
     }
     </style>
+
+    <script>
+    function filterbytext(){
+	var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    context = JSON.parse(xmlhttp.responseText);
+	    aucdiv = document.getElementById('auctionsdiv');
+	    aucdiv.innerHTML = "";
+	    auctext = "";
+            searchartworks = context['pastartworks'];
+    	    adminuser = context['adminuser'];
+	    for(var i=0; i < searchartworks.length; i++){
+		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
+		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/details/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
+	    }
+	    aucdiv.innerHTML = auctext;
+	  }
+	  };
+	  let formData = new FormData();
+	  searchkey = document.getElementById('txtfilter').value;
+	  csrf = document.frmtextfilter.csrfmiddlewaretoken.value;
+          aid = document.frmtextfilter.aid.value;
+	  formData.append("txtfilter", searchkey); 
+          formData.append("aid", aid); 
+	  xmlhttp.open("POST", "/artist/textfilter/");
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(formData);
+    }
+
+    function filterresults(formelem){
+        allformelements = document.frmotherfilter.elements;
+	mediumpattern = /medium/i;
+	periodpattern = /period/i;
+	sizepattern = /size/i;
+	sizeunitpattern = /sizeunit/i;
+	auchousepattern = /auchouse/i;
+	mediumparam = "&medium=";
+	periodparam = "&period=";
+	sizeparam = "&size=";
+	sizeunitparam = "&sizeunit=";
+	auchouseparam = "&auchouse=";
+	for(var i=0; i < allformelements.length; i++){
+	    elemname = allformelements[i].name;
+	    elemid = allformelements[i].id;
+	    elemvalue = allformelements[i].value;
+	    if(mediumpattern.test(elemid)){
+		mediumelement = document.getElementById(elemid);
+		if(mediumelement.checked == true){
+		    mediumparam += elemvalue + "|";
+		}
+	    }
+	    else if(periodpattern.test(elemid)){
+		periodelement = document.getElementById(elemid);
+		if(periodelement.checked == true){
+		    periodparam += elemvalue + "|";
+		}
+	    }
+	    else if(sizepattern.test(elemid)){
+		sizeelement = document.getElementById(elemid);
+		if(sizeelement.checked == true){
+		    sizeparam += elemvalue + "|";
+		}
+	    }
+	    else if(sizeunitpattern.test(elemid)){
+		sizeunitelement = document.getElementById(elemid);
+		if(sizeunitelement.checked == true){
+		    sizeunitparam += elemvalue; // This can have only a single possible value.
+		}
+	    }
+	    else if(auchousepattern.test(elemid)){
+		auchouseelement = document.getElementById(elemid);
+		if(auchouseelement.checked == true){
+		    auchouseparam += elemvalue; // This can have only a single possible value.
+		}
+	    }
+	}
+	// Create an xmlhttp request and send it to the endpoint on server.
+	var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    context = JSON.parse(xmlhttp.responseText);
+	    aucdiv = document.getElementById('auctionsdiv');
+	    aucdiv.innerHTML = "";
+	    auctext = "";
+            searchartworks = context['pastartworks'];
+    	    adminuser = context['adminuser'];
+	    for(var i=0; i < searchartworks.length; i++){
+		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
+		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/details/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
+	    }
+	    aucdiv.innerHTML = auctext;
+	  }
+	  };
+	  searchkey = document.getElementById('txtfilter').value;
+	  csrf = document.frmtextfilter.csrfmiddlewaretoken.value;
+          aid = document.frmtextfilter.aid.value;
+	  postdata = "csrfmiddlewaretoken=" + csrf + "&aid=" + aid + "&txtfilter=" + searchkey + mediumparam + periodparam + sizeparam + sizeunitparam + auchouseparam;
+	  postdata = encodeURI(postdata);
+	  //alert(postdata);
+	  xmlhttp.open("POST", "/artist/morefilter/");
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(postdata);
+    }
+    </script>
     
     <script src="/static/js/editfromfront.js"></script>
 
@@ -330,6 +449,7 @@
                         <div class="bio-artist">About {{artistinfo.name}}</div>
                         <div id="bio-section">
                             <div class="bio-article">
+				{{artistinfo.shortabout}}
                                 <p class="bio-moretext">
                                     {{artistinfo.about}}
                                 </p>
@@ -365,13 +485,13 @@
                                 <li class="nav-item">
                                     <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Upcoming Auctions</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Past Auctions</a>
-                                </li>
-
                                 <!-- <li class="nav-item">
-                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Auction Results</a>
+                                    <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Past Auctions</a>
                                 </li> -->
+
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Past Auctions</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -407,11 +527,11 @@
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
                                                     <h2>{{artwork.artworkname}}</h2></a>
 						    <h2>in 
-						    <a href="/auction/details/?aucid={{artwork.aucid}}">{{artwork.auctionname}}</a>
+						    <a href="/auction/details/?aucid={{artwork.aucid}}" style="color:#000000;">{{artwork.auctionname}}: {{artwork.auctionperiod}}</a>
 						    </h2>
                                                     <p>{{artwork.medium}}, {{artwork.size}}</p>
 						{% if adminuser == 1 %}
-						  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+						  <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 					      	{% endif %}
                                             </div>
                                         </div>
@@ -1283,10 +1403,10 @@
                                             </div>
                                         </div>
                                     </div>
-				    
+				    -->
                                 </div>
                                 <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
-                                    <section class="market-signel mrb-90 mrt-90">
+                                    <!-- <section class="market-signel mrb-90 mrt-90">
                                         <div class="row">
                                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                                 <div class="market-head">
@@ -1321,7 +1441,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </section>
+                                    </section> -->
                                     <div class="row mrb-90">
                                         <div class="col-sm-12">
                                             <div class="auc-re">
@@ -1331,164 +1451,30 @@
                                                 
                                                 <div class="fixed-sidbr-header">
 
-                                                    <button class="openbtn Show" onclick="openNav()"> Filter</button>
+                                                    <!-- <button class="openbtn Show" onclick="openNav()"> Filter</button> -->
                                                 </div>
                                                 <div class="auction-search">
-                                                    <form method="post" enctype="multipart/form-data">
-                                                        <input type="text" value="" name="" placeholder="Search by artwork title, series, or description" />
-                                                        <button type="submit" value="" name=""><i class="fa fa-search" aria-hidden="true"></i></button>
+                                                    <form method="POST" name='frmtextfilter' id='frmtextfilter' action=''>
+							{% csrf_token %}
+                                                        <input type="text" value="" name="txtfilter" id="txtfilter" placeholder="Search by artwork title, series, or description" />
+                                                        <button type="button" value="" name="btntextfilter" onclick="javascript:filterbytext();"><i class="fa fa-search" aria-hidden="true"></i></button>
+							<input type='hidden' name='aid' value='{{artistinfo.artistid}}'>
                                                     </form>
                                                 </div>
-                                                <div class="dropdown">
+                                                <!-- <div class="dropdown">
                                                     Sort By:
                                                     <select>
                                                         <option value="">Sale Date (Most recent)</option>
                                                         <option value="">Estimate</option>
                                                         <option value="">Sale price</option>
                                                     </select>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
                                             <div class="sidebar-left">
-                                                <div id="target_2">
-                                                    <div class="sidebar-left">
-                                                        <div class="res-bts">
-                                                            <button class="Hide btn btn-slider">Cancel</button>
-                                                            <h5>Filter</h5>
-                                                            <button class="Hide btn btn-slider">Clear all</button>
-                                                        </div>
-                                                        <div id="accordion" class="accordion">
-                                                            <div class="card mb-0">
-                                                                <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                                                                    <a class="card-title">
-                                                                        Medium
-                                                                    </a>
-                                                                </div>
-                                                                <div id="collapseThree" class="collapse show" data-parent="#accordion">
-                                                                    <div class="card-body">
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Design-tow">
-                                                                                <input type="checkbox" class="form-check-input" id="Design-tow" name="option1" value="something">Work on Paper
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Sculpture-tow">
-                                                                                <input type="checkbox" class="form-check-input" id="Sculpture-tow" name="option1" value="something">Sculpture
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Painting-two">
-                                                                                <input type="checkbox" class="form-check-input" id="Painting-two" name="option1" value="something">Painting
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Installation">
-                                                                                <input type="checkbox" class="form-check-input" id="Installation" name="option1" value="something">Installation
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="photography">
-                                                                                <input type="checkbox" class="form-check-input" id="photography" name="option1" value="something">Photography
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="texttile-arts">
-                                                                                <input type="checkbox" class="form-check-input" id="texttile-arts" name="option1" value="something">Texttile arts
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
-                                                                    <a class="card-title">
-                                                                        Size
-                                                                    </a>
-                                                                </div>
-                                                                <div id="collapse4" class="collapse show" data-parent="#accordion">
-                                                                    <div class="card-body">
-                                                                        <p class="dimension">This is based on the artwork’s average dimension.</p>
-                                                                        <div class="size-cm-in">
-                                                                            <div class="form-check">
-                                                                                <label class="form-check-label" for="cm-auction">
-                                                                                    <input type="radio" class="form-check-input" id="cm-auction" name="dimension" value="cm" checked>cm
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <label class="form-check-label" for="in-auction">
-                                                                                    <input type="radio" class="form-check-input" id="in-auction" name="dimension" value="in">in
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="SmallSize-tow">
-                                                                                <input type="checkbox" class="form-check-input" id="SmallSize-tow" name="option1" value="something">Small (under 40cm)
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Medium-tow">
-                                                                                <input type="checkbox" class="form-check-input" id="Medium-tow" name="option1" value="something">Medium (40 – 100cm)
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Large-tow">
-                                                                                <input type="checkbox" class="form-check-input" id="Large-tow" name="option1" value="something">Large (over 100cm)
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseyear">
-                                                                    <a class="card-title">
-                                                                        Year Created
-                                                                    </a>
-                                                                </div>
-                                                                <div id="collapseyear" class="collapse show" data-parent="#accordion">
-                                                                    <div class="card-body">
-                                                                        <div class="size-cm-in">
-                                                                            <div class="form-year">
-                                                                                <p>EARLIEST</p>
-                                                                                <select><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option></select>
-                                                                            </div>
-                                                                            <div class="form-year">
-                                                                                <p>LATEST</p>
-                                                                                <select><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option></select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Large-include">
-                                                                                <input type="checkbox" class="form-check-input" id="Large-include" name="option1" value="something">Large Include unspecified dates
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse55">
-                                                                    <a class="card-title">
-                                                                        Auction House
-                                                                    </a>
-                                                                </div>
-                                                                <div id="collapse55" class="collapse show" data-parent="#accordion">
-                                                                    <div class="card-body">
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Sotheby">
-                                                                                <input type="checkbox" class="form-check-input" id="Sotheby" name="option1" value="something">Sotheby's
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Christie">
-                                                                                <input type="checkbox" class="form-check-input" id="Christie" name="option1" value="something">Christie's
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <label class="form-check-label" for="Phillips">
-                                                                                <input type="checkbox" class="form-check-input" id="Phillips" name="option1" value="something">Phillips
-                                                                            </label>
-                                                                        </div>
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <form method="POST" name='frmotherfilter' id='frmotherfilter' action=''>
+						{% csrf_token %}
                                                 <div id="accordion" class="accordion">
                                                     <div class="card mb-0">
                                                         <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
@@ -1500,32 +1486,32 @@
                                                             <div class="card-body">
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="Design-tow">
-                                                                        <input type="checkbox" class="form-check-input" id="Design-tow" name="option1" value="something">Work on Paper
+                                                                        <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal" onchange="javascript:filterresults(this);">Work on Paper
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="Sculpture-tow">
-                                                                        <input type="checkbox" class="form-check-input" id="Sculpture-tow" name="option1" value="something">Sculpture
+                                                                        <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood" onchange="javascript:filterresults(this);">Sculpture
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="Painting-two">
-                                                                        <input type="checkbox" class="form-check-input" id="Painting-two" name="option1" value="something">Painting
+                                                                        <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas" onchange="javascript:filterresults(this);">Painting
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="Installation">
-                                                                        <input type="checkbox" class="form-check-input" id="Installation" name="option1" value="something">Installation
+                                                                        <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation" onchange="javascript:filterresults(this);">Installation
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="photography">
-                                                                        <input type="checkbox" class="form-check-input" id="photography" name="option1" value="something">Photography
+                                                                        <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid" onchange="javascript:filterresults(this);">Photography
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="texttile-arts">
-                                                                        <input type="checkbox" class="form-check-input" id="texttile-arts" name="option1" value="something">Texttile arts
+                                                                        <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" onchange="javascript:filterresults(this);">Textile arts
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -1541,28 +1527,28 @@
                                                                 <div class="size-cm-in">
                                                                     <div class="form-check">
                                                                         <label class="form-check-label" for="cm-auction">
-                                                                            <input type="radio" class="form-check-input" id="cm-auction" name="dimension" value="cm" checked>cm
+                                                                            <input type="radio" class="form-check-input" id="sizeunit1" name="dimension" value="cm" checked onclick="javascript:filterresults(this);">cm
                                                                         </label>
                                                                     </div>
                                                                     <div class="form-check">
                                                                         <label class="form-check-label" for="in-auction">
-                                                                            <input type="radio" class="form-check-input" id="in-auction" name="dimension" value="in">in
+                                                                            <input type="radio" class="form-check-input" id="sizeunit2" name="dimension" value="in" onclick="javascript:filterresults(this);">in
                                                                         </label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="SmallSize-tow">
-                                                                        <input type="checkbox" class="form-check-input" id="SmallSize-tow" name="option1" value="something">Small (under 40cm)
+                                                                        <input type="checkbox" class="form-check-input" id="size1" name="sizevalue" value="small" onchange="javascript:filterresults(this);">Small (under 40cm)
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="Medium-tow">
-                                                                        <input type="checkbox" class="form-check-input" id="Medium-tow" name="option1" value="something">Medium (40 – 100cm)
+                                                                        <input type="checkbox" class="form-check-input" id="size2" name="sizevalue" value="medium" onchange="javascript:filterresults(this);">Medium (40 – 100cm)
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <label class="form-check-label" for="Large-tow">
-                                                                        <input type="checkbox" class="form-check-input" id="Large-tow" name="option1" value="something">Large (over 100cm)
+                                                                        <input type="checkbox" class="form-check-input" id="size3" name="sizevalue" value="large" onchange="javascript:filterresults(this);">Large (over 100cm)
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -1574,21 +1560,66 @@
                                                         </div>
                                                         <div id="collapseyear" class="collapse show" data-parent="#accordion">
                                                             <div class="card-body">
-                                                                <div class="size-cm-in">
-                                                                    <div class="form-year">
-                                                                        <p>EARLIEST</p>
-                                                                        <select><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option></select>
-                                                                    </div>
-                                                                    <div class="form-year">
-                                                                        <p>LATEST</p>
-                                                                        <select><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option></select>
-                                                                    </div>
-                                                                </div>
                                                                 <div class="form-check">
-                                                                    <label class="form-check-label" for="Large-include">
-                                                                        <input type="checkbox" class="form-check-input" id="Large-include" name="option1" value="something">Large Include unspecified dates
-                                                                    </label>
-                                                                </div>
+								  <label class="form-check-label" for="Period1">
+									<input type="checkbox" class="form-check-input" id="period1" name="option1" value="202" onchange="javascript:filterresults(this);">2020s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period2">
+									<input type="checkbox" class="form-check-input" id="period2" name="option1" value="201" onchange="javascript:filterresults(this);">2010s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period3">
+									<input type="checkbox" class="form-check-input" id="period3" name="option1" value="200" onchange="javascript:filterresults(this);">2000s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period4">
+									<input type="checkbox" class="form-check-input" id="period4" name="option1" value="199" onchange="javascript:filterresults(this);">1990s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period5">
+									<input type="checkbox" class="form-check-input" id="period5" name="option1" value="198" onchange="javascript:filterresults(this);">1980s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period6">
+									<input type="checkbox" class="form-check-input" id="period6" name="option1" value="197" onchange="javascript:filterresults(this);">1970s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period7">
+									<input type="checkbox" class="form-check-input" id="period7" name="option1" value="196" onchange="javascript:filterresults(this);">1960s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period8">
+									<input type="checkbox" class="form-check-input" id="period8" name="option1" value="early20" onchange="javascript:filterresults(this);">Early 20th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period9">
+									<input type="checkbox" class="form-check-input" id="period9" name="option1" value="late19" onchange="javascript:filterresults(this);">Late 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period10">
+									<input type="checkbox" class="form-check-input" id="period10" name="option1" value="mid19" onchange="javascript:filterresults(this);">Mid 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period11">
+									<input type="checkbox" class="form-check-input" id="period11" name="option1" value="early19" onchange="javascript:filterresults(this);">Early 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period12">
+									<input type="checkbox" class="form-check-input" id="period12" name="option1" value="18" onchange="javascript:filterresults(this);">18th Century and Earlier
+								  </label>
+								</div>
                                                             </div>
                                                         </div>
                                                         <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse55">
@@ -1599,30 +1630,70 @@
                                                         <div id="collapse55" class="collapse show" data-parent="#accordion">
                                                             <div class="card-body">
                                                                 <div class="form-check">
-                                                                    <label class="form-check-label" for="Sotheby">
-                                                                        <input type="checkbox" class="form-check-input" id="Sotheby" name="option1" value="something">Sotheby's
+                                                                    <label class="form-check-label" for="auchouse1">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse1" name="option1" value="sotheby" onchange="javascript:filterresults(this);">Sotheby's
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
-                                                                    <label class="form-check-label" for="Christie">
-                                                                        <input type="checkbox" class="form-check-input" id="Christie" name="option1" value="something">Christie's
+                                                                    <label class="form-check-label" for="auchouse2">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse2" name="option1" value="christie" onchange="javascript:filterresults(this);">Christie's
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
-                                                                    <label class="form-check-label" for="Phillips">
-                                                                        <input type="checkbox" class="form-check-input" id="Phillips" name="option1" value="something">Phillips
+                                                                    <label class="form-check-label" for="auchouse2">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse2" name="option1" value="phillips" onchange="javascript:filterresults(this);">Phillips
                                                                     </label>
                                                                 </div>
-
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse4">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse4" name="option1" value="bonham" onchange="javascript:filterresults(this);">Bonhams
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse5">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse5" name="option1" value="rago" onchange="javascript:filterresults(this);">Rago Arts
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse6">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse6" name="option1" value="dorotheum" onchange="javascript:filterresults(this);">Dorotheum
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse7">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse7" name="option1" value="tajan" onchange="javascript:filterresults(this);">Tajan
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse8">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse8" name="option1" value="vanham" onchange="javascript:filterresults(this);">Van-ham
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse9">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse9" name="option1" value="artcurial" onchange="javascript:filterresults(this);">Artcurial
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse10">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse10" name="option1" value="wright" onchange="javascript:filterresults(this);">Wright
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse11">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse11" name="option1" value="other" onchange="javascript:filterresults(this);">Others
+                                                                    </label>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+						</form>
                                             </div>
-                                        </div> -->
+                                        </div>
                                         <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
                                             <div id="main">
-                                                <div id="accordion" class="accordion">
+                                                <div class="accordion" id="auctionsdiv">
 						    {% for artwork in lotsinpastauctions %}
                                                     <div class="acc-auctions auction-pdb">
                                                         <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
@@ -1658,7 +1729,7 @@
                                                                                 </p>
                                                                             </div>
                                                                             <div class="date-auctions">
-                                                                                <h6>Estimate</h6>
+                                                                                <h6>Estimate (USD)</h6>
                                                                             </div>
                                                                             <div class="auction-price">
 										{{artwork.estimate}}
