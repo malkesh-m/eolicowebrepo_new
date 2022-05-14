@@ -9,5 +9,6 @@ urlpatterns = [
     path('follow/', views.follow, name='follow'),
     path('search/', views.search, name='search'),
     path('moreauctions/', views.moreauctions, name='moreauctions'),
+    path('showauction/', views.showauction, name='showauction'),
 ]
 

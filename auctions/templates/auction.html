@@ -219,6 +219,35 @@ https://templatemo.com/tm-571-hexashop
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    context = JSON.parse(xmlhttp.responseText);
+	    featureddiv = document.getElementById('upcomingauctions');
+	    featureddiv.innerHTML = "";
+	    searchtext = "";
+	    pastauctionsdiv = document.getElementById('pastauctions');
+	    pastauctionsdiv.innerHTML = "";
+	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+            searchauctions = context['allauctions'];
+    	    adminuser = context['adminuser'];
+            for(var i=0; i < searchauctions.length; i++){
+                auctionobj = searchauctions[i];
+		searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+                searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "'><img src='/media/auctions/" + auctionobj.ahid + "/" + auctionobj.aucid + "/" + auctionobj.coverimage + "'></a></div>";
+		searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "' style='color:#000000;'><h4>" + auctionobj.auctionname +"</h4>";
+		if (auctionobj.auctionperiod != ''){
+		    searchtext += "<h6>" + auctionobj.auctionperiod + "</h6>";
+		}
+		searchtext += "<h6>" + auctionobj.auctionhouse + "</h6>";
+		searchtext += "<h6>Number of lots: " + auctionobj.lotcount + "</h6>";
+		searchtext += "</a></div>";
+		if(adminuser == 1){
+		    searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + auctionobj.aucid + "');\">Edit</a></div>";
+		}
+		searchtext += "</div></div>";
+	    }
+	    searchtext += "</div></div>";
+	    featureddiv.innerHTML = searchtext;
+	    //featureddiv.innerHTML = featureddiv.innerHTML.replace("<div class=\"row align-items-end\"></div></div>", "<div class=\"row align-items-end\">");
+	    //alert(featureddiv.innerHTML);
 	  }
 	  };
 	  searchkey = document.getElementById('auctionsearch').value;

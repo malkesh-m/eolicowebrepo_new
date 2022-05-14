@@ -25,6 +25,7 @@ from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from artists.models import Artist, Artwork
+from auctionhouses.models import AuctionHouse
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -128,7 +129,7 @@ def index(request):
                         artistid = artistobj.id
                     except:
                         pass
-                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod}
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod, 'aucid' : auction.id}
                     lotslist.append(d)
                 if lotslist.__len__() > chunksize:
                     featuredauctions[auctionname] = lotslist[0:chunksize]
@@ -174,7 +175,7 @@ def index(request):
                     pass
                 if artistname not in allartists.keys():
                     allartists[artistname] = []
-                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod}
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod, 'aucid' : auction.id}
                     allartists[artistname].append(d)
                     allauctions[auctionname].append(d)
                 else:
@@ -191,7 +192,7 @@ def index(request):
                     except:
                         pass
                     l = allartists[artistname]
-                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid}
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod, 'aucid' : auction.id}
                     l.append(d)
                     allartists[artistname] = l
                     allauctions[auctionname].append(d)
@@ -358,7 +359,35 @@ def search(request):
     if not searchkey or searchkey == "":
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
     #print(searchkey)
-    return HttpResponse("{}")
+    context = {}
+    auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey).order_by('priority')
+    allauctions = []
+    maxsearchresults = 30
+    aucctr = 0
+    for auctionobj in auctionsqset:
+        auctionhouseid = auctionobj.auctionhouse_id
+        ahobj = None
+        auctionhousename, ahid = "", ""
+        try:
+            ahobj = AuctionHouse.objects.get(id=auctionhouseid)
+            auctionhousename = ahobj.housename
+            ahid = ahobj.id
+        except:
+            pass
+        auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+        if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+            auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+        d = {'auctionname' : auctionobj.auctionname, 'auctionid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj.coverimage, 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount)}
+        if aucctr > maxsearchresults:
+            break
+        aucctr += 1
+        allauctions.append(d)
+    context['allauctions'] = allauctions
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    return HttpResponse(json.dumps(context))
 
 
 
@@ -403,13 +432,14 @@ def moreauctions(request):
         auctionsqset = Auction.objects.all().order_by('priority')
         aucctr = 0
         for auction in auctionsqset[rowstartctr:]:
+            auctionname = auction.auctionname
+            filterauctions.append(auctionname)
             if int(atype) == 1 and auction.auctionstartdate > curdatetime: # This is an upcoming auction, but we want past auctions only.
                 continue
             elif int(atype) == 0 and auction.auctionstartdate <= curdatetime: # This is a past auction, we want upcoming only.
                 continue
             if aucctr > rowendctr:
                 break
-            auctionname = auction.auctionname
             auction_id = auction.id
             if allauctions.keys().__len__() > maxauctions:
                 break
@@ -437,7 +467,7 @@ def moreauctions(request):
                     pass
                 if artistname not in allartists.keys():
                     allartists[artistname] = []
-                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod}
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod, 'aucid' : auction.id}
                     allartists[artistname].append(d)
                     allauctions[auctionname].append(d)
                 else:
@@ -454,11 +484,10 @@ def moreauctions(request):
                     except:
                         pass
                     l = allartists[artistname]
-                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid}
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod, 'aucid' : auction.id}
                     l.append(d)
                     allartists[artistname] = l
                     allauctions[auctionname].append(d)
-        #print(allauctions)
         try:
             redis_instance.set('ac_allartists', pickle.dumps(allartists))
             if int(atype) == 0:
@@ -469,6 +498,7 @@ def moreauctions(request):
             pass
     context['allartists'] = allartists
     context['allauctions'] = allauctions
+    context['filterauctions'] = filterauctions
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     context['atype'] = atype
@@ -486,7 +516,8 @@ def moreauctions(request):
 
 
 
-
+def showauction(request):
+    pass
 
 
 
