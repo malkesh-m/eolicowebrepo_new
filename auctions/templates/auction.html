@@ -395,7 +395,7 @@ https://templatemo.com/tm-571-hexashop
     <!-- ***** Main Banner Area End ***** -->
 	<section class="section gal-section" id="">
         <div class="container">
-            <div class="row">
+            <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>Browse Auctions</h2>
@@ -440,7 +440,7 @@ https://templatemo.com/tm-571-hexashop
 	{% for auctionname, lotslist in featuredauctions.items %}
 	<section class="oth-works mrt-90">
         <div class="container">
-            <div class="row">
+            <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="section-heading section-heading-2 mrb-50">
                         <h2>{{auctionname}}</h2>
@@ -454,7 +454,7 @@ https://templatemo.com/tm-571-hexashop
 		{% for lot in lotslist %}
                 <div class="column">
                     <div class="img-box">
-			<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
+			<a href="/auction/details/?lid={{lot.lid}}"><img src="/media/artists/artworks/{{lot.aid}}/{{lot.image}}" alt=""></a>
                         <a href="/auction/details/?lid={{lot.lid}}" style="color:#000000;">
 				<h4>{{lot.title}}</h4>
 				<h6>{{lot.artist}}</h6>
@@ -472,12 +472,12 @@ https://templatemo.com/tm-571-hexashop
     	{% endfor %}
     	</div>
 	<!-- End of new auctions gallery -->
-	<!-- 
+
 	<div id="auctions">
-	{% for auctionname, lotslist in featuredauctions.items %}
+	{% for auctionname, lotslist in allauctions.items %}
 	<section class="section gal-section">
         <div class="container">
-            <div class="row">
+            <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>{{auctionname}}</h2>
@@ -488,21 +488,21 @@ https://templatemo.com/tm-571-hexashop
             </div>
         </div>
         <div class="container">
-            <div class="row">
+            <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
 			    {% for lot in lotslist %}
                             <div class="item">
                                 <div class="thumb">
-                                    <a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
+                                    <a href="/auction/details/?lid={{lot.lid}}"><img src="/media/artists/artworks/{{lot.aid}}/{{lot.image}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-									<a href="/auction/details/?lid={{lot.lid}}">
-										<h4>{{lot.title}}</h4>
-										<span>{{lot.artist}}</span>
-										<a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
-									</a>
+					<a href="/auction/details/?lid={{lot.lid}}">
+						<h4>{{lot.title}}</h4>
+						<span>{{lot.artist}}</span>
+						<a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
+					</a>
                                 </div>
                             </div>
 			    {% endfor %}
@@ -515,7 +515,7 @@ https://templatemo.com/tm-571-hexashop
     </section>
 	{% endfor %}
     </div>
-    -->
+
 
     <div id="adminScreen">
 	  <a href="#" class="cancel">×</a>
