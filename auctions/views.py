@@ -47,6 +47,7 @@ def index(request):
     rows = 6
     featuredsize = 4
     maxpastauctions = 10
+    maxupcomingauctions = 3
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
@@ -74,7 +75,7 @@ def index(request):
                 artistname = artistobj.artistname
             except:
                 pass
-            d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : hlobj.lotimage1, 'description' : artworkobj.lotdescription, 'artist' : artistname, 'aid' : artistobj.id}
+            d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : hlobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'aid' : artistobj.id}
             highlightslist.append(d)
         try:
             redis_instance.set('ac_highlightslist', pickle.dumps(highlightslist))
@@ -95,14 +96,25 @@ def index(request):
     if allauctions.__len__() == 0:
         auctionsqset = Auction.objects.all().order_by('priority')
         try:
-            for auction in auctionsqset[rowstartctr:rowendctr]:
+            aucctr = 0
+            for auction in auctionsqset[rowstartctr:]:
+                if featuredauctions.keys().__len__() > maxupcomingauctions:
+                    break
                 auctionname = auction.auctionname
                 filterauctions.append(auctionname)
-                if auction.auctionstartdate <= curdatetime:
+                if auction.auctionstartdate <= curdatetime: # this is a past auction, so skip.
                     continue
+                if aucctr > rowendctr:
+                    break
+                aucctr += 1
                 auctionurl = auction.auctionurl
                 auctionlots = Lot.objects.filter(auction_id=auction.id).order_by() # Ordered by priority
+                if auctionlots.__len__() == 0:
+                    continue
                 lotslist = []
+                auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
                 for lotobj in auctionlots:
                     try:
                         artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
@@ -116,7 +128,7 @@ def index(request):
                         artistid = artistobj.id
                     except:
                         pass
-                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.lotdescription, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid}
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod}
                     lotslist.append(d)
                 if lotslist.__len__() > chunksize:
                     featuredauctions[auctionname] = lotslist[0:chunksize]
@@ -124,7 +136,7 @@ def index(request):
                     featuredauctions[auctionname] = lotslist
         except:
             pass
-        print(featuredauctions)
+        #print(featuredauctions)
         context['featuredauctions'] = featuredauctions
         context['filterauctions'] = filterauctions
         try:
@@ -137,10 +149,16 @@ def index(request):
                 continue
             auctionname = auction.auctionname
             auction_id = auction.id
-            allauctions[auctionname] = []
             if allauctions.keys().__len__() > maxpastauctions:
                 break
             auctionlots = Lot.objects.filter(auction_id=auction.id)
+            if auctionlots.__len__() == 0:
+                continue
+            if auctionname not in allauctions.keys():
+                allauctions[auctionname] = []
+            auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+            if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
             for lotobj in auctionlots:
                 try:
                     artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
@@ -156,7 +174,7 @@ def index(request):
                     pass
                 if artistname not in allartists.keys():
                     allartists[artistname] = []
-                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid}
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod}
                     allartists[artistname].append(d)
                     allauctions[auctionname].append(d)
                 else:
@@ -341,6 +359,134 @@ def search(request):
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
     #print(searchkey)
     return HttpResponse("{}")
+
+
+
+def moreauctions(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    atype = "0"
+    if request.method == 'GET':
+        if 'atype' in request.GET.keys():
+            atype = str(request.GET['atype'])
+    if atype != "0" and atype != "1":
+        return HttpResponseRedirect("/auction/index/")
+    page = "1"
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            page = str(request.GET['page'])
+    chunksize = 4
+    rows = 6
+    featuredsize = 4
+    maxauctions = 10
+    rowstartctr = int(page) * rows - rows
+    rowendctr = int(page) * rows
+    startctr = (chunksize * rows) * (int(page) -1) + featuredsize
+    endctr = (chunksize * rows) * int(page) + featuredsize
+    context = {}
+    allartists = {}
+    allauctions = {}
+    filterauctions = []
+    curdatetime = datetime.datetime.now()
+    try:
+        if int(atype) == 0: # get all upcoming auctions
+            allauctions = pickle.loads(redis_instance.get('ac_upcomingauctions'))
+        else:
+            allauctions = pickle.loads(redis_instance.get('ac_pastauctions'))
+        filterauctions = pickle.loads(redis_instance.get('ac_filterauctions'))
+        allartists = pickle.loads(redis_instance.get('ac_allartists'))
+    except:
+        filterauctions = []
+        allartists = {}
+        allauctions = {}
+    if allauctions.__len__() == 0: # We didn't get any data from redis cache...
+        auctionsqset = Auction.objects.all().order_by('priority')
+        aucctr = 0
+        for auction in auctionsqset[rowstartctr:]:
+            if int(atype) == 1 and auction.auctionstartdate > curdatetime: # This is an upcoming auction, but we want past auctions only.
+                continue
+            elif int(atype) == 0 and auction.auctionstartdate <= curdatetime: # This is a past auction, we want upcoming only.
+                continue
+            if aucctr > rowendctr:
+                break
+            auctionname = auction.auctionname
+            auction_id = auction.id
+            if allauctions.keys().__len__() > maxauctions:
+                break
+            auctionlots = Lot.objects.filter(auction_id=auction.id)
+            if auctionlots.__len__() == 0:
+                continue
+            aucctr += 1
+            if auctionname not in allauctions.keys():
+                allauctions[auctionname] = []
+            auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+            if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+            for lotobj in auctionlots:
+                try:
+                    artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
+                except:
+                    continue
+                artistname = ""
+                artistid = ""
+                try:
+                    artistobj = Artist.objects.get(id=artworkobj.artist_id)
+                    artistname = artistobj.artistname
+                    artistid = artistobj.id
+                except:
+                    pass
+                if artistname not in allartists.keys():
+                    allartists[artistname] = []
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid, 'auctionperiod' : auctionperiod}
+                    allartists[artistname].append(d)
+                    allauctions[auctionname].append(d)
+                else:
+                    try:
+                        artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
+                    except:
+                        continue
+                    artistname = ""
+                    artistid = ""
+                    try:
+                        artistobj = Artist.objects.get(id=artworkobj.artist_id)
+                        artistname = artistobj.artistname
+                        artistid = artistobj.id
+                    except:
+                        pass
+                    l = allartists[artistname]
+                    d = {'title' : artworkobj.artworkname, 'loturl' : '', 'image' : lotobj.lotimage1, 'description' : artworkobj.description, 'artist' : artistname, 'auctionurl' : "", 'lid' : lotobj.id, 'aid' : artistid}
+                    l.append(d)
+                    allartists[artistname] = l
+                    allauctions[auctionname].append(d)
+        #print(allauctions)
+        try:
+            redis_instance.set('ac_allartists', pickle.dumps(allartists))
+            if int(atype) == 0:
+                redis_instance.set('ac_upcomingauctions', pickle.dumps(allauctions))
+            elif int(atype) == 1:
+                redis_instance.set('ac_pastauctions', pickle.dumps(allauctions))
+        except:
+            pass
+    context['allartists'] = allartists
+    context['allauctions'] = allauctions
+    carouselentries = getcarouselinfo()
+    context['carousel'] = carouselentries
+    context['atype'] = atype
+    context['nextpage'] = int(page) + 1
+    context['prevpage'] = int(page) - 1
+    context['displayedpagenumber1'] = int(page) + 1
+    context['displayedpagenumber2'] = int(page) + 2
+    context['displayedpagenumber3'] = int(page) + 3
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    template = loader.get_template('moreauctions.html')
+    return HttpResponse(template.render(context, request))
+
+
+
+
 
 
 

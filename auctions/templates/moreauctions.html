@@ -398,12 +398,35 @@ https://templatemo.com/tm-571-hexashop
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-                        <h2>Upcoming Auctions</h2>
+                        <h2>All Auctions</h2>
 						<hr>
                     </div>
                 </div>
             </div>
         </div>
+	<div class="auction-pagination">
+		<nav aria-label="Page navigation example">
+		    <ul class="pagination">
+		        <li class="page-item">
+		            {% if prevpage >= 1 %}
+		            <a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{prevpage}}" aria-label="Previous">
+		                <span aria-hidden="true">Previous</span>
+		                <span class="sr-only">Previous</span>
+		            </a>
+			    {% endif %}
+		        </li>
+		        <li class="page-item"><a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{displayedpagenumber1}}">{{displayedpagenumber1}}</a></li>
+		        <li class="page-item"><a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{displayedpagenumber2}}">{{displayedpagenumber2}}</a></li>
+		        <li class="page-item"><a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{displayedpagenumber3}}">{{displayedpagenumber3}}</a></li>
+		        <li class="page-item">
+		            <a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{nextpage}}" aria-label="Next">
+		                <span aria-hidden="true">Next</span>
+		                <span class="sr-only">Next</span>
+		            </a>
+		        </li>
+		    </ul>
+		</nav>
+	</div>
 	<!-- <div class="container">
             <div class="row">
                 <div class="col-md-4">
@@ -437,7 +460,7 @@ https://templatemo.com/tm-571-hexashop
 	
 	<!-- Begining of new auctions gallery -->
 	<div id="upcomingauctions">
-	{% for auctionname, lotslist in featuredauctions.items %}
+	{% for auctionname, lotslist in allauctions.items %}
 	<section class="oth-works mrt-90">
         <div class="container">
             <div class="row">
@@ -445,7 +468,7 @@ https://templatemo.com/tm-571-hexashop
                     <div class="section-heading section-heading-2 mrb-50">
                         <h2>{{auctionname}}</h2>
                         <span>
-                            {{lotslist.0.auctionperiod}}
+                            
                         </span>
                     </div>
                 </div>
@@ -470,75 +493,33 @@ https://templatemo.com/tm-571-hexashop
         </div>
     	</section>
     	{% endfor %}
-	<div class="container">
-	    <div class="row">
-	    	<div class="col-lg-12">
-		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=0">View More</a>
-	    	</div>
-	    </div>
+    	</div>
+	<div class="auction-pagination">
+		<nav aria-label="Page navigation example">
+		    <ul class="pagination">
+		        <li class="page-item">
+		            {% if prevpage >= 1 %}
+		            <a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{prevpage}}" aria-label="Previous">
+		                <span aria-hidden="true">Previous</span>
+		                <span class="sr-only">Previous</span>
+		            </a>
+			    {% endif %}
+		        </li>
+		        <li class="page-item"><a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{displayedpagenumber1}}">{{displayedpagenumber1}}</a></li>
+		        <li class="page-item"><a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{displayedpagenumber2}}">{{displayedpagenumber2}}</a></li>
+		        <li class="page-item"><a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{displayedpagenumber3}}">{{displayedpagenumber3}}</a></li>
+		        <li class="page-item">
+		            <a class="page-link" href="/auction/moreauctions/?atype={{atype}}&page={{nextpage}}" aria-label="Next">
+		                <span aria-hidden="true">Next</span>
+		                <span class="sr-only">Next</span>
+		            </a>
+		        </li>
+		    </ul>
+		</nav>
 	</div>
 	</section>
-	</div>
 	<!-- End of new auctions gallery -->
-	<div id="pastauctions">
-	<section class="section gal-section">
-	<div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Past Auctions</h2>
-			<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-	{% for auctionname, lotslist in allauctions.items %}
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading section-heading-2 mrb-50">
-                        <h2>{{auctionname}}</h2>
-			<span>
-                            {{lotslist.0.auctionperiod}}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-                        <div class="owl-men-item owl-carousel">
-			    {% for lot in lotslist %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/auction/details/?lid={{lot.lid}}"><img src="/media/artists/artworks/{{lot.aid}}/{{lot.image}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-					<a href="/auction/details/?lid={{lot.lid}}">
-						<h4>{{lot.title}}</h4>
-						<span>{{lot.artist}}</span>
-						<!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
-					</a>
-                                </div>
-                            </div>
-			    {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-	{% endfor %}
-	<div class="container">
-	    <div class="row">
-	    	<div class="col-lg-12">
-		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=1">View More</a>
-	    	</div>
-	    </div>
-	</div>
-    </section>
+	
     </div>
 
 
