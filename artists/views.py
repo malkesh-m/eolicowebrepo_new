@@ -397,6 +397,8 @@ def details(request):
     if artistobj.prefix != "" and artistobj.prefix != "na":
         prefix = artistobj.prefix + " "
     shortlen = 100
+    if artistobj.bio is None:
+        artistobj.bio = ""
     if artistobj.bio.__len__() < shortlen:
         shortlen = artistobj.bio.__len__()
     shortabout = artistobj.bio[:shortlen] + "..."

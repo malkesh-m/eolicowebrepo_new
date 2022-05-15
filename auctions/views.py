@@ -232,17 +232,55 @@ def details(request):
     chunksize = 4
     rows = 2
     context = {}
-    lotinfo = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artist' : lotobj.artistname, 'birth' : lotobj.artistbirth, 'death' : lotobj.artistdeath, 'nationality' : lotobj.artistnationality, 'medium' : lotobj.medium, 'size' : lotobj.size, 'auctionname' : lotobj.auction.auctionname, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'provenance' : lotobj.provenance, 'literature' : lotobj.literature, 'exhibitions' : lotobj.exhibited, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.loturl, 'category' : lotobj.category, 'created' : '', 'lotid' : lotobj.id}
+    artworkobj = None
+    try:
+        artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
+    except:
+        pass
+    artworkname, artworkdesc, artistname, artistbirth, artistdeath, nationality, createdate, artistid = "", "", "", "", "", "", "", ""
+    auctionname, estimate, literature, exhibition = "", "", "", ""
+    if artworkobj is not None:
+        artworkname = artworkobj.artworkname
+        artworkdesc = artworkobj.description
+        literature = artworkobj.literature
+        exhibition = artworkobj.exhibitions
+        createdate = artworkobj.creationstartdate
+        try:
+            artistobj = Artist.objects.get(id=artworkobj.artist_id)
+            artistname = artistobj.artistname
+            artistbirth = artistobj.birthyear
+            artistdeath = artistobj.deathyear
+            nationality = artistobj.nationality
+            artistid = artistobj.id
+        except:
+            pass
+    auctionobj = None
+    try:
+        auctionobj = Auction.objects.get(id=lotobj.auction_id)
+        auctionname = auctionobj.auctionname
+    except:
+        pass
+    estimate = str(lotobj.lowestimateUSD)
+    if lotobj.highestimateUSD > 0.00:
+        estimate += " - " + str(lotobj.highestimateUSD)
+    artworkdesc = artworkdesc.replace("<strong><br>Description:</strong><br>", "")
+    artworkdesc = artworkdesc.replace("<strong>Description:</strong>", "")
+    lotinfo = {'title' : artworkname, 'description' : artworkdesc, 'artist' : artistname, 'birth' : artistbirth, 'death' : artistdeath, 'nationality' : nationality, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'auctionname' : auctionname, 'estimate' : estimate, 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'provenance' : lotobj.provenance, 'literature' : literature, 'exhibitions' : exhibition, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.source, 'category' : lotobj.category, 'created' : createdate, 'lotid' : lotobj.id, 'aid' : artistid}
     context['lotinfo'] = lotinfo
     try:
         aboutartist = pickle.loads(redis_instance.get('ac_aboutartist_%s'%lotobj.auction.id))
     except:
         aboutartist = {}
     if aboutartist.keys().__len__() == 0:
-        artistqset = Artist.objects.filter(artistname__iexact=lotobj.artistname)
+        if artistobj is None:
+            if artworkobj is not None:
+                artistobj = Artist.objects.get(id=artworkobj.artist_id)
+            else:
+                artistqset = Artist.objects.filter(artistname__iexact=lotobj.artistname)
+                artistobj = artistqset[0]
         aboutartist = {'artistname' : '', 'nationality' : '', 'birth' : '', 'death' : '', 'about' : '', 'image' : '', 'aid' : ''}
-        if artistqset.__len__() > 0:
-            aboutartist = {'artistname' : artistqset[0].artistname, 'nationality' : artistqset[0].nationality, 'birth' : artistqset[0].birthdate, 'death' : artistqset[0].deathdate, 'about' : artistqset[0].about, 'image' : artistqset[0].squareimage, 'aid' : artistqset[0].id}
+        if artistobj is not None:
+            aboutartist = {'artistname' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birth' : artistobj.birthyear, 'death' : artistobj.deathyear, 'about' : artistobj.description, 'image' : artistobj.artistimage, 'aid' : artistobj.id}
         context['aboutartist'] = aboutartist
         try:
             redis_instance.set('ac_aboutartist_%s'%lotobj.auction.id, pickle.dumps(aboutartist))
@@ -260,71 +298,90 @@ def details(request):
         relatedworks = [[], [], [], []]
         allartists = {}
     if otherworks[0].__len__() == 0:
-        lotsqset = Lot.objects.filter(auction=lotobj.auction).order_by() # Ordered by priority, by default
+        lotsqset = Lot.objects.filter(auction_id=lotobj.auction_id).order_by() # Ordered by priority, by default
         numlots = chunksize * rows
         if lotsqset.__len__() < numlots:
             numlots = lotsqset.__len__()
         actr = 0
         rctr = 0
         for lot in lotsqset[0:numlots]:
-            d = {'title' : lot.lottitle, 'artist' : lot.artistname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id}
+            artwork = None
+            try:
+                artwork = Artwork.objects.get(id=lot.artwork_id)
+            except:
+                continue
+            artistname = ""
+            try:
+                artist = Artist.objects.get(id=artwork.artist_id)
+                artistname = artist.artistname
+            except:
+                pass
+            estimate = str(lot.lowestimateUSD)
+            if lot.highestimateUSD > 0.00:
+                estimate += " - " + str(lot.highestimateUSD)
+            d = {'title' : artwork.artworkname, 'artist' : artistname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artwork.artist_id}
             l = otherworks[rctr]
             l.append(d)
             otherworks[rctr] = l
             rctr += 1
             if rctr == 4:
                 rctr = 0
-            if lot.artistname in allartists.keys():
-                l = allartists[lot.artistname]
-                try:
-                    artistobj = Artist.objects.get(artistname__iexact=lot.artistname)
-                except:
-                    continue # If there is no corresponding artist object, we cannot continue
-                l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
-                allartists[lot.artistname] = l
+            if artistname in allartists.keys():
+                l = allartists[artistname]
+                l.append({'title' : artwork.artworkname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artist.id})
+                allartists[artistname] = l
             else:
                 l = []
-                try:
-                    artistobj = Artist.objects.get(artistname__iexact=lot.artistname)
-                except:
-                    continue # If there is no corresponding artist object, we cannot continue
-                l.append({'title' : lot.lottitle, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
-                allartists[lot.artistname] = l
+                l.append({'title' : artwork.artworkname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artist.id})
+                allartists[artistname] = l
         context['otherworks'] = otherworks
         try:
             redis_instance.set('ac_otherworks_%s'%lotobj.auction.id, pickle.dumps(otherworks))
         except:
             pass
     if relatedworks[0].__len__() == 0:
-        relatedqset = Lot.objects.filter(artistname__iexact=lotobj.artistname).order_by()
+        relatedqset = Artwork.objects.filter(artist_id=artistobj.id).order_by() # Getting artworks by the same artist, in any auction.
         numlots = chunksize * rows
         if relatedqset.__len__() < numlots:
             numlots = relatedqset.__len__()
         rctr = 0
-        for lot in relatedqset[0:numlots]:
-            d = {'title' : lot.lottitle, 'artist' : lot.artistname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id}
+        for aw in relatedqset[0:numlots]:
+            rel_lotobj = None
+            rel_estimate = ""
+            rel_lotqset = Lot.objects.filter(artwork_id=aw.id)
+            if rel_lotqset.__len__() > 0:
+                rel_lotobj = rel_lotqset[0]
+                rel_estimate = str(rel_lotobj.lowestimateUSD)
+                if rel_lotobj.highestimateUSD > 0.00:
+                    rel_estimate += " - " + str(rel_lotobj.highestimateUSD)
+            else:
+                continue
+            rel_artistname = ""
+            rel_artist = None
+            try:
+                rel_artist = Artist.objects.get(id=aw.artist_id)
+                rel_artistname = rel_artist.artistname
+            except:
+                pass
+            d = {'title' : aw.artworkname, 'artist' : rel_artistname, 'image' : rel_lotobj.lotimage1, 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : aw.artist_id}
             l = relatedworks[rctr]
             l.append(d)
             relatedworks[rctr] = l
             rctr += 1
             if rctr == 4:
                 rctr = 0
-            if lot.artistname in allartists.keys(): # This is the part that would be executed, not the else clause
-                l2 = allartists[lot.artistname]
-                try:
-                    artistobj = Artist.objects.get(artistname__iexact=lot.artistname)
-                except:
-                    continue # If there is no corresponding artist object, we cannot continue
-                l2.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
-                allartists[lot.artistname] = l2
+            if rel_artistname != "" and rel_artistname in allartists.keys(): # This is the part that would be executed, not the else clause
+                l2 = allartists[rel_artistname]
+                l2.append({'title' : aw.artworkname, 'nationality' : rel_artist.nationality, 'birth' : rel_artist.birthyear, 'death' : rel_artist.deathyear, 'image' : rel_lotobj.lotimage1, 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : rel_artist.id})
+                allartists[rel_artistname] = l2
             else: # This should never be executed. Bad omen... bad things will happen if this is executed.
                 l2 = []
                 try:
-                    artistobj = Artist.objects.get(artistname__iexact=lot.artistname)
+                    rel_artist = Artist.objects.get(artistname__iexact=rel_artistname)
                 except:
                     continue # If there is no corresponding artist object, we cannot continue
-                l2.append({'title' : lot.lottitle, 'nationality' : lot.artistnationality, 'birth' : lot.artistbirth, 'death' : lot.artistdeath, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : lot.estimate, 'lid' : lot.id, 'aid' : artistobj.id})
-                allartists[lot.artistname] = l2
+                l2.append({'title' : aw.artworkname, 'nationality' : rel_artist.nationality, 'birth' : rel_artist.birthyear, 'death' : rel_artist.deathyear, 'image' : rel_lotobj.lotimage1, 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : rel_artist.id})
+                allartists[rel_artistname] = l2
         context['relatedworks'] = relatedworks
         context['allartists'] = allartists
         try:
@@ -517,7 +574,93 @@ def moreauctions(request):
 
 
 def showauction(request):
-    pass
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    aucid = ""
+    if request.method == 'GET':
+        if 'aucid' in request.GET.keys():
+            aucid = str(request.GET['aucid'])
+    if aucid == "":
+        return HttpResponse("ShowAuction: Required parameter (aucid) missing.")
+    page = "1"
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            page = str(request.GET['page'])
+    chunksize = 4
+    rows = 6
+    maxselectlots = 4
+    rowstartctr = int(page) * rows - rows
+    rowendctr = int(page) * rows
+    startctr = (chunksize * rows) * (int(page) -1)
+    endctr = (chunksize * rows) * int(page)
+    context = {}
+    allartists = {}
+    alllots = []
+    selectlots = []
+    auctioninfo = {}
+    curdatetime = datetime.datetime.now()
+    auctionobj = None
+    try:
+        auctionobj = Auction.objects.get(id=aucid)
+    except:
+        return HttpResponse("Could not find auction identified by ID %s: %s"%(aucid, sys.exc_info()[1].__str__()))
+    auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+        auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+    auctioninfo['auctionname'] = auctionobj.auctionname
+    auctioninfo['auctionperiod'] = auctionperiod
+    auctioninfo['auctionid'] = auctionobj.auctionid
+    auctioninfo['coverimage'] = auctionobj.coverimage
+    auctioninfo['lotcount'] = auctionobj.lotcount
+    auctioninfo['aucid'] = aucid
+    housename, ahid = "", ""
+    ahobj = None
+    try:
+        ahobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+        housename = ahobj.housename
+        ahid = ahobj.id
+    except:
+        pass
+    auctioninfo['auctionhouse'] = housename
+    auctioninfo['ahid'] = ahid
+    context['auctioninfo'] = auctioninfo
+    # We won't be using redis cache in this controller function. It would be a drain on memory if we 
+    # start loading the lots info for every auction the user chooses to dig into.
+    alllotsqset = Lot.objects.filter(auction_id=aucid)
+    if alllotsqset.__len__() == 0:
+        context['warning'] = "Could not find any lot/artwork information for '%s'"%auctionobj.auctionname
+        template = loader.get_template('showauction.html')
+        return HttpResponse(template.render(context, request))
+    lotctr = 0
+    for lotobj in alllotsqset:
+        artwork = None
+        try:
+            artwork = Artwork.objects.get(id=lotobj.artwork_id)
+        except:
+            continue # If we could not find the corresponding artwork, then we simply skip it.
+            # Ideally, we should be logging this somewhere, and it should be implemented later.
+        artistobj = None
+        try:
+            artistobj = Artist.objects.get(id=artwork.artist_id)
+        except:
+            continue # Again, if artist could not be identified for the lot, we skip the lot entirely.
+            # This too should be logged. TO DO later.
+        artistname = artistobj.artistname
+        lottitle = artwork.artworkname
+        estimate = str(lotobj.lowestimateUSD)
+        if lotobj.highestimateUSD > 0.00:
+            estimate += " - " + str(lotobj.highestimateUSD)
+        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'image' : lotobj.lotimage1, 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj.id, 'aid' : artistobj.id}
+        if artistname not in allartists.keys():
+            allartists[artistname] = 1
+        alllots.append(d)
+        if lotctr < maxselectlots:
+            selectlots.append(d)
+        lotctr += 1
+    context['alllots'] = alllots
+    context['selectlots'] = selectlots
+    template = loader.get_template('showauction.html')
+    return HttpResponse(template.render(context, request))
 
 
 
