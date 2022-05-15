@@ -18,6 +18,7 @@ import os, sys, re, time, datetime
 import simplejson as json
 import redis
 import pickle
+import urllib
 
 from gallery.models import Gallery, Event
 from login.models import User, Session, WebConfig, Carousel
@@ -597,6 +598,7 @@ def showauction(request):
     allartists = {}
     alllots = []
     selectlots = []
+    nationalities = {}
     auctioninfo = {}
     curdatetime = datetime.datetime.now()
     auctionobj = None
@@ -645,6 +647,8 @@ def showauction(request):
         except:
             continue # Again, if artist could not be identified for the lot, we skip the lot entirely.
             # This too should be logged. TO DO later.
+        artistnationality = artistobj.nationality
+        nationalities[artistnationality] = 1
         artistname = artistobj.artistname
         lottitle = artwork.artworkname
         estimate = str(lotobj.lowestimateUSD)
@@ -652,15 +656,140 @@ def showauction(request):
             estimate += " - " + str(lotobj.highestimateUSD)
         d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'image' : lotobj.lotimage1, 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj.id, 'aid' : artistobj.id}
         if artistname not in allartists.keys():
-            allartists[artistname] = 1
+            allartists[artistname] = artistobj.id
         alllots.append(d)
         if lotctr < maxselectlots:
             selectlots.append(d)
         lotctr += 1
     context['alllots'] = alllots
     context['selectlots'] = selectlots
+    context['allartists'] = allartists
+    context['nationalities'] = nationalities
     template = loader.get_template('showauction.html')
     return HttpResponse(template.render(context, request))
+
+
+
+def morefilter(request):
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
+    aucid = None
+    medium, size, sizeunit, artist, nationality = "", "", "", "", ""
+    requestbody = str(request.body)
+    bodycomponents = requestbody.split("&")
+    requestdict = {}
+    for comp in bodycomponents:
+        compparts = comp.split("=")
+        if compparts.__len__() > 1:
+            compparts[0] = compparts[0].replace("b'", "")
+            requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+    endbarPattern = re.compile("\|\s*$")
+    if request.method == 'POST':
+        if 'aucid' in requestdict.keys():
+            aucid = str(requestdict['aucid']).strip()
+        if 'medium' in requestdict.keys():
+            medium = str(requestdict['medium']).strip()
+            medium = endbarPattern.sub("", medium)
+        if 'size' in requestdict.keys():
+            size = str(requestdict['size']).strip()
+            size = endbarPattern.sub("", size)
+        if 'sizeunit' in requestdict.keys():
+            sizeunit = str(requestdict['sizeunit']).strip()
+            sizeunit = endbarPattern.sub("", sizeunit)
+        if 'artist' in requestdict.keys():
+            artist = str(requestdict['artist']).strip()
+            artist = endbarPattern.sub("", artist)
+        if 'nationality' in requestdict.keys():
+            nationality = str(requestdict['nationality']).strip()
+            nationality = endbarPattern.sub("", nationality)
+    mediumlist, artistlist, nationalitylist, sizelist = [], [], [], []
+    if not aucid:
+        return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing auction ID"}))
+    #print(medium)
+    mediumlist = medium.split("|")
+    artistlist = artist.split("|")
+    nationalitylist = nationality.split("|")
+    sizelist = size.split("|")
+    context = {}
+    filteredlots = []
+    uniquelots = {}
+    auctionobj = None
+    maxsearchresults = 50 # No more than 50 records will be sent back. More than 50 records usually end up crashing the browser.
+    try:
+        auctionobj = Auction.objects.get(id=aucid)
+    except:
+        return HttpResponse(json.dumps({'err' : "Could not find auction identified by the ID %s"%aucid}))
+    lotqset = Lot.objects.filter(auction_id=aucid)
+    for lot in lotqset:
+        artwork = None
+        try:
+            artwork = Artwork.objects.get(id=lot.artwork_id)
+        except:
+            continue # If we can't find the artwork associated with the lot in question, should we go ahead?
+            # At this moment I think we shouldn't, since we won't be able to provide much info about the lot.
+        if mediumlist.__len__() > 0 or artistlist.__len__() > 0 or nationalitylist.__len__() > 0 or sizelist.__len__() > 0:
+            estimatelow = str(lot.lowestimateUSD)
+            estimatehigh = str(lot.highestimateUSD)
+            estimate = estimatelow + " - " + estimatehigh
+            artistobj = None
+            artistname, aid = "", ""
+            try:
+                artistobj = Artist.objects.get(id=artwork.artist_id)
+                artistname = artistobj.artistname
+                aid = artistobj.id
+            except:
+                pass
+            aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+            if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id}
+            for medium in mediumlist:
+                if medium in artwork.medium.lower():
+                    if artwork.artworkname not in uniquelots.keys():
+                        filteredlots.append(d)
+                        uniquelots[artwork.artworkname] = 1
+                    break # We have matched at least one of the selected mediums. So this lot is included in list. Go to next lot.
+            try:
+                for nationality in nationalitylist:
+                    if nationality.lower() in artistobj.nationality.lower():
+                        if artwork.artworkname not in uniquelots.keys():
+                            filteredlots.append(d)
+                            uniquelots[artwork.artworkname] = 1
+                        break # We have matched at least one of the selected nationality. So this lot is included in list. Go to next lot.
+                for artist_id in artistlist:
+                    if artist_id == artistobj.id:
+                        if artwork.artworkname not in uniquelots.keys():
+                            filteredlots.append(d)
+                            uniquelots[artwork.artworkname] = 1
+                        break # We have matched at least one of the selected artists. So this lot is included in list. Go to next lot.
+            except:
+                pass
+            if lot.measureunit == sizeunit:
+                for sizespec in sizelist:
+                    if sizespec == 'small':
+                        if lot.height != "" and int(lot.height) < 40:
+                            if artwork.artworkname not in uniquelots.keys():
+                                filteredlots.append(d)
+                                uniquelots[artwork.artworkname] = 1 # Size matches. So this lot is included.
+                            break
+                    if sizespec == 'medium':
+                        if lot.height != "" and int(lot.height) >= 40 and int(lot.height) < 100:
+                            if artwork.artworkname not in uniquelots.keys():
+                                filteredlots.append(d)
+                                uniquelots[artwork.artworkname] = 1 # Size matches. So this lot is included.
+                            break
+                    if sizespec == 'large':
+                        if lot.height != "" and int(lot.height) >= 100:
+                            if artwork.artworkname not in uniquelots.keys():
+                                filteredlots.append(d)
+                                uniquelots[artwork.artworkname] = 1 # Size matches. So this lot is included.
+                            break
+    context['filteredlots'] = filteredlots
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    return HttpResponse(json.dumps(context))
 
 
 

@@ -10,5 +10,6 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('moreauctions/', views.moreauctions, name='moreauctions'),
     path('showauction/', views.showauction, name='showauction'),
+    path('morefilter/', views.morefilter, name='morefilter'),
 ]
 
