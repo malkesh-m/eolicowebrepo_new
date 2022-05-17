@@ -216,42 +216,56 @@ https://templatemo.com/tm-571-hexashop
 	  else{
 	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	  }
+	  loadingspan = document.getElementById('loading');
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    context = JSON.parse(xmlhttp.responseText);
-	    featureddiv = document.getElementById('upcomingauctions');
-	    featureddiv.innerHTML = "";
+	    latestlotsdiv = document.getElementById('latestlots');
+	    latestlotsdiv.innerHTML = "";
+	    loadingspan.innerHTML = "";
 	    searchtext = "";
-	    pastauctionsdiv = document.getElementById('pastauctions');
-	    pastauctionsdiv.innerHTML = "";
 	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
-            searchauctions = context['allauctions'];
+            searchresults = context['allsearchresults'];
     	    adminuser = context['adminuser'];
-            for(var i=0; i < searchauctions.length; i++){
-                auctionobj = searchauctions[i];
-		searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
-                searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "'><img src='/media/auctions/" + auctionobj.ahid + "/" + auctionobj.aucid + "/" + auctionobj.coverimage + "'></a></div>";
-		searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "' style='color:#000000;'><h4>" + auctionobj.auctionname +"</h4>";
-		if (auctionobj.auctionperiod != ''){
-		    searchtext += "<h6>" + auctionobj.auctionperiod + "</h6>";
+            for(var i=0; i < searchresults.length; i++){
+                resobj = searchresults[i];
+                obtype = resobj.obtype;
+    		if(obtype == 'auction'){
+		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+	            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='/media/auctions/" + resobj.ahid + "/" + resobj.aucid + "/" + resobj.coverimage + "'></a></div>";
+		    searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname +"</h4>";
+		    if (resobj.auctionperiod != ''){
+		        searchtext += "<h6>" + resobj.auctionperiod + "</h6>";
+		    }
+		    searchtext += "<h6>" + resobj.auctionhouse + "</h6>";
+		    searchtext += "<h6>Number of lots: " + resobj.lotcount + "</h6>";
+		    searchtext += "</a></div>";
+		    if(adminuser == 1){
+		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
+		    }
 		}
-		searchtext += "<h6>" + auctionobj.auctionhouse + "</h6>";
-		searchtext += "<h6>Number of lots: " + auctionobj.lotcount + "</h6>";
-		searchtext += "</a></div>";
-		if(adminuser == 1){
-		    searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + auctionobj.aucid + "');\">Edit</a></div>";
+		else if(obtype == 'lot'){
+		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+	            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='/media/artists/artworks/" + resobj.aid + "/" + resobj.coverimage + "'></a></div>";
+		    searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle +"</h4>";
+	            searchtext += "<h6>" + resobj.artistname + "</h6>";
+		    searchtext += "<h6>" + resobj.medium + "</h6>";
+		    searchtext += "<h6>" + resobj.size + "</h6>";
+		    searchtext += "</a></div>";
+		    if(adminuser == 1){
+		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
+		    }
 		}
 		searchtext += "</div></div>";
 	    }
 	    searchtext += "</div></div>";
-	    featureddiv.innerHTML = searchtext;
-	    //featureddiv.innerHTML = featureddiv.innerHTML.replace("<div class=\"row align-items-end\"></div></div>", "<div class=\"row align-items-end\">");
-	    //alert(featureddiv.innerHTML);
+	    latestlotsdiv.innerHTML = searchtext;
 	  }
 	  };
-	  searchkey = document.getElementById('auctionsearch').value;
-	  xmlhttp.open("GET", "/auction/search/?q=" + searchkey);
+	  loadingspan.innerHTML = "<img src='/static/images/loading.gif'>";
+	  searchkey = document.getElementById('pdbsearch').value;
+	  xmlhttp.open("GET", "/price/search/?q=" + searchkey);
 	  xmlhttp.send();
 	}
     </script>
@@ -288,8 +302,8 @@ https://templatemo.com/tm-571-hexashop
 				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
 				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-				 <li class="scroll-to-section"><a href="/auction/index/" class="active">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+				 <li class="scroll-to-section"><a href="/price/database/" class="active">Price Database</a></li>
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -411,7 +425,9 @@ https://templatemo.com/tm-571-hexashop
 			      <form autocomplete="off" name='frmsearchpdb' id='frmsearchpdb' method='POST' action="">
 				  {% csrf_token %}
 				  <div class="autocomplete">
-				    <span class="input-group"><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search database" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button></span>
+				    <span class="input-group"><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search database" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><a href='#' style="text-align:bottom;">Advanced Search</a></span><span id='loading'></span>
+				    <br/>
+				    <span class="input-group">Search 10 Million plus Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses around the world.</span>
 				  </div>
 			      </form>
                               <!-- <a href="">View All</a> -->
@@ -419,6 +435,15 @@ https://templatemo.com/tm-571-hexashop
                       </div>
                   </div>
               </div>
+	</div>
+	<div class="container">
+	    <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
+			<span class="input-group">Space for content on why you should subscribe to ADS database</span>
+		      </div>
+		  </div>
+	    </div>
 	</div>
     </section>
     <!-- ***** Main Banner Area End ***** -->
@@ -465,8 +490,7 @@ https://templatemo.com/tm-571-hexashop
 	-->
 	
 	<!-- Begining of new auctions gallery -->
-	<div id="latestlots">
-	
+	<div>
 	<section class="oth-works mrt-90">
         <div class="container">
             <div class="row">
@@ -477,14 +501,14 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
 
-            <div class="row align-items-end">
+            <div class="row align-items-end" id="latestlots">
 		{% for entity in entities %}
                 <div class="column">
                     <div class="img-box">
 			<a href="/auction/details/?lid={{entity.lid}}"><img src="/media/artists/artworks/{{entity.aid}}/{{entity.lotimage}}" alt=""></a>
                         <a href="/auction/details/?lid={{entity.lid}}" style="color:#000000;">
-				<h2>{{entity.auctionname}}</h2>
-		                <span>
+				<h2 style="padding-left:10px;">{{entity.auctionname}}</h2>
+		                <span style="padding-left:10px;">
 		                    {{entity.auctionperiod}}
 		                </span>
 				<h4>{{entity.artworkname}}</h4>

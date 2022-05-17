@@ -6,5 +6,6 @@ from pricedatabase import views
 urlpatterns = [
     path('database/', views.index, name='index'),
     path('details/', views.details, name='details'),
+    path('search/', views.search, name='search'),
 ]
 
