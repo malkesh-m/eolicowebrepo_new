@@ -266,6 +266,8 @@ def details(request):
         estimate += " - " + str(lotobj.highestimateUSD)
     artworkdesc = artworkdesc.replace("<strong><br>Description:</strong><br>", "")
     artworkdesc = artworkdesc.replace("<strong>Description:</strong>", "")
+    artworkdesc = artworkdesc.replace("<br>", "")
+    artworkdesc = artworkdesc.replace("<strong>", "").replace("</strong>", "")
     lotinfo = {'title' : artworkname, 'description' : artworkdesc, 'artist' : artistname, 'birth' : artistbirth, 'death' : artistdeath, 'nationality' : nationality, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'auctionname' : auctionname, 'estimate' : estimate, 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'provenance' : lotobj.provenance, 'literature' : literature, 'exhibitions' : exhibition, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.source, 'category' : lotobj.category, 'created' : createdate, 'lotid' : lotobj.id, 'aid' : artistid}
     context['lotinfo'] = lotinfo
     try:

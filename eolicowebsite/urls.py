@@ -30,6 +30,7 @@ urlpatterns = [
     path('artist/', include('artists.urls')),
     path('auction/', include('auctions.urls')),
     path('auctionhouse/', include('auctionhouses.urls')),
+    path('price/', include('pricedatabase.urls')),
     path('about/', login.views.about, name='about'),
     path('contactus/', login.views.contactus, name='contactus'),
     path('', login.views.index, name='homeindex'),

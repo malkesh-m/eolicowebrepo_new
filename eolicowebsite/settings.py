@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'auctions',
     'auctionhouses',
     'adminsite',
+    'pricedatabase',
 ]
 
 MIDDLEWARE = [
