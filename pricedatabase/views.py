@@ -18,6 +18,7 @@ import os, sys, re, time, datetime
 import simplejson as json
 import redis
 import pickle
+import urllib
 
 from gallery.models import Gallery, Event
 from login.models import User, Session, WebConfig, Carousel
@@ -292,7 +293,9 @@ def dofilter(request):
     context = {}
     if lottitle != "":
         artworksqset = Artwork.objects.filter(artworkname__icontains=lottitle)
-        for artwork in artworksqset:
+        for artwork in artworksqset[:10000]:
+            if artwork.image1 == "":
+                continue
             artworkname = artwork.artworkname
             awid = artwork.id
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
@@ -331,7 +334,7 @@ def dofilter(request):
                     ahid = auchouseobj.id
                 except:
                     pass
-            d = {'lottitle' : artworkname, 'artistname' : artistname, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid}
+            d = {'lottitle' : artworkname, 'artistname' : artistname, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : artwork.image1}
             # Now check all parameters against user's selected values to determine if this dict should be appended to 'entitieslist'.
             artistflag, titleflag, mediumflag, sizeflag, soldpriceflag, estimateflag, auctionhouseflag = -1, 1, -1, -1, -1, -1, -1
             if artistname != "" and artistname.lower() in lartistname.lower(): # Partial match is considered.
@@ -408,6 +411,101 @@ def dofilter(request):
                 flagctr = 0
                 if (estimateflag == 1 or estimateflag == -1) and (sizeflag == 1 or sizeflag == -1) and (soldpriceflag == 1 or soldpriceflag == -1) and (auctionhouseflag == 1 or auctionhouseflag == -1) and (mediumflag == 1 or mediumflag == -1) and (artistflag == 1 or artistflag == -1):
                     entitieslist.append(d)
+    else: # Handle with parameters other than artwork name.
+        artistqset = []
+        if artistname != "":
+            artistqset = Artist.objects.filter(artistname__icontains=artistname)
+        else:
+            artistqset = Artist.objects.all()
+        artistqset2 = []
+        if artistqset.__len__() > 5000: # Consider only first 5000 records.
+            for artist in artistqset[:5000]:
+                artistqset2.append(artist)
+        else:
+            for artist in artistqset:
+                artistqset2.append(artist)
+        for artist in artistqset2:
+            artworkqset = Artwork.objects.filter(artist_id=artist.id)
+            aid = artist.id
+            artistnm = artist.artistname
+            for artwork in artworkqset:
+                if artwork.image1 == "":
+                    continue
+                awid = artwork.id
+                artworkname = artwork.artworkname
+                lotqset = Lot.objects.filter(artwork_id=artwork.id)
+                lmedium, lsize, lsaledate, lsoldprice, lminestimate, lmaxestimate, lcategory, lestimate, lid = "", "", "", "", "", "", "", "", ""
+                auctionname, aucid, auctionperiod, auctionhousename, ahid = "", "", "", "", ""
+                if lotqset.__len__() > 0:
+                    lmedium = lotqset[0].medium.lower()
+                    lsize = lotqset[0].sizedetails.encode('utf-8')
+                    lsaledate = lotqset[0].saledate.strftime("%d %b, %Y")
+                    lsoldprice = lotqset[0].soldpriceUSD
+                    lminestimate = lotqset[0].lowestimateUSD
+                    lmaxestimate = lotqset[0].highestimateUSD
+                    lestimate = str(lminestimate)
+                    if lmaxestimate and lmaxestimate > 0.00:
+                        lestimate += " - " + str(lmaxestimate)
+                    lcategory = lotqset[0].category
+                    lid = lotqset[0].id
+                    auctionobj = None
+                    try:
+                        auctionobj = Auction.objects.get(id=lotqset[0].auction_id)
+                        auctionname = auctionobj.auctionname
+                        aucid = auctionobj.id
+                        auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+                        if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                            auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+                        auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                        auctionhousename = auchouseobj.housename
+                        ahid = auchouseobj.id
+                    except:
+                        pass
+                d = {'lottitle' : artworkname, 'artistname' : artistnm, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : artwork.image1}
+                entitieslist.append(d)
+        mediumflag, sizeflag, soldpriceflag, estimateflag, auctionhouseflag = -1, -1, -1, -1, -1
+        if entitieslist.__len__() > 0:
+            ectr = 0
+            for entity in entitieslist:
+                for m in mediumlist:
+                    if m in entity['medium'].lower():
+                        mediumflag = 1
+                        break
+                if mediumlist.__len__() > 0 and mediumflag == -1:
+                    mediumflag = 0 # User specified medium, but none of them matched this entity's medium.
+                for ah in ahidlist:
+                    if ah == entity['ahid']:
+                        auctionhouseflag = 1
+                        break
+                if ahidlist.__len__() > 0 and auctionhouseflag == -1:
+                    auctionhouseflag = 0
+                try:
+                    if float(entity['soldprice']) > float(soldmin) and float(entity['soldprice']) < float(soldmax):
+                        soldpriceflag = 1
+                    else:
+                        soldpriceflag = 0
+                except:
+                    pass
+                estimateparts = entity['estimate'].split(" - ")
+                lminestimate = estimateparts[0]
+                lmaxestimate = ""
+                if estimateparts.__len__() > 1:
+                    lmaxestimate = estimateparts[1]
+                try:
+                    if float(lminestimate) < float(estimatemin) and float(lmaxestimate) > float(estimatemax):
+                        estimateflag = 1
+                    else:
+                        estimateflag = 0
+                except:
+                    pass
+                if mediumflag != 0 and soldpriceflag != 0 and estimateflag != 0 and auctionhouseflag != 0: 
+                    pass
+                else: # Delete this entity from entitieslist
+                    entitieslist.pop(ectr)
+                    continue
+                ectr += 1
+        else: # Control should never come here.
+            pass
     context['allsearchresults'] = entitieslist
     return HttpResponse(json.dumps(context))
 
