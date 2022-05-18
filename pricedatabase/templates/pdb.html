@@ -58,88 +58,121 @@ https://templatemo.com/tm-571-hexashop
 
     <script type='text/javascript'>
 	
-	function dofilter(selectid){
-	  //alert("hi");
-	  const artistsdict = {
-	    {% for artist, lotslist in allartists.items %}
-		"{{artist}}" : Array(
-		  {% for lot in lotslist %}
-			Array( "{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}" ),
-		  {% endfor %}
-		),
-	    {% endfor %}
-	  };
-          const auctionsdict = {
-	    {% for auction, lotslist in allauctions.items %}
-		"{{auction}}" : Array(
-		  {% for lot in lotslist %}
-			Array( "{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}", "{{lot.artist}}" ),
-		  {% endfor %}
-		),
-	    {% endfor %}
-	  };
-	  sectiontag = document.getElementById("auctions");
-	  selecttag = document.getElementById(selectid);
-	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
-	  //alert(selectedoption);
-          html = "";
- 	  if(selectid == "byartists"){
-	    for(artst in artistsdict){
-		lotslist = artistsdict[artst];
-		starter = 0;
-		for(var i=0; i < lotslist.length; i++){
-		  if(selectedoption != "1"){
-		  if(artst.toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></a></div></div>";        
-		  }
-		}// if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";  
+	function filterresults(){
+	  csrf = document.frmpricefilter.csrfmiddlewaretoken.value;
+	  //alert(csrf);
+	  artistname = document.frmpricefilter.txtartistname.value;
+	  title = document.frmpricefilter.txttitle.value;
+	  auctionhousepattern = /auctionhouse/i;
+	  mediumpattern = /medium/i;
+	  sizepattern = /size/i;
+	  sizeunitpattern = /sizeunit/i;
+	  saleoutcomepattern = /saleoutcome/i;
+	  allformelements = document.frmpricefilter.elements;
+	  auctionhouseparam = "&auctionhouse=";
+	  mediumparam = "&medium=";
+	  sizeparam = "&size=";
+	  sizeunitparam = "&sizeunit=";
+	  saleoutcomeparam = "&saleoutcome=";
+	  for(var i=0; i < allformelements.length; i++){
+	    elemname = allformelements[i].name;
+	    elemid = allformelements[i].id;
+	    elemvalue = allformelements[i].value;
+	    if(auctionhousepattern.test(elemid)){
+		ahelement = document.getElementById(elemid);
+		if(ahelement.checked == true){
+		    auctionhouseparam += elemvalue + "|";
 		}
-		} // for lotslist loop ends
-		html += "</div></div></div></div></div></section>";
-	    } 
-	  }
-	  if(selectid == "byauctions"){
-	    for(auction in auctionsdict){
-		//if(auction.toLowerCase() == selectedoption.toLowerCase()){
-		  lotslist = auctionsdict[auction];
-		  starter = 0;
-		for(var i=0; i < lotslist.length; i++){
-		  if(selectedoption != "1"){
-		  if(auction.toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";        
-		  }
-		} // if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";       
+	    }
+	    if(mediumpattern.test(elemid)){
+		mediumelement = document.getElementById(elemid);
+		if(mediumelement.checked == true){
+		    mediumparam += elemvalue + "|";
 		}
-		}  // for lotslist ends
-		html += "</div></div></div></div></div></section>";
-		//}
+	    }
+	    if(sizeunitpattern.test(elemid)){
+		sizeunitelement = document.getElementById(elemid);
+		if(sizeunitelement.checked == true){
+		    sizeunitparam += elemvalue;
+		}
+	    }
+	    if(sizepattern.test(elemid)){
+		sizeelement = document.getElementById(elemid);
+		if(sizeelement.checked == true){
+		    sizeparam += elemvalue + "|";
+		}
+	    }
+	    if(saleoutcomepattern.test(elemid)){
+		soelement = document.getElementById(elemid);
+		if(soelement.checked == true){
+		    saleoutcomeparam += elemvalue + "|";
+		}
 	    }
 	  }
-	  sectiontag.innerHTML = html;
+	  soldminval = document.frmpricefilter.soldmin.value;
+	  soldmaxval = document.frmpricefilter.soldmax.value;
+	  estimateminval = document.frmpricefilter.estimatemin.value;
+	  estimatemaxval = document.frmpricefilter.estimatemax.value;
+	  postdata = "csrfmiddlewaretoken=" + csrf + auctionhouseparam + mediumparam + sizeunitparam + sizeparam + saleoutcomeparam + "&artistname=" + artistname + "&lottitle=" + title + "&soldmin=" + soldminval + "&soldmax=" + soldmaxval + "&estimatemin=" + estimateminval + "&estimatemax=" + estimatemaxval;
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  loadingspan = document.getElementById('loadingspan');
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    context = JSON.parse(xmlhttp.responseText);
+	    latestlotsdiv = document.getElementById('latestlots');
+	    latestlotsdiv.innerHTML = "";
+	    loadingspan.innerHTML = "";
+	    searchtext = "";
+	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+            searchresults = context['allsearchresults'];
+    	    adminuser = context['adminuser'];
+            for(var i=0; i < searchresults.length; i++){
+                resobj = searchresults[i];
+                obtype = resobj.obtype;
+    		if(obtype == 'auction'){
+		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+	            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='/media/auctions/" + resobj.ahid + "/" + resobj.aucid + "/" + resobj.coverimage + "'></a></div>";
+		    searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname +"</h4>";
+		    if (resobj.auctionperiod != ''){
+		        searchtext += "<h6>" + resobj.auctionperiod + "</h6>";
+		    }
+		    searchtext += "<h6>" + resobj.auctionhouse + "</h6>";
+		    searchtext += "<h6>Number of lots: " + resobj.lotcount + "</h6>";
+		    searchtext += "</a></div>";
+		    if(adminuser == 1){
+		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
+		    }
+		}
+		else if(obtype == 'lot'){
+		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+	            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='/media/artists/artworks/" + resobj.aid + "/" + resobj.coverimage + "'></a></div>";
+		    searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle +"</h4>";
+	            searchtext += "<h6>" + resobj.artistname + "</h6>";
+		    searchtext += "<h6>" + resobj.medium + "</h6>";
+		    searchtext += "<h6>" + resobj.size + "</h6>";
+		    searchtext += "<h6>US$&nbsp;&nbsp;" + resobj.soldprice + "</h6>";
+		    searchtext += "</a></div>";
+		    if(adminuser == 1){
+		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
+		    }
+		}
+		searchtext += "</div></div><br />";
+	    }
+	    searchtext += "</div></div>";
+	    latestlotsdiv.innerHTML = searchtext;
+	  }
+	  };
+	  loadingspan.innerHTML = "<img src='/static/images/loading.gif'>";
+	  xmlhttp.open("POST", "/price/filter/");
+	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	  xmlhttp.send(postdata);
 	}
     </script>
 
@@ -232,7 +265,7 @@ https://templatemo.com/tm-571-hexashop
                 resobj = searchresults[i];
                 obtype = resobj.obtype;
     		if(obtype == 'auction'){
-		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
 	            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='/media/auctions/" + resobj.ahid + "/" + resobj.aucid + "/" + resobj.coverimage + "'></a></div>";
 		    searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname +"</h4>";
 		    if (resobj.auctionperiod != ''){
@@ -246,18 +279,19 @@ https://templatemo.com/tm-571-hexashop
 		    }
 		}
 		else if(obtype == 'lot'){
-		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
 	            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='/media/artists/artworks/" + resobj.aid + "/" + resobj.coverimage + "'></a></div>";
 		    searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle +"</h4>";
 	            searchtext += "<h6>" + resobj.artistname + "</h6>";
 		    searchtext += "<h6>" + resobj.medium + "</h6>";
-		    searchtext += "<h6>" + resobj.size + "</h6>";
+		    searchtext += "<h6>" + unescape(resobj.size) + "</h6>";
+		    searchtext += "<h6>US$&nbsp;&nbsp;" + resobj.soldprice + "</h6>";
 		    searchtext += "</a></div>";
 		    if(adminuser == 1){
 		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
 		    }
 		}
-		searchtext += "</div></div>";
+		searchtext += "</div></div><br />";
 	    }
 	    searchtext += "</div></div>";
 	    latestlotsdiv.innerHTML = searchtext;
@@ -425,7 +459,7 @@ https://templatemo.com/tm-571-hexashop
 			      <form autocomplete="off" name='frmsearchpdb' id='frmsearchpdb' method='POST' action="">
 				  {% csrf_token %}
 				  <div class="autocomplete">
-				    <span class="input-group"><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search database" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><a href='#' style="text-align:bottom;">Advanced Search</a></span><span id='loading'></span>
+				    <span class="input-group"><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openNav()">Advanced Search</a></span>
 				    <br/>
 				    <span class="input-group">Search 10 Million plus Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses around the world.</span>
 				  </div>
@@ -452,7 +486,7 @@ https://templatemo.com/tm-571-hexashop
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-                        <h2>Latest Sales</h2>
+                        <h2>Trending Artworks</h2>
 						<hr>
                     </div>
                 </div>
@@ -513,7 +547,7 @@ https://templatemo.com/tm-571-hexashop
 		                </span>
 				<h4>{{entity.artworkname}}</h4>
 				<h6>{{entity.artistname}}</h6>
-				<h6>US${{entity.soldprice}}</h6>
+				<h6>US$&nbsp;&nbsp;{{entity.soldprice}}</h6>
 				<!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
 			</a>
 			{% if adminuser == 1 %}
@@ -523,6 +557,238 @@ https://templatemo.com/tm-571-hexashop
                 </div>
 		{% endfor %}
             </div>
+        </div>
+	<div class="container">
+    	<div class="card-body">
+      
+      <div class="tab-content">
+	<div class="tab-pane fade" id="AdvancedSearch" role="tabpanel" aria-labelledby="AdvancedSearch-tab">
+          <div id="mySidebar" class="sidebar">
+			<div class="fixed-sidbr-header">
+				<h5>Filter</h5>
+				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+			</div>
+			<div id="accordion" class="accordion">
+				<form method="POST" name='frmpricefilter' id='frmpricefilter' action=''>
+				{% csrf_token %}
+				<div class="card mb-0">
+					<div class="card-header collapsed" data-toggle="collapse" href="#collapse0">
+						<a class="card-title">
+							Artists
+						</a>
+					</div>
+					<div id="collapse0" class="card-body collapse" data-parent="#accordion" >
+						
+						 <div class="form-text">
+						  <label class="form-check-label" for="txtartistname">
+						  	<input type="text" class="form-text-input" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name">
+						  </label>
+						</div>
+						
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" href="#collapse1">
+						<a class="card-title">
+							Title
+						</a>
+					</div>
+					<div id="collapse1" class="card-body collapse" data-parent="#accordion" >
+						
+						 <div class="form-text">
+						  <label class="form-text-label" for="txttitle">
+						  	<input type="text" class="form-text-input" id="txttitle" name="txttitle" value="" placeholder="Filter by title">
+						  </label>
+						</div>
+						
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" href="#collapse2">
+						<a class="card-title">
+							Search By Auction House
+						</a>
+					</div>
+					<div id="collapse2" class="card-body collapse" data-parent="#accordion" >
+						{% for auctionhouse, ahid in auctionhouses.items %}
+						 <div class="form-check">
+						  <label class="form-check-label" for="auctionhouse{{forloop.counter}}">
+						  	<input type="checkbox" class="form-check-input" id="auctionhouse{{forloop.counter}}" name="auctionhouse{{forloop.counter}}" value="{{ahid}}" >{{auctionhouse}}
+						  </label>
+						</div>
+						{% endfor %}
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+						<a class="card-title">
+						  Medium
+						</a>
+					</div>
+					<div id="collapse3" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-check">
+                                                            <label class="form-check-label" for="Design-tow">
+                                                                <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal">Work on Paper
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="Sculpture-tow">
+                                                                <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood">Sculpture
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="Painting-two">
+                                                                <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas">Painting
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="Installation">
+                                                                <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation">Installation
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="photography">
+                                                                <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid">Photography
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="texttile-arts">
+                                                                <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric">Textile arts
+                                                            </label>
+                                                        </div>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+						<a class="card-title">
+						  Size
+						</a>
+					</div>
+					<div id="collapse4" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="size-cm-in">
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="cm-auction">
+                                                                    <input type="radio" class="form-check-input" id="sizeunit1" name="dimension" value="cm" checked>cm
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="in-auction">
+                                                                    <input type="radio" class="form-check-input" id="sizeunit2" name="dimension" value="in">in
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="SmallSize-tow">
+                                                                <input type="checkbox" class="form-check-input" id="size1" name="sizevalue" value="small">Small (under 40cm)
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="Medium-tow">
+                                                                <input type="checkbox" class="form-check-input" id="size2" name="sizevalue" value="medium">Medium (40 – 100cm)
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="Large-tow">
+                                                                <input type="checkbox" class="form-check-input" id="size3" name="sizevalue" value="large">Large (over 100cm)
+                                                            </label>
+                                                        </div>
+						</div>
+					</div>
+					<!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+						<a class="card-title">
+						  Medium
+						</a>
+					</div>
+					<div id="collapse5" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-check">
+							  <label class="form-check-label" for="Acrylic">
+								<input type="checkbox" class="form-check-input" id="Acrylic" name="option1" value="something" >Acrylic
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Aluminum">
+								<input type="checkbox" class="form-check-input" id="Aluminum" name="option1" value="something" >Aluminum
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="Artpaper">
+								<input type="checkbox" class="form-check-input" id="Artpaper" name="option1" value="something" >Art paper
+							  </label>
+							</div>
+						</div>
+					</div> -->
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+						<a class="card-title">
+						  Sale Outcome
+						</a>
+					</div>
+					<div id="collapse6" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+						    
+							<div class="form-check">
+							  <label class="form-check-label" for="saleoutcome1">
+								<input type="checkbox" class="form-check-input" id="saleoutcome1" name="saleoutcome1" value="sold">Sold
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="saleoutcome2">
+								<input type="checkbox" class="form-check-input" id="saleoutcome2" name="saleoutcome2" value="unsold">Unsold
+							  </label>
+							</div>
+							<div class="form-check">
+							  <label class="form-check-label" for="saleoutcome3">
+								<input type="checkbox" class="form-check-input" id="saleoutcome3" name="saleoutcome3" value="waiting">Awaiting Results
+							  </label>
+							</div>
+						    
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse7">
+						<a class="card-title">
+						  Sold for Range (USD)
+						</a>
+					</div>
+					<div id="collapse7" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-text">
+							  <label class="form-text-label" for="soldmin">
+								Min: <input type="text" class="form-text-input" id="soldmin" name="soldmin" value="" placeholder="Min">
+							  </label>
+							</div>
+							<div class="form-text">
+							  <label class="form-text-label" for="soldmax">
+								Max: <input type="text" class="form-text-input" id="soldmax" name="soldmax" value="" placeholder="Max">
+							  </label>
+							</div>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse8">
+						<a class="card-title">
+						  Estimate Range (USD)
+						</a>
+					</div>
+					<div id="collapse8" class="collapse" data-parent="#accordion" >
+						<div class="card-body">
+							<div class="form-text">
+							  <label class="form-text-label" for="estimatemin">
+								Min: <input type="text" class="form-text-input" id="estimatemin" name="estimatemin" value="" placeholder="Min">
+							  </label>
+							</div>
+							<div class="form-text">
+							  <label class="form-text-label" for="estimatemax">
+								Max: <input type="text" class="form-text-input" id="estimatemax" name="estimatemax" value="" placeholder="Max">
+							  </label>
+							</div>
+						</div>
+					</div>
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse9">
+					<div class="form-text" id="collapse9">
+					    <label class="form-text-label" for="txttitle">
+						  <input type="button" class="form-button-input" id="btnsearch" name="btnsearch" value="Search" onclick="javascript:filterresults();"><span id='loadingspan'></span>
+					    </label>
+					</div>
+					</div>
+				</div>
+			</div>
+			
+		</form>
+		</div>
         </div>
     	</section>
     	
@@ -637,6 +903,18 @@ https://templatemo.com/tm-571-hexashop
     
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
+
+    <script>
+    function openNav() {
+  	document.getElementById("mySidebar").style.width = "350px";
+  	//document.getElementById("main").style.marginLeft = "250px";
+    }
+
+    function closeNav() {
+  	document.getElementById("mySidebar").style.width = "0";
+  	document.getElementById("main").style.marginLeft= "0";
+    }
+    </script>
 	
 	<script>
 	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/

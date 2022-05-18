@@ -7,5 +7,6 @@ urlpatterns = [
     path('database/', views.index, name='index'),
     path('details/', views.details, name='details'),
     path('search/', views.search, name='search'),
+    path('filter/', views.dofilter, name='dofilter'),
 ]
 

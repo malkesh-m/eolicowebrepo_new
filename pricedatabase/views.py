@@ -54,9 +54,12 @@ def index(request):
     date2weeksago = datetime.datetime.now() - datetime.timedelta(days=365)
     entitieslist = []
     filterpdb = []
+    auctionhouses = {}
+    uniquefilter = {}
     try:
         entitieslist = pickle.loads(redis_instance.get('pd_entitieslist'))
         filterpdb = pickle.loads(redis_instance.get('pd_filterpdb'))
+        auctionhouses = pickle.loads(redis_instance.get('pd_auctionhouses'))
     except:
         entitieslist = []
         filterpdb = []
@@ -86,6 +89,12 @@ def index(request):
                 auctionperiod = auctionobj.auctionstartdate.strftime('%d %b, %Y')
                 if auctionobj.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 0001" and auctionobj.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 1":
                     auctionperiod += " - " + auctionobj.auctionenddate.strftime('%d %b, %Y')
+                ahid = auctionobj.auctionhouse_id
+                try:
+                    auctionhouseobj = AuctionHouse.objects.get(id=ahid)
+                    auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
+                except:
+                    pass
             except:
                 pass
             artistname = ""
@@ -104,28 +113,42 @@ def index(request):
             except:
                 continue # If we can't find the corresponding artwork for this lot, then we skip it.
             lottitle = artworkobj.artworkname
-            filterpdb.append(lottitle)
+            if lottitle not in uniquefilter.keys():
+                filterpdb.append(lottitle)
+                uniquefilter[lottitle] = 1
             auctionname = ""
             try:
                 auctionobj = Auction.objects.get(id=lotobj.auction_id)
                 auctionname = auctionobj.auctionname
-                filterpdb.append(auctionname)
+                if auctionname not in uniquefilter.keys():
+                    filterpdb.append(auctionname)
+                    uniquefilter[auctionname] = 1
+                ahid = auctionobj.auctionhouse_id
+                try:
+                    auctionhouseobj = AuctionHouse.objects.get(id=ahid)
+                    auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
+                except:
+                    pass
             except:
                 pass
             artistname = ""
             try:
                 artistobj = Artist.objects.get(id=artworkobj.artist_id)
                 artistname = artistobj.artistname
-                filterpdb.append(artistname)
+                if artistname not in uniquefilter.keys():
+                    filterpdb.append(artistname)
+                    uniquefilter[artistname] = 1
             except:
                 pass
         try:
             redis_instance.set('pd_filterpdb', pickle.dumps(filterpdb))
             redis_instance.set('pd_entitieslist', pickle.dumps(entitieslist))
+            redis_instance.set('pd_auctionhouses', pickle.dumps(auctionhouses))
         except:
             pass
     context['entities'] = entitieslist
     context['filterpdb'] = filterpdb
+    context['auctionhouses'] = auctionhouses
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
     if request.user.is_authenticated:
@@ -185,7 +208,9 @@ def search(request):
         for artwork in artworkqset:
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
             for lot in lotqset:
-                d = {'artistname' : artist.artistname, 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails, 'aid' : artist.id, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'nationality' : artist.nationality, 'artistimage' : artist.artistimage, 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id}
+                soldprice = str(lot.soldpriceUSD)
+                soldprice = soldprice.replace("$", "")
+                d = {'artistname' : artist.artistname, 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'aid' : artist.id, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'nationality' : artist.nationality, 'artistimage' : artist.artistimage, 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
                 allsearchresults.append(d)
                 artctr += 1
                 if artctr > maxperobjectsearchresults:
@@ -200,7 +225,9 @@ def search(request):
                 artistobj = Artist.objects.get(id=artwork.artist_id)
             except:
                 continue
-            d = {'artistname' : artistobj.artistname, 'aid' : artistobj.id, 'birthyear' : artistobj.birthyear, 'deathyear' : artistobj.deathyear, 'nationality' : artistobj.nationality, 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails, 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id}
+            soldprice = str(lot.soldpriceUSD)
+            soldprice = soldprice.replace("$", "")
+            d = {'artistname' : artistobj.artistname, 'aid' : artistobj.id, 'birthyear' : artistobj.birthyear, 'deathyear' : artistobj.deathyear, 'nationality' : artistobj.nationality, 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
             awctr += 1
             if awctr > maxperobjectsearchresults:
                 break
@@ -213,6 +240,176 @@ def search(request):
     return HttpResponse(json.dumps(context))
 
 
+
+def dofilter(request):
+    if request.method != 'POST':
+        return HttpResponse('{ "error" : "Invalid request method"}')
+    artistname, lottitle, medium, auctionhouseids, sizespec, sizeunit, saleoutcomes, soldmin, soldmax, estimatemin, estimatemax = "", "", "", "", "", "", "", "", "", "", ""
+    requestbody = str(request.body)
+    bodycomponents = requestbody.split("&")
+    requestdict = {}
+    for comp in bodycomponents:
+        compparts = comp.split("=")
+        if compparts.__len__() > 1:
+            compparts[0] = compparts[0].replace("b'", "")
+            requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+    endbarPattern = re.compile("\|\s*$")
+    if 'artistname' in requestdict.keys():
+        artistname = requestdict['artistname'].strip()
+    if 'lottitle' in requestdict.keys():
+        lottitle = requestdict['lottitle'].strip()
+    if 'medium' in requestdict.keys():
+        medium = requestdict['medium'].lower()
+        medium = endbarPattern.sub("", medium)
+    if 'auctionhouse' in requestdict.keys():
+        auctionhouseids = requestdict['auctionhouse']
+        auctionhouseids = endbarPattern.sub("", auctionhouseids)
+    if 'sizeunit' in requestdict.keys():
+        sizeunit = requestdict['sizeunit']
+    if 'size' in requestdict.keys():
+        sizespec = requestdict['size']
+        sizespec = endbarPattern.sub("", sizespec)
+    if 'saleoutcome' in requestdict.keys():
+        saleoutcomes = requestdict['saleoutcome']
+        saleoutcomes = endbarPattern.sub("", saleoutcomes)
+    if 'soldmin' in requestdict.keys():
+        soldmin = requestdict['soldmin'].strip()
+    if 'soldmax' in requestdict.keys():
+        soldmax = requestdict['soldmax'].strip()
+    if 'estimatemin' in requestdict.keys():
+        estimatemin = requestdict['estimatemin'].strip()
+    if 'estimatemax' in requestdict.keys():
+        estimatemax = requestdict['estimatemax'].strip()
+    ahidlist = []
+    mediumlist = []
+    solist = []
+    sizelist = []
+    ahidlist = auctionhouseids.split("|")
+    mediumlist = medium.split("|")
+    solist = saleoutcomes.split("|")
+    sizelist = sizespec.split("|")
+    entitieslist = []
+    context = {}
+    if lottitle != "":
+        artworksqset = Artwork.objects.filter(artworkname__icontains=lottitle)
+        for artwork in artworksqset:
+            artworkname = artwork.artworkname
+            awid = artwork.id
+            lotqset = Lot.objects.filter(artwork_id=artwork.id)
+            artistobj = None
+            lartistname, aid = "", ""
+            try:
+                artistobj = Artist.objects.get(id=artwork.artist_id)
+                lartistname = artistobj.artistname
+                aid = artistobj.id
+            except:
+                pass
+            lmedium, lsize, lsaledate, lsoldprice, lminestimate, lmaxestimate, lcategory, lestimate, lid = "", "", "", "", "", "", "", "", ""
+            auctionname, aucid, auctionperiod, auctionhousename, ahid = "", "", "", "", ""
+            if lotqset.__len__() > 0:
+                lmedium = lotqset[0].medium.lower()
+                lsize = lotqset[0].sizedetails.encode('utf-8')
+                lsaledate = lotqset[0].saledate.strftime("%d %b, %Y")
+                lsoldprice = lotqset[0].soldpriceUSD
+                lminestimate = lotqset[0].lowestimateUSD
+                lmaxestimate = lotqset[0].highestimateUSD
+                lestimate = str(lminestimate)
+                if lmaxestimate and lmaxestimate > 0.00:
+                    lestimate += " - " + str(lmaxestimate)
+                lcategory = lotqset[0].category
+                lid = lotqset[0].id
+                auctionobj = None
+                try:
+                    auctionobj = Auction.objects.get(id=lotqset[0].auction_id)
+                    auctionname = auctionobj.auctionname
+                    aucid = auctionobj.id
+                    auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+                    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                        auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+                    auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                    auctionhousename = auchouseobj.housename
+                    ahid = auchouseobj.id
+                except:
+                    pass
+            d = {'lottitle' : artworkname, 'artistname' : artistname, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid}
+            # Now check all parameters against user's selected values to determine if this dict should be appended to 'entitieslist'.
+            artistflag, titleflag, mediumflag, sizeflag, soldpriceflag, estimateflag, auctionhouseflag = -1, 1, -1, -1, -1, -1, -1
+            if artistname != "" and artistname.lower() in lartistname.lower(): # Partial match is considered.
+                artistflag = 1
+            else:
+                artistflag = 0
+            #if lottitle != "" and lottitle.lower() in artworkname.lower(): # This need not execute. We selected artworks based on title.
+            #    titleflag = True
+            for m in mediumlist:
+                if m in lmedium: # If a single medium component matches, we set the flag to True and break out.
+                    mediumflag = 1
+                    break
+            if mediumlist.__len__() > 0 and mediumflag == -1:
+                mediumflag = 0
+            for d in ahidlist:
+                if int(d) == int(ahid):
+                    auctionhouseflag = 1
+                    break
+            if ahidlist.__len__() > 0 and auctionhouseflag == -1:
+                auctionhouseflag = 0
+            if soldmin != "" and lsoldprice != "" and float(soldmin) < float(lsoldprice):
+                if soldmax != "" and float(soldmax) > float(lsoldprice):
+                    soldpriceflag = 1
+                elif soldmax == "":
+                    soldpriceflag = 1
+            elif soldmin != "" and lsoldprice != "" and float(soldmin) > float(lsoldprice):
+                soldpriceflag = 0
+            else:
+                pass
+            sizeparts = lsize.split("x")
+            for sz in sizelist:
+                if sz == "small":
+                    for sp in sizeparts:
+                        try:
+                            fsp = float(sp)
+                            if fsp < 40: # Check if any of the dimensions is less than 40 cm.
+                                sizeflag = 1
+                                break
+                            else:
+                                sizeflag = 0
+                        except:
+                            pass
+                elif sz == "medium":
+                    for sp in sizeparts:
+                        try:
+                            fsp = float(sp)
+                            if fsp > 40 and fsp < 100: # Check if any of the dimensions is between 40 and 100 cm.
+                                sizeflag = 1
+                                break
+                            else:
+                                sizeflag = 0
+                        except:
+                            pass
+                elif sz == "large":
+                    for sp in sizeparts:
+                        try:
+                            fsp = float(sp)
+                            if fsp > 100: # Check if any of the dimensions is greater than 100 cm.
+                                sizeflag = 1
+                                break
+                            else:
+                                sizeflag = 0
+                        except:
+                            pass
+                else:
+                    pass
+                try:
+                    if float(lminestimate) < float(estimatemin) and float(lmaxestimate) > float(estimatemax):
+                        estimateflag = 1
+                    else:
+                        estimateflag = 0
+                except: # If user didn't specify any estimate values, then the flag remains -1.
+                    pass
+                flagctr = 0
+                if (estimateflag == 1 or estimateflag == -1) and (sizeflag == 1 or sizeflag == -1) and (soldpriceflag == 1 or soldpriceflag == -1) and (auctionhouseflag == 1 or auctionhouseflag == -1) and (mediumflag == 1 or mediumflag == -1) and (artistflag == 1 or artistflag == -1):
+                    entitieslist.append(d)
+    context['allsearchresults'] = entitieslist
+    return HttpResponse(json.dumps(context))
 
 
 
