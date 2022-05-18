@@ -292,10 +292,8 @@ def dofilter(request):
     entitieslist = []
     context = {}
     if lottitle != "":
-        artworksqset = Artwork.objects.filter(artworkname__icontains=lottitle)
-        for artwork in artworksqset[:10000]:
-            if artwork.image1 == "":
-                continue
+        artworksqset = Artwork.objects.filter(artworkname__icontains=lottitle).order_by('-edited') # Latest first
+        for artwork in artworksqset[:settings.PDB_ARTWORKSLIMIT]: # We restrict our search to the latest 10000 entries. 
             artworkname = artwork.artworkname
             awid = artwork.id
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
@@ -307,7 +305,7 @@ def dofilter(request):
                 aid = artistobj.id
             except:
                 pass
-            lmedium, lsize, lsaledate, lsoldprice, lminestimate, lmaxestimate, lcategory, lestimate, lid = "", "", "", "", "", "", "", "", ""
+            lmedium, lsize, lsaledate, lsoldprice, lminestimate, lmaxestimate, lcategory, lestimate, lid, lh, lw, ld, limage = "", "", "", "", "", "", "", "", "", "", "", "", ""
             auctionname, aucid, auctionperiod, auctionhousename, ahid = "", "", "", "", ""
             if lotqset.__len__() > 0:
                 lmedium = lotqset[0].medium.lower()
@@ -321,6 +319,14 @@ def dofilter(request):
                     lestimate += " - " + str(lmaxestimate)
                 lcategory = lotqset[0].category
                 lid = lotqset[0].id
+                lh = lotqset[0].height
+                lw = lotqset[0].width
+                ld = lotqset[0].depth
+                limage = lotqset[0].lotimage1
+                if limage == "":
+                    limage = artwork.image1
+                if limage == "": # If we still don't have an image, just skip it.
+                    continue
                 auctionobj = None
                 try:
                     auctionobj = Auction.objects.get(id=lotqset[0].auction_id)
@@ -334,13 +340,15 @@ def dofilter(request):
                     ahid = auchouseobj.id
                 except:
                     pass
-            d = {'lottitle' : artworkname, 'artistname' : artistname, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : artwork.image1}
+            d = {'lottitle' : artworkname, 'artistname' : artistname, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : limage}
             # Now check all parameters against user's selected values to determine if this dict should be appended to 'entitieslist'.
             artistflag, titleflag, mediumflag, sizeflag, soldpriceflag, estimateflag, auctionhouseflag = -1, 1, -1, -1, -1, -1, -1
             if artistname != "" and artistname.lower() in lartistname.lower(): # Partial match is considered.
                 artistflag = 1
-            else:
+            elif artistname != "":
                 artistflag = 0
+            else:
+                pass
             #if lottitle != "" and lottitle.lower() in artworkname.lower(): # This need not execute. We selected artworks based on title.
             #    titleflag = True
             for m in mediumlist:
@@ -349,11 +357,15 @@ def dofilter(request):
                     break
             if mediumlist.__len__() > 0 and mediumflag == -1:
                 mediumflag = 0
-            for d in ahidlist:
-                if int(d) == int(ahid):
+            ahctr = 0
+            for ad in ahidlist:
+                if ad == "" or ahid == "":
+                    continue
+                ahctr += 1
+                if int(ad) == int(ahid):
                     auctionhouseflag = 1
                     break
-            if ahidlist.__len__() > 0 and auctionhouseflag == -1:
+            if ahctr > 0 and auctionhouseflag == -1:
                 auctionhouseflag = 0
             if soldmin != "" and lsoldprice != "" and float(soldmin) < float(lsoldprice):
                 if soldmax != "" and float(soldmax) > float(lsoldprice):
@@ -364,7 +376,9 @@ def dofilter(request):
                 soldpriceflag = 0
             else:
                 pass
-            sizeparts = lsize.split("x")
+            sizeparts = [lh, lw]
+            if ld != "":
+                sizeparts.append(ld)
             for sz in sizelist:
                 if sz == "small":
                     for sp in sizeparts:
@@ -401,25 +415,24 @@ def dofilter(request):
                             pass
                 else:
                     pass
-                try:
-                    if float(lminestimate) < float(estimatemin) and float(lmaxestimate) > float(estimatemax):
-                        estimateflag = 1
-                    else:
-                        estimateflag = 0
-                except: # If user didn't specify any estimate values, then the flag remains -1.
-                    pass
-                flagctr = 0
-                if (estimateflag == 1 or estimateflag == -1) and (sizeflag == 1 or sizeflag == -1) and (soldpriceflag == 1 or soldpriceflag == -1) and (auctionhouseflag == 1 or auctionhouseflag == -1) and (mediumflag == 1 or mediumflag == -1) and (artistflag == 1 or artistflag == -1):
-                    entitieslist.append(d)
-    else: # Handle with parameters other than artwork name.
+            try:
+                if float(lminestimate) < float(estimatemin) and float(lmaxestimate) > float(estimatemax):
+                    estimateflag = 1
+                else:
+                    estimateflag = 0
+            except: # If user didn't specify any estimate values, then the flag remains -1.
+                pass
+            if estimateflag != 0 and sizeflag != 0 and soldpriceflag != 0 and auctionhouseflag != 0 and mediumflag != 0 and artistflag != 0:
+                entitieslist.append(d)
+    else: # Handle case with parameters other than artwork name.
         artistqset = []
         if artistname != "":
             artistqset = Artist.objects.filter(artistname__icontains=artistname)
         else:
-            artistqset = Artist.objects.all()
+            artistqset = Artist.objects.all().order_by('-edited') # Latest first
         artistqset2 = []
-        if artistqset.__len__() > 5000: # Consider only first 5000 records.
-            for artist in artistqset[:5000]:
+        if artistqset.__len__() > settings.PDB_ARTISTSLIMIT: # Consider only first 5000 records. This is the only way we can execute in a timely manner.
+            for artist in artistqset[:settings.PDB_ARTISTSLIMIT]:
                 artistqset2.append(artist)
         else:
             for artist in artistqset:
@@ -506,7 +519,11 @@ def dofilter(request):
                 ectr += 1
         else: # Control should never come here.
             pass
-    context['allsearchresults'] = entitieslist
+    r_entitieslist = []
+    if entitieslist.__len__() > settings.PDB_MAXSEARCHRESULT:
+        for d in entitieslist[:settings.PDB_MAXSEARCHRESULT]:
+            r_entitieslist.append(d)
+    context['allsearchresults'] = r_entitieslist
     return HttpResponse(json.dumps(context))
 
 

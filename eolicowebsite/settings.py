@@ -174,3 +174,7 @@ CURRENCIES = ['USD', 'GBP', 'EUR', 'AUD', 'INR', 'HKD', 'CAD', 'JPY']
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+PDB_ARTWORKSLIMIT = 10000
+PDB_ARTISTSLIMIT = 5000
+PDB_MAXSEARCHRESULT = 200
