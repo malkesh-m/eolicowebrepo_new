@@ -182,12 +182,19 @@ def search(request):
     if not searchkey or searchkey == "":
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
     #print(searchkey)
+    page = "1"
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            page = request.GET['page']
     context = {}
     allsearchresults = []
     maxperobjectsearchresults = 30
+    maxsearchresults = maxperobjectsearchresults * 3 # 3 types of objects are searched: auctions, artworks/lots and artists.
+    startsearchctr = int(page) * maxsearchresults - maxsearchresults
+    endsearchctr = int(page) * maxsearchresults + 1
     auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey).order_by('priority')
     aucctr = 0
-    for auctionobj in auctionsqset:
+    for auctionobj in auctionsqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
         auctionhouseid = auctionobj.auctionhouse_id
         ahobj = None
         auctionhousename, ahid = "", ""
@@ -201,13 +208,13 @@ def search(request):
         if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
             auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
         d = {'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj.coverimage, 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount), 'obtype' : 'auction'}
-        if aucctr > maxperobjectsearchresults:
+        if aucctr > maxperobjectsearchresults * int(page):
             break
         aucctr += 1
         allsearchresults.append(d)
     artistsqset = Artist.objects.filter(artistname__icontains=searchkey).order_by('priority')
     artctr = 0
-    for artist in artistsqset:
+    for artist in artistsqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
         artworkqset = Artwork.objects.filter(artist_id=artist.id)
         for artwork in artworkqset:
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
@@ -221,7 +228,7 @@ def search(request):
                     break
     artworkqset = Artwork.objects.filter(artworkname__icontains=searchkey).order_by('priority')
     awctr = 0
-    for artwork in artworkqset:
+    for artwork in artworkqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
         lotqset = Lot.objects.filter(artwork_id=artwork.id)
         for lot in lotqset:
             artistobj = None
@@ -241,6 +248,17 @@ def search(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     return HttpResponse(json.dumps(context))
 
 
