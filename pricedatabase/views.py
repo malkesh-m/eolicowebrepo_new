@@ -52,7 +52,7 @@ def index(request):
     fstartctr = int(page) * chunksize
     fendctr = int(page) * chunksize + chunksize
     context = {}
-    date2weeksago = datetime.datetime.now() - datetime.timedelta(days=365)
+    date2weeksago = datetime.datetime.now() - datetime.timedelta(days=settings.PDB_LATESTPERIOD)
     entitieslist = []
     filterpdb = []
     auctionhouses = {}
@@ -104,7 +104,7 @@ def index(request):
                 artistname = artistobj.artistname
             except:
                 pass
-            d = {'artworkname' : artworkobj.artworkname, 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'lid' : lotobj.id, 'awid' : artworkobj.id, 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj.artist_id, 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD}
+            d = {'artworkname' : artworkobj.artworkname, 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'lid' : lotobj.id, 'awid' : artworkobj.id, 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj.artist_id, 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhouseobj.housename}
             entitieslist.append(d)
         for lotobj in lotsqset[:2000]:
             lottitle = ""
@@ -128,6 +128,9 @@ def index(request):
                 try:
                     auctionhouseobj = AuctionHouse.objects.get(id=ahid)
                     auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
+                    if auctionhouseobj.housename not in uniquefilter.keys():
+                        filterpdb.append(auctionhouseobj.housename)
+                        uniquefilter[auctionhouseobj.housename] = 1
                 except:
                     pass
             except:
@@ -246,6 +249,7 @@ def dofilter(request):
     if request.method != 'POST':
         return HttpResponse('{ "error" : "Invalid request method"}')
     artistname, lottitle, medium, auctionhouseids, sizespec, sizeunit, saleoutcomes, soldmin, soldmax, estimatemin, estimatemax = "", "", "", "", "", "", "", "", "", "", ""
+    page = "1"
     requestbody = str(request.body)
     bodycomponents = requestbody.split("&")
     requestdict = {}
@@ -255,6 +259,8 @@ def dofilter(request):
             compparts[0] = compparts[0].replace("b'", "")
             requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
     endbarPattern = re.compile("\|\s*$")
+    if 'pageno' in requestdict.keys():
+        page = requestdict['pageno'].strip()
     if 'artistname' in requestdict.keys():
         artistname = requestdict['artistname'].strip()
     if 'lottitle' in requestdict.keys():
@@ -281,6 +287,12 @@ def dofilter(request):
         estimatemin = requestdict['estimatemin'].strip()
     if 'estimatemax' in requestdict.keys():
         estimatemax = requestdict['estimatemax'].strip()
+    try:
+        page = int(page)
+    except:
+        page = 1
+    startctr = page * settings.PDB_MAXSEARCHRESULT - settings.PDB_MAXSEARCHRESULT
+    endctr = page * settings.PDB_MAXSEARCHRESULT + 1
     ahidlist = []
     mediumlist = []
     solist = []
@@ -521,7 +533,7 @@ def dofilter(request):
             pass
     r_entitieslist = []
     if entitieslist.__len__() > settings.PDB_MAXSEARCHRESULT:
-        for d in entitieslist[:settings.PDB_MAXSEARCHRESULT]:
+        for d in entitieslist[startctr:endctr]:
             r_entitieslist.append(d)
     context['allsearchresults'] = r_entitieslist
     return HttpResponse(json.dumps(context))

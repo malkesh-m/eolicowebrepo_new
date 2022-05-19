@@ -50,8 +50,11 @@ def index(request):
     featuredsize = 4
     maxpastauctions = 10
     maxupcomingauctions = 3
+    maxpastauctionlots = 5
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
+    pastrowstartctr = int(page) * maxpastauctions - maxpastauctions
+    pastrowendctr = int(page) * maxpastauctions
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
     endctr = (chunksize * rows) * int(page) + featuredsize
     context = {}
@@ -96,7 +99,7 @@ def index(request):
         allauctions = {}
     curdatetime = datetime.datetime.now()
     if allauctions.__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('priority')
+        auctionsqset = Auction.objects.all().order_by('-auctionstartdate', 'priority')
         try:
             aucctr = 0
             for auction in auctionsqset[rowstartctr:]:
@@ -146,7 +149,8 @@ def index(request):
             redis_instance.set('ac_filterauctions', pickle.dumps(filterauctions))
         except:
             pass
-        for auction in auctionsqset:
+        #print(" ########################### " + str(pastrowstartctr) + " ##########################")
+        for auction in auctionsqset[pastrowstartctr:]:
             if auction.auctionstartdate > curdatetime:
                 continue
             auctionname = auction.auctionname
@@ -161,7 +165,7 @@ def index(request):
             auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
             if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                 auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
-            for lotobj in auctionlots:
+            for lotobj in auctionlots[0:maxpastauctionlots]:
                 try:
                     artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
                 except:
@@ -211,6 +215,17 @@ def index(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     template = loader.get_template('auction.html')
     return HttpResponse(template.render(context, request))
 
@@ -468,6 +483,7 @@ def moreauctions(request):
     rows = 6
     featuredsize = 4
     maxauctions = 10
+    maxlots = 8
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
@@ -512,7 +528,7 @@ def moreauctions(request):
             auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
             if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                 auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
-            for lotobj in auctionlots:
+            for lotobj in auctionlots[:maxlots]:
                 try:
                     artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
                 except:

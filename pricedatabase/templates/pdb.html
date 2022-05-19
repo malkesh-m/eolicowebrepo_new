@@ -126,6 +126,8 @@ https://templatemo.com/tm-571-hexashop
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    context = JSON.parse(xmlhttp.responseText);
+	    secheaderdiv = document.getElementById('sectionheaderdiv');
+	    secheaderdiv.innerHTML = "<h2>Advanced Search Results</h2><hr>";
 	    latestlotsdiv = document.getElementById('latestlots');
 	    latestlotsdiv.innerHTML = "";
 	    loadingspan.innerHTML = "";
@@ -243,6 +245,7 @@ https://templatemo.com/tm-571-hexashop
     <script>
 	function searchpdb(){
 	  var xmlhttp;
+	  searchkey = document.getElementById('pdbsearch').value;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
 	  }
@@ -254,6 +257,8 @@ https://templatemo.com/tm-571-hexashop
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    context = JSON.parse(xmlhttp.responseText);
+	    secheaderdiv = document.getElementById('sectionheaderdiv');
+	    secheaderdiv.innerHTML = "<h2>Search Results for '" + searchkey + "'...</h2><hr>";
 	    latestlotsdiv = document.getElementById('latestlots');
 	    latestlotsdiv.innerHTML = "";
 	    loadingspan.innerHTML = "";
@@ -298,7 +303,6 @@ https://templatemo.com/tm-571-hexashop
 	  }
 	  };
 	  loadingspan.innerHTML = "<img src='/static/images/loading.gif'>";
-	  searchkey = document.getElementById('pdbsearch').value;
 	  xmlhttp.open("GET", "/price/search/?q=" + searchkey);
 	  xmlhttp.send();
 	}
@@ -485,7 +489,7 @@ https://templatemo.com/tm-571-hexashop
         <div class="container">
             <div class="row align-items-end">
                 <div class="col-lg-12">
-                    <div class="section-heading text-center">
+                    <div class="section-heading text-center" id='sectionheaderdiv'>
                         <h2>Trending Artworks</h2>
 						<hr>
                     </div>
@@ -541,13 +545,14 @@ https://templatemo.com/tm-571-hexashop
                     <div class="img-box">
 			<a href="/auction/details/?lid={{entity.lid}}"><img src="/media/artists/artworks/{{entity.aid}}/{{entity.lotimage}}" alt=""></a>
                         <a href="/auction/details/?lid={{entity.lid}}" style="color:#000000;">
-				<h3 style="padding-left:10px;">{{entity.auctionname}}</h3>
+				<h3>{{entity.artworkname}}: {{entity.auctionhouse}}</h3>
+				<h6>{{entity.artistname}}</h6>
+				<h6>US$&nbsp;&nbsp;{{entity.soldprice}}</h6>
+				<h6 style="padding-left:10px;">{{entity.auctionname}}</h6>
 		                <span style="padding-left:10px;">
 		                    {{entity.auctionperiod}}
 		                </span>
-				<h4>{{entity.artworkname}}</h4>
-				<h6>{{entity.artistname}}</h6>
-				<h6>US$&nbsp;&nbsp;{{entity.soldprice}}</h6>
+				
 				<!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
 			</a>
 			{% if adminuser == 1 %}
