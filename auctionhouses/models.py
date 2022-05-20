@@ -8,10 +8,7 @@ class AuctionHouse(models.Model):
     location = models.CharField(max_length=255, blank=True, default='', db_column='cah_auction_house_location')
     country = models.CharField(max_length=255, blank=True, default='', db_column='cah_auction_house_country')
     currency = models.CharField(max_length=4, blank=True, default='', db_column='cah_auction_house_currency_code')
-    #description = models.TextField()
     houseurl = models.TextField(db_column='cah_auction_house_website')
-    #coverimage = models.TextField()
-    #housetype = models.CharField(max_length=255, blank=True, default='') # Classifies the auction houses as "Non-profit Organizations", "Artist Estates/Foundations" etc.
     priority = models.IntegerField(default=0, db_column='cah_auction_house_priority')
     inserted = models.DateTimeField(auto_now_add=True, db_column='cah_auction_house_record_created')
     edited = models.DateTimeField(auto_now=True, db_column='cah_auction_house_record_updated')

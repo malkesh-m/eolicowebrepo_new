@@ -65,7 +65,7 @@ def index(request):
         entitieslist = []
         filterpdb = []
     if entitieslist.__len__() == 0:
-        lotsqset = Lot.objects.all().order_by('-soldpriceUSD')
+        lotsqset = Lot.objects.order_by('-soldpriceUSD')
         lotctr = 0
         for lotobj in lotsqset[:5000]: # Need a restriction on the number of objects, otherwise it might crash the system.
             if lotobj.lotimage1 == "": # We will not show lots with no images.
@@ -192,7 +192,7 @@ def search(request):
     maxsearchresults = maxperobjectsearchresults * 3 # 3 types of objects are searched: auctions, artworks/lots and artists.
     startsearchctr = int(page) * maxsearchresults - maxsearchresults
     endsearchctr = int(page) * maxsearchresults + 1
-    auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey).order_by('priority')
+    auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey) #.order_by('priority')
     aucctr = 0
     for auctionobj in auctionsqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
         auctionhouseid = auctionobj.auctionhouse_id
@@ -212,7 +212,7 @@ def search(request):
             break
         aucctr += 1
         allsearchresults.append(d)
-    artistsqset = Artist.objects.filter(artistname__icontains=searchkey).order_by('priority')
+    artistsqset = Artist.objects.filter(artistname__icontains=searchkey) #.order_by('priority')
     artctr = 0
     for artist in artistsqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
         artworkqset = Artwork.objects.filter(artist_id=artist.id)
@@ -226,7 +226,7 @@ def search(request):
                 artctr += 1
                 if artctr > maxperobjectsearchresults:
                     break
-    artworkqset = Artwork.objects.filter(artworkname__icontains=searchkey).order_by('priority')
+    artworkqset = Artwork.objects.filter(artworkname__icontains=searchkey) #.order_by('priority')
     awctr = 0
     for artwork in artworkqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
         lotqset = Lot.objects.filter(artwork_id=artwork.id)
@@ -542,7 +542,7 @@ def dofilter(request):
                 except:
                     pass
                 if mediumflag != 0 and soldpriceflag != 0 and estimateflag != 0 and auctionhouseflag != 0: 
-                    pass
+                    pass # Do nothing. This entity is a match, so it remains in the list.
                 else: # Delete this entity from entitieslist
                     entitieslist.pop(ectr)
                     continue

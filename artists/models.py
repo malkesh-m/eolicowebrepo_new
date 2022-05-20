@@ -31,7 +31,7 @@ class Artist(models.Model):
     class Meta:
         verbose_name = "Artists Information Table"
         db_table = 'fineart_artists'
-        ordering = ('priority',)
+        #ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.artistname)
@@ -73,7 +73,7 @@ class Artwork(models.Model):
     class Meta:
         verbose_name = "Artworks Information Table"
         db_table = 'fineart_artworks'
-        ordering = ('priority',)
+        #ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.artworkname)

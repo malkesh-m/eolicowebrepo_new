@@ -466,10 +466,10 @@ https://templatemo.com/tm-571-hexashop
 	
 	<!-- Begining of new auctions gallery -->
 	<div id="upcomingauctions">
-	{% for auctionname, lotslist in featuredauctions.items %}
+	
 	<section class="oth-works mrt-90">
         <div class="container">
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading section-heading-2 mrb-50">
                         <h2>{{auctionname}}</h2>
@@ -478,16 +478,18 @@ https://templatemo.com/tm-571-hexashop
                         </span>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="row align-items-end">
-		{% for lot in lotslist %}
+		{% for auctionname, auctiondict in featuredauctions.items %}
                 <div class="column">
                     <div class="img-box">
-			<a href="/auction/details/?lid={{lot.lid}}"><img src="/media/artists/artworks/{{lot.aid}}/{{lot.image}}" alt=""></a>
-                        <a href="/auction/details/?lid={{lot.lid}}" style="color:#000000;">
-				<h4>{{lot.title}}</h4>
-				<h6>{{lot.artist}}</h6>
-				<!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
+			<a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="/media/auctions/{{auctiondict.ahid}}/{{auctiondict.aucid}}/{{auctiondict.image}}" alt=""></a>
+                        <a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">
+				<h4>{{auctiondict.auctionhouse}}</h4>
+				<h6>{{auctiondict.location}}</h6>
+				<h4>{{auctionname}}</h4>
+				<h6>{{auctiondict.auctionperiod}}</h6>
+				<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
 			</a>
 			{% if adminuser == 1 %}
 			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
@@ -498,7 +500,7 @@ https://templatemo.com/tm-571-hexashop
             </div>
         </div>
     	</section>
-    	{% endfor %}
+    	
 	<div class="container">
 	    <div class="row">
 	    	<div class="col-lg-12">
@@ -521,8 +523,8 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-	{% for auctionname, lotslist in allauctions.items %}
-        <div class="container">
+	
+        <!-- <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading section-heading-2 mrb-50">
@@ -533,27 +535,30 @@ https://templatemo.com/tm-571-hexashop
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
+	{% for row, auctionlist in allauctions.items %}
         <div class="container">
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
                         <div class="owl-men-item owl-carousel">
-			    {% for lot in lotslist %}
-                            <div class="item">
+			    {% for auctiondict in auctionlist %}
+                            <div class="img-box">
                                 <div class="thumb">
-                                    <a href="/auction/details/?lid={{lot.lid}}"><img src="/media/artists/artworks/{{lot.aid}}/{{lot.image}}" alt=""></a>
+                                    <a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="/media/auctions/{{auctiondict.ahid}}/{{auctiondict.aucid}}/{{auctiondict.image}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-					<a href="/auction/details/?lid={{lot.lid}}">
-						<h4>{{lot.title}}</h4>
-						<span>{{lot.artist}}</span>
-						<!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
+					<a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">
+						<h4>{{auctiondict.auctionhouse}}</h4>
+						<h6>{{auctiondict.location}}</h6>
+						<h4>{{auctiondict.auctionname}}</h4>
+						<h6>{{auctiondict.auctionperiod}}</h6>
+						<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
 					</a>
                                 </div>
                             </div>
 			    {% endfor %}
-			    <div class="item">
+			    <!--<div class="item">
                                 <div class="thumb">
                                     <a href="/auction/showauction/?aucid={{lotslist.0.aucid}}"><img src="/static/images/showmore.png" alt=""></a>
                                 </div>
@@ -562,14 +567,15 @@ https://templatemo.com/tm-571-hexashop
 					<h4>Show More Lots</h4>
 				    </a>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    
+	<br/>
 	{% endfor %}
+    
 	<div class="container">
 	    <div class="row">
 	    	<div class="col-lg-12">
@@ -578,7 +584,7 @@ https://templatemo.com/tm-571-hexashop
 	    </div>
 	</div>
 
-	<div class="auction-pagination">
+	<!-- <div class="auction-pagination">
 		<nav aria-label="Page navigation example">
 		    <ul class="pagination">
 		        <li class="page-item">
@@ -607,7 +613,7 @@ https://templatemo.com/tm-571-hexashop
 		        </li>
 		    </ul>
 		</nav>
-	</div>
+	</div> -->
 
     </section>
     </div>

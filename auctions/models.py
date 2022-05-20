@@ -33,7 +33,7 @@ class Auction(models.Model):
     class Meta:
         verbose_name = "Auctions Information Table"
         db_table = 'fineart_auction_calendar'
-        ordering = ('priority',)
+        #ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.auctionname)
@@ -81,7 +81,7 @@ class Lot(models.Model):
     class Meta:
         verbose_name = "Lots (Artworks) Information Table"
         db_table = 'fineart_lots'
-        ordering = ('priority',)
+        #ordering = ('priority',)
 
     def __unicode__(self):
         return "%s"%(self.lottitle)
