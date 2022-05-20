@@ -145,7 +145,7 @@
             searchlots = context['filteredlots'];
     	    adminuser = context['adminuser'];
 	    for(var i=0; i < searchlots.length; i++){
-		auctext += "<div class='column'><div class='img-box'><a href='/auction/details/?lid=" + searchlots[i].lid + "' style='color:#000000;'><img src='/media/artists/artworks/" + searchlots[i].aid + "/" + searchlots[i].image + "' style='width:100%'><h4>" + searchlots[i].artworkname + "</h4><h6>" + searchlots[i].artistname + "</h6><h6>" + searchlots[i].medium + "</h6><h6>" + searchlots[i].size + "</h6></a>";
+		auctext += "<div class='column'><div class='img-box'><a href='/auction/details/?lid=" + searchlots[i].lid + "' style='color:#000000;'><img src='/media/artists/artworks/" + searchlots[i].aid + "/" + searchlots[i].image + "' style='width:100%'><h4>" + searchlots[i].artworkname + "</h4><h6>Lot#: " + searchlots[i].lotno + "</h6><h6>Medium: " + searchlots[i].medium + "</h6><h6>Category: " + searchlots[i].category + "</h6><h6>Sale Details: " + searchlots[i].auctionname + ", " + searchlots[i].aucperiod + " - " + searchlots[i].auctionhouse + "</h6><h6>Estimate: US$&nbsp;" + searchlots[i].estimate + "</h6><h6>Price Sold: US$&nbsp;" + searchlots[i].soldprice + "</h6></a>";
                 if(adminuser == "1"){
 		    auctext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick=\"javascript:t_editlot('" + searchlots[i].lid + "');\">Edit</a></div>";
 		}
@@ -668,9 +668,13 @@
 				<a href='/auction/details/?lid={{lot.lid}}' style="color:#000000;">
 				<img src="/media/artists/artworks/{{lot.aid}}/{{lot.image}}" style="width:100%">
 				<h4>{{lot.lottitle}}</h4>
-				<h6>{{lot.artist}}</h6>
-				<h6>{{lot.medium}}</h6>
-				<h6>{{lot.size}}</h6>
+				<h6>Lot#: {{lot.lotno}}</h6>
+				<h6>Medium: {{lot.medium}}</h6>
+				<h6>Category: {{lot.category}}</h6>
+				<h6>Sale Details: {{auctioninfo.auctionname}}, {{auctioninfo.auctionperiod}} - {{auctioninfo.auctionhouse}}</h6>
+				
+				<h6>Estimate: US$&nbsp;{{lot.estimate}}</h6>
+				<h6>Price Sold: US$&nbsp;{{lot.soldprice}}</h6>
 				<!-- <p>{{lot.description}}</p> -->
 				</a>
 				{% if adminuser == 1 %}

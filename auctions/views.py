@@ -606,7 +606,8 @@ def showauction(request):
         estimate = str(lotobj.lowestimateUSD)
         if lotobj.highestimateUSD > 0.00:
             estimate += " - " + str(lotobj.highestimateUSD)
-        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'image' : lotobj.lotimage1, 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj.id, 'aid' : artistobj.id}
+        soldprice = str(lotobj.soldpriceUSD)
+        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'image' : lotobj.lotimage1, 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj.id, 'aid' : artistobj.id, 'lotno' : lotobj.lotid, 'category' : lotobj.category, 'soldprice' : soldprice}
         if artistname not in allartists.keys():
             allartists[artistname] = artistobj.id
         alllots.append(d)
@@ -694,7 +695,14 @@ def morefilter(request):
             aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
             if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                 aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id}
+            auctionhouseobj = None
+            auctionhousename = ""
+            try:
+                auctionhouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                auctionhousename = auctionhouseobj.housename
+            except:
+                pass
+            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id, 'lotno' : lot.lotid, 'category' : lot.category, 'auctionhouse' : auctionhousename}
             for medium in mediumlist:
                 if medium in artwork.medium.lower():
                     if artwork.artworkname not in uniquelots.keys():
