@@ -13,6 +13,7 @@ from django.template.loader import get_template
 from django.core.mail import send_mail
 from django.contrib.sessions.backends.db import SessionStore
 from django.template import loader
+from django.db.models import Avg, Count, Min, Sum
 
 import os, sys, re, time, datetime
 import simplejson as json
@@ -25,7 +26,7 @@ from gallery.models import Gallery, Event
 from login.models import User, Session, WebConfig, Carousel
 from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
-from artists.models import Artist, Artwork
+from artists.models import Artist, Artwork, FeaturedArtist
 from auctions.models import Auction, Lot
 
 # Caching related imports and variables
@@ -57,8 +58,8 @@ def index(request):
     rowendctr = int(page) * rows
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
     endctr = (chunksize * rows) * int(page) + featuredsize
-    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
-    cursor = dbconn.cursor()
+    #dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    #cursor = dbconn.cursor()
     context = {}
     featuredartists = []
     uniqartistsnames = []
@@ -68,9 +69,13 @@ def index(request):
         featuredartists = []
     uniqartists = {}
     if featuredartists.__len__() == 0:
-        artist_view_sql = "create or replace view featured_artists as select fa.fa_artist_ID as artist_id, fa.fa_artist_name as artist_name, fal.fal_lot_sale_price_USD as artist_price_usd, fa.fa_artist_name_prefix as prefix, fa.fa_artist_nationality as nationality, fa.fa_artist_birth_year as birthyear, fa.fa_artist_death_year as deathyear, fa.fa_artist_description as description, fa.fa_artist_aka as aka, fa.fa_artist_bio as bio, fa.fa_artist_image as artistimage, fa.fa_artist_genre as genre from fineart_artists fa, fineart_artworks faa, fineart_lots fal where fa.fa_artist_ID=faa.faa_artist_ID and faa.faa_artwork_ID=fal.fal_artwork_ID"
-        cursor.execute(artist_view_sql)
-        dbconn.commit()
+        """
+        try:
+            artist_view_sql = "create view featured_artists as select fa.fa_artist_ID as artist_id, fa.fa_artist_name as artist_name, fal.fal_lot_sale_price_USD as artist_price_usd, fa.fa_artist_name_prefix as prefix, fa.fa_artist_nationality as nationality, fa.fa_artist_birth_year as birthyear, fa.fa_artist_death_year as deathyear, fa.fa_artist_description as description, fa.fa_artist_aka as aka, fa.fa_artist_bio as bio, fa.fa_artist_image as artistimage, fa.fa_artist_genre as genre from fineart_artists fa, fineart_artworks faa, fineart_lots fal where fa.fa_artist_ID=faa.faa_artist_ID and faa.faa_artwork_ID=fal.fal_artwork_ID"
+            cursor.execute(artist_view_sql)
+            dbconn.commit()
+        except:
+            pass # We are here because the view exists. Do nothing.
         whereclause = ""
         if page != 1:
             whereclause = "and artist_name like '" + str(pageno) + "%'"
@@ -78,35 +83,44 @@ def index(request):
         #print(getview_sql)
         cursor.execute(getview_sql)
         artistsqset = cursor.fetchall()
-        for artist in artistsqset:
-            artistid = artist[0]
-            artistname = artist[1]
-            price = artist[2]
-            prefix = artist[3]
-            nationality = artist[4]
-            birthyear = artist[5]
-            deathyear = artist[6]
-            description = artist[7]
-            aka = artist[8]
-            bio = artist[9]
-            artistimage = artist[10]
-            genre = artist[11]
+        """
+        artistsqset = FeaturedArtist.objects.all().order_by('-totalsoldprice')[0:endctr]
+        if page != 1:
+            artistsqset = FeaturedArtist.objects.filter(artist_name__istartswith=str(pageno)).order_by('-totalsoldprice')[0:endctr]
+        for artist in artistsqset[:endctr]:
+            artistid = artist.artist_id
+            artistname = artist.artist_name
+            price = artist.totalsoldprice
+            prefix = artist.prefix
+            nationality = artist.nationality
+            birthyear = artist.birthyear
+            deathyear = artist.deathyear
+            description = artist.description
+            aka = artist.aka
+            bio = artist.bio
+            artistimage = artist.artistimage
+            genre = artist.genre
             if artistname not in uniqartists.keys():
                 uniqartists[artistname] = [artistid, artistname, float(price), prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre]
             else:
                 l = uniqartists[artistname]
-                l[2] = float(l[2]) + float(price)
+                #l[2] = float(l[2]) + float(price)
                 uniqartists[artistname] = l
         uniqartistsnames = list(uniqartists.keys())
         for artistname in uniqartistsnames[0:featuredsize]:
             artist = uniqartists[artistname]
             artistid = artist[0]
             artistname = artist[1]
-            price = artist[2]
+            price = "{:,}".format(artist[2])
             prefix = artist[3]
             nationality = artist[4]
             birthyear = artist[5]
             deathyear = artist[6]
+            birthdeath = ""
+            if birthyear != "":
+                birthdeath = "b. " + str(birthyear)
+            if deathyear != "":
+                birthdeath = str(birthyear) + " - " + str(deathyear)
             description = artist[7]
             aka = artist[8]
             bio = artist[9]
@@ -118,8 +132,8 @@ def index(request):
                 birthyear = ""
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
-            d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price)}
-            artworkqset = Artwork.objects.filter(artist_id=artistid).order_by('priority')
+            d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath}
+            artworkqset = Artwork.objects.filter(artist_id=artistid)
             if artworkqset.__len__() == 0:
                 #continue
                 d['artworkname'] = ""
@@ -180,7 +194,7 @@ def index(request):
                 if prefix != "" and prefix != "na":
                     prefix = prefix + " "
                 d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid)}
-                artworkqset = Artwork.objects.filter(artist_id=artistid).order_by() # Ordered by 'priority' - descending.
+                artworkqset = Artwork.objects.filter(artist_id=artistid)
                 if artworkqset.__len__() == 0:
                     continue
                 artworkobj = artworkqset[0]
@@ -245,7 +259,7 @@ def index(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
-    dbconn.close() # Closing db connection. Don't want unwanted open connections.
+    #dbconn.close() # Closing db connection. Don't want unwanted open connections.
     template = loader.get_template('artist.html')
     return HttpResponse(template.render(context, request))
 
@@ -305,7 +319,7 @@ def details(request):
     actr = 0
     lotqset = list()
     if allartworks.__len__() == 0:
-        artworksqset = Artwork.objects.filter(artist_id=aid).order_by('priority')
+        artworksqset = Artwork.objects.filter(artist_id=aid) #.order_by('priority')
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
         curdatetime = datetime.datetime.now()
@@ -439,7 +453,7 @@ def details(request):
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
             d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.id), 'aliveperiod' : aliveperiod}
-            artworkqset = Artwork.objects.filter(artist_id=artist.id).order_by('priority', '-edited')
+            artworkqset = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority', '-edited')
             if artworkqset.__len__() == 0:
                 continue
             d['artworkname'] = artworkqset[0].artworkname
@@ -527,7 +541,7 @@ def search(request):
         featuredartists = []
     uniqartists = {}
     if featuredartists.__len__() == 0:
-        matchingartistsqset = Artist.objects.filter(artistname__icontains=searchkey).order_by('priority')
+        matchingartistsqset = Artist.objects.filter(artistname__icontains=searchkey) #.order_by('priority')
         for artist in matchingartistsqset[startctr:endctr]:
             if artist.artistname.title() not in uniqartists.keys():
                 if artist.nationality == "na":
@@ -538,7 +552,7 @@ def search(request):
                 if artist.prefix != "" and artist.prefix != "na":
                     prefix = artist.prefix + " "
                 d = {'artistname' : prefix + artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id)}
-                artworkqset = Artwork.objects.filter(artist_id=artist.id).order_by('priority')
+                artworkqset = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority')
                 if artworkqset.__len__() == 0:
                     #continue
                     d['artworkname'] = ""
@@ -688,7 +702,7 @@ def showartwork(request):
     except:
         pass
     if relatedartists.__len__() == 0:
-        artistqset = Artist.objects.filter(genre__icontains=artistobj.genre).order_by('priority')
+        artistqset = Artist.objects.filter(genre__icontains=artistobj.genre) #.order_by('priority')
         for artist in artistqset:
             if artistobj.id == artist.id: # Same artist, skip.
                 continue

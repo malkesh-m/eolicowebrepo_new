@@ -37,6 +37,49 @@ class Artist(models.Model):
         return "%s"%(self.artistname)
 
 
+class LotArtist(models.Model):
+    artist_id = models.IntegerField(default=None, blank=True, null=True)
+    artist_name = models.CharField(max_length=255, blank=False, null=False)
+    artist_price_usd = models.DecimalField(max_digits=13, decimal_places=2)
+    prefix = models.CharField(max_length=25, blank=True, null=False)
+    nationality = models.CharField(max_length=255, blank=True, null=True)
+    birthyear = models.CharField(max_length=10, blank=True, null=True)
+    deathyear = models.CharField(max_length=10, blank=True, null=True)
+    description = models.TextField()
+    aka = models.CharField(max_length=100, blank=True, null=True)
+    bio = models.TextField()
+    genre = models.CharField(max_length=255, blank=True, null=True)
+    artistimage = models.TextField()
+
+    class Meta:
+        verbose_name = "Artwork/Lot/Artist Combined Information Table"
+        db_table = 'fa_artwork_lot_artist'
+
+    def __unicode__(self):
+        return "%s"%(self.artistname)
+
+class FeaturedArtist(models.Model):
+    artist_id = models.IntegerField(default=None, blank=True, null=True)
+    totalsoldprice = models.DecimalField(max_digits=13, decimal_places=2)
+    artist_name = models.CharField(max_length=255, blank=False, null=False)
+    prefix = models.CharField(max_length=25, blank=True, null=False)
+    nationality = models.CharField(max_length=255, blank=True, null=True)
+    birthyear = models.CharField(max_length=10, blank=True, null=True)
+    deathyear = models.CharField(max_length=10, blank=True, null=True)
+    description = models.TextField()
+    aka = models.CharField(max_length=100, blank=True, null=True)
+    bio = models.TextField()
+    genre = models.CharField(max_length=255, blank=True, null=True)
+    artistimage = models.TextField()
+
+    class Meta:
+        verbose_name = "Featured Artists Information Table"
+        db_table = 'fa_featured_artists'
+
+    def __unicode__(self):
+        return "%s"%(self.artistname)
+
+
 class Artwork(models.Model):
     id = models.IntegerField(primary_key=True, unique=True, default=None, blank=False, null=False, db_column='faa_artwork_ID')
     artworkname = models.TextField(db_column='faa_artwork_title')
