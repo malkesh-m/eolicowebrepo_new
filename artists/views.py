@@ -58,8 +58,8 @@ def index(request):
     rowendctr = int(page) * rows
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
     endctr = (chunksize * rows) * int(page) + featuredsize
-    #dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
-    #cursor = dbconn.cursor()
+    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    cursor = dbconn.cursor()
     context = {}
     featuredartists = []
     uniqartistsnames = []
@@ -87,7 +87,7 @@ def index(request):
         artistsqset = FeaturedArtist.objects.all().order_by('-totalsoldprice')[0:endctr]
         if page != 1:
             artistsqset = FeaturedArtist.objects.filter(artist_name__istartswith=str(pageno)).order_by('-totalsoldprice')[0:endctr]
-        for artist in artistsqset[:endctr]:
+        for artist in artistsqset:
             artistid = artist.artist_id
             artistname = artist.artist_name
             price = artist.totalsoldprice
@@ -104,7 +104,6 @@ def index(request):
                 uniqartists[artistname] = [artistid, artistname, float(price), prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre]
             else:
                 l = uniqartists[artistname]
-                #l[2] = float(l[2]) + float(price)
                 uniqartists[artistname] = l
         uniqartistsnames = list(uniqartists.keys())
         for artistname in uniqartistsnames[0:featuredsize]:
@@ -133,7 +132,14 @@ def index(request):
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
             d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath}
-            artworkqset = Artwork.objects.filter(artist_id=artistid)
+            print(time.time())
+            #artworkqset = Artwork.objects.filter(artist_id=artistid)
+            artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s"%artistid
+            cursor.execute(artworksql)
+            artworkqset = cursor.fetchall()
+            print(time.time())
+            print(artistid)
+            print("###########################22222")
             if artworkqset.__len__() == 0:
                 #continue
                 d['artworkname'] = ""
@@ -142,10 +148,10 @@ def index(request):
                 d['awid'] = ""
                 d['atype'] = "0" # Artists with no related artwork
             else:
-                d['artworkname'] = artworkqset[0].artworkname
-                d['artworkimage'] = artworkqset[0].image1
-                d['artworkdate'] = artworkqset[0].creationenddate
-                d['awid'] = artworkqset[0].id
+                d['artworkname'] = artworkqset[0][1]
+                d['artworkimage'] = artworkqset[0][3]
+                d['artworkdate'] = artworkqset[0][2]
+                d['awid'] = artworkqset[0][0]
                 d['atype'] = "1" # Artists with available related artwork
             featuredartists.append(d)
         try:
@@ -181,6 +187,11 @@ def index(request):
                 nationality = artist[4]
                 birthyear = artist[5]
                 deathyear = artist[6]
+                birthdeath = ""
+                if birthyear != "":
+                    birthdeath = "b. " + str(birthyear)
+                if deathyear != "":
+                    birthdeath = str(birthyear) + " - " + str(deathyear)
                 description = artist[7]
                 aka = artist[8]
                 bio = artist[9]
@@ -193,33 +204,44 @@ def index(request):
                     birthyear = ""
                 if prefix != "" and prefix != "na":
                     prefix = prefix + " "
-                d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid)}
-                artworkqset = Artwork.objects.filter(artist_id=artistid)
-                if artworkqset.__len__() == 0:
+                d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath}
+                #artworkqset1 = Artwork.objects.filter(artist_id=artistid)
+                artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s"%artistid
+                cursor.execute(artworksql1)
+                artworkqset1 = cursor.fetchall()
+                try: # Getting a stupid "Protocol error, expecting EOF" for artistid 90761...
+                    if artworkqset1.__len__() == 0:
+                        continue
+                except:
                     continue
-                artworkobj = artworkqset[0]
-                if artworkobj.artworkname.title() not in uniqueartworks.keys():
-                    d['artworkname'] = artworkobj.artworkname.title()
-                    #print(d['artworkname'])
-                    uniqueartworks[artworkobj.artworkname.title()] = 1
+                artworkobj = artworkqset1[0]
+                if artworkobj[1].title() not in uniqueartworks.keys():
+                    d['artworkname'] = artworkobj[1].title()
+                    d['artworkimage'] = artworkobj[3]
+                    d['artworkdate'] = artworkobj[2]
+                    d['awid'] = artworkobj[0]
+                    d['artworkmedium'] = artworkobj[4]
+                    uniqueartworks[artworkobj[1].title()] = 1
                 else:
                     awctr = 0
                     awfound = 0
-                    while awctr < artworkqset.__len__() - 1: # Iterate over all artworks by the artist under consideration
+                    while awctr < artworkqset1.__len__() - 1: # Iterate over all artworks by the artist under consideration
                         awctr += 1
-                        artworkobj = artworkqset[awctr]
-                        if artworkobj.artworkname.title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
+                        artworkobj2 = artworkqset1[awctr] # Starting from index 1
+                        if artworkobj2[1].title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
+                            if artworkobj2[3] == "":
+                                continue
+                            d['artworkimage'] = artworkobj2[3]
+                            d['artworkdate'] = artworkobj2[2]
+                            d['awid'] = artworkobj2[0]
+                            d['artworkmedium'] = artworkobj2[4]
+                            d['artworkname'] = artworkobj2[1].title()
+                            #print(artworkobj2[1].title())
+                            uniqueartworks[artworkobj2[1].title()] = 1
                             awfound = 1
                             break
-                    if awfound: # Add artwork if it has not been encountered before.
-                        uniqueartworks[artworkobj.artworkname.title()] = 1
-                        d['artworkname'] = artworkobj.artworkname.title()
-                    else: # Skip this artist if no new artworks could be found.
+                    if awfound == 0: # Skip this artist if no new artworks could be found.
                         continue
-                d['artworkimage'] = artworkobj.image1
-                d['artworkdate'] = artworkobj.creationenddate
-                d['awid'] = artworkobj.id
-                d['artworkmedium'] = artworkobj.medium
                 if actr < chunksize:
                     l = allartists[rctr]
                     l.append(d)
@@ -245,8 +267,8 @@ def index(request):
     except:
         pass
     if filterartists.__len__() == 0:
-        allartistsqset = Artist.objects.all()
-        for artist in allartistsqset[0:2000]:
+        allartistsqset = Artist.objects.all()[0:2000]
+        for artist in allartistsqset:
             filterartists.append(artist.artistname)
         try:
             redis_instance.set('at_filterartists', pickle.dumps(filterartists))
@@ -259,7 +281,7 @@ def index(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
-    #dbconn.close() # Closing db connection. Don't want unwanted open connections.
+    dbconn.close() # Closing db connection. Don't want unwanted open connections.
     template = loader.get_template('artist.html')
     return HttpResponse(template.render(context, request))
 
@@ -275,8 +297,11 @@ def details(request):
     if not aid:
         return HttpResponse("Invalid Request: Request is missing aid")
     chunksize = 9
+    maxrelatedartist = 8
     artistobj = None
     context = {}
+    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    cursor = dbconn.cursor()
     try:
         artistobj = Artist.objects.get(id=aid)
     except:
@@ -300,6 +325,7 @@ def details(request):
     totalartworks = 0
     soldlotsprice = 0.00
     maxpastlots = 25
+    maxupcominglots = 8
     try:
         allartworks = pickle.loads(redis_instance.get('at_allartworks_%s'%artistobj.id))
         allartworks1 = pickle.loads(redis_instance.get('at_allartworks1_%s'%artistobj.id))
@@ -345,20 +371,34 @@ def details(request):
                 if auctionstartdate > curdatetime: # This is an upcoming auction
                     auchouseobj = None
                     try:
-                        auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
-                        auchousename = auchouseobj.housename
+                        #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                        ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
+                        cursor.execute(ahsql)
+                        ahqset = cursor.fetchall()
+                        if ahqset.__len__() == 0:
+                            continue
+                        ahrow = ahqset[0]
+                        auchousename = ahrow[0]
                     except:
                         auchousename = ""
                     auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
                     if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "":
                         auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
                     d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate), 'auctionperiod' : auctionperiod}
-                    lotsinupcomingauctions.append(d)
+                    if maxupcominglots > lotsinupcomingauctions.__len__():
+                        lotsinupcomingauctions.append(d)
                 else: # Past auction case
                     auchouseobj = None
                     try:
-                        auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
-                        auchousename = auchouseobj.housename
+                        ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
+                        cursor.execute(ahsql)
+                        ahqset = cursor.fetchall()
+                        if ahqset.__len__() == 0:
+                            continue
+                        ahrow = ahqset[0]
+                        auchousename = ahrow[0]
+                        #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                        #auchousename = auchouseobj.housename
                     except:
                         auchousename = ""
                     d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotobj.soldpriceUSD), 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate)}
@@ -435,15 +475,18 @@ def details(request):
         pass
     if relatedartists.__len__() == 0:
         try:
-            genre = artistobj.genre
-            # Related Artists can be sought out based on the 'genre' or on 'nationality'. Though 'genre' is a better
-            # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
-            # is a query that cannot be cached, so it has to be picked up from the DB every time.
-            relatedartistqset = Artist.objects.filter(genre__icontains=genre)
+            if artistobj.genre is not None:
+                a_genre = artistobj.genre
+                # Related Artists can be sought out based on the 'genre' or on 'nationality'. Though 'genre' is a better
+                # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
+                # is a query that cannot be cached, so it has to be picked up from the DB every time.
+                relatedartistqset = Artist.objects.filter(genre=a_genre)
+            else:
+                relatedartistqset = Artist.objects.filter(nationality__iexact=artistobj.nationality)
         except:
             genre = None
-            relatedartistqset = Artist.objects.filter(nationality__icontains=artistobj.nationality)
-        for artist in relatedartistqset:
+            relatedartistqset = Artist.objects.filter(nationality__iexact=artistobj.nationality)
+        for artist in relatedartistqset[:maxrelatedartist]:
             if artistobj.id == artist.id: # Same artist, so just skip.
                 continue
             prefix = ""
@@ -453,17 +496,18 @@ def details(request):
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
             d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.id), 'aliveperiod' : aliveperiod}
-            artworkqset = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority', '-edited')
-            if artworkqset.__len__() == 0:
+            artworkqset2 = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority', '-edited')
+            if artworkqset2.__len__() == 0:
                 continue
-            d['artworkname'] = artworkqset[0].artworkname
-            d['artworkimage'] = artworkqset[0].image1
-            d['artworkdate'] = artworkqset[0].creationstartdate
-            d['artworkdescription'] = artworkqset[0].description
-            d['awid'] = artworkqset[0].id
+            d['artworkname'] = artworkqset2[0].artworkname
+            d['artworkimage'] = artworkqset2[0].image1
+            d['artworkdate'] = artworkqset2[0].creationstartdate
+            d['artworkdescription'] = artworkqset2[0].description
+            d['awid'] = artworkqset2[0].id
             if relatedartists.__len__() < chunksize:
                 relatedartists.append(d)
         for artwork in artworksqset:
+            lotqset = Lot.objects.filter(artwork_id=artwork.id)
             try:
                 lotqsetlist = list(lotqset)
                 if lotqsetlist.__len__() == 0:
@@ -497,6 +541,7 @@ def details(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    dbconn.close()
     template = loader.get_template('artist_details.html')
     return HttpResponse(template.render(context, request))
 
