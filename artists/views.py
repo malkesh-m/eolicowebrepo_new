@@ -89,6 +89,8 @@ def index(request):
             artistsqset = FeaturedArtist.objects.filter(artist_name__istartswith=str(pageno)).order_by('-totalsoldprice')[0:endctr]
         for artist in artistsqset:
             artistid = artist.artist_id
+            if artistid in settings.BLACKLISTED_ARTISTS:
+                continue
             artistname = artist.artist_name
             price = artist.totalsoldprice
             prefix = artist.prefix
@@ -326,6 +328,7 @@ def details(request):
     soldlotsprice = 0.00
     maxpastlots = 25
     maxupcominglots = 8
+    maxartworkstoconsider = 200
     try:
         allartworks = pickle.loads(redis_instance.get('at_allartworks_%s'%artistobj.id))
         allartworks1 = pickle.loads(redis_instance.get('at_allartworks1_%s'%artistobj.id))
@@ -344,14 +347,20 @@ def details(request):
     uniqueartworks = {}
     actr = 0
     lotqset = list()
+    artworksqset = list()
     if allartworks.__len__() == 0:
         artworksqset = Artwork.objects.filter(artist_id=aid) #.order_by('priority')
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
         curdatetime = datetime.datetime.now()
-        for artwork in artworksqset:
+        upcomingflag = 0
+        pastauctionsflag = 0
+        for artwork in artworksqset[:maxartworkstoconsider]:
+            if upcomingflag == 1 and pastauctionsflag == 1:
+                break
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
             for lotobj in lotqset:
+                #print(str(lotobj.id) + " ############## " + str(artwork.id))
                 saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
                 if saledate and saledate > date2yearsago:
                     totallotssold += 1
@@ -387,6 +396,8 @@ def details(request):
                     d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate), 'auctionperiod' : auctionperiod}
                     if maxupcominglots > lotsinupcomingauctions.__len__():
                         lotsinupcomingauctions.append(d)
+                    else:
+                        upcomingflag = 1
                 else: # Past auction case
                     auchouseobj = None
                     try:
@@ -405,6 +416,7 @@ def details(request):
                     if maxpastlots > lotsinpastauctions.__len__():
                         lotsinpastauctions.append(d)
                     else:
+                        pastauctionsflag = 1
                         continue
             d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid}
             if artwork.artworkname not in uniqueartworks.keys():
@@ -473,22 +485,29 @@ def details(request):
         artistevents = pickle.loads(redis_instance.get('at_artistevents_%s'%artistobj.id))
     except:
         pass
+    print("HERE..........")
     if relatedartists.__len__() == 0:
         try:
             if artistobj.genre is not None:
                 a_genre = artistobj.genre
+                genreparts = a_genre.split(",")
                 # Related Artists can be sought out based on the 'genre' or on 'nationality'. Though 'genre' is a better
                 # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
                 # is a query that cannot be cached, so it has to be picked up from the DB every time.
-                relatedartistqset = Artist.objects.filter(genre=a_genre)
+                relatedartistqset = []
+                for g in genreparts:
+                    rartistqset = Artist.objects.filter(genre__icontains=g)
+                    for artistob in rartistqset:
+                        relatedartistqset.append(artistob)
             else:
-                relatedartistqset = Artist.objects.filter(nationality__iexact=artistobj.nationality)
+                relatedartistqset = Artist.objects.filter(nationality=artistobj.nationality)
         except:
             genre = None
-            relatedartistqset = Artist.objects.filter(nationality__iexact=artistobj.nationality)
+            relatedartistqset = Artist.objects.filter(nationality=artistobj.nationality)
         for artist in relatedartistqset[:maxrelatedartist]:
             if artistobj.id == artist.id: # Same artist, so just skip.
                 continue
+            #print(artist.id)
             prefix = ""
             if artist.prefix != "" and artist.prefix != "na":
                 prefix = artist.prefix + " "
@@ -496,18 +515,24 @@ def details(request):
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
             d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.id), 'aliveperiod' : aliveperiod}
-            artworkqset2 = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority', '-edited')
+            #artworkqset2 = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority', '-edited')
+            artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_description from fineart_artworks where faa_artist_ID=%s limit 1"%artist.id # We need 1 record only.
+            cursor.execute(artworksql)
+            artworkqset2 = cursor.fetchall()
             if artworkqset2.__len__() == 0:
                 continue
-            d['artworkname'] = artworkqset2[0].artworkname
-            d['artworkimage'] = artworkqset2[0].image1
-            d['artworkdate'] = artworkqset2[0].creationstartdate
-            d['artworkdescription'] = artworkqset2[0].description
-            d['awid'] = artworkqset2[0].id
+            d['artworkname'] = artworkqset2[0][1]
+            d['artworkimage'] = artworkqset2[0][3]
+            d['artworkdate'] = artworkqset2[0][2]
+            d['artworkdescription'] = artworkqset2[0][4]
+            d['awid'] = artworkqset2[0][0]
             if relatedartists.__len__() < chunksize:
                 relatedartists.append(d)
-        for artwork in artworksqset:
-            lotqset = Lot.objects.filter(artwork_id=artwork.id)
+            else:
+                break
+        for artwork in artworksqset[maxartworkstoconsider:maxartworkstoconsider+maxartworkstoconsider]:
+            #print(artwork.id)
+            lotqset = Lot.objects.filter(artwork_id=artwork.id)[:1]
             try:
                 lotqsetlist = list(lotqset)
                 if lotqsetlist.__len__() == 0:
@@ -667,6 +692,7 @@ def showartwork(request):
         artistname = artistobj.artistname
     else:
         artistname = ""
+    maxartworkstoshow = 24 # Keep this as multiples of 4.
     description = artworkobj.description
     description = description.replace("<strong><br>Description:</strong>", "")
     description = description.replace("<br>", "")
@@ -726,6 +752,8 @@ def showartwork(request):
                     eventperiod = eventperiod + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
                 d2 = {'eventname' : auctionobj.auctionname, 'eventimage' : auctionobj.coverimage, 'eventperiod' : eventperiod, 'aucid' : auctionobj.id}
                 allevents.append(d2)
+            if allartworks.__len__() >= maxartworkstoshow:
+                break
         context['allartworks'] = allartworks
         context['allartworks1'] = allartworks1
         context['allartworks2'] = allartworks2
@@ -781,12 +809,13 @@ def textfilter(request):
     #print(searchkey)
     context = {}
     pastartworks = []
+    maxartworkstoconsider = 200
     artistobj = None
     try:
         artistobj = Artist.objects.get(id=aid)
     except:
         return HttpResponse(json.dumps({'err' : "Could not find artist identified by the ID %s"%aid}))
-    artworksbyartistqset = Artwork.objects.filter(artist_id=aid)
+    artworksbyartistqset = Artwork.objects.filter(artist_id=aid)[:maxartworkstoconsider]
     for artwork in artworksbyartistqset:
         lotqset = Lot.objects.filter(artwork_id=artwork.id)
         for lotobj in lotqset:
@@ -798,6 +827,7 @@ def textfilter(request):
                 estimatelow = str(lotobj.lowestimateUSD)
                 estimatehigh = str(lotobj.highestimateUSD)
                 estimate = estimatelow + " - " + estimatehigh
+                #print(artwork.artworkname)
                 if auctionobj is not None:
                     aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
                     if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
@@ -863,13 +893,18 @@ def morefilter(request):
     uniqueartworks = {}
     artistobj = None
     maxsearchresults = 50 # No more than 50 records will be sent back. More than 50 records usually end up crashing the browser.
+    maxartworkstoconsider = 2000
     try:
         artistobj = Artist.objects.get(id=aid)
     except:
         return HttpResponse(json.dumps({'err' : "Could not find artist identified by the ID %s"%aid}))
     artworksbyartistqset = Artwork.objects.filter(artist_id=aid)
+    #print(artworksbyartistqset.__len__())
     for artwork in artworksbyartistqset:
+        if maxsearchresults < pastartworks.__len__():
+            break
         lotqset = Lot.objects.filter(artwork_id=artwork.id)
+        #print(artwork.artworkname)
         for lotobj in lotqset:
             try:
                 auctionobj = Auction.objects.get(id=lotobj.auction_id)

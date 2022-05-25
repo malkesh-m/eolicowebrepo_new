@@ -399,13 +399,36 @@
                                             </div>
                                         </div>
                                     </div>
-				    
-                                    <div id="noteble-works" class="owl-carousel owl-theme owl-d">
+				    <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
+                                            <div id="main">
+                                                <div class="row align-items-end">                                                   
+							{% for artwork in allartworks %}
+							<div class="column">
+                                                        <div class="img-box">
+							    <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
+                                                            <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" style="width:100%">
+                                                            <h4>{{ artwork.artworkname }}</h4>
+                                                            <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
+                                                            <p>{{artwork.size}}</p>
+							    </a>
+							    {% if adminuser == 1 %}
+			    				        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+							    {% endif %}
+                                                        </div>
+							</div>
+							{% endfor %}
+                                                    
+                                                    
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <!-- <div id="noteble-works" class="owl-carousel owl-theme owl-d">
 					{% for artwork in allartworks %}
                                         <div class="item align-items-end">
+					<div class="img-box">
                                             <div class="thumb">
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}">
-                                                    <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.artworkimage}}" class="img-fluid" alt="">
+                                                    <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" class="img-fluid" alt="">
                                                 </a>
                                             </div>
                                             <div class="slide-cap">
@@ -418,10 +441,11 @@
 						    {% endif %}
                                                 </a>
                                             </div>
+					</div>
                                         </div>
 					{% endfor %}
                                         
-                                    </div>
+                                    </div> -->
 				    <!--
                                     <div class="career-highlight mrt-90">
                                         <div class="row">

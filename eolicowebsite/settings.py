@@ -169,6 +169,7 @@ AUCTION_FILE_DIR = MEDIA_ROOT + os.path.sep + "images" + os.path.sep + "auctions
 AUCTIONHOUSE_FILE_DIR = MEDIA_ROOT + os.path.sep + "images" + os.path.sep + "auctionhouses"
 
 CURRENCIES = ['USD', 'GBP', 'EUR', 'AUD', 'INR', 'HKD', 'CAD', 'JPY']
+BLACKLISTED_ARTISTS = [1, ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

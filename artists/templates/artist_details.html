@@ -82,6 +82,7 @@
     <script>
     function filterbytext(){
 	var xmlhttp;
+        searchstatusspan = document.getElementById('searchstatus');
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
 	  }
@@ -99,9 +100,10 @@
     	    adminuser = context['adminuser'];
 	    for(var i=0; i < searchartworks.length; i++){
 		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
-		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/details/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
+		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
 	    }
 	    aucdiv.innerHTML = auctext;
+	    searchstatusspan.innerHTML = "";
 	  }
 	  };
 	  let formData = new FormData();
@@ -113,6 +115,7 @@
 	  xmlhttp.open("POST", "/artist/textfilter/");
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
+	  searchstatusspan.innerHTML = "<img src='/static/images/loading.gif'>";
     }
 
     function filterresults(formelem){
@@ -181,7 +184,7 @@
     	    adminuser = context['adminuser'];
 	    for(var i=0; i < searchartworks.length; i++){
 		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
-		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/details/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
+		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
 	    }
 	    aucdiv.innerHTML = auctext;
 	  }
@@ -527,7 +530,7 @@
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
                                                     <h2>{{artwork.artworkname}}</h2></a>
 						    <h2>in 
-						    <a href="/auction/details/?aucid={{artwork.aucid}}" style="color:#000000;">{{artwork.auctionname}}: {{artwork.auctionperiod}}</a>
+						    <a href="/auction/showauction/?aucid={{artwork.aucid}}" style="color:#000000;">{{artwork.auctionname}}: {{artwork.auctionperiod}}</a>
 						    </h2>
                                                     <p>{{artwork.medium}}, {{artwork.size}}</p>
 						{% if adminuser == 1 %}
@@ -728,10 +731,10 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                                                     <div class="artist-category">
                                                         <div class="thumb">
-                                                            <a href="/auction/details/?aucid={{evdata.aucid}}"><img src="/media/auctions/{{evdata.aucid}}/{{evdata.eventimage}}" alt=""></a>
+                                                            <a href="/auction/showauction/?aucid={{evdata.aucid}}"><img src="/media/auctions/{{evdata.aucid}}/{{evdata.eventimage}}" alt=""></a>
                                                         </div>
                                                         <div class="down-content">
-                                                            <a href="/auction/details/?aucid={{evdata.aucid}}" style="color:#000000;">
+                                                            <a href="/auction/showauction/?aucid={{evdata.aucid}}" style="color:#000000;">
                                                                 <h4>{{evname}}</h4>
                                                                 <span>{{evdata.eventlocation}} {{evdata.eventperiod}}</span>
                                                             </a><!-- <a class="btn btn-slider" href="#">Follow</a> -->
@@ -1457,7 +1460,7 @@
                                                     <form method="POST" name='frmtextfilter' id='frmtextfilter' action=''>
 							{% csrf_token %}
                                                         <input type="text" value="" name="txtfilter" id="txtfilter" placeholder="Search by artwork title, series, or description" />
-                                                        <button type="button" value="" name="btntextfilter" onclick="javascript:filterbytext();"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                                        <button type="button" value="" name="btntextfilter" onclick="javascript:filterbytext();"><i class="fa fa-search" aria-hidden="true"></i></button><span id='searchstatus'></span>
 							<input type='hidden' name='aid' value='{{artistinfo.artistid}}'>
                                                     </form>
                                                 </div>
@@ -1742,7 +1745,7 @@
                                                                             </div>
                                                                             <div class="date-auctions">
                                                                     		<h4>{{artwork.auctionstartdate}}</h4>
-                                                                    		<p><a href="/auction/details/?aucid={{artwork.aucid}}">{{artwork.auctionname}}</a></p>
+                                                                    		<p><a href="/auction/showauction/?aucid={{artwork.aucid}}">{{artwork.auctionname}}</a></p>
                                                                 	    </div>
                                                                             
                                                                         </li>
