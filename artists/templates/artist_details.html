@@ -1700,28 +1700,29 @@
 						    {% for artwork in lotsinpastauctions %}
                                                     <div class="acc-auctions auction-pdb">
                                                         <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
-                                                            <a class="card-title auc-det d-flex">
-                                                                <div class="auctions-img">
-								    <a href="/artist/artworkdetails/?awid={{artwork.awid}}">
-                                                                    <img src="/media/artists/artwork/{{artwork.aid}}/{{artwork.image}}" alt="" class="img-fluid" />
-								    </a>
-                                                                </div>
-                                                                <div class="auctions-name">
-                                                                    <h4>{{artwork.artworkname}}</h4>
-                                                                    
-                                                                </div>
+                                                            <!-- <a class="card-title auc-det d-flex">
+                                                                <div class="auctions-name"> -->
+								<a href="/artist/artworkdetails/?awid={{artwork.awid}}"  style='color:#000000;'>
+                                                                    <h6>{{artwork.artworkname}}</h6>
+								</a>
+                                                                <!-- </div> -->
                                                                 <div class="auction-price">
-                                                                    <h4>US${{artwork.soldprice}}</h4>
+                                                                    <h6>US${{artwork.soldprice}}</h6>
                                                                     <p>Realized price</p>
                                                                     <!-- <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p> -->
                                                                 </div>
-                                                            </a>
+                                                            <!-- </a> -->
                                                         </div>
                                                         <div id="collapseacutions1" class="collapse" data-parent="#accordion">
                                                             <div class="card-body">
                                                                 <div class="card-body-inner">
                                                                     <ul>
                                                                         <li>
+									    <div class="auctions-img">
+									        <a href="/media/artists/artwork/{{artwork.aid}}/{{artwork.image}}">
+		                                                            	    <img src="/media/artists/artwork/{{artwork.aid}}/{{artwork.image}}" alt="{{artwork.artworkname}}" class="img-fluid"/>
+									    	</a>
+		                                                            </div>
                                                                             <div class="auctions-img">
                                                                                 <h6>Artwork Info</h6>
                                                                             </div>

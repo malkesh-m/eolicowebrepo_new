@@ -434,12 +434,18 @@ def details(request):
                     continue
                 actr += 1
         yearlylotssold = int(float(totallotssold)/2.0)
-        sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
-        sellthrurate = '{:.2f}'.format(sellthrurate)
-        avgsaleprice = float(soldlotsprice)/float(totallotssold)
-        avgsaleprice = '{:.2f}'.format(avgsaleprice)
-        salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
-        salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
+        sellthrurate = "NA"
+        if totalartworks != 0:
+            sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
+            sellthrurate = '{:.2f}'.format(sellthrurate)
+        avgsaleprice = "NA"
+        if totallotssold != 0:
+            avgsaleprice = float(soldlotsprice)/float(totallotssold)
+            avgsaleprice = '{:.2f}'.format(avgsaleprice)
+        salepriceoverestimate = "NA"
+        if totallotssold != 0:
+            salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
+            salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
         try:
             redis_instance.set('at_allartworks_%s'%artistobj.id, pickle.dumps(allartworks))
             redis_instance.set('at_allartworks1_%s'%artistobj.id, pickle.dumps(allartworks1))
@@ -597,11 +603,11 @@ def search(request):
     page = int(pageno)
     chunksize = 4
     rows = 6
-    featuredsize = 24
+    featuredsize = 120
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
-    startctr = (chunksize * rows) * (int(page) -1) + featuredsize
-    endctr = (chunksize * rows) * int(page) + featuredsize
+    startctr = (chunksize * rows) * (int(page) -1)
+    endctr = (chunksize * rows) * int(page)
     context = {}
     featuredartists = []
     uniqartists = {}
@@ -621,7 +627,7 @@ def search(request):
                 prefix = ""
                 if artist.prefix != "" and artist.prefix != "na":
                     prefix = artist.prefix + " "
-                d = {'artistname' : prefix + artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id)}
+                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id)}
                 artworkqset = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority')
                 if artworkqset.__len__() == 0:
                     #continue
@@ -661,6 +667,17 @@ def search(request):
     context['filterartists'] = filterartists
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     if request.user.is_authenticated:
         context['adminuser'] = 1
     else:
@@ -693,6 +710,7 @@ def showartwork(request):
     else:
         artistname = ""
     maxartworkstoshow = 24 # Keep this as multiples of 4.
+    maxrelatedartist = 24
     description = artworkobj.description
     description = description.replace("<strong><br>Description:</strong>", "")
     description = description.replace("<br>", "")
@@ -775,7 +793,12 @@ def showartwork(request):
     except:
         pass
     if relatedartists.__len__() == 0:
-        artistqset = Artist.objects.filter(genre__icontains=artistobj.genre) #.order_by('priority')
+        if artistobj.genre is None and artistobj.nationality is not None:
+            artistqset = Artist.objects.filter(nationality=artistobj.nationality)[:maxrelatedartist] #.order_by('priority')
+        elif artistobj.genre is not None:
+            artistqset = Artist.objects.filter(genre__icontains=artistobj.genre)[:maxrelatedartist] #.order_by('priority')
+        else:
+            artistqset = list()
         for artist in artistqset:
             if artistobj.id == artist.id: # Same artist, skip.
                 continue
