@@ -206,9 +206,9 @@
 </head>
 
 <body>
-<!-- <a class="nav-link  active" id="Login-tab" data-toggle="tab" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a> -->
+
     <!-- Sign up Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -278,7 +278,7 @@
     </div>
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -396,13 +396,18 @@
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/" class="active">Artists</a></li>
-				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+			    <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
+			    <li class="scroll-to-section"><a href="/artist/index/" class="active">Artists</a></li>
+			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+
+			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
 				
+			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
+
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>

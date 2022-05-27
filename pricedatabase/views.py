@@ -45,12 +45,13 @@ def index(request):
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
-    chunksize = 12
+    chunksize = 20
+    maxlotstoconsider = 2500 # These would be the 2500 top high priced lots. For this page we won't consider lots beyond the top 2500.
     rows = 6
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
-    fstartctr = int(page) * chunksize
-    fendctr = int(page) * chunksize + chunksize
+    fstartctr = int(page) * maxlotstoconsider - maxlotstoconsider
+    fendctr = int(page) * maxlotstoconsider
     context = {}
     date2weeksago = datetime.datetime.now() - datetime.timedelta(days=settings.PDB_LATESTPERIOD)
     entitieslist = []
@@ -65,11 +66,10 @@ def index(request):
         entitieslist = []
         filterpdb = []
     if entitieslist.__len__() == 0:
-        lotsqset = Lot.objects.order_by('-soldpriceUSD')
+        lotsqset = Lot.objects.order_by('-soldpriceUSD')[fstartctr:fendctr]
         lotctr = 0
-        for lotobj in lotsqset[:5000]: # Need a restriction on the number of objects, otherwise it might crash the system.
-            if lotobj.lotimage1 == "": # We will not show lots with no images.
-                continue
+        for lotobj in lotsqset: # Need a restriction on the number of objects, otherwise it might crash the system.
+            lotimage = lotobj.lotimage1
             saledate = lotobj.saledate
             saledt = datetime.datetime.combine(saledate, datetime.time(0, 0))
             if saledt < date2weeksago:
@@ -77,11 +77,19 @@ def index(request):
             artworkobj = None
             try:
                 artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
+                if lotimage == "": # If there is no lot image, go for the artwork image, if any.
+                    lotimage = artworkobj.image1
             except:
                 continue # If we can't find the corresponding artwork for this lot, then we skip it.
+            if lotimage == "": # We will not show lots with no images.
+                continue
             if lotctr > chunksize:
                 break
             lotctr += 1
+            lottitle = artworkobj.artworkname
+            if lottitle not in uniquefilter.keys():
+                filterpdb.append(lottitle)
+                uniquefilter[lottitle] = 1
             auctionname, aucid, auctionperiod = "", "", ""
             try:
                 auctionobj = Auction.objects.get(id=lotobj.auction_id)
@@ -90,37 +98,6 @@ def index(request):
                 auctionperiod = auctionobj.auctionstartdate.strftime('%d %b, %Y')
                 if auctionobj.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 0001" and auctionobj.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 1":
                     auctionperiod += " - " + auctionobj.auctionenddate.strftime('%d %b, %Y')
-                ahid = auctionobj.auctionhouse_id
-                try:
-                    auctionhouseobj = AuctionHouse.objects.get(id=ahid)
-                    auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
-                except:
-                    pass
-            except:
-                pass
-            artistname = ""
-            try:
-                artistobj = Artist.objects.get(id=artworkobj.artist_id)
-                artistname = artistobj.artistname
-            except:
-                pass
-            d = {'artworkname' : artworkobj.artworkname, 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'lid' : lotobj.id, 'awid' : artworkobj.id, 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj.artist_id, 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhouseobj.housename}
-            entitieslist.append(d)
-        for lotobj in lotsqset[:2000]:
-            lottitle = ""
-            artworkobj = None
-            try:
-                artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
-            except:
-                continue # If we can't find the corresponding artwork for this lot, then we skip it.
-            lottitle = artworkobj.artworkname
-            if lottitle not in uniquefilter.keys():
-                filterpdb.append(lottitle)
-                uniquefilter[lottitle] = 1
-            auctionname = ""
-            try:
-                auctionobj = Auction.objects.get(id=lotobj.auction_id)
-                auctionname = auctionobj.auctionname
                 if auctionname not in uniquefilter.keys():
                     filterpdb.append(auctionname)
                     uniquefilter[auctionname] = 1
@@ -144,6 +121,8 @@ def index(request):
                     uniquefilter[artistname] = 1
             except:
                 pass
+            d = {'artworkname' : artworkobj.artworkname, 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'lid' : lotobj.id, 'awid' : artworkobj.id, 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj.artist_id, 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhouseobj.housename}
+            entitieslist.append(d)
         try:
             redis_instance.set('pd_filterpdb', pickle.dumps(filterpdb))
             redis_instance.set('pd_entitieslist', pickle.dumps(entitieslist))
@@ -192,9 +171,11 @@ def search(request):
     maxsearchresults = maxperobjectsearchresults * 3 # 3 types of objects are searched: auctions, artworks/lots and artists.
     startsearchctr = int(page) * maxsearchresults - maxsearchresults
     endsearchctr = int(page) * maxsearchresults + 1
-    auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey) #.order_by('priority')
+    objectstartctr = maxperobjectsearchresults * int(page) - maxperobjectsearchresults
+    objectendctr = maxperobjectsearchresults * int(page)
+    auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey)[objectstartctr:objectendctr] #.order_by('priority')
     aucctr = 0
-    for auctionobj in auctionsqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
+    for auctionobj in auctionsqset:
         auctionhouseid = auctionobj.auctionhouse_id
         ahobj = None
         auctionhousename, ahid = "", ""
@@ -212,9 +193,10 @@ def search(request):
             break
         aucctr += 1
         allsearchresults.append(d)
-    artistsqset = Artist.objects.filter(artistname__icontains=searchkey) #.order_by('priority')
+    artistsqset = Artist.objects.filter(artistname__icontains=searchkey)[objectstartctr:objectendctr] #.order_by('priority')
     artctr = 0
-    for artist in artistsqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
+    quotaflag = 0
+    for artist in artistsqset:
         artworkqset = Artwork.objects.filter(artist_id=artist.id)
         for artwork in artworkqset:
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
@@ -225,12 +207,19 @@ def search(request):
                 allsearchresults.append(d)
                 artctr += 1
                 if artctr > maxperobjectsearchresults:
+                    quotaflag = 1 # Quota for this object (artists) has been emptied.
                     break
-    artworkqset = Artwork.objects.filter(artworkname__icontains=searchkey) #.order_by('priority')
+            if quotaflag == 1:
+                break
+        if quotaflag == 1:
+            break
+    artworkqset = Artwork.objects.filter(artworkname__icontains=searchkey)[objectstartctr:objectendctr] #.order_by('priority')
     awctr = 0
-    for artwork in artworkqset[maxperobjectsearchresults * int(page) - maxperobjectsearchresults:maxperobjectsearchresults * int(page)]:
+    quotaflag = 0
+    for artwork in artworkqset:
         lotqset = Lot.objects.filter(artwork_id=artwork.id)
         for lot in lotqset:
+            #print(str(lot.id) + " ####################")
             artistobj = None
             try:
                 artistobj = Artist.objects.get(id=artwork.artist_id)
@@ -241,8 +230,11 @@ def search(request):
             d = {'artistname' : artistobj.artistname, 'aid' : artistobj.id, 'birthyear' : artistobj.birthyear, 'deathyear' : artistobj.deathyear, 'nationality' : artistobj.nationality, 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
             awctr += 1
             if awctr > maxperobjectsearchresults:
+                quotaflag = 1 # Quota for this object (artworks) has been emptied.
                 break
             allsearchresults.append(d)
+        if quotaflag == 1:
+            break
     context['allsearchresults'] = allsearchresults
     if request.user.is_authenticated:
         context['adminuser'] = 1

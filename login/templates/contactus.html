@@ -234,6 +234,174 @@ footer .under-footer a:hover {
     </head>
     
     <body>
+
+    <!-- Sign up Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Sign up to see full auction records — for free</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="name">name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Enter your full name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" id="email" placeholder="Enter your email address" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                <p>Password must be at least 8 characters.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="check-input">
+                                    <span>
+                                        <input type="checkbox" name="" value="" />
+                                    </span>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from Eolico.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Sign up</button>
+                            </div>
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Already have an account? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign up Modal -->
+    <!-- Sign in Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Login</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" id="email" placeholder="Enter your email address" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="form-group">
+                                <div class="check-input">
+                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Log in</button>
+                            </div>
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Don't have an account? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign in Modal -->
+    <!-- Sign in Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Reset your password</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign in Modal -->
     
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
@@ -259,12 +427,17 @@ footer .under-footer a:hover {
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                         <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                         <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+			 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
+			 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+			 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+			 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+			 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+			 <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+
+			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
+				
+			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
 
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
