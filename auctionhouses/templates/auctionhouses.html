@@ -120,6 +120,7 @@
     </script> 
     <script>
 	function searchauctionhouse(){
+	  searchkey = document.getElementById('auctionhousesearch').value;
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -130,9 +131,37 @@
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    contextdict = JSON.parse(xmlhttp.responseText);
+	    auctionhousematches = contextdict['auctionhousematches'];
+	    adminuser = contextdict['adminuser'];
+            pages = contextdict['pages'];
+            search_section = document.getElementById('searchsection');
+	    featured_div = document.getElementById('featuredshowsdiv');
+	    featured_div.innerHTML = "";
+	    search_section.innerHTML = "";
+	    sectiontext = "<div class='container'><div class='row'><div class='section-heading section-heading-2 mrb-50'><h2>Search Results for '" + searchkey + "</h2></div></div>";
+	    for(var i=0; i < auctionhousematches.length; i++){
+		auctionhouse = auctionhousematches[i];
+		sectiontext += "<div class='sub-head'><h4>" + auctionhouse.housename + ", " + auctionhouse.location + "</h4></div>";
+		sectiontext += "<div class='row align-items-end'>";
+		for(var j=0; j < auctionhouse.auctionslist.length; j++){
+		  auction = auctionhouse.auctionslist[j];
+		  sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='/media/auctions/" + auction.ahid + "/" + auction.aucid + "/" + auction.coverimage + "' style='width:100%'>";
+		  sectiontext += "<h4>" + auction.auctionname + "</h4>";
+		  sectiontext += "<h6 style='padding-left:10px;'>" + auction.auctionperiod + "</h6>";
+		  sectiontext += "<h6>" + auction.location + "</h6>";
+		  sectiontext += "</a>";
+		  if(adminuser == 1){
+		    sectiontext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick='javascript:t_editauction(\"{{auction.aucid}}\");'>Edit</a></div>";
+		  }
+		  sectiontext += "</div></div>";
+		}
+		sectiontext += "</div>";
+	    }
+	    sectiontext += "</div>";
+	    search_section.innerHTML = sectiontext
 	  }
 	  };
-	  searchkey = document.getElementById('auctionhousesearch').value;
 	  xmlhttp.open("GET", "/auctionhouse/search/?q=" + searchkey);
 	  xmlhttp.send();
 	}
@@ -335,16 +364,16 @@
             </div> -->
             
 
-		<div class="row align-items-end">
+		<div class="row align-items-end" id='featuredshowsdiv'>
 			{% for show in featuredshows %}
 			{% for auction in show.auctionslist %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="{{auction.auctionurl}}"><img src="{{auction.coverimage}}" alt="" /></a>
+				<a href="{{auction.auctionurl}}"><img src="/media/auctions/{{auction.ahid}}/{{auction.aucid}}/{{auction.coverimage}}" alt="" /></a>
 		                <a href="{{auction.auctionurl}}" style="color:#000000;">
 		                    <h4>{{auction.auctionname}}</h4>
 		                    <h6>{{show.housename}} | {{show.location}}</h6>
-		                    <h6>{{auction.auctiondate}}</h6>
+		                    <h6>{{auction.auctionperiod}}</h6>
 		                </a>
 				{% if adminuser == 1 %}
 				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
@@ -399,7 +428,7 @@
         </div>
     </section>
 
-    <section class="oth-works mrt-90">
+    <section class="oth-works mrt-90" id='searchsection'>
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -422,10 +451,10 @@
 		{% for auction in auctionslist %}
                 <div class="column">
                     <div class="img-box">
-			<a href='/auctionhouse/details/?aucid={{auction.aucid}}' style="color:#000000;">
-                        <img src="{{auction.coverimage}}" style="width:100%">
+			<a href='/auction/showauction/?aucid={{auction.aucid}}' style="color:#000000;">
+                        <img src="/media/auctions/{{auction.ahid}}/{{auction.aucid}}/{{auction.coverimage}}" style="width:100%">
                         <h4>{{auction.auctionname}}</h4>
-                        <h6 style="padding-left:10px;">{{auction.auctiondate}}</h6>
+                        <h6 style="padding-left:10px;">{{auction.auctionperiod}}</h6>
                         <h6>{{auction.location}}</h6>
 			</a>
 			{% if adminuser == 1 %}

@@ -48,11 +48,15 @@ def index(request):
     rows = 6
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
-    fstartctr = int(page) * chunksize
-    fendctr = int(page) * chunksize + chunksize
+    fstartctr = int(page) * chunksize - chunksize
+    fendctr = int(page) * chunksize
     context = {}
     auctionhouses = [] # Auctions in various auction houses section.
     filterauctionhouses = []
+    maxauctionsperhouse = 4
+    maxfeaturedauctionsperhouse = 2
+    maxfeaturedshows = 8
+    featuredshowscutoffdate = datetime.datetime.now() - datetime.timedelta(days=2 * 365) # date of 2 year back in time. TODO: This should be changed to 3 months later during deployment.
     featuredshows = [] # Featured shows section, will show 5 top priority auctions only.
     currentmngshows = {} # Current museum and gallery shows section - keys are auction houses, values are list of priority auctions in each house. Will need association of auctions to galleries and museums, which is to be implemented later.
     try:
@@ -64,19 +68,28 @@ def index(request):
         auctionhouses = []
         featuredshows = []
     if auctionhouses.__len__() == 0:
-        auctionhousesqset = AuctionHouse.objects.all().order_by('priority', '-edited')
+        auctionhousesqset = AuctionHouse.objects.all().order_by('-priority')
         if auctionhousesqset.__len__() <= fstartctr:
             fstartctr = 0
         for auctionhouse in auctionhousesqset[fstartctr:]:
-            d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : auctionhouse.description, 'image' : auctionhouse.coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
-            auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionhouse.housename)
+            auctionsqset = Auction.objects.filter(auctionhouse_id=auctionhouse.id).order_by('-auctionstartdate')[:maxauctionsperhouse]
+            coverimage = ""
+            if auctionsqset.__len__() > 0:
+                coverimage = auctionsqset[0].coverimage
+            d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'image' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
             auctionslist = []
             for auction in auctionsqset:
-                d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aucid' : auction.id}
+                auctionperiod = ""
+                if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+                    if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                        auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
                 auctionslist.append(d1)
             d['auctionslist'] = auctionslist
             auctionhouses.append(d)
-            filterauctionhouses.append(auctionhouse.housename)
+            if auctionhouse.housename not in filterauctionhouses:
+                filterauctionhouses.append(auctionhouse.housename)
         context['auctionhouses'] = auctionhouses
         context['filterauctionhouses'] = filterauctionhouses
         try:
@@ -84,15 +97,27 @@ def index(request):
             redis_instance.set('ah_filterauctionhouses', pickle.dumps(filterauctionhouses))
         except:
             pass
-        for auctionhouse in auctionhousesqset[:fstartctr]:
-            d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : auctionhouse.description, 'image' : auctionhouse.coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
-            auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionhouse.housename)
+        for auctionhouse in auctionhousesqset:
+            auctionsqset = Auction.objects.filter(auctionhouse_id=auctionhouse.id).order_by('-auctionstartdate')[:maxfeaturedauctionsperhouse]
+            coverimage = ""
+            if auctionsqset.__len__() > 0:
+                coverimage = auctionsqset[0].coverimage
+            d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'image' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
             auctionslist = []
             for auction in auctionsqset:
-                d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aucid' : auction.id, 'auctiondate' : str(auction.auctiondate)}
+                auctionperiod = ""
+                if auction.auctionstartdate < featuredshowscutoffdate: # We won't consider auctions that have happened before the last 1 year.
+                    continue
+                if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+                    if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                        auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
                 auctionslist.append(d1)
             d['auctionslist'] = auctionslist
             featuredshows.append(d)
+            if featuredshows.__len__() >= maxfeaturedshows:
+                break
         context['featuredshows'] = featuredshows
         try:
             redis_instance.set('ah_featuredshows', pickle.dumps(featuredshows))
@@ -100,26 +125,35 @@ def index(request):
             pass
     else:
         context['auctionhouses'] = auctionhouses
-        context['filterauctionhouses'] = filterauctionhouses
         context['featuredshows'] = featuredshows
     try:
         currentmngshows = pickle.loads(redis_instance.get('ah_currentmngshows'))
     except:
         currentmngshows = {}
     if currentmngshows.keys().__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('priority', '-edited')
+        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')[:maxauctionsperhouse]
         for auction in auctionsqset:
-            auctionhouse = auction.auctionhouse.title()
-            if auctionhouse in currentmngshows.keys():
-                l = currentmngshows[auctionhouse]
-                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aucid' : auction.id, 'auctiondate' : str(auction.auctiondate)}
+            auctionhouse = None
+            try:
+                auctionhouse = AuctionHouse.objects.get(id=auction.auctionhouse_id)
+            except:
+                continue
+            auctionhousename = auctionhouse.housename.title()
+            auctionperiod = ""
+            if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
+                auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+            if auctionhousename in currentmngshows.keys():
+                l = currentmngshows[auctionhousename]
+                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
                 l.append(d)
-                currentmngshows[auctionhouse] = l
+                currentmngshows[auctionhousename] = l
             else:
                 l = []
-                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auction.auctionlocation, 'description' : auction.description, 'aucid' : auction.id, 'auctiondate' : str(auction.auctiondate)}
+                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
                 l.append(d)
-                currentmngshows[auctionhouse] = l
+                currentmngshows[auctionhousename] = l
         context['currentmngshows'] = currentmngshows
         try:
             redis_instance.set('ah_currentmngshows', pickle.dumps(currentmngshows))
@@ -163,7 +197,7 @@ def details(request):
     except:
         auctioninfo = {}
     if auctioninfo.keys().__len__() == 0:
-        auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionobj.auctionhouse).order_by('priority', '-edited')
+        auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionobj.auctionhouse).order_by('-auctionstartdate')
         auctioninfo = {'auctionname' : auctionobj.auctionname, 'auctionhouse' : auctionobj.auctionhouse, 'auctionlocation' : auctionobj.auctionlocation, 'description' : auctionobj.description, 'auctionurl' : auctionobj.auctionurl, 'lotsurl' : auctionobj.lotslistingurl, 'coverimage' : auctionobj.coverimage, 'auctiondate' : auctionobj.auctiondate, 'auctionid' : auctionobj.auctionid, 'aucid' : auctionobj.id}
         try:
             redis_instance.set('ah_auctioninfo_%s'%auctionobj.id, pickle.dumps(auctioninfo))
@@ -243,13 +277,63 @@ def search(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
     searchkey = None
+    page = 1
     if request.method == 'GET':
         if 'q' in request.GET.keys():
             searchkey = str(request.GET['q']).strip()
     if not searchkey:
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            page = str(request.GET['page'])
     #print(searchkey)
-    return HttpResponse("{}")
+    maxauctionsperhouse = 8
+    startctr = int(page) * maxauctionsperhouse - maxauctionsperhouse
+    endctr = int(page) * maxauctionsperhouse
+    chunksize = 10 # This number of auction houses (rows of auctions) will be shown per page.
+    ahstart = int(page) * chunksize - chunksize
+    ahend = int(page) * chunksize
+    context = {}
+    auctionhousesqset = AuctionHouse.objects.filter(housename__icontains=searchkey).order_by('priority')[ahstart:ahend]
+    auctionhousematches = []
+    for auctionhouse in auctionhousesqset:
+        housename = auctionhouse.housename
+        auctionsqset = Auction.objects.filter(auctionhouse_id=auctionhouse.id).order_by('-auctionstartdate')[startctr:endctr]
+        d = {'housename' : housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
+        auctionslist = []
+        coverimage = ""
+        if auctionsqset.__len__() == 0:
+            continue
+        for auction in auctionsqset:
+            auctionperiod = ""
+            if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
+                auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+            if coverimage == "":
+                coverimage = auction.coverimage
+                d['coverimage'] = coverimage
+            d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
+            auctionslist.append(d1)
+        d['auctionslist'] = auctionslist
+        auctionhousematches.append(d)
+    context['auctionhousematches'] = auctionhousematches
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    if request.user.is_authenticated:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    return HttpResponse(json.dumps(context))
 
 
 # Presents information on lots available for sale at the given auction

@@ -25,7 +25,7 @@ from museum.models import Museum, MuseumEvent, MuseumPieces
 from login.models import User, Session, WebConfig, Carousel
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
-from artists.models import Artist, Artwork
+from artists.models import Artist, Artwork, FeaturedArtist
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -92,15 +92,17 @@ def index(request):
     except:
         pass
     if artistsdict.keys().__len__() == 0:
-        artists = Artist.objects.all().order_by('-edited')
-        artistslist = artists[0:4]
+        artists = FeaturedArtist.objects.all().order_by('-totalsoldprice')
+        artistslist = artists[0:8]
         for a in artistslist:
-            aname = a.artistname
-            about = a.about
-            aurl = a.profileurl
-            aimg = a.squareimage
+            if a.id == 1: # This is for 'missing' artists
+                continue
+            aname = a.artist_name
+            about = a.description
+            aurl = ""
+            aimg = a.artistimage
             anat = a.nationality
-            aid = a.id
+            aid = a.artist_id
             artistsdict[aname] = [about, aurl, aimg, anat, aid]
         try:
             redis_instance.set('h_artistsdict', pickle.dumps(artistsdict))
@@ -155,20 +157,38 @@ def index(request):
     except:
         pass
     if upcomingauctions.keys().__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('priority', '-edited')
+        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')
         actr = 0
         srcPattern = re.compile("src=(.*)$")
+        curdate = datetime.datetime.now()
         for auction in auctionsqset:
-            lotsqset = Lot.objects.filter(auction=auction).order_by('priority', '-edited')
+            if auction.auctionstartdate < curdate: # Past auction - leave it.
+                continue
+            lotsqset = Lot.objects.filter(auction_id=auction.id)
             if lotsqset.__len__() == 0:
                 continue
+            imageloc = auction.coverimage
             lotobj = lotsqset[0]
-            imageloc = lotobj.lotimage1
-            spc = re.search(srcPattern, imageloc)
-            if spc:
-                imageloc = spc.groups()[0]
-                imageloc = imageloc.replace("%3A", ":").replace("%2F", "/")
-            d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auction.auctionhouse, 'location' : auction.auctionlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'description' : auction.description, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id}
+            if imageloc == "":
+                imageloc = lotobj.lotimage1
+                spc = re.search(srcPattern, imageloc)
+                if spc:
+                    imageloc = spc.groups()[0]
+                    imageloc = imageloc.replace("%3A", ":").replace("%2F", "/")
+            auchouseobj = None
+            auchousename, ahlocation = "", ""
+            try:
+                auchouseobj = AuctionHouse.objects.get(id=auction.auctionhouse_id)
+                auchousename = auchouseobj.housename
+                ahlocation = auchouseobj.location
+            except:
+                pass
+            auctionperiod = ""
+            if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
+                auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+            d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auchousename, 'location' : ahlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'auctionperiod' : auctionperiod, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id}
             upcomingauctions[auction.auctionname] = d
             actr += 1
             if actr >= chunksize:
@@ -184,15 +204,15 @@ def index(request):
     except:
         pass
     if auctionhouses.__len__() == 0:
-        auchousesqset = AuctionHouse.objects.all().order_by('priority', '-edited')
+        auchousesqset = AuctionHouse.objects.all()
         actr = 0
         for auchouse in auchousesqset:
             auchousename = auchouse.housename
-            auctionsqset = Auction.objects.filter(auctionhouse__iexact=auchousename)
+            auctionsqset = Auction.objects.filter(auctionhouse_id=auchouse.id)
             if auctionsqset.__len__() == 0:
                 continue
             print(auctionsqset[0].coverimage)
-            d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : auchouse.description, 'coverimage' : auctionsqset[0].coverimage}
+            d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : '', 'coverimage' : auctionsqset[0].coverimage}
             auctionhouses.append(d)
             actr += 1
             if actr >= chunksize:

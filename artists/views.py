@@ -502,16 +502,16 @@ def details(request):
                 # is a query that cannot be cached, so it has to be picked up from the DB every time.
                 relatedartistqset = []
                 for g in genreparts:
-                    rartistqset = Artist.objects.filter(genre__icontains=g)
+                    rartistqset = FeaturedArtist.objects.filter(genre__icontains=g)
                     for artistob in rartistqset:
                         relatedartistqset.append(artistob)
             else:
-                relatedartistqset = Artist.objects.filter(nationality=artistobj.nationality)
+                relatedartistqset = FeaturedArtist.objects.filter(nationality=artistobj.nationality)
         except:
             genre = None
-            relatedartistqset = Artist.objects.filter(nationality=artistobj.nationality)
+            relatedartistqset = FeaturedArtist.objects.filter(nationality=artistobj.nationality)
         for artist in relatedartistqset[:maxrelatedartist]:
-            if artistobj.id == artist.id: # Same artist, so just skip.
+            if artistobj.id == artist.artist_id: # Same artist, so just skip.
                 continue
             #print(artist.id)
             prefix = ""
@@ -520,9 +520,9 @@ def details(request):
             aliveperiod = "b. " + str(artist.birthyear)
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
-            d = {'artistname' : prefix + artist.artistname, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.id), 'aliveperiod' : aliveperiod}
+            d = {'artistname' : artist.artist_name, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.artist_id), 'aliveperiod' : aliveperiod}
             #artworkqset2 = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority', '-edited')
-            artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_description from fineart_artworks where faa_artist_ID=%s limit 1"%artist.id # We need 1 record only.
+            artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_description from fineart_artworks where faa_artist_ID=%s limit 1"%artist.artist_id # We need 1 record only.
             cursor.execute(artworksql)
             artworkqset2 = cursor.fetchall()
             if artworkqset2.__len__() == 0:
