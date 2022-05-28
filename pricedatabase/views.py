@@ -19,6 +19,7 @@ import simplejson as json
 import redis
 import pickle
 import urllib
+import MySQLdb
 
 from gallery.models import Gallery, Event
 from login.models import User, Session, WebConfig, Carousel
@@ -173,6 +174,9 @@ def search(request):
     endsearchctr = int(page) * maxsearchresults + 1
     objectstartctr = maxperobjectsearchresults * int(page) - maxperobjectsearchresults
     objectendctr = maxperobjectsearchresults * int(page)
+    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    cursor = dbconn.cursor()
+    # Remember to close db connection at the end of the function...
     auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey)[objectstartctr:objectendctr] #.order_by('priority')
     aucctr = 0
     for auctionobj in auctionsqset:
@@ -193,17 +197,24 @@ def search(request):
             break
         aucctr += 1
         allsearchresults.append(d)
-    artistsqset = Artist.objects.filter(artistname__icontains=searchkey)[objectstartctr:objectendctr] #.order_by('priority')
+    """
+    Here we would be using raw SQL to speed up the searches. The following
+    SQL queries use MATCH/AGAINST searches on fields that are indexed using
+    FULLTEXT indexing. -Supriyo.
+    """
     artctr = 0
     quotaflag = 0
-    for artist in artistsqset:
-        artworkqset = Artwork.objects.filter(artist_id=artist.id)
-        for artwork in artworkqset:
+    searchartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists where MATCH(fa_artist_name) AGAINST ('" + searchkey + "') limit " + str(maxperobjectsearchresults) + " OFFSET " + str(objectstartctr)
+    cursor.execute(searchartistsql)
+    matchedartists = cursor.fetchall()
+    for artist in matchedartists:
+        artistartworkqset = Artwork.objects.filter(artist_id=artist[0])
+        for artwork in artistartworkqset:
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
             for lot in lotqset:
                 soldprice = str(lot.soldpriceUSD)
                 soldprice = soldprice.replace("$", "")
-                d = {'artistname' : artist.artistname, 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'aid' : artist.id, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'nationality' : artist.nationality, 'artistimage' : artist.artistimage, 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
+                d = {'artistname' : artist[1], 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'aid' : artist[0], 'birthyear' : artist[3], 'deathyear' : artist[4], 'nationality' : artist[2], 'artistimage' : artist[5], 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
                 allsearchresults.append(d)
                 artctr += 1
                 if artctr > maxperobjectsearchresults:
@@ -213,26 +224,29 @@ def search(request):
                 break
         if quotaflag == 1:
             break
-    artworkqset = Artwork.objects.filter(artworkname__icontains=searchkey)[objectstartctr:objectendctr] #.order_by('priority')
+    searchartworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artist_ID from fineart_artworks where MATCH(faa_artwork_title) AGAINST ('" + searchkey + "') limit " + str(maxperobjectsearchresults) + " OFFSET " + str(objectstartctr)
+    cursor.execute(searchartworksql)
+    matchedartworks = cursor.fetchall()
+    #artworkqset = Artwork.objects.filter(artworkname__icontains=searchkey)[objectstartctr:objectendctr]
+    #print(artworkqset.explain())
     awctr = 0
     quotaflag = 0
-    for artwork in artworkqset:
-        lotqset = Lot.objects.filter(artwork_id=artwork.id)
+    for artwork in matchedartworks:
+        artist = None
+        try:
+            artist = Artist.objects.get(id=artwork[3])
+        except:
+            continue # Skip the artwork if we can't identify the artist.
+        lotqset = Lot.objects.filter(artwork_id=artwork[0])
         for lot in lotqset:
-            #print(str(lot.id) + " ####################")
-            artistobj = None
-            try:
-                artistobj = Artist.objects.get(id=artwork.artist_id)
-            except:
-                continue
             soldprice = str(lot.soldpriceUSD)
             soldprice = soldprice.replace("$", "")
-            d = {'artistname' : artistobj.artistname, 'aid' : artistobj.id, 'birthyear' : artistobj.birthyear, 'deathyear' : artistobj.deathyear, 'nationality' : artistobj.nationality, 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
+            d = {'artistname' : artist.artistname, 'lottitle' : artwork[1], 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'aid' : artist.id, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'nationality' : artist.nationality, 'artistimage' : artist.artistimage, 'coverimage' : lot.lotimage1, 'awid' : artwork[0], 'createdate' : artwork[2], 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
+            allsearchresults.append(d)
             awctr += 1
             if awctr > maxperobjectsearchresults:
-                quotaflag = 1 # Quota for this object (artworks) has been emptied.
+                quotaflag = 1 # Quota for this object (artwork) has been emptied.
                 break
-            allsearchresults.append(d)
         if quotaflag == 1:
             break
     context['allsearchresults'] = allsearchresults
@@ -240,6 +254,7 @@ def search(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    dbconn.close() # ... done! Closed db connection.
     prevpage = int(page) - 1
     nextpage = int(page) + 1
     displayedprevpage1 = 0
@@ -269,6 +284,7 @@ def dofilter(request):
             compparts[0] = compparts[0].replace("b'", "")
             requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
     endbarPattern = re.compile("\|\s*$")
+    onlyspacesPattern = re.compile("^\s+$")
     if 'pageno' in requestdict.keys():
         page = requestdict['pageno'].strip()
     if 'artistname' in requestdict.keys():
@@ -279,8 +295,9 @@ def dofilter(request):
         medium = requestdict['medium'].lower()
         medium = endbarPattern.sub("", medium)
     if 'auctionhouse' in requestdict.keys():
-        auctionhouseids = requestdict['auctionhouse']
+        auctionhouseids = requestdict['auctionhouse'].strip()
         auctionhouseids = endbarPattern.sub("", auctionhouseids)
+        auctionhouseids = onlyspacesPattern.sub("", auctionhouseids)
     if 'sizeunit' in requestdict.keys():
         sizeunit = requestdict['sizeunit']
     if 'size' in requestdict.keys():
@@ -303,26 +320,40 @@ def dofilter(request):
         page = 1
     startctr = page * settings.PDB_MAXSEARCHRESULT - settings.PDB_MAXSEARCHRESULT
     endctr = page * settings.PDB_MAXSEARCHRESULT + 1
+    artworkstartctr = page * settings.PDB_ARTWORKSLIMIT - settings.PDB_ARTWORKSLIMIT
+    artworkendctr = page * settings.PDB_ARTWORKSLIMIT
+    artiststartctr = page * settings.PDB_ARTISTSLIMIT - settings.PDB_ARTISTSLIMIT
+    artistendctr = page * settings.PDB_ARTISTSLIMIT
+    maxartworkmatches = 500 # This is the maximum number of artworks by a single artist that would be considered for searching.
     ahidlist = []
     mediumlist = []
     solist = []
     sizelist = []
     ahidlist = auctionhouseids.split("|")
+    ahctr = 0
+    for ah in ahidlist:
+        if ah == "":
+            ahidlist.pop(ahctr)
+        ahctr += 1
     mediumlist = medium.split("|")
     solist = saleoutcomes.split("|")
     sizelist = sizespec.split("|")
     entitieslist = []
     context = {}
+    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    cursor = dbconn.cursor()
     if lottitle != "":
-        artworksqset = Artwork.objects.filter(artworkname__icontains=lottitle).order_by('-edited') # Latest first
-        for artwork in artworksqset[:settings.PDB_ARTWORKSLIMIT]: # We restrict our search to the latest 10000 entries. 
-            artworkname = artwork.artworkname
-            awid = artwork.id
-            lotqset = Lot.objects.filter(artwork_id=artwork.id)
+        filterartworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_image1, faa_artist_ID from fineart_artworks where MATCH(faa_artwork_title) AGAINST ('" + lottitle + "')"
+        cursor.execute(filterartworksql)
+        filterartworks = cursor.fetchall()
+        for artwork in filterartworks[artworkstartctr:artworkendctr]:
+            artworkname = artwork[1]
+            awid = artwork[0]
+            lotqset = Lot.objects.filter(artwork_id=artwork[0])
             artistobj = None
             lartistname, aid = "", ""
             try:
-                artistobj = Artist.objects.get(id=artwork.artist_id)
+                artistobj = Artist.objects.get(id=artwork[3])
                 lartistname = artistobj.artistname
                 aid = artistobj.id
             except:
@@ -346,7 +377,7 @@ def dofilter(request):
                 ld = lotqset[0].depth
                 limage = lotqset[0].lotimage1
                 if limage == "":
-                    limage = artwork.image1
+                    limage = artwork[2]
                 if limage == "": # If we still don't have an image, just skip it.
                     continue
                 auctionobj = None
@@ -371,8 +402,6 @@ def dofilter(request):
                 artistflag = 0
             else:
                 pass
-            #if lottitle != "" and lottitle.lower() in artworkname.lower(): # This need not execute. We selected artworks based on title.
-            #    titleflag = True
             for m in mediumlist:
                 if m in lmedium: # If a single medium component matches, we set the flag to True and break out.
                     mediumflag = 1
@@ -447,23 +476,20 @@ def dofilter(request):
             if estimateflag != 0 and sizeflag != 0 and soldpriceflag != 0 and auctionhouseflag != 0 and mediumflag != 0 and artistflag != 0:
                 entitieslist.append(d)
     else: # Handle case with parameters other than artwork name.
-        artistqset = []
+        filterartists = []
         if artistname != "":
-            artistqset = Artist.objects.filter(artistname__icontains=artistname)
+            filterartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists where MATCH(fa_artist_name) AGAINST ('" + artistname + "')"
+            print(artistname)
+            cursor.execute(filterartistsql)
+            filterartists = cursor.fetchall()
         else:
-            artistqset = Artist.objects.all().order_by('-edited') # Latest first
-        artistqset2 = []
-        if artistqset.__len__() > settings.PDB_ARTISTSLIMIT: # Consider only first 5000 records. This is the only way we can execute in a timely manner.
-            for artist in artistqset[:settings.PDB_ARTISTSLIMIT]:
-                artistqset2.append(artist)
-        else:
-            for artist in artistqset:
-                artistqset2.append(artist)
-        for artist in artistqset2:
-            artworkqset = Artwork.objects.filter(artist_id=artist.id)
-            aid = artist.id
-            artistnm = artist.artistname
-            for artwork in artworkqset:
+            filterartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists"
+            cursor.execute(filterartistsql)
+            filterartists = cursor.fetchall()
+        for artist in filterartists[artiststartctr:artistendctr]:
+            aid = artist[0]
+            artistnm = artist[1]
+            for artwork in Artwork.objects.filter(artist_id=artist[0])[:maxartworkmatches].iterator():
                 if artwork.image1 == "":
                     continue
                 awid = artwork.id
@@ -541,9 +567,13 @@ def dofilter(request):
                 ectr += 1
         else: # Control should never come here.
             pass
+    dbconn.close() # Closed db connection!
     r_entitieslist = []
     if entitieslist.__len__() > settings.PDB_MAXSEARCHRESULT:
         for d in entitieslist[startctr:endctr]:
+            r_entitieslist.append(d)
+    else:
+        for d in entitieslist:
             r_entitieslist.append(d)
     context['allsearchresults'] = r_entitieslist
     return HttpResponse(json.dumps(context))

@@ -7,7 +7,7 @@ yearprecision_choices = [('decade', 'decade'),('century', 'century'),('millennia
 
 class Artist(models.Model):
     id = models.IntegerField(primary_key=True, unique=True, default=None, blank=False, null=False, db_column='fa_artist_ID')
-    artistname = models.CharField(max_length=255, blank=False, null=False, db_column='fa_artist_name')
+    artistname = models.CharField(max_length=255, blank=False, null=False, db_column='fa_artist_name', db_index=True)
     prefix = models.CharField(max_length=25, blank=False, null=False, db_column='fa_artist_name_prefix')
     suffix = models.CharField(max_length=25, blank=False, null=False, db_column='fa_artist_name_suffix')
     nationality = models.CharField(max_length=255, blank=True, null=True, db_column='fa_artist_nationality')
@@ -82,7 +82,7 @@ class FeaturedArtist(models.Model):
 
 class Artwork(models.Model):
     id = models.IntegerField(primary_key=True, unique=True, default=None, blank=False, null=False, db_column='faa_artwork_ID')
-    artworkname = models.TextField(db_column='faa_artwork_title')
+    artworkname = models.TextField(db_column='faa_artwork_title', db_index=True)
     review = models.TextField(db_column='faa_artwork_requires_review')
     creationstartdate = models.CharField(max_length=100, blank=True, null=True, db_column='faa_artwork_start_year')
     creationenddate = models.CharField(max_length=100, blank=True, null=True, db_column='faa_artwork_end_year')

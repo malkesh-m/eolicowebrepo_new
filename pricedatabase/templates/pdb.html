@@ -257,14 +257,18 @@ https://templatemo.com/tm-571-hexashop
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    context = JSON.parse(xmlhttp.responseText);
+	    searchresults = context['allsearchresults'];
 	    secheaderdiv = document.getElementById('sectionheaderdiv');
-	    secheaderdiv.innerHTML = "<h2>Search Results for '" + searchkey + "'...</h2><hr>";
+	    headercontent = "<h2>Search Results for '" + searchkey + "'...</h2><hr>";
+	    if(searchresults.length == 0){
+		headercontent += "<br/><br/><h6>No match found!</h6>";
+	    }
+	    secheaderdiv.innerHTML = headercontent;
 	    latestlotsdiv = document.getElementById('latestlots');
 	    latestlotsdiv.innerHTML = "";
 	    loadingspan.innerHTML = "";
 	    searchtext = "";
 	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
-            searchresults = context['allsearchresults'];
     	    adminuser = context['adminuser'];
 	    pages = context['pages'];
             for(var i=0; i < searchresults.length; i++){
@@ -301,6 +305,7 @@ https://templatemo.com/tm-571-hexashop
 	    }
 	    searchtext += "</div>";
 	    // Pagination div starts here...
+	    if(searchresults.length > 0){
 	    searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";     
 	    if(pages.prevpage >= 1){
 		searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchpdb(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
@@ -314,6 +319,7 @@ https://templatemo.com/tm-571-hexashop
 	    }
 	    searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchpdb(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
 	    searchtext += "</div>";
+	    } // End of 'if searchresults.length > 0'...
 	    latestlotsdiv.innerHTML = searchtext;
 	  }
 	  };
