@@ -67,6 +67,9 @@ def index(request):
         entitieslist = []
         filterpdb = []
     if entitieslist.__len__() == 0:
+        allauctionhousesqset = AuctionHouse.objects.all()
+        for auctionhouseobj in allauctionhousesqset:
+            auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
         lotsqset = Lot.objects.order_by('-soldpriceUSD')[fstartctr:fendctr]
         lotctr = 0
         for lotobj in lotsqset: # Need a restriction on the number of objects, otherwise it might crash the system.
@@ -105,7 +108,6 @@ def index(request):
                 ahid = auctionobj.auctionhouse_id
                 try:
                     auctionhouseobj = AuctionHouse.objects.get(id=ahid)
-                    auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
                     if auctionhouseobj.housename not in uniquefilter.keys():
                         filterpdb.append(auctionhouseobj.housename)
                         uniquefilter[auctionhouseobj.housename] = 1
@@ -161,7 +163,7 @@ def search(request):
             searchkey = str(request.GET['q']).strip()
     if not searchkey or searchkey == "":
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
-    #print(searchkey)
+    searchkey = searchkey.replace("'", "\\'").replace('"', '\\"') # Escape apostrophes and quotes.
     page = "1"
     if request.method == 'GET':
         if 'page' in request.GET.keys():
@@ -214,6 +216,7 @@ def search(request):
             for lot in lotqset:
                 soldprice = str(lot.soldpriceUSD)
                 soldprice = soldprice.replace("$", "")
+                #print(artist[1] + " ########################")
                 d = {'artistname' : artist[1], 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'aid' : artist[0], 'birthyear' : artist[3], 'deathyear' : artist[4], 'nationality' : artist[2], 'artistimage' : artist[5], 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
                 allsearchresults.append(d)
                 artctr += 1
@@ -241,6 +244,7 @@ def search(request):
         for lot in lotqset:
             soldprice = str(lot.soldpriceUSD)
             soldprice = soldprice.replace("$", "")
+            #print(artist.artistname + " %%%%%%%%%%%%%%%%%%")
             d = {'artistname' : artist.artistname, 'lottitle' : artwork[1], 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'aid' : artist.id, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'nationality' : artist.nationality, 'artistimage' : artist.artistimage, 'coverimage' : lot.lotimage1, 'awid' : artwork[0], 'createdate' : artwork[2], 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
             allsearchresults.append(d)
             awctr += 1
@@ -289,8 +293,10 @@ def dofilter(request):
         page = requestdict['pageno'].strip()
     if 'artistname' in requestdict.keys():
         artistname = requestdict['artistname'].strip()
+        artistname = artistname.replace("'", "\\'").replace('"', '\\"') # Escape apostrophes and quotes.
     if 'lottitle' in requestdict.keys():
         lottitle = requestdict['lottitle'].strip()
+        lottitle = lottitle.replace("'", "\\'").replace('"', '\\"') # Escape apostrophes and quotes.
     if 'medium' in requestdict.keys():
         medium = requestdict['medium'].lower()
         medium = endbarPattern.sub("", medium)
@@ -336,6 +342,11 @@ def dofilter(request):
             ahidlist.pop(ahctr)
         ahctr += 1
     mediumlist = medium.split("|")
+    mctr = 0
+    for m in mediumlist:
+        if m == "":
+            mediumlist.pop(mctr)
+        mctr += 1
     solist = saleoutcomes.split("|")
     sizelist = sizespec.split("|")
     entitieslist = []
@@ -473,13 +484,13 @@ def dofilter(request):
                     estimateflag = 0
             except: # If user didn't specify any estimate values, then the flag remains -1.
                 pass
+            #print(str(estimateflag) + " ## " + str(sizeflag) + " ## " + str(soldpriceflag) + " ## " + str(auctionhouseflag) + " ## " + str(mediumflag) + " ## " + str(artistflag))
             if estimateflag != 0 and sizeflag != 0 and soldpriceflag != 0 and auctionhouseflag != 0 and mediumflag != 0 and artistflag != 0:
                 entitieslist.append(d)
     else: # Handle case with parameters other than artwork name.
         filterartists = []
         if artistname != "":
             filterartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists where MATCH(fa_artist_name) AGAINST ('" + artistname + "')"
-            print(artistname)
             cursor.execute(filterartistsql)
             filterartists = cursor.fetchall()
         else:
