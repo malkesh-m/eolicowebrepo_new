@@ -16,7 +16,7 @@ from django.template import loader
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as djUser
 from django.contrib.auth.decorators import login_required
 
 import os, sys, re, time, datetime
@@ -244,15 +244,23 @@ def showlogin(request):
 def signup(request):
     if request.method == 'POST':
         context = {}
-        username = request.POST.get('username')
-        email = request.POST.get('emailid')
-        raw_password = request.POST.get('password1')
-        password2 = request.POST.get('password2')
+        username = request.POST.get('username').strip()
+        email = request.POST.get('emailid').strip()
+        raw_password = request.POST.get('password1').strip()
+        password2 = request.POST.get('password2').strip()
         # Validate user inputs here...
-        user = User.objects.create_user(username=username, email=email, password=raw_password)
+        if username == "":
+            return HttpResponse(json.dumps({'error' : 'Username cannot be empty string'}))
+        emailPattern = re.compile("^\w+\.?\w*@\w+\.\w{3,4}$")
+        eps = re.search(emailPattern, email)
+        if not eps:
+            return HttpResponse(json.dumps({'error' : 'Email entered is not valid'}))
+        if raw_password != password2:
+            return HttpResponse(json.dumps({'error' : 'Passwords do not match'}))
+        newuser = djUser.objects.create_user(username=username, email=email, password=raw_password)
         user = authenticate(username=username, password=raw_password)
         login(request, user)
-        return redirect('index') # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
+        return HttpResponse(json.dumps({'error' : ''})) # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
     else:
         context = {}
     return render(request, 'registration.html', context)
@@ -262,12 +270,17 @@ def dologin(request):
     if request.method == 'POST':
         context = {}
         username = request.POST.get('username')
-        raw_password = request.POST.get('password')
+        raw_password = request.POST.get('passwd')
         user = authenticate(username=username, password=raw_password)
         login(request, user)
-        return redirect('profile')
+        return HttpResponseRedirect("/login/index/") # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
     else:
         return HttpResponse("Invalid request method")
+
+
+def dologout(request):
+    logout(request)
+    return HttpResponseRedirect("/login/index/")
 
 
 @login_required(login_url='/login/show/')

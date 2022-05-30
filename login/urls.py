@@ -10,5 +10,6 @@ urlpatterns = [
     path('dologin/', views.dologin, name='dologin'),
     path('profile/', views.showprofile, name='showprofile'),
     path('checklogin/', views.checkloginstatus, name='checkloginstatus'),
+    path('logout/', views.dologout, name='dologout'),
 ]
 
