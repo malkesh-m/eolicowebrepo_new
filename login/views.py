@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.template.context_processors import csrf
 from django.views.generic import View
@@ -12,8 +12,12 @@ from django.template import Template, Context
 from django.template.loader import get_template
 from django.core.mail import send_mail
 from django.contrib.sessions.backends.db import SessionStore
-from django.contrib.auth import logout
 from django.template import loader
+
+from django.contrib.auth import login, authenticate
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 import os, sys, re, time, datetime
 import simplejson as json
@@ -235,6 +239,47 @@ def index(request):
 #@cache_page(CACHE_TTL)
 def showlogin(request):
     return HttpResponse("")
+
+
+def signup(request):
+    if request.method == 'POST':
+        context = {}
+        username = request.POST.get('username')
+        email = request.POST.get('emailid')
+        raw_password = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        # Validate user inputs here...
+        user = User.objects.create_user(username=username, email=email, password=raw_password)
+        user = authenticate(username=username, password=raw_password)
+        login(request, user)
+        return redirect('index') # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
+    else:
+        context = {}
+    return render(request, 'registration.html', context)
+
+
+def dologin(request):
+    if request.method == 'POST':
+        context = {}
+        username = request.POST.get('username')
+        raw_password = request.POST.get('password')
+        user = authenticate(username=username, password=raw_password)
+        login(request, user)
+        return redirect('profile')
+    else:
+        return HttpResponse("Invalid request method")
+
+
+@login_required(login_url='/login/show/')
+def showprofile(request):
+    pass
+
+
+def checkloginstatus(request):
+    if request.user.is_authenticated:
+        return HttpResponse(True) 
+    else:
+        return HttpResponse(False) 
 
 
 #@cache_page(CACHE_TTL)

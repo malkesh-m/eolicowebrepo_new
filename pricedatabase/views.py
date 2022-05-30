@@ -359,6 +359,7 @@ def dofilter(request):
         filterartworks = cursor.fetchall()
         for artwork in filterartworks[artworkstartctr:artworkendctr]:
             artworkname = artwork[1]
+            print(artworkname + " #######################")
             awid = artwork[0]
             lotqset = Lot.objects.filter(artwork_id=artwork[0])
             artistobj = None
@@ -500,11 +501,13 @@ def dofilter(request):
         for artist in filterartists[artiststartctr:artistendctr]:
             aid = artist[0]
             artistnm = artist[1]
+            print(artistnm + " $$$$$$$$$$$$$$$$$$$$$$$$$")
             for artwork in Artwork.objects.filter(artist_id=artist[0])[:maxartworkmatches].iterator():
                 if artwork.image1 == "":
                     continue
                 awid = artwork.id
                 artworkname = artwork.artworkname
+                #print(artworkname + " %%%%%%%%%%%%%%%%%%%%%%%")
                 lotqset = Lot.objects.filter(artwork_id=artwork.id)
                 lmedium, lsize, lsaledate, lsoldprice, lminestimate, lmaxestimate, lcategory, lestimate, lid = "", "", "", "", "", "", "", "", ""
                 auctionname, aucid, auctionperiod, auctionhousename, ahid = "", "", "", "", ""
@@ -587,6 +590,17 @@ def dofilter(request):
         for d in entitieslist:
             r_entitieslist.append(d)
     context['allsearchresults'] = r_entitieslist
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     return HttpResponse(json.dumps(context))
 
 

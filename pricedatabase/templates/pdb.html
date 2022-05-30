@@ -167,7 +167,22 @@ https://templatemo.com/tm-571-hexashop
 		}
 		searchtext += "</div></div><br />";
 	    }
-	    searchtext += "</div></div>";
+	    searchtext += "</div>";
+	    if(searchresults.length > 0){
+	    searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";     
+	    if(pages.prevpage >= 1){
+		searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchpdb(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+	    }
+       	    searchtext += "</li>";
+	    if(pages.displayedprevpage2 > 0){
+		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+	    }
+	    if(pages.displayedprevpage1 > 0){
+		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+	    }
+	    searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchpdb(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+	    searchtext += "</div>";
+	    } // End of 'if searchresults.length > 0'...
 	    latestlotsdiv.innerHTML = searchtext;
 	  }
 	  };
