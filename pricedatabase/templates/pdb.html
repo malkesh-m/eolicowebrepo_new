@@ -58,7 +58,7 @@ https://templatemo.com/tm-571-hexashop
 
     <script type='text/javascript'>
 	
-	function filterresults(){
+	function filterresults(page=1){
 	  csrf = document.frmpricefilter.csrfmiddlewaretoken.value;
 	  //alert(csrf);
 	  artistname = document.frmpricefilter.txtartistname.value;
@@ -113,7 +113,7 @@ https://templatemo.com/tm-571-hexashop
 	  soldmaxval = document.frmpricefilter.soldmax.value;
 	  estimateminval = document.frmpricefilter.estimatemin.value;
 	  estimatemaxval = document.frmpricefilter.estimatemax.value;
-	  postdata = "csrfmiddlewaretoken=" + csrf + auctionhouseparam + mediumparam + sizeunitparam + sizeparam + saleoutcomeparam + "&artistname=" + artistname + "&lottitle=" + title + "&soldmin=" + soldminval + "&soldmax=" + soldmaxval + "&estimatemin=" + estimateminval + "&estimatemax=" + estimatemaxval;
+	  postdata = "csrfmiddlewaretoken=" + csrf + auctionhouseparam + mediumparam + sizeunitparam + sizeparam + saleoutcomeparam + "&artistname=" + artistname + "&lottitle=" + title + "&soldmin=" + soldminval + "&soldmax=" + soldmaxval + "&estimatemin=" + estimateminval + "&estimatemax=" + estimatemaxval + "&page=" + page;
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -135,6 +135,7 @@ https://templatemo.com/tm-571-hexashop
 	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
             searchresults = context['allsearchresults'];
     	    adminuser = context['adminuser'];
+	    pages = context['pages'];
             for(var i=0; i < searchresults.length; i++){
                 resobj = searchresults[i];
                 obtype = resobj.obtype;
@@ -171,22 +172,22 @@ https://templatemo.com/tm-571-hexashop
 	    if(searchresults.length > 0){
 	    searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";     
 	    if(pages.prevpage >= 1){
-		searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchpdb(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+		searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:filterresults(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
 	    }
        	    searchtext += "</li>";
 	    if(pages.displayedprevpage2 > 0){
-		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
 	    }
 	    if(pages.displayedprevpage1 > 0){
-		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
 	    }
-	    searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchpdb(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
-	    searchtext += "</div>";
+	    searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:filterresults(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
 	    } // End of 'if searchresults.length > 0'...
+	    searchtext += "</div>";
 	    latestlotsdiv.innerHTML = searchtext;
 	  }
 	  };
-	  loadingspan.innerHTML = "<img src='/static/images/loading.gif'>";
+	  loadingspan.innerHTML = "<img src='/static/images/loading.gif'><div>Please wait. Depending on the parameters you have selected, this might take some time...</div>";
 	  xmlhttp.open("POST", "/price/filter/");
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(postdata);

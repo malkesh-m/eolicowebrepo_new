@@ -134,14 +134,11 @@ def index(request):
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
             d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath}
-            print(time.time())
             #artworkqset = Artwork.objects.filter(artist_id=artistid)
             artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s"%artistid
             cursor.execute(artworksql)
             artworkqset = cursor.fetchall()
-            print(time.time())
-            print(artistid)
-            print("###########################22222")
+            #print(artworkqset.__len__())
             if artworkqset.__len__() == 0:
                 #continue
                 d['artworkname'] = ""
@@ -233,6 +230,7 @@ def index(request):
                         if artworkobj2[1].title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
                             if artworkobj2[3] == "":
                                 continue
+                            print(artworkobj2[3])
                             d['artworkimage'] = artworkobj2[3]
                             d['artworkdate'] = artworkobj2[2]
                             d['awid'] = artworkobj2[0]

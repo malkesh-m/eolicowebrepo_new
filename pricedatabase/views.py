@@ -359,7 +359,7 @@ def dofilter(request):
         filterartworks = cursor.fetchall()
         for artwork in filterartworks[artworkstartctr:artworkendctr]:
             artworkname = artwork[1]
-            print(artworkname + " #######################")
+            #print(artworkname + " #######################")
             awid = artwork[0]
             lotqset = Lot.objects.filter(artwork_id=artwork[0])
             artistobj = None
@@ -501,7 +501,7 @@ def dofilter(request):
         for artist in filterartists[artiststartctr:artistendctr]:
             aid = artist[0]
             artistnm = artist[1]
-            print(artistnm + " $$$$$$$$$$$$$$$$$$$$$$$$$")
+            #print(artistnm + " $$$$$$$$$$$$$$$$$$$$$$$$$")
             for artwork in Artwork.objects.filter(artist_id=artist[0])[:maxartworkmatches].iterator():
                 if artwork.image1 == "":
                     continue
@@ -579,6 +579,7 @@ def dofilter(request):
                     entitieslist.pop(ectr)
                     continue
                 ectr += 1
+                #print(str(estimateflag) + " ## " + str(soldpriceflag) + " ## " + str(auctionhouseflag) + " ## " + str(mediumflag))
         else: # Control should never come here.
             pass
     dbconn.close() # Closed db connection!
