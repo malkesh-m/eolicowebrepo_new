@@ -6,7 +6,6 @@ function dologin(){
   usrname = document.frmlogin.username.value.replace(/^\s+|\s+$/gm,'');
   passwrd = document.frmlogin.passwd.value.replace(/^\s+|\s+$/gm,'');
   csrf = document.frmlogin.csrfmiddlewaretoken.value;
-  alert(csrf);
   if(usrname == "" || passwrd == ""){
     alert("Username or password cannot be empty");
     return(false);

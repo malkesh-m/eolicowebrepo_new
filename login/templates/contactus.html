@@ -230,6 +230,7 @@ footer .under-footer a:hover {
 
 
     <script src="/static/js/editfromfront.js"></script>
+    <script src="/static/js/eolicoauth.js"></script>
 
     </head>
     
@@ -254,32 +255,40 @@ footer .under-footer a:hover {
                         <h3>Sign up to see full auction records — for free</h3>
                     </div>
                     <div class="modal-form">
-                        <form method="post" enctype="multipart/form-data">
+                        <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
+			    <label style="color:red;" id="errormsg"></label>
+			    {% csrf_token %}
                             <div class="form-group">
-                                <label for="name">name</label>
-                                <input type="text" class="form-control" id="name" placeholder="Enter your full name" />
+                                <label for="name">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email" placeholder="Enter your email address" />
+                                <label for="emailid">Email</label>
+                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
-                                <label for="email">password</label>
-                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <label for="password1">Password</label>
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
+                            </div>
+			    <div class="form-group">
+                                <label for="password2">Confirm Password</label>
+                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
                                 <div class="check-input">
                                     <span>
-                                        <input type="checkbox" name="" value="" />
+                                        <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
                                     <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from Eolico.</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Sign up</button>
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
+			    <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -292,8 +301,9 @@ footer .under-footer a:hover {
                             <div class="form-group">
                                 <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
                             </div>
+			    -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
                                 <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
@@ -324,23 +334,25 @@ footer .under-footer a:hover {
                         <h3>Login</h3>
                     </div>
                     <div class="modal-form">
-                        <form method="post" enctype="multipart/form-data">
+                        <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
+			    <label style="color:red;" id="errormsg"></label>
+			    {% csrf_token %}
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email" placeholder="Enter your email address" />
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
-                                <label for="email">password</label>
-                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <label for="password">password</label>
+                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <div class="check-input">
                                     <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Log in</button>
+                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
                             <div class="form-group">
                                 <p class="or text-center">or</p>
@@ -355,7 +367,7 @@ footer .under-footer a:hover {
                                 <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -433,7 +445,11 @@ footer .under-footer a:hover {
 			 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 			 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
 			 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
-			 <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+			 {% if not user.is_authenticated %}
+			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+			{% else %}
+			    <li><a href="/login/logout/">Logout</a></li>
+			{% endif %}
 
 			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
 				

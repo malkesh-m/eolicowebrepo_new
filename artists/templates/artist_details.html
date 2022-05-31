@@ -199,9 +199,25 @@
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(postdata);
     }
+
+    function changeview(){
+	viewselector = document.getElementById('selview');
+        selectedview = viewselector.options[viewselector.options.selectedIndex].value;
+	griddiv = document.getElementById('gridview');
+	listdiv = document.getElementById('listview');
+        if(selectedview == "grid"){
+	  listdiv.style.display = "none";
+	  griddiv.style.display = "";
+	}
+	else{ // User has selected list view.
+	  listdiv.style.display = "";
+	  griddiv.style.display = "none";
+	}
+    }
     </script>
     
     <script src="/static/js/editfromfront.js"></script>
+    <script src="/static/js/eolicoauth.js"></script>
 
 </head>
 
@@ -226,32 +242,40 @@
                         <h3>Sign up to see full auction records — for free</h3>
                     </div>
                     <div class="modal-form">
-                        <form method="post" enctype="multipart/form-data">
+                        <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
+			    <label style="color:red;" id="errormsg"></label>
+			    {% csrf_token %}
                             <div class="form-group">
-                                <label for="name">name</label>
-                                <input type="text" class="form-control" id="name" placeholder="Enter your full name" />
+                                <label for="name">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email" placeholder="Enter your email address" />
+                                <label for="emailid">Email</label>
+                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
-                                <label for="email">password</label>
-                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <label for="password1">Password</label>
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
+                            </div>
+			    <div class="form-group">
+                                <label for="password2">Confirm Password</label>
+                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
                                 <div class="check-input">
                                     <span>
-                                        <input type="checkbox" name="" value="" />
+                                        <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
                                     <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from Eolico.</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Sign up</button>
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
+			    <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -264,8 +288,9 @@
                             <div class="form-group">
                                 <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
                             </div>
+			    -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
                                 <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
@@ -277,7 +302,7 @@
         </div>
     </div>
     <!-- Sign up Modal -->
-    <!-- Sign in Modal -->
+
     <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -296,23 +321,25 @@
                         <h3>Login</h3>
                     </div>
                     <div class="modal-form">
-                        <form method="post" enctype="multipart/form-data">
+                        <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
+			    <label style="color:red;" id="errormsg"></label>
+			    {% csrf_token %}
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email" placeholder="Enter your email address" />
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
-                                <label for="email">password</label>
-                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <label for="password">password</label>
+                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <div class="check-input">
                                     <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Log in</button>
+                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
                             <div class="form-group">
                                 <p class="or text-center">or</p>
@@ -327,7 +354,7 @@
                                 <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -336,7 +363,7 @@
         </div>
     </div>
     <!-- Sign in Modal -->
-    <!-- Sign in Modal -->
+
     <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -402,7 +429,11 @@
 			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
 			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
-			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+			    {% if not user.is_authenticated %}
+			        <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+			    {% else %}
+			        <li><a href="/login/logout/">Logout</a></li>
+			    {% endif %}
 
 			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
 				
@@ -1459,7 +1490,7 @@
                                                 <h3>Auction Results</h3>
                                             </div>
                                             <div class="work-top-pnl auction-filer-search">
-                                                
+                                                <span><select class="form-control" name='selview' id='selview' onchange="javascript:changeview();"><option value='grid'>Grid View</option><option value='list'>List View</option></select></span>
                                                 <div class="fixed-sidbr-header">
 
                                                     <!-- <button class="openbtn Show" onclick="openNav()"> Filter</button> -->
@@ -1702,24 +1733,59 @@
 						</form>
                                             </div>
                                         </div>
-                                        <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
+					
+					<div class="col-sm-12 col-md-8 col-lg-9 col-xl-9" style="display:" id="gridview">
+					<div class="row">
+		                            <div class="col-lg-12">
+		                                <div class="section-heading section-heading-2 pdb-50">
+		                                    <h2>Works in Past Auctions</h2>
+		                                    <span>
+		                                            <!-- <a href="">View All</a> -->
+		                                    </span>
+		                                </div>
+		                            </div>
+		                        </div>
+					
+		                        <div class="row align-items-end">
+					{% for artwork in lotsinpastauctions %}
+					    <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+		                                <div class="img-box">
+		                                        <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
+		                                            <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" class="img-fluid" alt="{{artwork.artworkname}}">
+		                                        </a>
+		                                        <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
+		                                            <h4>{{artwork.artworkname}}</h4></a>
+							    <h4>in 
+							    <a href="/auction/showauction/?aucid={{artwork.aucid}}" style="color:#000000;">{{artwork.auctionname}}: {{artwork.auctionperiod}}</a>
+							    </h4>
+		                                            <p>{{artwork.medium}}, {{artwork.size}}</p>
+							{% if adminuser == 1 %}
+							  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
+						      	{% endif %}
+
+		                                </div>
+					    </div>
+					{% endfor %}
+					</div>
+					</div>
+
+					
+                                        <div class="col-sm-12 col-md-8 col-lg-9 col-xl-9" id="listview" style="display:none;">
                                             <div id="main">
                                                 <div class="accordion" id="auctionsdiv">
 						    {% for artwork in lotsinpastauctions %}
                                                     <div class="acc-auctions auction-pdb">
                                                         <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseacutions1">
-                                                            <!-- <a class="card-title auc-det d-flex">
-                                                                <div class="auctions-name"> -->
+                                                            
 								<a href="/artist/artworkdetails/?awid={{artwork.awid}}"  style='color:#000000;'>
                                                                     <h6>{{artwork.artworkname}}</h6>
 								</a>
-                                                                <!-- </div> -->
                                                                 <div class="auction-price">
                                                                     <h6>US${{artwork.soldprice}}</h6>
                                                                     <p>Realized price</p>
-                                                                    <!-- <p><i class="fa fa-arrow-up" aria-hidden="true"></i> 8% est</p> -->
+                                                                   
                                                                 </div>
-                                                            <!-- </a> -->
+
                                                         </div>
                                                         <div id="collapseacutions1" class="collapse" data-parent="#accordion">
                                                             <div class="card-body">
@@ -1745,7 +1811,7 @@
                                                                             </div>
                                                                             <div class="auction-price">
 										{{artwork.estimate}}
-                                                                                <!-- <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a> -->
+                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
                                                                             </div>
                                                                         </li>
                                                                         <li>
@@ -1764,7 +1830,7 @@
                                                         </div>
                                                     </div>
 						    {% endfor %}
-                                                    <!-- 
+                                                    <!--
                                                     <div class="auction-pagination">
                                                         <nav aria-label="Page navigation example">
                                                             <ul class="pagination">
@@ -1948,6 +2014,25 @@
             }
         })
         $('#noteble-works').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 20,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 7000,
+            responsive: {
+                0: {
+                    items: 2
+                },
+                600: {
+                    items: 4
+                },
+                1000: {
+                    items: 6
+                }
+            }
+        })
+	$('#past-works').owlCarousel({
             loop: false,
             rewind: true,
             margin: 20,
