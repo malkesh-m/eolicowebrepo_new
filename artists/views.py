@@ -291,11 +291,15 @@ def details(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     aid = None
+    page = 1
     if request.method == 'GET':
         if 'aid' in request.GET.keys():
             aid = str(request.GET['aid'])
     if not aid:
         return HttpResponse("Invalid Request: Request is missing aid")
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            page = request.GET['page']
     chunksize = 9
     maxrelatedartist = 8
     artistobj = None
@@ -308,6 +312,7 @@ def details(request):
         context['error'] = "Artist with the given identifier (%s) doesn't exist"%aid
         template = loader.get_template('artist_details.html')
         return HttpResponse(template.render(context, request))
+    context['aid'] = aid
     artistname = artistobj.artistname
     # Get all artworks by the given artist.
     allartworks = []
@@ -327,6 +332,8 @@ def details(request):
     maxpastlots = 25
     maxupcominglots = 8
     maxartworkstoconsider = 200
+    artworkstartctr = int(page) * maxartworkstoconsider - maxartworkstoconsider
+    artworkendctr = int(page) * maxartworkstoconsider
     try:
         allartworks = pickle.loads(redis_instance.get('at_allartworks_%s'%artistobj.id))
         allartworks1 = pickle.loads(redis_instance.get('at_allartworks1_%s'%artistobj.id))
@@ -353,7 +360,7 @@ def details(request):
         curdatetime = datetime.datetime.now()
         upcomingflag = 0
         pastauctionsflag = 0
-        for artwork in artworksqset[:maxartworkstoconsider]:
+        for artwork in artworksqset[artworkstartctr:artworkendctr]:
             if upcomingflag == 1 and pastauctionsflag == 1:
                 break
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
@@ -397,6 +404,9 @@ def details(request):
                     else:
                         upcomingflag = 1
                 else: # Past auction case
+                    auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+                    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                        auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
                     auchouseobj = None
                     try:
                         ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
@@ -410,7 +420,7 @@ def details(request):
                         #auchousename = auchouseobj.housename
                     except:
                         auchousename = ""
-                    d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotobj.soldpriceUSD), 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate)}
+                    d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotobj.soldpriceUSD), 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate), 'auctionperiod' : auctionperiod}
                     if maxpastlots > lotsinpastauctions.__len__():
                         lotsinpastauctions.append(d)
                     else:
@@ -489,7 +499,7 @@ def details(request):
         artistevents = pickle.loads(redis_instance.get('at_artistevents_%s'%artistobj.id))
     except:
         pass
-    print("HERE..........")
+    #print("HERE..........")
     if relatedartists.__len__() == 0:
         try:
             if artistobj.genre is not None:
@@ -570,6 +580,17 @@ def details(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     dbconn.close()
     template = loader.get_template('artist_details.html')
     return HttpResponse(template.render(context, request))
@@ -820,23 +841,31 @@ def textfilter(request):
         return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
     searchkey = None
     aid = None
+    page = 1
     if request.method == 'POST':
         if 'txtfilter' in request.POST.keys():
             searchkey = str(request.POST['txtfilter']).strip()
         if 'aid' in request.POST.keys():
             aid = str(request.POST['aid']).strip()
+        if 'pageno' in request.POST.keys():
+            page = request.POST['pageno']
     if not searchkey or not aid:
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key or artist ID or both"}))
     #print(searchkey)
+    if not page or page == "":
+        page = 1
     context = {}
     pastartworks = []
     maxartworkstoconsider = 200
+    startctr = int(page) * maxartworkstoconsider - maxartworkstoconsider
+    endctr = int(page) * maxartworkstoconsider
     artistobj = None
     try:
         artistobj = Artist.objects.get(id=aid)
     except:
         return HttpResponse(json.dumps({'err' : "Could not find artist identified by the ID %s"%aid}))
-    artworksbyartistqset = Artwork.objects.filter(artist_id=aid)[:maxartworkstoconsider]
+    context['aid'] = aid
+    artworksbyartistqset = Artwork.objects.filter(artist_id=aid)[startctr:endctr]
     for artwork in artworksbyartistqset:
         lotqset = Lot.objects.filter(artwork_id=artwork.id)
         for lotobj in lotqset:
@@ -853,15 +882,26 @@ def textfilter(request):
                     aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
                     if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                         aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'aucperiod' : 'NA', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate, 'auctionperiod' : ''}
                 pastartworks.append(d)
     context['pastartworks'] = pastartworks
     if request.user.is_authenticated:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     return HttpResponse(json.dumps(context))
 
 
@@ -871,6 +911,7 @@ def morefilter(request):
         return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
     searchkey = ""
     aid = None
+    page = 1
     medium, size, sizeunit, period, auctionhouse = "", "", "", "", ""
     requestbody = str(request.body)
     bodycomponents = requestbody.split("&")
@@ -901,6 +942,11 @@ def morefilter(request):
         if 'auchouse' in requestdict.keys():
             auctionhouse = str(requestdict['auchouse']).strip()
             auctionhouse = endbarPattern.sub("", auctionhouse)
+        if 'pageno' in requestdict.keys():
+            page = requestdict['pageno']
+            page = page.replace("'", "")
+    if not page or page == "":
+        page = 1
     mediumlist, periodlist, auctionhouselist, sizelist = [], [], [], []
     if not aid:
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing artist ID"}))
@@ -915,11 +961,14 @@ def morefilter(request):
     artistobj = None
     maxsearchresults = 50 # No more than 50 records will be sent back. More than 50 records usually end up crashing the browser.
     maxartworkstoconsider = 2000
+    startctr = int(page) * maxsearchresults - maxsearchresults
+    endctr = int(page) * maxsearchresults
     try:
         artistobj = Artist.objects.get(id=aid)
     except:
         return HttpResponse(json.dumps({'err' : "Could not find artist identified by the ID %s"%aid}))
-    artworksbyartistqset = Artwork.objects.filter(artist_id=aid)
+    context['aid'] = aid
+    artworksbyartistqset = Artwork.objects.filter(artist_id=aid)[startctr:endctr]
     #print(artworksbyartistqset.__len__())
     for artwork in artworksbyartistqset:
         if maxsearchresults < pastartworks.__len__():
@@ -939,9 +988,9 @@ def morefilter(request):
                     aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
                     if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                         aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'aucperiod' : 'NA', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'auctionperiod' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 if maxsearchresults < pastartworks.__len__():
                     break
                 if artwork.artworkname not in uniqueartworks.keys():
@@ -956,9 +1005,9 @@ def morefilter(request):
                     aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
                     if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                         aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'aucperiod' : 'NA', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'auctionperiod' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 for medium in mediumlist:
                     if medium in artwork.medium.lower():
                         if maxsearchresults > pastartworks.__len__() and artwork.artworkname not in uniqueartworks.keys():
@@ -1034,6 +1083,17 @@ def morefilter(request):
                             uniqueartworks[artwork.artworkname] = 1 # Period matches early 19th century
                         break
     context['pastartworks'] = pastartworks
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     if request.user.is_authenticated:
         context['adminuser'] = 1
     else:

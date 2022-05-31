@@ -80,7 +80,7 @@
     </style>
 
     <script>
-    function filterbytext(){
+    function filterbytext(page=1){
 	var xmlhttp;
         searchstatusspan = document.getElementById('searchstatus');
 	  if (window.XMLHttpRequest){
@@ -103,12 +103,32 @@
 	    auctext = "";
             searchartworks = context['pastartworks'];
     	    adminuser = context['adminuser'];
+	    aid = context['aid'];
+ 	    pages = context['pages'];
 	    for(var i=0; i < searchartworks.length; i++){
 		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
 		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
 		gridhtml += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><img src='/media/artists/artworks/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' class='img-fluid' alt='" + searchartworks[i].artworkname + "'></a><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><h4>" + searchartworks[i].artworkname + "</h4></a><h4>in <a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "' style='color:#000000;'>" + searchartworks[i].auctionname + ": " + searchartworks[i].auctionperiod + "</a></h4><p>" + searchartworks[i].medium + ", " + searchartworks[i].size + "</p></div></div>";
 	    }
+	    paginationtext = "<br/><div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+	    if(pages.prevpage >= 1){
+	        paginationtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:filterbytext(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+	    }
+	    paginationtext += "</li>";
+	    if(pages.displayedprevpage2 > 0){
+	     	paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterbytext(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+	    }
+	    if (pages.displayedprevpage1 > 0){
+		paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterbytext(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+	    }
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li>";
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterbytext(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li>";
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterbytext(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li>";
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterbytext(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li>";
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:filterbytext(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+	    gridhtml += paginationtext;
 	    gridhtml += "</div>";
+	    auctext += paginationtext;
 	    aucdiv.innerHTML = auctext;
 	    griddiv.innerHTML = gridhtml;
 	    searchstatusspan.innerHTML = "";
@@ -119,15 +139,17 @@
 	  searchkey = document.getElementById('txtfilter').value;
 	  csrf = document.frmtextfilter.csrfmiddlewaretoken.value;
           aid = document.frmtextfilter.aid.value;
+	  document.frmtextfilter.pageno.value = page;
 	  formData.append("txtfilter", searchkey); 
-          formData.append("aid", aid); 
+          formData.append("aid", aid);
+	  formData.append("pageno", page);
 	  xmlhttp.open("POST", "/artist/textfilter/");
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(formData);
 	  searchstatusspan.innerHTML = "<img src='/static/images/loading.gif'>";
     }
 
-    function filterresults(formelem){
+    function filterresults(formelem="", page=1){
         allformelements = document.frmotherfilter.elements;
 	mediumpattern = /medium/i;
 	periodpattern = /period/i;
@@ -196,12 +218,32 @@
 	    auctext = "";
             searchartworks = context['pastartworks'];
     	    adminuser = context['adminuser'];
+	    pages = context['pages'];
+	    aid = context['aid'];
 	    for(var i=0; i < searchartworks.length; i++){
 		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
 		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
 		gridhtml += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><img src='/media/artists/artworks/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' class='img-fluid' alt='" + searchartworks[i].artworkname + "'></a><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><h4>" + searchartworks[i].artworkname + "</h4></a><h4>in <a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "' style='color:#000000;'>" + searchartworks[i].auctionname + ": " + searchartworks[i].auctionperiod + "</a></h4><p>" + searchartworks[i].medium + ", " + searchartworks[i].size + "</p></div></div>";
 	    }
+	    paginationtext = "<br/><div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+	    if(pages.prevpage >= 1){
+	        paginationtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:filterresults(\"\", " + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+	    }
+	    paginationtext += "</li>";
+	    if(pages.displayedprevpage2 > 0){
+	     	paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(\"\", " + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+	    }
+	    if (pages.displayedprevpage1 > 0){
+		paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(\"\", " + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+	    }
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li>";
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(\"\", " + pages.nextpage + ");'>" + pages.nextpage + "</a></li>";
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(\"\", " + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li>";
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(\"\", " + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li>";
+	    paginationtext += "<li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:filterresults(\"\", " + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+	    gridhtml += paginationtext;
 	    gridhtml += "</div>";
+	    auctext += paginationtext;
 	    aucdiv.innerHTML = auctext;
 	    griddiv.innerHTML = gridhtml;
 	    changeview();
@@ -210,7 +252,8 @@
 	  searchkey = document.getElementById('txtfilter').value;
 	  csrf = document.frmtextfilter.csrfmiddlewaretoken.value;
           aid = document.frmtextfilter.aid.value;
-	  postdata = "csrfmiddlewaretoken=" + csrf + "&aid=" + aid + "&txtfilter=" + searchkey + mediumparam + periodparam + sizeparam + sizeunitparam + auchouseparam;
+	  document.frmtextfilter.pageno.value = page;
+	  postdata = "csrfmiddlewaretoken=" + csrf + "&aid=" + aid + "&txtfilter=" + searchkey + mediumparam + periodparam + sizeparam + sizeunitparam + auchouseparam + "&pageno=" + page;
 	  postdata = encodeURI(postdata);
 	  //alert(postdata);
 	  xmlhttp.open("POST", "/artist/morefilter/");
@@ -1519,6 +1562,7 @@
                                                         <input type="text" value="" name="txtfilter" id="txtfilter" placeholder="Search by artwork title, series, or description" />
                                                         <button type="button" value="" name="btntextfilter" onclick="javascript:filterbytext();"><i class="fa fa-search" aria-hidden="true"></i></button><span id='searchstatus'></span>
 							<input type='hidden' name='aid' value='{{artistinfo.artistid}}'>
+							<input type='hidden' name='pageno' value='1'>
                                                     </form>
                                                 </div>
                                                 <!-- <div class="dropdown">
@@ -1785,6 +1829,36 @@
 					    </div>
 					{% endfor %}
 					</div>
+					    <div class="auction-pagination"> <!-- Pagination div starts here -->
+						<nav aria-label="Page navigation example">
+						    <ul class="pagination">
+							<li class="page-item">
+							    {% if pages.prevpage >= 1 %}
+							    <a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.prevpage}}" aria-label="Previous">
+								<span aria-hidden="true">Previous</span>
+								<span class="sr-only">Previous</span>
+							    </a>
+							    {% endif %}
+							</li>
+							{% if pages.displayedprevpage2 > 0 %}
+							<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.displayedprevpage2}}">{{pages.displayedprevpage2}}</a></li>
+							{% endif %}
+							{% if pages.displayedprevpage1 > 0 %}
+							<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.displayedprevpage1}}">{{pages.displayedprevpage1}}</a></li>
+							{% endif %}
+							<li class="page-item"><a class="page-link" href="#">{{pages.currentpage}}</a></li>
+							<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.nextpage}}">{{pages.nextpage}}</a></li>
+							<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.displayednextpage1}}">{{pages.displayednextpage1}}</a></li>
+							<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.displayednextpage2}}">{{pages.displayednextpage2}}</a></li>
+							<li class="page-item">
+							    <a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.nextpage}}" aria-label="Next">
+								<span aria-hidden="true">Next</span>
+								<span class="sr-only">Next</span>
+							    </a>
+							</li>
+						    </ul>
+						</nav>
+					    </div> <!-- Pagination div ends here -->
 					</div>
 
 					
@@ -1848,28 +1922,36 @@
                                                         </div>
                                                     </div>
 						    {% endfor %}
-                                                    <!--
-                                                    <div class="auction-pagination">
-                                                        <nav aria-label="Page navigation example">
-                                                            <ul class="pagination">
-                                                                <li class="page-item">
-                                                                    <a class="page-link" href="#" aria-label="Previous">
-                                                                        <span aria-hidden="true">Previous</span>
-                                                                        <span class="sr-only">Previous</span>
-                                                                    </a>
-                                                                </li>
-                                                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                                <li class="page-item">
-                                                                    <a class="page-link" href="#" aria-label="Next">
-                                                                        <span aria-hidden="true">Next</span>
-                                                                        <span class="sr-only">Next</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </nav>
-                                                    </div> -->
+                                                    <div class="auction-pagination"> <!-- Pagination div starts here -->
+							<nav aria-label="Page navigation example">
+							    <ul class="pagination">
+								<li class="page-item">
+								    {% if pages.prevpage >= 1 %}
+								    <a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.prevpage}}" aria-label="Previous">
+									<span aria-hidden="true">Previous</span>
+									<span class="sr-only">Previous</span>
+								    </a>
+								    {% endif %}
+								</li>
+								{% if pages.displayedprevpage2 > 0 %}
+								<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.displayedprevpage2}}">{{pages.displayedprevpage2}}</a></li>
+								{% endif %}
+								{% if pages.displayedprevpage1 > 0 %}
+								<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.displayedprevpage1}}">{{pages.displayedprevpage1}}</a></li>
+								{% endif %}
+								<li class="page-item"><a class="page-link" href="#">{{pages.currentpage}}</a></li>
+								<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.nextpage}}">{{pages.nextpage}}</a></li>
+								<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.displayednextpage1}}">{{pages.displayednextpage1}}</a></li>
+								<li class="page-item"><a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.displayednextpage2}}">{{pages.displayednextpage2}}</a></li>
+								<li class="page-item">
+								    <a class="page-link" href="/artist/details/?aid={{aid}}&page={{pages.nextpage}}" aria-label="Next">
+									<span aria-hidden="true">Next</span>
+									<span class="sr-only">Next</span>
+								    </a>
+								</li>
+							    </ul>
+							</nav>
+					    	    </div> <!-- Pagination div ends here -->
                                                 </div>
                                             </div>
                                         </div>
