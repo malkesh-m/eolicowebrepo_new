@@ -94,6 +94,11 @@
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    context = JSON.parse(xmlhttp.responseText);
 	    aucdiv = document.getElementById('auctionsdiv');
+	    griddiv = document.getElementById('gridview');
+	    griddiv.innerHTML = "";
+	    griddiv.style.display = "none"; // After filtering, we will show listview as default view.
+   	    gridhtml = "<div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2 pdb-50'><h2>Works in Past Auctions</h2><span><!-- <a href=''>View All</a> --></span></div></div></div>";
+	    gridhtml += "<div class='row align-items-end'>";
 	    aucdiv.innerHTML = "";
 	    auctext = "";
             searchartworks = context['pastartworks'];
@@ -101,9 +106,13 @@
 	    for(var i=0; i < searchartworks.length; i++){
 		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
 		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
+		gridhtml += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><img src='/media/artists/artworks/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' class='img-fluid' alt='" + searchartworks[i].artworkname + "'></a><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><h4>" + searchartworks[i].artworkname + "</h4></a><h4>in <a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "' style='color:#000000;'>" + searchartworks[i].auctionname + ": " + searchartworks[i].auctionperiod + "</a></h4><p>" + searchartworks[i].medium + ", " + searchartworks[i].size + "</p></div></div>";
 	    }
+	    gridhtml += "</div>";
 	    aucdiv.innerHTML = auctext;
+	    griddiv.innerHTML = gridhtml;
 	    searchstatusspan.innerHTML = "";
+	    changeview();
 	  }
 	  };
 	  let formData = new FormData();
@@ -177,6 +186,11 @@
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
 	    context = JSON.parse(xmlhttp.responseText);
+	    griddiv = document.getElementById('gridview');
+	    griddiv.innerHTML = "";
+	    griddiv.style.display = "none"; // After filtering, we will show listview as default view.
+   	    gridhtml = "<div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2 pdb-50'><h2>Works in Past Auctions</h2><span><!-- <a href=''>View All</a> --></span></div></div></div>";
+	    gridhtml += "<div class='row align-items-end'>";
 	    aucdiv = document.getElementById('auctionsdiv');
 	    aucdiv.innerHTML = "";
 	    auctext = "";
@@ -185,8 +199,12 @@
 	    for(var i=0; i < searchartworks.length; i++){
 		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
 		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
+		gridhtml += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><img src='/media/artists/artworks/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' class='img-fluid' alt='" + searchartworks[i].artworkname + "'></a><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><h4>" + searchartworks[i].artworkname + "</h4></a><h4>in <a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "' style='color:#000000;'>" + searchartworks[i].auctionname + ": " + searchartworks[i].auctionperiod + "</a></h4><p>" + searchartworks[i].medium + ", " + searchartworks[i].size + "</p></div></div>";
 	    }
+	    gridhtml += "</div>";
 	    aucdiv.innerHTML = auctext;
+	    griddiv.innerHTML = gridhtml;
+	    changeview();
 	  }
 	  };
 	  searchkey = document.getElementById('txtfilter').value;
