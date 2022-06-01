@@ -620,18 +620,18 @@
 				    
                                     <div id="noteble-works" class="owl-carousel owl-theme owl-d">
 					{% for artwork in lotsinupcomingauctions %}
-                                        <div class="item">
-                                            <div class="thumb">
+                                        <div class="img-box">
+                                            
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}">
                                                     <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" class="img-fluid" alt="">
                                                 </a>
-                                            </div>
+                                            
                                             <div class="slide-cap">
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
-                                                    <h2>{{artwork.artworkname}}</h2></a>
-						    <h2>in 
+                                                    <h4>{{artwork.artworkname}}</h4></a>
+						    <h4>in 
 						    <a href="/auction/showauction/?aucid={{artwork.aucid}}" style="color:#000000;">{{artwork.auctionname}}: {{artwork.auctionperiod}}</a>
-						    </h2>
+						    </h4>
                                                     <p>{{artwork.medium}}, {{artwork.size}}</p>
 						{% if adminuser == 1 %}
 						  <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
@@ -1903,7 +1903,7 @@
                                                                             </div>
                                                                             <div class="auction-price">
 										{{artwork.estimate}}
-                                                                                <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a>
+                                                                                <!-- <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up to see estimate</a> -->
                                                                             </div>
                                                                         </li>
                                                                         <li>

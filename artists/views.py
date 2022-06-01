@@ -58,6 +58,7 @@ def index(request):
     rowendctr = int(page) * rows
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
     endctr = (chunksize * rows) * int(page) + featuredsize
+    maxartworkstoconsider = 100
     dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
     cursor = dbconn.cursor()
     context = {}
@@ -66,14 +67,6 @@ def index(request):
     artistsstatisticalinfo = {}
     try:
         featuredartists = pickle.loads(redis_instance.get('at_featuredartists'))
-        for artist in featuredartists:
-            artid = artist['aid']
-            yearlylotssold = redis_instance.get('at_ft_yearlylotssold_%s'%artid)
-            sellthrurate = redis_instance.get('at_ft_sellthrurate_%s'%artid)
-            avgsaleprice = redis_instance.get('at_ft_avgsaleprice_%s'%artid)
-            salepriceoverestimate = redis_instance.get('at_ft_salepriceoverestimate_%s'%artid)
-            totallotssold = redis_instance.get('at_ft_totallotssold_%s'%artid)
-            artistsstatisticalinfo[artid] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
     except:
         featuredartists = []
     uniqartists = {}
@@ -142,23 +135,11 @@ def index(request):
                 birthyear = ""
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
-            # Initializing statistical parameters...
-            """
-            yearlylotssold = 0
-            sellthrurate = 0.0
-            avgsaleprice = 0.00
-            salepriceoverestimate = 0
-            totallotssold = 0
-            totalartworks = 0
-            soldlotsprice = 0.00
-            """
             d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath}
-            #artworkqset = Artwork.objects.filter(artist_id=artistid)
-            artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s"%artistid
+            artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
             cursor.execute(artworksql)
             artworkqset = cursor.fetchall()
             if artworkqset.__len__() == 0:
-                #continue
                 d['artworkname'] = ""
                 d['artworkimage'] = ""
                 d['artworkdate'] = ""
@@ -171,49 +152,6 @@ def index(request):
                 d['awid'] = artworkqset[0][0]
                 d['atype'] = "1" # Artists with available related artwork
             featuredartists.append(d)
-            # Compute statistical info...
-            """
-            date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
-            totaldelta = 0.00
-            curdatetime = datetime.datetime.now()
-            for artwork in artworkqset:
-                artworkid = artwork[0]
-                lotqset = Lot.objects.filter(artwork_id=artworkid)
-                for lotobj in lotqset:
-                    #print(str(lotobj.id) + " ############## " + str(artwork.id))
-                    saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
-                    if saledate and saledate > date2yearsago:
-                        totallotssold += 1
-                        soldlotsprice += float(lotobj.soldprice)
-                        midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
-                        if lotobj.soldprice > 0.00:
-                            delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
-                            totaldelta += delta
-                    totalartworks += 1
-            yearlylotssold = int(float(totallotssold)/2.0)
-            sellthrurate = "NA"
-            if totalartworks != 0:
-                sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
-                sellthrurate = '{:.2f}'.format(sellthrurate)
-            avgsaleprice = "NA"
-            if totallotssold != 0:
-                avgsaleprice = float(soldlotsprice)/float(totallotssold)
-                avgsaleprice = '{:.2f}'.format(avgsaleprice)
-            salepriceoverestimate = "NA"
-            if totallotssold != 0:
-                salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
-                salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
-            artistsstatisticalinfo[str(artistid)] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
-            # Save the statistical info on redis
-            try:
-                redis_instance.set("at_ft_yearlylotssold_%s"%artistid, yearlylotssold)
-                redis_instance.set("at_ft_sellthrurate_%s"%artistid, sellthrurate)
-                redis_instance.set("at_ft_avgsaleprice_%s"%artistid, avgsaleprice)
-                redis_instance.set("at_ft_salepriceoverestimate_%s"%artistid, salepriceoverestimate)
-                redis_instance.set("at_ft_totallotssold_%s"%artistid, totallotssold)
-            except:
-                pass
-            """
         try:
             redis_instance.set('at_featuredartists', pickle.dumps(featuredartists))
         except:
@@ -234,17 +172,6 @@ def index(request):
         uniqueartists = pickle.loads(redis_instance.get('at_uniqueartists'))
         uniqueartworks = pickle.loads(redis_instance.get('at_uniqueartworks'))
         allartists = pickle.loads(redis_instance.get('at_allartists'))
-        """
-        for artistcol in allartists:
-            for artist in artistcol:
-                artid = artist['aid']
-                yearlylotssold = redis_instance.get('at_al_yearlylotssold_%s'%artid)
-                sellthrurate = redis_instance.get('at_al_sellthrurate_%s'%artid)
-                avgsaleprice = redis_instance.get('at_al_avgsaleprice_%s'%artid)
-                salepriceoverestimate = redis_instance.get('at_al_salepriceoverestimate_%s'%artid)
-                totallotssold = redis_instance.get('at_al_totallotssold_%s'%artid)
-                artistsstatisticalinfo[artid] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
-        """
     except:
         pass
     #print("HERE...")
@@ -274,20 +201,10 @@ def index(request):
                 if birthyear == 0:
                     birthyear = ""
                 if prefix != "" and prefix != "na":
-                    prefix = prefix + " "
-                # Initializing statistical params...
-                """
-                yearlylotssold = 0
-                sellthrurate = 0.0
-                avgsaleprice = 0.00
-                salepriceoverestimate = 0
-                totallotssold = 0
-                totalartworks = 0
-                soldlotsprice = 0.00
-                """
+                    prefix = prefix + " "                
                 d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath}
                 #artworkqset1 = Artwork.objects.filter(artist_id=artistid)
-                artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s"%artistid
+                artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
                 cursor.execute(artworksql1)
                 artworkqset1 = cursor.fetchall()
                 try: # Getting a stupid "Protocol error, expecting EOF" for artistid 90761...
@@ -331,49 +248,6 @@ def index(request):
                 else:
                     actr = 0
                     rctr += 1
-                # Compute statistical info...
-                """
-                date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
-                totaldelta = 0.00
-                curdatetime = datetime.datetime.now()
-                for artwork in artworkqset1:
-                    artworkid = artwork[0]
-                    lotqset = Lot.objects.filter(artwork_id=artworkid)
-                    for lotobj in lotqset:
-                        #print(str(lotobj.id) + " ############## " + str(artwork.id))
-                        saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
-                        if saledate and saledate > date2yearsago:
-                            totallotssold += 1
-                            soldlotsprice += float(lotobj.soldprice)
-                            midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
-                            if lotobj.soldprice > 0.00:
-                                delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
-                                totaldelta += delta
-                        totalartworks += 1
-                yearlylotssold = int(float(totallotssold)/2.0)
-                sellthrurate = "NA"
-                if totalartworks != 0:
-                    sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
-                    sellthrurate = '{:.2f}'.format(sellthrurate)
-                avgsaleprice = "NA"
-                if totallotssold != 0:
-                    avgsaleprice = float(soldlotsprice)/float(totallotssold)
-                    avgsaleprice = '{:.2f}'.format(avgsaleprice)
-                salepriceoverestimate = "NA"
-                if totallotssold != 0:
-                    salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
-                    salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
-                artistsstatisticalinfo[str(artistid)] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
-                # Add statistical data on redis
-                try:
-                    redis_instance.set("at_al_yearlylotssold_%s"%artistid, yearlylotssold)
-                    redis_instance.set("at_al_sellthrurate_%s"%artistid, sellthrurate)
-                    redis_instance.set("at_al_avgsaleprice_%s"%artistid, avgsaleprice)
-                    redis_instance.set("at_al_salepriceoverestimate_%s"%artistid, salepriceoverestimate)
-                    redis_instance.set("at_al_totallotssold_%s"%artistid, totallotssold)
-                except:
-                    pass
-                """
                 if rctr == rows:
                     break
             try:
@@ -456,7 +330,7 @@ def details(request):
     soldlotsprice = 0.00
     maxpastlots = 25
     maxupcominglots = 8
-    maxartworkstoconsider = 200
+    maxartworkstoconsider = 500
     artworkstartctr = int(page) * maxartworkstoconsider - maxartworkstoconsider
     artworkendctr = int(page) * maxartworkstoconsider
     try:
@@ -479,13 +353,15 @@ def details(request):
     lotqset = list()
     artworksqset = list()
     if allartworks.__len__() == 0:
-        artworksqset = Artwork.objects.filter(artist_id=aid) #.order_by('priority')
+        # The following limited queryset would make the stats slightly inaccurate for some artists (who have more than 500 artworks).
+        # Unfortunately, we can't do an exhaustive retrieval since that would not be possible because of time constraints.
+        artworksqset = Artwork.objects.filter(artist_id=aid)[artworkstartctr:artworkendctr]
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
         curdatetime = datetime.datetime.now()
         upcomingflag = 0
         pastauctionsflag = 0
-        for artwork in artworksqset[artworkstartctr:artworkendctr]:
+        for artwork in artworksqset: 
             if upcomingflag == 1 and pastauctionsflag == 1:
                 break
             lotqset = Lot.objects.filter(artwork_id=artwork.id)
@@ -499,7 +375,7 @@ def details(request):
                     if lotobj.soldprice > 0.00:
                         delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
                         totaldelta += delta
-                totalartworks += 1
+                    totalartworks += 1
                 auctionobj = None
                 try:
                     auctionobj = Auction.objects.get(id=lotobj.auction_id)
@@ -551,6 +427,7 @@ def details(request):
                     else:
                         pastauctionsflag = 1
                         continue
+                break # Expecting one artwork should correspond to one lot obj. Is this assumption correct? If not, this could be  the most expensive call.
             d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid}
             if artwork.artworkname not in uniqueartworks.keys():
                 allartworks.append(d)
@@ -1226,4 +1103,79 @@ def morefilter(request):
     return HttpResponse(json.dumps(context))
 
 
-
+def getartiststats(request):
+    pass
+"""
+        for artist in featuredartists:
+            artid = artist['aid']
+            yearlylotssold = redis_instance.get('at_ft_yearlylotssold_%s'%artid)
+            sellthrurate = redis_instance.get('at_ft_sellthrurate_%s'%artid)
+            avgsaleprice = redis_instance.get('at_ft_avgsaleprice_%s'%artid)
+            salepriceoverestimate = redis_instance.get('at_ft_salepriceoverestimate_%s'%artid)
+            totallotssold = redis_instance.get('at_ft_totallotssold_%s'%artid)
+            artistsstatisticalinfo[artid] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
+"""
+# Initializing statistical parameters...
+"""
+            yearlylotssold = 0
+            sellthrurate = 0.0
+            avgsaleprice = 0.00
+            salepriceoverestimate = 0
+            totallotssold = 0
+            totalartworks = 0
+            soldlotsprice = 0.00
+"""
+# Compute statistical info...
+"""
+            date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
+            totaldelta = 0.00
+            curdatetime = datetime.datetime.now()
+            for artwork in artworkqset:
+                artworkid = artwork[0]
+                lotqset = Lot.objects.filter(artwork_id=artworkid)
+                for lotobj in lotqset:
+                    #print(str(lotobj.id) + " ############## " + str(artwork.id))
+                    saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
+                    if saledate and saledate > date2yearsago:
+                        totallotssold += 1
+                        soldlotsprice += float(lotobj.soldprice)
+                        midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
+                        if lotobj.soldprice > 0.00:
+                            delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
+                            totaldelta += delta
+                    totalartworks += 1
+            yearlylotssold = int(float(totallotssold)/2.0)
+            sellthrurate = "NA"
+            if totalartworks != 0:
+                sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
+                sellthrurate = '{:.2f}'.format(sellthrurate)
+            avgsaleprice = "NA"
+            if totallotssold != 0:
+                avgsaleprice = float(soldlotsprice)/float(totallotssold)
+                avgsaleprice = '{:.2f}'.format(avgsaleprice)
+            salepriceoverestimate = "NA"
+            if totallotssold != 0:
+                salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
+                salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
+            artistsstatisticalinfo[str(artistid)] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
+            # Save the statistical info on redis
+            try:
+                redis_instance.set("at_ft_yearlylotssold_%s"%artistid, yearlylotssold)
+                redis_instance.set("at_ft_sellthrurate_%s"%artistid, sellthrurate)
+                redis_instance.set("at_ft_avgsaleprice_%s"%artistid, avgsaleprice)
+                redis_instance.set("at_ft_salepriceoverestimate_%s"%artistid, salepriceoverestimate)
+                redis_instance.set("at_ft_totallotssold_%s"%artistid, totallotssold)
+            except:
+                pass
+"""
+"""
+        for artistcol in allartists:
+            for artist in artistcol:
+                artid = artist['aid']
+                yearlylotssold = redis_instance.get('at_al_yearlylotssold_%s'%artid)
+                sellthrurate = redis_instance.get('at_al_sellthrurate_%s'%artid)
+                avgsaleprice = redis_instance.get('at_al_avgsaleprice_%s'%artid)
+                salepriceoverestimate = redis_instance.get('at_al_salepriceoverestimate_%s'%artid)
+                totallotssold = redis_instance.get('at_al_totallotssold_%s'%artid)
+                artistsstatisticalinfo[artid] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
+"""

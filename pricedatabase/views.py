@@ -73,9 +73,9 @@ def index(request):
             if auctionhouseobj.housename not in uniquefilter.keys():
                 filterpdb.append(auctionhouseobj.housename)
                 uniquefilter[auctionhouseobj.housename] = 1
-        lotsqset = Lot.objects.order_by('-soldpriceUSD')[fstartctr:fendctr]
+        lotsqset = Lot.objects.order_by('-soldpriceUSD')[fstartctr:fendctr] # Need a restriction on the number of objects, otherwise it might crash the system.
         lotctr = 0
-        for lotobj in lotsqset: # Need a restriction on the number of objects, otherwise it might crash the system.
+        for lotobj in lotsqset:
             lotimage = lotobj.lotimage1
             saledate = lotobj.saledate
             saledt = datetime.datetime.combine(saledate, datetime.time(0, 0))
@@ -127,7 +127,9 @@ def index(request):
                 pass
             d = {'artworkname' : artworkobj.artworkname, 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'lid' : lotobj.id, 'awid' : artworkobj.id, 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj.artist_id, 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhousename}
             entitieslist.append(d)
-        allartistsqset = FeaturedArtist.objects.all()[:30000] # We selected 30000 records as that is the optimum number for speed and content.
+        allartistsqset = FeaturedArtist.objects.all()[:30000] 
+        # We selected 30000 records as that is the optimum number for speed and content.
+        # Also, these are the best selling artists, so most searches would be based on them.
         for aobj in allartistsqset:
             artistname = aobj.artist_name
             if artistname not in uniquefilter.keys():
@@ -186,6 +188,21 @@ def search(request):
     dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
     cursor = dbconn.cursor()
     # Remember to close db connection at the end of the function...
+    auctionhouseqset = AuctionHouse.objects.filter(housename__icontains=searchkey)
+    achctr = 0
+    for auctionhouseobj in auctionhouseqset:
+        auctionsqset = Auction.objects.filter(auctionhouse_id=auctionhouseobj.id)
+        auctionhousename = auctionhouseobj.housename
+        ahid = auctionhouseobj.id
+        for auctionobj in auctionsqset:
+            auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+            if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+            d = {'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj.coverimage, 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount), 'obtype' : 'auction'}
+            if achctr > maxperobjectsearchresults * int(page):
+                break
+            achctr += 1
+            allsearchresults.append(d)
     auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey)[objectstartctr:objectendctr] #.order_by('priority')
     aucctr = 0
     for auctionobj in auctionsqset:
@@ -360,15 +377,16 @@ def dofilter(request):
     context = {}
     dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
     cursor = dbconn.cursor()
+    l_entities = []
     if lottitle != "":
-        filterartworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_image1, faa_artist_ID from fineart_artworks where MATCH(faa_artwork_title) AGAINST ('" + lottitle + "')"
+        filterartworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_image1, faa_artist_ID from fineart_artworks where MATCH(faa_artwork_title) AGAINST ('" + lottitle + "') limit %s OFFSET %s"%(settings.PDB_ARTWORKSLIMIT, artworkstartctr)
         cursor.execute(filterartworksql)
         filterartworks = cursor.fetchall()
-        for artwork in filterartworks[artworkstartctr:artworkendctr]:
+        for artwork in filterartworks:
             artworkname = artwork[1]
             #print(artworkname + " #######################")
             awid = artwork[0]
-            lotqset = Lot.objects.filter(artwork_id=artwork[0])
+            lotqset = Lot.objects.filter(artwork_id=artwork[0])[0:1] # We need only one referenced lot.
             artistobj = None
             lartistname, aid = "", ""
             try:
@@ -412,7 +430,7 @@ def dofilter(request):
                     ahid = auchouseobj.id
                 except:
                     pass
-            d = {'lottitle' : artworkname, 'artistname' : artistname, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : limage}
+            d = {'lottitle' : artworkname, 'artistname' : lartistname, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : limage}
             # Now check all parameters against user's selected values to determine if this dict should be appended to 'entitieslist'.
             artistflag, titleflag, mediumflag, sizeflag, soldpriceflag, estimateflag, auctionhouseflag = -1, 1, -1, -1, -1, -1, -1
             if artistname != "" and artistname.lower() in lartistname.lower(): # Partial match is considered.
@@ -494,7 +512,7 @@ def dofilter(request):
                 pass
             #print(str(estimateflag) + " ## " + str(sizeflag) + " ## " + str(soldpriceflag) + " ## " + str(auctionhouseflag) + " ## " + str(mediumflag) + " ## " + str(artistflag))
             if estimateflag != 0 and sizeflag != 0 and soldpriceflag != 0 and auctionhouseflag != 0 and mediumflag != 0 and artistflag != 0:
-                entitieslist.append(d)
+                l_entities.append(d)
     else: # Handle case with parameters other than artwork name.
         filterartists = []
         if artistname != "":
@@ -545,10 +563,10 @@ def dofilter(request):
                         pass
                 d = {'lottitle' : artworkname, 'artistname' : artistnm, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : artwork.image1}
                 entitieslist.append(d)
-        mediumflag, sizeflag, soldpriceflag, estimateflag, auctionhouseflag = -1, -1, -1, -1, -1
+        l_entities = []
         if entitieslist.__len__() > 0:
-            ectr = 0
             for entity in entitieslist:
+                mediumflag, sizeflag, soldpriceflag, estimateflag, auctionhouseflag = -1, -1, -1, -1, -1
                 for m in mediumlist:
                     if m in entity['medium'].lower():
                         mediumflag = 1
@@ -556,9 +574,12 @@ def dofilter(request):
                 if mediumlist.__len__() > 0 and mediumflag == -1:
                     mediumflag = 0 # User specified medium, but none of them matched this entity's medium.
                 for ah in ahidlist:
-                    if ah == entity['ahid']:
-                        auctionhouseflag = 1
-                        break
+                    try:
+                        if int(ah) == int(entity['ahid']):
+                            auctionhouseflag = 1
+                            break
+                    except:
+                        pass
                 if ahidlist.__len__() > 0 and auctionhouseflag == -1:
                     auctionhouseflag = 0
                 try:
@@ -567,7 +588,7 @@ def dofilter(request):
                     else:
                         soldpriceflag = 0
                 except:
-                    print("ERROR:####### %s"%sys.exc_info()[1].__str__()) # This should be logged - TODO
+                    print("ERROR: %s %s"%(sys.exc_info()[1].__str__(), entity['soldprice'])) # This should be logged - TODO
                 estimateparts = entity['estimate'].split(" - ")
                 lminestimate = estimateparts[0]
                 lmaxestimate = ""
@@ -580,22 +601,18 @@ def dofilter(request):
                         estimateflag = 0
                 except:
                     pass
-                if mediumflag != 0 and soldpriceflag != 0 and estimateflag != 0 and auctionhouseflag != 0: 
-                    pass # Do nothing. This entity is a match, so it remains in the list.
-                else: # Delete this entity from entitieslist
-                    entitieslist.pop(ectr)
-                    continue
-                ectr += 1
+                if mediumflag != 0 and soldpriceflag != 0 and estimateflag != 0 and auctionhouseflag != 0:
+                    l_entities.append(entity)
                 #print(str(estimateflag) + " ## " + str(soldpriceflag) + " ## " + str(auctionhouseflag) + " ## " + str(mediumflag))
         else: # Control should never come here.
             pass
     dbconn.close() # Closed db connection!
     r_entitieslist = []
-    if entitieslist.__len__() > settings.PDB_MAXSEARCHRESULT:
-        for d in entitieslist[startctr:endctr]:
+    if l_entities.__len__() > settings.PDB_MAXSEARCHRESULT:
+        for d in l_entities[startctr:endctr]:
             r_entitieslist.append(d)
     else:
-        for d in entitieslist:
+        for d in l_entities:
             r_entitieslist.append(d)
     context['allsearchresults'] = r_entitieslist
     prevpage = int(page) - 1
