@@ -192,7 +192,7 @@
 	    else if(auchousepattern.test(elemid)){
 		auchouseelement = document.getElementById(elemid);
 		if(auchouseelement.checked == true){
-		    auchouseparam += elemvalue; // This can have only a single possible value.
+		    auchouseparam += elemvalue + "|"; 
 		}
 	    }
 	}

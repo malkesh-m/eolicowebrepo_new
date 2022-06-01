@@ -52,7 +52,7 @@ def index(request):
     except:
         page = 1
     chunksize = 4
-    rows = 6
+    rows = 4
     featuredsize = 4
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
@@ -63,8 +63,17 @@ def index(request):
     context = {}
     featuredartists = []
     uniqartistsnames = []
+    artistsstatisticalinfo = {}
     try:
         featuredartists = pickle.loads(redis_instance.get('at_featuredartists'))
+        for artist in featuredartists:
+            artid = artist['aid']
+            yearlylotssold = redis_instance.get('at_ft_yearlylotssold_%s'%artid)
+            sellthrurate = redis_instance.get('at_ft_sellthrurate_%s'%artid)
+            avgsaleprice = redis_instance.get('at_ft_avgsaleprice_%s'%artid)
+            salepriceoverestimate = redis_instance.get('at_ft_salepriceoverestimate_%s'%artid)
+            totallotssold = redis_instance.get('at_ft_totallotssold_%s'%artid)
+            artistsstatisticalinfo[artid] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
     except:
         featuredartists = []
     uniqartists = {}
@@ -133,12 +142,21 @@ def index(request):
                 birthyear = ""
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
+            # Initializing statistical parameters...
+            """
+            yearlylotssold = 0
+            sellthrurate = 0.0
+            avgsaleprice = 0.00
+            salepriceoverestimate = 0
+            totallotssold = 0
+            totalartworks = 0
+            soldlotsprice = 0.00
+            """
             d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath}
             #artworkqset = Artwork.objects.filter(artist_id=artistid)
             artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s"%artistid
             cursor.execute(artworksql)
             artworkqset = cursor.fetchall()
-            #print(artworkqset.__len__())
             if artworkqset.__len__() == 0:
                 #continue
                 d['artworkname'] = ""
@@ -153,6 +171,49 @@ def index(request):
                 d['awid'] = artworkqset[0][0]
                 d['atype'] = "1" # Artists with available related artwork
             featuredartists.append(d)
+            # Compute statistical info...
+            """
+            date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
+            totaldelta = 0.00
+            curdatetime = datetime.datetime.now()
+            for artwork in artworkqset:
+                artworkid = artwork[0]
+                lotqset = Lot.objects.filter(artwork_id=artworkid)
+                for lotobj in lotqset:
+                    #print(str(lotobj.id) + " ############## " + str(artwork.id))
+                    saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
+                    if saledate and saledate > date2yearsago:
+                        totallotssold += 1
+                        soldlotsprice += float(lotobj.soldprice)
+                        midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
+                        if lotobj.soldprice > 0.00:
+                            delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
+                            totaldelta += delta
+                    totalartworks += 1
+            yearlylotssold = int(float(totallotssold)/2.0)
+            sellthrurate = "NA"
+            if totalartworks != 0:
+                sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
+                sellthrurate = '{:.2f}'.format(sellthrurate)
+            avgsaleprice = "NA"
+            if totallotssold != 0:
+                avgsaleprice = float(soldlotsprice)/float(totallotssold)
+                avgsaleprice = '{:.2f}'.format(avgsaleprice)
+            salepriceoverestimate = "NA"
+            if totallotssold != 0:
+                salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
+                salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
+            artistsstatisticalinfo[str(artistid)] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
+            # Save the statistical info on redis
+            try:
+                redis_instance.set("at_ft_yearlylotssold_%s"%artistid, yearlylotssold)
+                redis_instance.set("at_ft_sellthrurate_%s"%artistid, sellthrurate)
+                redis_instance.set("at_ft_avgsaleprice_%s"%artistid, avgsaleprice)
+                redis_instance.set("at_ft_salepriceoverestimate_%s"%artistid, salepriceoverestimate)
+                redis_instance.set("at_ft_totallotssold_%s"%artistid, totallotssold)
+            except:
+                pass
+            """
         try:
             redis_instance.set('at_featuredartists', pickle.dumps(featuredartists))
         except:
@@ -173,8 +234,20 @@ def index(request):
         uniqueartists = pickle.loads(redis_instance.get('at_uniqueartists'))
         uniqueartworks = pickle.loads(redis_instance.get('at_uniqueartworks'))
         allartists = pickle.loads(redis_instance.get('at_allartists'))
+        """
+        for artistcol in allartists:
+            for artist in artistcol:
+                artid = artist['aid']
+                yearlylotssold = redis_instance.get('at_al_yearlylotssold_%s'%artid)
+                sellthrurate = redis_instance.get('at_al_sellthrurate_%s'%artid)
+                avgsaleprice = redis_instance.get('at_al_avgsaleprice_%s'%artid)
+                salepriceoverestimate = redis_instance.get('at_al_salepriceoverestimate_%s'%artid)
+                totallotssold = redis_instance.get('at_al_totallotssold_%s'%artid)
+                artistsstatisticalinfo[artid] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
+        """
     except:
         pass
+    #print("HERE...")
     if allartists[0].__len__() == 0:
         if uniqartistsnames.__len__() > featuredsize:
             for artistname in uniqartistsnames[startctr:endctr]:
@@ -196,13 +269,22 @@ def index(request):
                 bio = artist[9]
                 artistimage = artist[10]
                 genre = artist[11]
-                #print(artistname)
                 if nationality == "na":
                     nationality = ""
                 if birthyear == 0:
                     birthyear = ""
                 if prefix != "" and prefix != "na":
                     prefix = prefix + " "
+                # Initializing statistical params...
+                """
+                yearlylotssold = 0
+                sellthrurate = 0.0
+                avgsaleprice = 0.00
+                salepriceoverestimate = 0
+                totallotssold = 0
+                totalartworks = 0
+                soldlotsprice = 0.00
+                """
                 d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath}
                 #artworkqset1 = Artwork.objects.filter(artist_id=artistid)
                 artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s"%artistid
@@ -230,7 +312,6 @@ def index(request):
                         if artworkobj2[1].title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
                             if artworkobj2[3] == "":
                                 continue
-                            print(artworkobj2[3])
                             d['artworkimage'] = artworkobj2[3]
                             d['artworkdate'] = artworkobj2[2]
                             d['awid'] = artworkobj2[0]
@@ -250,6 +331,49 @@ def index(request):
                 else:
                     actr = 0
                     rctr += 1
+                # Compute statistical info...
+                """
+                date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
+                totaldelta = 0.00
+                curdatetime = datetime.datetime.now()
+                for artwork in artworkqset1:
+                    artworkid = artwork[0]
+                    lotqset = Lot.objects.filter(artwork_id=artworkid)
+                    for lotobj in lotqset:
+                        #print(str(lotobj.id) + " ############## " + str(artwork.id))
+                        saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
+                        if saledate and saledate > date2yearsago:
+                            totallotssold += 1
+                            soldlotsprice += float(lotobj.soldprice)
+                            midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
+                            if lotobj.soldprice > 0.00:
+                                delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
+                                totaldelta += delta
+                        totalartworks += 1
+                yearlylotssold = int(float(totallotssold)/2.0)
+                sellthrurate = "NA"
+                if totalartworks != 0:
+                    sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
+                    sellthrurate = '{:.2f}'.format(sellthrurate)
+                avgsaleprice = "NA"
+                if totallotssold != 0:
+                    avgsaleprice = float(soldlotsprice)/float(totallotssold)
+                    avgsaleprice = '{:.2f}'.format(avgsaleprice)
+                salepriceoverestimate = "NA"
+                if totallotssold != 0:
+                    salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
+                    salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
+                artistsstatisticalinfo[str(artistid)] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
+                # Add statistical data on redis
+                try:
+                    redis_instance.set("at_al_yearlylotssold_%s"%artistid, yearlylotssold)
+                    redis_instance.set("at_al_sellthrurate_%s"%artistid, sellthrurate)
+                    redis_instance.set("at_al_avgsaleprice_%s"%artistid, avgsaleprice)
+                    redis_instance.set("at_al_salepriceoverestimate_%s"%artistid, salepriceoverestimate)
+                    redis_instance.set("at_al_totallotssold_%s"%artistid, totallotssold)
+                except:
+                    pass
+                """
                 if rctr == rows:
                     break
             try:
@@ -261,15 +385,16 @@ def index(request):
     context['allartists'] = allartists
     context['uniqueartists'] = uniqueartists
     context['uniqueartworks'] = uniqueartworks
+    context['statisticalinfo'] = artistsstatisticalinfo
     filterartists = []
     try:
         filterartists = pickle.loads(redis_instance.get('at_filterartists'))
     except:
         pass
     if filterartists.__len__() == 0:
-        allartistsqset = Artist.objects.all()[0:2000]
+        allartistsqset = FeaturedArtist.objects.all()[0:20000]
         for artist in allartistsqset:
-            filterartists.append(artist.artistname)
+            filterartists.append(artist.artist_name)
         try:
             redis_instance.set('at_filterartists', pickle.dumps(filterartists))
         except:
@@ -277,7 +402,7 @@ def index(request):
     context['filterartists'] = filterartists
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -576,7 +701,7 @@ def details(request):
             pass
     context['relatedartists'] = relatedartists
     context['artistevents'] = artistevents
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -697,7 +822,7 @@ def search(request):
     displayednextpage2 = nextpage + 2
     firstpage = 1
     context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -827,7 +952,7 @@ def showartwork(request):
             d = {'artistname' : artist.artistname, 'about' : artist.description, 'nationality' : artist.nationality, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'squareimage' : artist.artistimage, 'aid' : artist.id, 'aliveperiod' : aliveperiod}
             relatedartists.append(d)
     context['relatedartists'] = relatedartists
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -887,7 +1012,7 @@ def textfilter(request):
                     d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate, 'auctionperiod' : ''}
                 pastartworks.append(d)
     context['pastartworks'] = pastartworks
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -1018,7 +1143,7 @@ def morefilter(request):
                 try:
                     auctionhouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
                     for auctionhousename in auctionhouselist:
-                        if auctionhousename == auctionhouseobj.housename.lower():
+                        if auctionhousename in auctionhouseobj.housename.lower():
                             if maxsearchresults > pastartworks.__len__() and artwork.artworkname not in uniqueartworks.keys():
                                 pastartworks.append(d)
                                 uniqueartworks[artwork.artworkname] = 1
@@ -1094,7 +1219,7 @@ def morefilter(request):
     displayednextpage2 = nextpage + 2
     firstpage = 1
     context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0

@@ -228,7 +228,7 @@ def index(request):
     context['auctionhouses'] = auctionhouses
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -309,7 +309,7 @@ def about(request):
             context['aboutid'] = wcobj.id
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.is_staff:
             context['adminuser'] = 1
         else:
             context['adminuser'] = 0
@@ -333,7 +333,7 @@ def contactus(request):
             context['contactid'] = wcobj.id
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.is_staff:
             context['adminuser'] = 1
         else:
             context['adminuser'] = 0

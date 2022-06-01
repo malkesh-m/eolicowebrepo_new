@@ -27,7 +27,7 @@ from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
-from artists.models import Artist, Artwork
+from artists.models import Artist, Artwork, FeaturedArtist
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -70,6 +70,9 @@ def index(request):
         allauctionhousesqset = AuctionHouse.objects.all()
         for auctionhouseobj in allauctionhousesqset:
             auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
+            if auctionhouseobj.housename not in uniquefilter.keys():
+                filterpdb.append(auctionhouseobj.housename)
+                uniquefilter[auctionhouseobj.housename] = 1
         lotsqset = Lot.objects.order_by('-soldpriceUSD')[fstartctr:fendctr]
         lotctr = 0
         for lotobj in lotsqset: # Need a restriction on the number of objects, otherwise it might crash the system.
@@ -94,7 +97,7 @@ def index(request):
             if lottitle not in uniquefilter.keys():
                 filterpdb.append(lottitle)
                 uniquefilter[lottitle] = 1
-            auctionname, aucid, auctionperiod = "", "", ""
+            auctionname, aucid, auctionperiod, auctionhousename = "", "", "", ""
             try:
                 auctionobj = Auction.objects.get(id=lotobj.auction_id)
                 auctionname = auctionobj.auctionname
@@ -108,9 +111,7 @@ def index(request):
                 ahid = auctionobj.auctionhouse_id
                 try:
                     auctionhouseobj = AuctionHouse.objects.get(id=ahid)
-                    if auctionhouseobj.housename not in uniquefilter.keys():
-                        filterpdb.append(auctionhouseobj.housename)
-                        uniquefilter[auctionhouseobj.housename] = 1
+                    auctionhousename = auctionhouseobj.housename
                 except:
                     pass
             except:
@@ -124,8 +125,14 @@ def index(request):
                     uniquefilter[artistname] = 1
             except:
                 pass
-            d = {'artworkname' : artworkobj.artworkname, 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'lid' : lotobj.id, 'awid' : artworkobj.id, 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj.artist_id, 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhouseobj.housename}
+            d = {'artworkname' : artworkobj.artworkname, 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'lid' : lotobj.id, 'awid' : artworkobj.id, 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj.artist_id, 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhousename}
             entitieslist.append(d)
+        allartistsqset = FeaturedArtist.objects.all()[:30000] # We selected 30000 records as that is the optimum number for speed and content.
+        for aobj in allartistsqset:
+            artistname = aobj.artist_name
+            if artistname not in uniquefilter.keys():
+                filterpdb.append(artistname)
+                uniquefilter[artistname] = 1
         try:
             redis_instance.set('pd_filterpdb', pickle.dumps(filterpdb))
             redis_instance.set('pd_entitieslist', pickle.dumps(entitieslist))
@@ -137,7 +144,7 @@ def index(request):
     context['auctionhouses'] = auctionhouses
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -254,7 +261,7 @@ def search(request):
         if quotaflag == 1:
             break
     context['allsearchresults'] = allsearchresults
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -491,23 +498,23 @@ def dofilter(request):
     else: # Handle case with parameters other than artwork name.
         filterartists = []
         if artistname != "":
-            filterartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists where MATCH(fa_artist_name) AGAINST ('" + artistname + "')"
+            filterartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists where MATCH(fa_artist_name) AGAINST ('%s') limit %s offset %s"%(artistname, settings.PDB_ARTISTSLIMIT, artiststartctr)
             cursor.execute(filterartistsql)
             filterartists = cursor.fetchall()
         else:
-            filterartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists"
+            filterartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists limit %s offset %s"%(settings.PDB_ARTISTSLIMIT, artiststartctr)
             cursor.execute(filterartistsql)
             filterartists = cursor.fetchall()
-        for artist in filterartists[artiststartctr:artistendctr]:
+        for artist in filterartists:
             aid = artist[0]
+            if aid in settings.BLACKLISTED_ARTISTS:
+                continue
             artistnm = artist[1]
-            #print(artistnm + " $$$$$$$$$$$$$$$$$$$$$$$$$")
-            for artwork in Artwork.objects.filter(artist_id=artist[0])[:maxartworkmatches].iterator():
+            for artwork in Artwork.objects.filter(artist_id=artist[0]).order_by('-edited')[:maxartworkmatches].iterator():
                 if artwork.image1 == "":
                     continue
                 awid = artwork.id
                 artworkname = artwork.artworkname
-                #print(artworkname + " %%%%%%%%%%%%%%%%%%%%%%%")
                 lotqset = Lot.objects.filter(artwork_id=artwork.id)
                 lmedium, lsize, lsaledate, lsoldprice, lminestimate, lmaxestimate, lcategory, lestimate, lid = "", "", "", "", "", "", "", "", ""
                 auctionname, aucid, auctionperiod, auctionhousename, ahid = "", "", "", "", ""
@@ -560,7 +567,7 @@ def dofilter(request):
                     else:
                         soldpriceflag = 0
                 except:
-                    pass
+                    print("ERROR:####### %s"%sys.exc_info()[1].__str__()) # This should be logged - TODO
                 estimateparts = entity['estimate'].split(" - ")
                 lminestimate = estimateparts[0]
                 lmaxestimate = ""

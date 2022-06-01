@@ -23,8 +23,20 @@ function dologin(){
   // Register the handler
   xmlhttp.onreadystatechange = function(){
   if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-    $('#exampleModal-login').modal('hide');
-    // Do something... find out what can be done. Should open profile page if user logs in using login page.
+    try{
+        $('#exampleModal-login').modal('hide'); // Try hiding the modal window, if one is open.
+    }
+    catch(err){ // If we can't find the modal window, it is ok. User is probably logging in through the login page.
+    }
+    // Should open profile page if user logs in using login page.
+    loginpagepattern = new RegExp(/login\/show\//);
+    if(window.location.href.match(loginpagepattern)){
+	// Redirect to the profile page
+	window.location.href = "/login/profile/";
+    }
+    else{ // Else, simply refresh the current page
+    	window.location.href = window.location.href; // Simply refresh the page so that user can see the logged-in view.
+    }
   }
   };
   xmlhttp.open("POST", "/login/dologin/");

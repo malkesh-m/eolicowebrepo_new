@@ -155,7 +155,7 @@ def index(request):
             pass
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -351,7 +351,7 @@ def details(request):
             redis_instance.set('ac_allartists_%s'%lotobj.auction.id, pickle.dumps(allartists))
         except:
             pass
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -402,7 +402,7 @@ def search(request):
         aucctr += 1
         allauctions.append(d)
     context['allauctions'] = allauctions
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -517,7 +517,7 @@ def moreauctions(request):
     displayednextpage2 = nextpage + 2
     firstpage = 1
     context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -745,7 +745,7 @@ def morefilter(request):
                                 uniquelots[artwork.artworkname] = 1 # Size matches. So this lot is included.
                             break
     context['filteredlots'] = filteredlots
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0

@@ -163,7 +163,7 @@ def index(request):
         context['currentmngshows'] = currentmngshows
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -256,7 +256,7 @@ def details(request):
     context['alllots'] = alllots
     context['auctionslist'] = auctionslist
     context['relatedartists'] = relatedartists
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
@@ -329,7 +329,7 @@ def search(request):
     displayednextpage2 = nextpage + 2
     firstpage = 1
     context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
