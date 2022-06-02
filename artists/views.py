@@ -376,6 +376,10 @@ def details(request):
                         delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
                         totaldelta += delta
                     totalartworks += 1
+                elif saledate and saledate < date2yearsago:
+                    pass # If saledate is prior to date2yearsago, skip it.
+                elif not saledate:
+                    totalartworks += 1
                 auctionobj = None
                 try:
                     auctionobj = Auction.objects.get(id=lotobj.auction_id)
@@ -1103,79 +1107,84 @@ def morefilter(request):
     return HttpResponse(json.dumps(context))
 
 
-def getartiststats(request):
-    pass
-"""
-        for artist in featuredartists:
-            artid = artist['aid']
-            yearlylotssold = redis_instance.get('at_ft_yearlylotssold_%s'%artid)
-            sellthrurate = redis_instance.get('at_ft_sellthrurate_%s'%artid)
-            avgsaleprice = redis_instance.get('at_ft_avgsaleprice_%s'%artid)
-            salepriceoverestimate = redis_instance.get('at_ft_salepriceoverestimate_%s'%artid)
-            totallotssold = redis_instance.get('at_ft_totallotssold_%s'%artid)
-            artistsstatisticalinfo[artid] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
-"""
-# Initializing statistical parameters...
-"""
-            yearlylotssold = 0
-            sellthrurate = 0.0
-            avgsaleprice = 0.00
-            salepriceoverestimate = 0
-            totallotssold = 0
-            totalartworks = 0
-            soldlotsprice = 0.00
-"""
-# Compute statistical info...
-"""
-            date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
-            totaldelta = 0.00
-            curdatetime = datetime.datetime.now()
-            for artwork in artworkqset:
-                artworkid = artwork[0]
-                lotqset = Lot.objects.filter(artwork_id=artworkid)
-                for lotobj in lotqset:
-                    #print(str(lotobj.id) + " ############## " + str(artwork.id))
-                    saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
-                    if saledate and saledate > date2yearsago:
-                        totallotssold += 1
-                        soldlotsprice += float(lotobj.soldprice)
-                        midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
-                        if lotobj.soldprice > 0.00:
-                            delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
-                            totaldelta += delta
-                    totalartworks += 1
-            yearlylotssold = int(float(totallotssold)/2.0)
-            sellthrurate = "NA"
-            if totalartworks != 0:
-                sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
-                sellthrurate = '{:.2f}'.format(sellthrurate)
-            avgsaleprice = "NA"
-            if totallotssold != 0:
-                avgsaleprice = float(soldlotsprice)/float(totallotssold)
-                avgsaleprice = '{:.2f}'.format(avgsaleprice)
-            salepriceoverestimate = "NA"
-            if totallotssold != 0:
-                salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
-                salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
-            artistsstatisticalinfo[str(artistid)] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
-            # Save the statistical info on redis
-            try:
-                redis_instance.set("at_ft_yearlylotssold_%s"%artistid, yearlylotssold)
-                redis_instance.set("at_ft_sellthrurate_%s"%artistid, sellthrurate)
-                redis_instance.set("at_ft_avgsaleprice_%s"%artistid, avgsaleprice)
-                redis_instance.set("at_ft_salepriceoverestimate_%s"%artistid, salepriceoverestimate)
-                redis_instance.set("at_ft_totallotssold_%s"%artistid, totallotssold)
-            except:
-                pass
-"""
-"""
-        for artistcol in allartists:
-            for artist in artistcol:
-                artid = artist['aid']
-                yearlylotssold = redis_instance.get('at_al_yearlylotssold_%s'%artid)
-                sellthrurate = redis_instance.get('at_al_sellthrurate_%s'%artid)
-                avgsaleprice = redis_instance.get('at_al_avgsaleprice_%s'%artid)
-                salepriceoverestimate = redis_instance.get('at_al_salepriceoverestimate_%s'%artid)
-                totallotssold = redis_instance.get('at_al_totallotssold_%s'%artid)
-                artistsstatisticalinfo[artid] = [yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate, totallotssold]
-"""
+#@login_required(login_url='/login/show/')
+def showstats(request):
+    """
+    Check if request.user.is_authenticated is True. If so, compute and send
+    the requested statistical info as json string. If not, send a login link
+    as json string. Handle other erroneous conditions as appropriate.
+    """
+    if request.method != 'GET':
+        msg = "<h6>Invalid method of call</h6>"
+        context = {'stats' : msg, 'aid' : None, 'div_id' : None, 'err' : 'badcall'}
+        return HttpResponse(json.dumps(context))
+    aid, divid = None, ""
+    if 'aid' in request.GET.keys():
+        aid = request.GET['aid']
+    else:
+        msg = "<h6>Required parameter aid missing</h6>"
+        context = {'stats' : msg, 'aid' : None, 'div_id' : None, 'err' : 'noaid'}
+        return HttpResponse(json.dumps(context))
+    if 'div_id' in request.GET.keys():
+        divid = request.GET['div_id']
+    else:
+        msg = "<h6>Required parameter div Id missing</h6>"
+        context = {'stats' : msg, 'aid' : None, 'div_id' : None, 'err' : 'nodiv'}
+        return HttpResponse(json.dumps(context))
+    if not request.user.is_authenticated:
+        loginlink = "<h6><a style='color:#000000;bgcolor:#ffffff;' data-toggle='modal' href='#exampleModal-login' aria-controls='exampleModal-login'>Login to view</a></h6>"
+        context = {'stats' : loginlink, 'aid' : aid, 'div_id' : divid, 'err' : 'nologin'}
+        return HttpResponse(json.dumps(context))
+    artistobj = None
+    try:
+        artistobj = Artist.objects.get(id=aid)
+    except:
+        msg = "<h6>Could not find artist identified by Id %s.</h6>"%aid
+        context = {'stats' : msg, 'aid' : aid, 'div_id' : divid, 'err' : 'noartist'}
+        return HttpResponse(json.dumps(context))
+    yearlylotssold = 0
+    sellthrurate = 0.0
+    avgsaleprice = 0.00
+    salepriceoverestimate = 0
+    totallotssold = 0
+    totalartworks = 0
+    soldlotsprice = 0.00
+    date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
+    totaldelta = 0.00
+    curdatetime = datetime.datetime.now()
+    artworksqset = Artwork.objects.filter(artist_id=aid)
+    for artwork in artworksqset:
+        artworkid = artwork.id
+        lotqset = Lot.objects.filter(artwork_id=artworkid)
+        for lotobj in lotqset:
+            saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
+            if saledate and saledate > date2yearsago:
+                totallotssold += 1
+                soldlotsprice += float(lotobj.soldprice)
+                midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
+                if lotobj.soldprice > 0.00:
+                    delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
+                    totaldelta += delta
+                totalartworks += 1
+            elif saledate and saledate < date2yearsago:
+                continue # If saledate is prior to date2yearsago, skip it.
+            elif not saledate:
+                totalartworks += 1
+    yearlylotssold = int(float(totallotssold)/2.0)
+    sellthrurate = "NA"
+    if totalartworks != 0:
+        sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
+        sellthrurate = '{:.2f}'.format(sellthrurate)
+    avgsaleprice = "NA"
+    if totallotssold != 0:
+        avgsaleprice = float(soldlotsprice)/float(totallotssold)
+        avgsaleprice = '{:.2f}'.format(avgsaleprice)
+    salepriceoverestimate = "NA"
+    if totallotssold != 0:
+        salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
+        salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
+    statinfo = "<h6>Yearly Lots Sold: %s</h6><h6>Sell Through Rate: %s&percnt;</h6><h6>Avg. Sale Price (US$): %s</h6><h6>Price Over Estimate: %s&percnt;</h6>"%(yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate)
+    context = {'stats' : statinfo, 'aid' : aid, 'div_id' : divid, 'err' : ''}
+    return HttpResponse(json.dumps(context))
+    
+

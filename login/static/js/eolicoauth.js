@@ -123,3 +123,12 @@ function checklogin(){
 }
 
 
+function addtofavourites(entitytype, entityid){
+}
+
+
+function follow(artistid){
+}
+
+
+

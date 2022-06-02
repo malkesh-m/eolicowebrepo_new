@@ -101,6 +101,7 @@
     }
     </style>
     
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
@@ -209,8 +210,55 @@
 	}
 
 
-	function showstats(aid){
+	function showstats(aid, statsdivid){
+	  statsdiv = document.getElementById(statsdivid);
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    context = JSON.parse(xmlhttp.responseText);
+	    divid = context['div_id'];
+	    aid = context['aid'];
+	    err = context['err'];
+	    statsdiv = document.getElementById(divid);
+            if(err == "nologin"){
+		htmlcontent = context['stats'];
+		statsdiv.innerHTML = htmlcontent;
+	    }
+	    else if(err == "noaid"){
+		htmlcontent = context['stats'];
+		statsdiv.innerHTML = htmlcontent;
+	    }
+	    else if(err == "nodiv"){
+		htmlcontent = context['stats'];
+		statsdiv.innerHTML = htmlcontent;
+	    }
+	    else if(err == "noartist"){
+		htmlcontent = context['stats'];
+		statsdiv.innerHTML = htmlcontent;
+	    }
+	    else if(err == ""){
+	        htmlcontent = context['stats'] + "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:hidestats(" + aid + ", '" + divid + "');\">Hide Stats</a></h6>";
+	        statsdiv.innerHTML = htmlcontent;
+	    }
+	  }
+	  };
+	  xmlhttp.open("GET", "/artist/showstats/?aid=" + aid + "&div_id=" + statsdivid); // Need to keep track of the div id values. 
+	  // Javascript runs separate threads for each call, so data is shared. So, javascript will not be able to keep track of data
+	  // returned and the corresponding div it should be placed in.
+	  xmlhttp.send();
+          statsdiv.innerHTML = "<img src='/static/images/loading.gif'>";
+	}
 
+	function hidestats(aid, statsdivid){
+	  statsdivelement = document.getElementById(statsdivid);
+	  statsdivelement.innerHTML = "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:showstats(" + aid + ", '" + statsdivid + "');\">Show Stats</a></h6>";
 	}
     </script>
 
@@ -705,9 +753,13 @@
 			      {% if not user.is_authenticated %}
 				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 			      {% else %}
-				<h6><a href='#' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}});">Show Stats</a></h6>
+				<div id='statsview_feat_{{forloop.counter}}'>
+				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_feat_{{forloop.counter}}');">Show Stats</a></h6>
+				</div>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
 			      {% endif %}
-			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+			      
                           </div>
 			  {% if adminuser == 1 %}
 			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
@@ -751,7 +803,11 @@
 			      {% if not user.is_authenticated %}
 				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 			      {% else %}
-				<h6><a href='#' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}});">Show Stats</a></h6>
+				<div id='statsview_1_{{forloop.counter}}'>
+				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_1_{{forloop.counter}}');">Show Stats</a></h6>
+				</div>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
 			      {% endif %}
 				<!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -797,7 +853,11 @@
 			      {% if not user.is_authenticated %}
 				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 			      {% else %}
-				<h6><a href='#' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}});">Show Stats</a></h6>
+				<div id='statsview_2_{{forloop.counter}}'>
+				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_2_{{forloop.counter}}');">Show Stats</a></h6>
+				</div>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
 			      {% endif %}
 	 		      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -843,7 +903,11 @@
 			      {% if not user.is_authenticated %}
 				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 			      {% else %}
-				<h6><a href='#' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}});">Show Stats</a></h6>
+				<div id='statsview_3_{{forloop.counter}}'>
+				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_3_{{forloop.counter}}');">Show Stats</a></h6>
+				</div>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
 			      {% endif %}
 			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -889,7 +953,11 @@
 			      {% if not user.is_authenticated %}
 				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 			      {% else %}
-				<h6><a href='#' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}});">Show Stats</a></h6>
+				<div id='statsview_4_{{forloop.counter}}'>
+				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_4_{{forloop.counter}}');">Show Stats</a></h6>
+				</div>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
 			      {% endif %}
 			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -935,7 +1003,11 @@
 			      {% if not user.is_authenticated %}
 				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 			      {% else %}
-				<h6><a href='#' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}});">Show Stats</a></h6>
+				<div id='statsview_5_{{forloop.counter}}'>
+				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_5_{{forloop.counter}}');">Show Stats</a></h6>
+				</div>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
 			      {% endif %}
 			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -980,7 +1052,11 @@
 			      {% if not user.is_authenticated %}
 				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 			      {% else %}
-				<h6><a href='#' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}});">Show Stats</a></h6>
+				<div id='statsview_6_{{forloop.counter}}'>
+				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_6_{{forloop.counter}}');">Show Stats</a></h6>
+				</div>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
 			      {% endif %}
 			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>

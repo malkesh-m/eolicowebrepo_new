@@ -11,5 +11,6 @@ urlpatterns = [
     path('artworkdetails/', views.showartwork, name='showartwork'),
     path('textfilter/', views.textfilter, name='textfilter'),
     path('morefilter/', views.morefilter, name='morefilter'),
+    path('showstats/', views.showstats, name='showstats'),
 ]
 
