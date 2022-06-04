@@ -44,7 +44,6 @@ class Lot(models.Model):
     lotid = models.IntegerField(db_column='fal_lot_no')
     sublotid = models.CharField(max_length=10, blank=True, default='', db_column='fal_sub_lot_no')
     artwork_id = models.IntegerField(default=None, db_column='fal_artwork_ID')
-    category = models.CharField(max_length=100, db_column='fal_lot_category')
     auction_id = models.IntegerField(default=None, db_column='fal_auction_ID')
     saledate = models.DateTimeField(blank=True, default=None, db_column='fal_lot_sale_date')
     medium = models.CharField(max_length=200, blank=True, default='', db_column='fal_lot_material')

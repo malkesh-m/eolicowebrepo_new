@@ -119,7 +119,7 @@ CACHES = {
 }
 CACHE_TTL = 60 * 60
 
-REDIS_HOST = "192.168.1.10"
+REDIS_HOST = "localhost"
 REDIS_PORT = 6379
 
 # Password validation

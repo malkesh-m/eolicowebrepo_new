@@ -26,7 +26,7 @@ from gallery.models import Gallery, Event
 from login.models import User, Session, WebConfig, Carousel
 from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
-from artists.models import Artist, Artwork, FeaturedArtist
+from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
 from auctions.models import Auction, Lot
 
 # Caching related imports and variables
@@ -351,130 +351,140 @@ def details(request):
     uniqueartworks = {}
     actr = 0
     lotqset = list()
-    artworksqset = list()
     if allartworks.__len__() == 0:
         # The following limited queryset would make the stats slightly inaccurate for some artists (who have more than 500 artworks).
         # Unfortunately, we can't do an exhaustive retrieval since that would not be possible because of time constraints.
-        artworksqset = Artwork.objects.filter(artist_id=aid)[artworkstartctr:artworkendctr]
+        lotartistqset = LotArtist.objects.filter(artist_id=aid) # [artworkstartctr:artworkendctr]
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
         curdatetime = datetime.datetime.now()
         upcomingflag = 0
         pastauctionsflag = 0
-        for artwork in artworksqset: 
+        for lotartist in lotartistqset: 
             if upcomingflag == 1 and pastauctionsflag == 1:
                 break
-            lotqset = Lot.objects.filter(artwork_id=artwork.id)
-            for lotobj in lotqset:
-                #print(str(lotobj.id) + " ############## " + str(artwork.id))
-                saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
-                if saledate and saledate > date2yearsago:
-                    totallotssold += 1
-                    soldlotsprice += float(lotobj.soldprice)
-                    midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
-                    if lotobj.soldprice > 0.00:
-                        delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
-                        totaldelta += delta
-                    totalartworks += 1
-                elif saledate and saledate < date2yearsago:
-                    pass # If saledate is prior to date2yearsago, skip it.
-                elif not saledate:
-                    totalartworks += 1
-                auctionobj = None
+            #for lotobj in lotqset:
+            saledate = datetime.datetime.combine(lotartist.saledate, datetime.time(0, 0))
+            if saledate and saledate > date2yearsago:
+                totallotssold += 1
+                soldlotsprice += float(lotartist.artist_price_usd)
+                midestimate = (float(lotartist.highestimate) + float(lotartist.lowestimate))/2.0
+                if lotartist.artist_price_usd > 0.00:
+                    delta = (float(lotartist.artist_price_usd) - float(midestimate))/float(lotartist.artist_price_usd)
+                    totaldelta += delta
+                totalartworks += 1
+            elif saledate and saledate < date2yearsago:
+                pass # If saledate is prior to date2yearsago, skip it.
+            elif not saledate:
+                totalartworks += 1
+            auctionobj = None
+            try:
+                auctionobj = Auction.objects.get(id=lotartist.auctionid)
+            except:
+                continue # If we fail to find the auction, there is no use going ahead.
+            auctionstartdate = auctionobj.auctionstartdate
+            auctionname = auctionobj.auctionname
+            if auctionstartdate > curdatetime: # This is an upcoming auction
+                auchouseobj = None
                 try:
-                    auctionobj = Auction.objects.get(id=lotobj.auction_id)
-                except:
-                    continue # If we fail to find the auction, there is no use going ahead.
-                auctionstartdate = auctionobj.auctionstartdate
-                auctionname = auctionobj.auctionname
-                if auctionstartdate > curdatetime: # This is an upcoming auction
-                    auchouseobj = None
-                    try:
-                        #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
-                        ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
-                        cursor.execute(ahsql)
-                        ahqset = cursor.fetchall()
-                        if ahqset.__len__() == 0:
-                            continue
-                        ahrow = ahqset[0]
-                        auchousename = ahrow[0]
-                    except:
-                        auchousename = ""
-                    auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-                    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "":
-                        auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate), 'auctionperiod' : auctionperiod}
-                    if maxupcominglots > lotsinupcomingauctions.__len__():
-                        lotsinupcomingauctions.append(d)
-                    else:
-                        upcomingflag = 1
-                else: # Past auction case
-                    auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-                    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                        auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    auchouseobj = None
-                    try:
-                        ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
-                        cursor.execute(ahsql)
-                        ahqset = cursor.fetchall()
-                        if ahqset.__len__() == 0:
-                            continue
-                        ahrow = ahqset[0]
-                        auchousename = ahrow[0]
-                        #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
-                        #auchousename = auchouseobj.housename
-                    except:
-                        auchousename = ""
-                    d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotobj.soldpriceUSD), 'estimate' : str(lotobj.lowestimate) + " - " + str(lotobj.highestimate), 'auctionperiod' : auctionperiod}
-                    if maxpastlots > lotsinpastauctions.__len__():
-                        lotsinpastauctions.append(d)
-                    else:
-                        pastauctionsflag = 1
+                    #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                    ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
+                    cursor.execute(ahsql)
+                    ahqset = cursor.fetchall()
+                    if ahqset.__len__() == 0:
                         continue
-                break # Expecting one artwork should correspond to one lot obj. Is this assumption correct? If not, this could be  the most expensive call.
-            d = {'artworkname' : artwork.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid}
-            if artwork.artworkname not in uniqueartworks.keys():
-                allartworks.append(d)
-                uniqueartworks[artwork.artworkname] = artwork.id
-                if actr == 0:
-                    allartworks1.append(d)
-                elif actr == 1:
-                    allartworks2.append(d)
-                elif actr == 2:
-                    allartworks3.append(d)
-                elif actr == 3:
-                    allartworks4.append(d)
-                    actr = 0
+                    ahrow = ahqset[0]
+                    auchousename = ahrow[0]
+                except:
+                    auchousename = ""
+                auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+                if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "":
+                    auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+                try:
+                    artwork = Artwork.objects.get(id=lotartist.artworkid)
+                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                except:
+                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : '', 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : '', 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                if maxupcominglots > lotsinupcomingauctions.__len__():
+                    lotsinupcomingauctions.append(d)
+                else:
+                    upcomingflag = 1
+            else: # Past auction case
+                auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+                if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+                auchouseobj = None
+                try:
+                    ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
+                    cursor.execute(ahsql)
+                    ahqset = cursor.fetchall()
+                    if ahqset.__len__() == 0:
+                        continue
+                    ahrow = ahqset[0]
+                    auchousename = ahrow[0]
+                    #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                    #auchousename = auchouseobj.housename
+                except:
+                    auchousename = ""
+                try:
+                    artwork = Artwork.objects.get(id=lotartist.artworkid)
+                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotartist.artist_price_usd), 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                except:
+                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : '', 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : '', 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotartist.artist_price_usd), 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                if maxpastlots > lotsinpastauctions.__len__():
+                    lotsinpastauctions.append(d)
+                else:
+                    pastauctionsflag = 1
                     continue
-                actr += 1
-        yearlylotssold = int(float(totallotssold)/2.0)
-        sellthrurate = "NA"
-        if totalartworks != 0:
-            sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
-            sellthrurate = '{:.2f}'.format(sellthrurate)
-        avgsaleprice = "NA"
-        if totallotssold != 0:
-            avgsaleprice = float(soldlotsprice)/float(totallotssold)
-            avgsaleprice = '{:.2f}'.format(avgsaleprice)
-        salepriceoverestimate = "NA"
-        if totallotssold != 0:
-            salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
-            salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
-        try:
-            redis_instance.set('at_allartworks_%s'%artistobj.id, pickle.dumps(allartworks))
-            redis_instance.set('at_allartworks1_%s'%artistobj.id, pickle.dumps(allartworks1))
-            redis_instance.set('at_allartworks2_%s'%artistobj.id, pickle.dumps(allartworks2))
-            redis_instance.set('at_allartworks3_%s'%artistobj.id, pickle.dumps(allartworks3))
-            redis_instance.set('at_allartworks4_%s'%artistobj.id, pickle.dumps(allartworks4))
-            redis_instance.set('at_lotsinupcomingauctions_%s'%artistobj.id, pickle.dumps(lotsinupcomingauctions))
-            redis_instance.set('at_lotsinpastauctions_%s'%artistobj.id, pickle.dumps(lotsinpastauctions))
-            redis_instance.set('at_yearlylotssold_%s'%artistobj.id, yearlylotssold)
-            redis_instance.set('at_sellthrurate_%s'%artistobj.id, sellthrurate)
-            redis_instance.set('at_avgsaleprice_%s'%artistobj.id, avgsaleprice)
-            redis_instance.set('at_totallotssold_%s'%artistobj.id, totallotssold)
-            redis_instance.set('at_salepriceoverestimate_%s'%artistobj.id, salepriceoverestimate)
-        except:
-            pass
+            #break # Expecting one artwork should correspond to one lot obj. Is this assumption correct? If not, this could be  the most expensive call.
+            artwork = None
+            try:
+                artwork = Artwork.objects.get(id=lotartist.artworkid)
+                d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid}
+                if artwork.artworkname not in uniqueartworks.keys():
+                    allartworks.append(d)
+                    uniqueartworks[artwork.artworkname] = artwork.id
+                    if actr == 0:
+                        allartworks1.append(d)
+                    elif actr == 1:
+                        allartworks2.append(d)
+                    elif actr == 2:
+                        allartworks3.append(d)
+                    elif actr == 3:
+                        allartworks4.append(d)
+                        actr = 0
+                        continue
+                    actr += 1
+            except:
+                pass
+    yearlylotssold = int(float(totallotssold)/2.0)
+    sellthrurate = "NA"
+    if totalartworks != 0:
+        sellthrurate = (float(totallotssold)/float(totalartworks)) * 100.00
+        sellthrurate = '{:.2f}'.format(sellthrurate)
+    avgsaleprice = "NA"
+    if totallotssold != 0:
+        avgsaleprice = float(soldlotsprice)/float(totallotssold)
+        avgsaleprice = '{:.2f}'.format(avgsaleprice)
+    salepriceoverestimate = "NA"
+    if totallotssold != 0:
+        salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
+        salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
+    try:
+        redis_instance.set('at_allartworks_%s'%artistobj.id, pickle.dumps(allartworks))
+        redis_instance.set('at_allartworks1_%s'%artistobj.id, pickle.dumps(allartworks1))
+        redis_instance.set('at_allartworks2_%s'%artistobj.id, pickle.dumps(allartworks2))
+        redis_instance.set('at_allartworks3_%s'%artistobj.id, pickle.dumps(allartworks3))
+        redis_instance.set('at_allartworks4_%s'%artistobj.id, pickle.dumps(allartworks4))
+        redis_instance.set('at_lotsinupcomingauctions_%s'%artistobj.id, pickle.dumps(lotsinupcomingauctions))
+        redis_instance.set('at_lotsinpastauctions_%s'%artistobj.id, pickle.dumps(lotsinpastauctions))
+        redis_instance.set('at_yearlylotssold_%s'%artistobj.id, yearlylotssold)
+        redis_instance.set('at_sellthrurate_%s'%artistobj.id, sellthrurate)
+        redis_instance.set('at_avgsaleprice_%s'%artistobj.id, avgsaleprice)
+        redis_instance.set('at_totallotssold_%s'%artistobj.id, totallotssold)
+        redis_instance.set('at_salepriceoverestimate_%s'%artistobj.id, salepriceoverestimate)
+    except:
+        pass
     context['yearlylotssold'] = yearlylotssold
     context['sellthrurate'] = sellthrurate
     context['avgsaleprice'] = avgsaleprice
@@ -550,16 +560,8 @@ def details(request):
                 relatedartists.append(d)
             else:
                 break
-        for artwork in artworksqset[maxartworkstoconsider:maxartworkstoconsider+maxartworkstoconsider]:
-            #print(artwork.id)
-            lotqset = Lot.objects.filter(artwork_id=artwork.id)[:1]
-            try:
-                lotqsetlist = list(lotqset)
-                if lotqsetlist.__len__() == 0:
-                    continue
-                auctionid = lotqset[0].auction_id
-            except:
-                continue
+        for lotartist in lotartistqset[maxartworkstoconsider:maxartworkstoconsider+maxartworkstoconsider]:
+            auctionid = lotartist.auctionid
             auctionsqset = Auction.objects.filter(id=auctionid)
             if auctionsqset.__len__() == 0:
                 continue
@@ -1152,24 +1154,22 @@ def showstats(request):
     date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
     totaldelta = 0.00
     curdatetime = datetime.datetime.now()
-    artworksqset = Artwork.objects.filter(artist_id=aid)
-    for artwork in artworksqset:
-        artworkid = artwork.id
-        lotqset = Lot.objects.filter(artwork_id=artworkid)
-        for lotobj in lotqset:
-            saledate = datetime.datetime.combine(lotobj.saledate, datetime.time(0, 0))
-            if saledate and saledate > date2yearsago:
-                totallotssold += 1
-                soldlotsprice += float(lotobj.soldprice)
-                midestimate = (float(lotobj.highestimate) + float(lotobj.lowestimate))/2.0
-                if lotobj.soldprice > 0.00:
-                    delta = (float(lotobj.soldprice) - float(midestimate))/float(lotobj.soldprice)
-                    totaldelta += delta
-                totalartworks += 1
-            elif saledate and saledate < date2yearsago:
-                continue # If saledate is prior to date2yearsago, skip it.
-            elif not saledate:
-                totalartworks += 1
+    lotartistqset = LotArtist.objects.filter(artist_id=aid)
+    for lotartist in lotartistqset:
+        artworkid = lotartist.artworkid
+        saledate = datetime.datetime.combine(lotartist.saledate, datetime.time(0, 0))
+        if saledate and saledate > date2yearsago:
+            totallotssold += 1
+            soldlotsprice += float(lotartist.artist_price_usd)
+            midestimate = (float(lotartist.highestimate) + float(lotartist.lowestimate))/2.0
+            if lotartist.artist_price_usd > 0.00:
+                delta = (float(lotartist.artist_price_usd) - float(midestimate))/float(lotartist.artist_price_usd)
+                totaldelta += delta
+            totalartworks += 1
+        elif saledate and saledate < date2yearsago:
+            continue # If saledate is prior to date2yearsago, skip it.
+        elif not saledate:
+            totalartworks += 1
     yearlylotssold = int(float(totallotssold)/2.0)
     sellthrurate = "NA"
     if totalartworks != 0:

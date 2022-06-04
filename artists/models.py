@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 
 yearidentifier_choices = [('exact', 'exact'),('after', 'after'),('before', 'before'),('circa', 'circa')]
 yearprecision_choices = [('decade', 'decade'),('century', 'century'),('millennial', 'millennial')]
+lotstatus_choices = [('yet to be sold', 'yet to be sold'),('sold', 'sold'),('bought-in', 'bought-in'),('withdrawn', 'withdrawn')]
 
 class Artist(models.Model):
     id = models.IntegerField(primary_key=True, unique=True, default=None, blank=False, null=False, db_column='fa_artist_ID')
@@ -50,6 +51,20 @@ class LotArtist(models.Model):
     bio = models.TextField()
     genre = models.CharField(max_length=255, blank=True, null=True)
     artistimage = models.TextField()
+    saledate = models.DateTimeField(default='0000-00-00 00:00:00')
+    auctionid = models.IntegerField(default=None, blank=False, null=True)
+    lotstatus = models.CharField(max_length=20, blank=True, default='', choices=lotstatus_choices)
+    medium = models.CharField(max_length=200, blank=True, default='')
+    sizedetails = models.CharField(max_length=200, blank=True, default='')
+    lotcategory = models.CharField(max_length=200, blank=True, default='')
+    lotnum = models.IntegerField(default=None)
+    artworkid = models.IntegerField(default=None)
+    artworkname = models.TextField()
+    highestimate = models.DecimalField(max_digits=15, decimal_places=2, default=None)
+    lowestimate = models.DecimalField(max_digits=15, decimal_places=2, default=None)
+    artworkname = models.TextField()
+    lotimage1 = models.TextField(default='')
+    lotimage2 = models.TextField(default='')
 
     class Meta:
         verbose_name = "Artwork/Lot/Artist Combined Information Table"
