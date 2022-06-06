@@ -123,12 +123,124 @@ function checklogin(){
 }
 
 
-function addtofavourites(entitytype, entityid){
+function follow(artistid, divid){
+  var xmlhttp;
+  divelement = document.getElementById(divid);
+  csrf = document.frmedit.csrfmiddlewaretoken.value;
+  if (window.XMLHttpRequest){
+    xmlhttp=new XMLHttpRequest();
+  }
+  else{
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  // Register the handler
+  xmlhttp.onreadystatechange = function(){
+  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+    resp = JSON.parse(xmlhttp.responseText)
+    msg = resp['msg'];
+    divid = resp['div_id'];
+    aid = resp['aid'];
+    if(msg == 1){
+      divelement = document.getElementById(divid);
+      divelement.innerHTML = "<h6>Following (<a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick='javascript:unfollow(" + aid + ", \"" + divid + "\");'>Leave</a>)</h6>";
+    }
+    else{
+      // Show an alert stating that the operation was not successful
+      alert("Could not perform the operation successfully. Please try again.");
+      return(false);
+    }
+  }
+  };
+  divelement.innerHTML = "<img src='/static/images/loading.gif'>";
+  postdata="aid=" + artistid + "&csrfmiddlewaretoken=" + csrf + "&div_id=" + divid;
+  //alert(postdata);
+  xmlhttp.open("POST", "/login/follow/");
+  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+  xmlhttp.send(postdata);
 }
 
 
-function follow(artistid){
+function unfollow(artistid, divid){
+  var xmlhttp;
+  divelement = document.getElementById(divid);
+  csrf = document.frmedit.csrfmiddlewaretoken.value;
+  if (window.XMLHttpRequest){
+    xmlhttp=new XMLHttpRequest();
+  }
+  else{
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  // Register the handler
+  xmlhttp.onreadystatechange = function(){
+  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+    resp = JSON.parse(xmlhttp.responseText)
+    msg = resp['msg'];
+    divid = resp['div_id'];
+    aid = resp['aid'];
+    if(msg == 1){
+      divelement = document.getElementById(divid);
+      divelement.innerHTML = "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick='javascript:follow(" + aid + ", \"" + divid + "\");'>Follow</a></h6>";
+    }
+    else{
+      // Show an alert stating that the operation was not successful
+      alert("Could not perform the operation successfully. Please try again.");
+      return(false);
+    }
+  }
+  };
+  divelement.innerHTML = "<img src='/static/images/loading.gif'>";
+  postdata="aid=" + artistid + "&csrfmiddlewaretoken=" + csrf + "&div_id=" + divid;
+  //alert(postdata);
+  xmlhttp.open("POST", "/login/unfollow/");
+  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+  xmlhttp.send(postdata);
 }
 
+
+function addtofavourites(entitytype, entityid, divid){
+  var xmlhttp;
+  divelement = document.getElementById(divid);
+  csrf = document.frmedit.csrfmiddlewaretoken.value;
+  if (window.XMLHttpRequest){
+    xmlhttp=new XMLHttpRequest();
+  }
+  else{
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  // Register the handler
+  xmlhttp.onreadystatechange = function(){
+  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+    resp = JSON.parse(xmlhttp.responseText)
+    msg = resp['msg'];
+    divid = resp['div_id'];
+    aid = resp['aid'];
+    awid = resp['awid'];
+    aucid = resp['aucid']; // Only one of the above 3 Ids will be returned by the python API.
+    if(msg == 1){
+      divelement = document.getElementById(divid);
+      divelement.innerHTML = "<h6>My Favourite</h6>";
+    }
+    else{
+      // Show an alert stating that the operation was not successful
+      alert("Could not perform the operation successfully. Please try again.");
+      return(false);
+    }
+  }
+  };
+  divelement.innerHTML = "<img src='/static/images/loading.gif'>";
+  postdata="entitytype=" + entitytype + "&entityid=" + entityid + "&csrfmiddlewaretoken=" + csrf + "&div_id=" + divid;
+  //alert(postdata);
+  if(entitytype == 'artist'){
+    xmlhttp.open("POST", "/artist/favourite/");
+  }
+  else if(entitytype == 'artwork'){
+    xmlhttp.open("POST", "/artist/favouritework/");
+  }
+  else if(entitytype == 'auction'){
+    xmlhttp.open("POST", "/auction/favourite/");
+  }
+  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+  xmlhttp.send(postdata);
+}
 
 

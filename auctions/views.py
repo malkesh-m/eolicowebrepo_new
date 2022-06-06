@@ -14,6 +14,11 @@ from django.core.mail import send_mail
 from django.contrib.sessions.backends.db import SessionStore
 from django.template import loader
 
+from django.contrib.auth import login, authenticate
+from django.contrib.auth import logout
+from django.contrib.auth.models import User as djUser
+from django.contrib.auth.decorators import login_required
+
 import os, sys, re, time, datetime
 import simplejson as json
 import redis
@@ -21,7 +26,7 @@ import pickle
 import urllib
 
 from gallery.models import Gallery, Event
-from login.models import User, Session, WebConfig, Carousel
+from login.models import User, Session, WebConfig, Carousel, Favourite
 from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
@@ -751,6 +756,60 @@ def morefilter(request):
         context['adminuser'] = 0
     return HttpResponse(json.dumps(context))
 
+
+@login_required(login_url="/login/show/")
+def addfavourite(request):
+    """
+    Add an auction as a 'favourite' by a legit user.
+    """
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aucid' : ''})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aucid' : ''})) # Operation failed!
+    userobj = request.user
+    sessionkey = request.session.session_key
+    entitytype, aucid, divid = None, None, ''
+    requestbody = str(request.body)
+    bodycomponents = requestbody.split("&")
+    requestdict = {}
+    for comp in bodycomponents:
+        compparts = comp.split("=")
+        if compparts.__len__() > 1:
+            compparts[0] = compparts[0].replace("b'", "")
+            requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+    if 'entityid' in requestdict.keys():
+        aucid = requestdict['entityid']
+    if 'entitytype' in requestdict.keys():
+        entitytype = requestdict['entitytype']
+    if 'div_id' in requestdict.keys():
+        divid = requestdict['div_id'].replace("'", "")
+    if not aucid or not divid:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aucid' : ''})) # Operation failed!
+    if entitytype != 'auction':
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aucid' : ''})) # Operation failed!
+    auction = None
+    try:
+        auction = Auction.objects.get(id=aucid)
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aucid' : aucid})) # Operation failed! Can't proceed without an artist.
+    # Check if the auction is already a 'favourite' of the user...
+    favouriteobj = None
+    try:
+        favouriteqset = Favourite.objects.filter(user=request.user, reference_model='fineart_auction_calendar', reference_model_id=aucid)
+        if favouriteqset.__len__() > 0:
+            favouriteobj = favouriteqset[0]
+        else:
+            favouriteobj = Favourite()
+    except:
+        favouriteobj = Favourite()
+    favouriteobj.user = request.user
+    favouriteobj.reference_model = 'fineart_auction_calendar'
+    favouriteobj.reference_model_id = aucid
+    try:
+        favouriteobj.save()
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aucid' : ''})) # Operation failed!
+    return HttpResponse(json.dumps({'msg' : 1, 'div_id' : divid, 'aucid' : aucid})) # Added to favourites!
 
 
 

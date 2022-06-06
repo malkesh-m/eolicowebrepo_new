@@ -12,5 +12,7 @@ urlpatterns = [
     path('textfilter/', views.textfilter, name='textfilter'),
     path('morefilter/', views.morefilter, name='morefilter'),
     path('showstats/', views.showstats, name='showstats'),
+    path('favourite/', views.addfavourite, name='addfavourite'),
+    path('favouritework/', views.addfavouritework, name='addfavouritework'),
 ]
 

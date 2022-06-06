@@ -15,6 +15,11 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.template import loader
 from django.db.models import Avg, Count, Min, Sum
 
+from django.contrib.auth import login, authenticate
+from django.contrib.auth import logout
+from django.contrib.auth.models import User as djUser
+from django.contrib.auth.decorators import login_required
+
 import os, sys, re, time, datetime
 import simplejson as json
 import redis
@@ -23,7 +28,7 @@ import MySQLdb
 import urllib
 
 from gallery.models import Gallery, Event
-from login.models import User, Session, WebConfig, Carousel
+from login.models import User, Session, WebConfig, Carousel, Favourite
 from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
@@ -354,7 +359,7 @@ def details(request):
     if allartworks.__len__() == 0:
         # The following limited queryset would make the stats slightly inaccurate for some artists (who have more than 500 artworks).
         # Unfortunately, we can't do an exhaustive retrieval since that would not be possible because of time constraints.
-        lotartistqset = LotArtist.objects.filter(artist_id=aid) # [artworkstartctr:artworkendctr]
+        lotartistqset = LotArtist.objects.filter(artist_id=aid)[artworkstartctr:artworkendctr]
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
         curdatetime = datetime.datetime.now()
@@ -1187,4 +1192,114 @@ def showstats(request):
     context = {'stats' : statinfo, 'aid' : aid, 'div_id' : divid, 'err' : ''}
     return HttpResponse(json.dumps(context))
     
+
+@login_required(login_url="/login/show/")
+def addfavourite(request):
+    """
+    Add an artist as a 'favourite' by a legit user.
+    """
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    userobj = request.user
+    sessionkey = request.session.session_key
+    entitytype, aid, divid = None, None, ''
+    requestbody = str(request.body)
+    bodycomponents = requestbody.split("&")
+    requestdict = {}
+    for comp in bodycomponents:
+        compparts = comp.split("=")
+        if compparts.__len__() > 1:
+            compparts[0] = compparts[0].replace("b'", "")
+            requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+    if 'entityid' in requestdict.keys():
+        aid = requestdict['entityid']
+    if 'entitytype' in requestdict.keys():
+        entitytype = requestdict['entitytype']
+    if 'div_id' in requestdict.keys():
+        divid = requestdict['div_id'].replace("'", "")
+    if not aid or not divid:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    if entitytype != 'artist':
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    artist = None
+    try:
+        artist = Artist.objects.get(id=aid)
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Operation failed! Can't proceed without an artist.
+    # Check if the artist is already a 'favourite' of the user...
+    favouriteobj = None
+    try:
+        favouriteqset = Favourite.objects.filter(user=request.user, reference_model='fineart_artists', reference_model_id=aid)
+        if favouriteqset.__len__() > 0:
+            favouriteobj = favouriteqset[0]
+        else:
+            favouriteobj = Favourite()
+    except:
+        favouriteobj = Favourite()
+    favouriteobj.user = request.user
+    favouriteobj.reference_model = 'fineart_artists'
+    favouriteobj.reference_model_id = aid
+    try:
+        favouriteobj.save()
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    return HttpResponse(json.dumps({'msg' : 1, 'div_id' : divid, 'aid' : aid})) # Added to favourites!
+
+
+@login_required(login_url="/login/show/")
+def addfavouritework(request):
+    """
+    Add an artwork as a 'favourite' by a legit user.
+    """
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'awid' : ''})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'awid' : ''})) # Operation failed!
+    userobj = request.user
+    sessionkey = request.session.session_key
+    entitytype, awid, divid = None, None, ''
+    requestbody = str(request.body)
+    bodycomponents = requestbody.split("&")
+    requestdict = {}
+    for comp in bodycomponents:
+        compparts = comp.split("=")
+        if compparts.__len__() > 1:
+            compparts[0] = compparts[0].replace("b'", "")
+            requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+    if 'entityid' in requestdict.keys():
+        awid = requestdict['entityid'].replace("'", "")
+    if 'entitytype' in requestdict.keys():
+        entitytype = requestdict['entitytype'].replace("'", "")
+    if 'div_id' in requestdict.keys():
+        divid = requestdict['div_id'].replace("'", "")
+    if not awid or not divid:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'awid' : ''})) # Operation failed!
+    if entitytype != 'artwork':
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'awid' : ''})) # Operation failed!
+    artwork = None
+    try:
+        artwork = Artwork.objects.get(id=awid)
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'awid' : awid})) # Operation failed! Can't proceed without an artwork.
+    # Check if the artwork is already a 'favourite' of the user...
+    favouriteobj = None
+    try:
+        favouriteqset = Favourite.objects.filter(user=request.user, reference_model='fineart_artworks', reference_model_id=awid)
+        if favouriteqset.__len__() > 0:
+            favouriteobj = favouriteqset[0]
+        else:
+            favouriteobj = Favourite()
+    except:
+        favouriteobj = Favourite()
+    favouriteobj.user = request.user
+    favouriteobj.reference_model = 'fineart_artworks'
+    favouriteobj.reference_model_id = awid
+    try:
+        favouriteobj.save()
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'awid' : ''})) # Operation failed!
+    return HttpResponse(json.dumps({'msg' : 1, 'div_id' : divid, 'awid' : awid})) # Added to favourites!
+
 

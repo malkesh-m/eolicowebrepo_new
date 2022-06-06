@@ -2,6 +2,9 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from  django.core.validators import validate_email
 from django.contrib.auth.models import User as djUser
+from artists.models import Artist
+
+favourite_choices = [('fineart_artists', 'fineart_artists'), ('fineart_artworks', 'fineart_artworks'), ('fineart_auction_calendar', 'fineart_auction_calendar')]
 
 def profpicpath(instance, filename):
     return '/'.join([instance.user.displayname, 'images/profile', filename])
@@ -132,6 +135,37 @@ class Carousel(models.Model):
 
     def __unicode__(self):
         return "Title: %s"%(self.title)
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(djUser, db_column='user_id', on_delete=models.CASCADE)
+    artist = models.ForeignKey(Artist, db_column='artist_id', on_delete=models.CASCADE)
+    user_session_key = models.CharField(max_length=40, default=None) # Actually, this is also a foreign key in the DB, but here we define it without specifying the relationship.
+    status = models.BooleanField(default=True)
+    createdon = models.DateTimeField(auto_now_add=True)
+    updatedon = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "User Following An Artist"
+        db_table = 'fa_user_follows'
+
+    def __unicode__(self):
+        return ""
+
+
+class Favourite(models.Model):
+    user = models.ForeignKey(djUser, db_column='user_id', on_delete=models.CASCADE)
+    reference_model = models.CharField(max_length=40, default='fineart_artists', blank=False, db_column='reference_table', choices=favourite_choices)
+    reference_model_id = models.IntegerField(blank=False, null=False, db_column='referenced_table_id')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "User's Favourite Artist/Artwork/Auction"
+        db_table = 'user_favorites'
+
+    def __unicode__(self):
+        return ""
 
 
 

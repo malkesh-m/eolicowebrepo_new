@@ -11,5 +11,6 @@ urlpatterns = [
     path('moreauctions/', views.moreauctions, name='moreauctions'),
     path('showauction/', views.showauction, name='showauction'),
     path('morefilter/', views.morefilter, name='morefilter'),
+    path('favourite/', views.addfavourite, name='addfavourite'),
 ]
 

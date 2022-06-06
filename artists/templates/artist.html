@@ -756,8 +756,12 @@
 				<div id='statsview_feat_{{forloop.counter}}'>
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_feat_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
+				<div id='follow_feat_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_feat_{{forloop.counter}}');">Follow</a></h6>
+				</div>
+				<div id='favourite_feat_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_feat_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
 			      {% endif %}
 			      
                           </div>
@@ -806,8 +810,12 @@
 				<div id='statsview_1_{{forloop.counter}}'>
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_1_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
+				<div id='follow_1_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_1_{{forloop.counter}}');">Follow</a></h6>
+				</div>
+				<div id='favourite_1_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_1_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
 			      {% endif %}
 				<!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -856,8 +864,12 @@
 				<div id='statsview_2_{{forloop.counter}}'>
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_2_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
+				<div id='follow_2_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_2_{{forloop.counter}}');">Follow</a></h6>
+				</div>
+				<div id='favourite_2_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_2_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
 			      {% endif %}
 	 		      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -906,8 +918,12 @@
 				<div id='statsview_3_{{forloop.counter}}'>
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_3_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
+				<div id='follow_3_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_3_{{forloop.counter}}');">Follow</a></h6>
+				</div>
+				<div id='favourite_3_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_3_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
 			      {% endif %}
 			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -956,8 +972,12 @@
 				<div id='statsview_4_{{forloop.counter}}'>
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_4_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
+				<div id='follow_4_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_4_{{forloop.counter}}');">Follow</a></h6>
+				</div>
+				<div id='favourite_4_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_4_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
 			      {% endif %}
 			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -1006,8 +1026,12 @@
 				<div id='statsview_5_{{forloop.counter}}'>
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_5_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
+				<div id='follow_5_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_5_{{forloop.counter}}');">Follow</a></h6>
+				</div>
+				<div id='favourite_5_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_5_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
 			      {% endif %}
 			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>
@@ -1055,8 +1079,12 @@
 				<div id='statsview_6_{{forloop.counter}}'>
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_6_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}});">Follow</a></h6>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}});">Add to Favourites</a></h6>
+				<div id='follow_6_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_6_{{forloop.counter}}');">Follow</a></h6>
+				</div>
+				<div id='favourite_6_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_6_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
 			      {% endif %}
 			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
                           </div>

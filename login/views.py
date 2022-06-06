@@ -23,10 +23,11 @@ import os, sys, re, time, datetime
 import simplejson as json
 import redis
 import pickle
+import urllib
 
 from gallery.models import Gallery, Event
 from museum.models import Museum, MuseumEvent, MuseumPieces
-from login.models import User, Session, WebConfig, Carousel
+from login.models import User, Session, WebConfig, Carousel, Follow, Favourite
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist
@@ -70,6 +71,8 @@ def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     chunksize = 3
+    context = {}
+    """
     galleriesdict = {}
     try:
         galleriesdict = pickle.loads(redis_instance.get('h_galleriesdict'))
@@ -90,6 +93,66 @@ def index(request):
         except:
             pass
     context = {'galleries' : galleriesdict}
+    """
+    followsdict = {}
+    followsqset = Follow.objects.filter(user=request.user, status=True).order_by("-updatedon")
+    for follow in followsqset:
+        artist = follow.artist
+        artistname = artist.artistname
+        aimg = artist.artistimage
+        anat = artist.nationality
+        aid = artist.id
+        about = artist.description
+        followsdict[artistname] = [about, aimg, anat, aid]
+    context['follows'] = followsdict
+    favouritesdict = {}
+    favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
+    for fav in favsqset:
+        favtype = fav.reference_model
+        if favtype == "fineart_artists":
+            favmodelid = fav.reference_model_id
+            try:
+                artist = Artist.objects.get(id=favmodelid)
+                artistname = artist.artistname
+                aimg = artist.artistimage
+                anat = artist.nationality
+                aid = artist.id
+                about = artist.description
+                favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
+            except:
+                pass
+        elif favtype == "fineart_artworks":
+            favmodelid = fav.reference_model_id
+            try:
+                artwork = Artwork.objects.get(id=favmodelid)
+                artworkname = artwork.artworkname
+                artist_id = artwork.artist_id
+                artworkimg = artwork.image1
+                size = artwork.sizedetails
+                medium = artwork.medium
+                awid = artwork.id
+                artist = Artist.objects.get(id=artist_id)
+                artistname = artist.artistname
+                favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
+            except:
+                pass
+        elif favtype == "fineart_auction_calendar":
+            favmodelid = fav.reference_model_id
+            try:
+                auction = Auction.objects.get(id=favmodelid)
+                auctionname = auction.auctionname
+                period = auction.auctionstartdate.strftime("%d %b, %Y")
+                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    period = period + " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                auchouseid = auction.auctionhouse_id
+                auchouseobj = AuctionHouse.objects.get(id=auchouseid)
+                housename = auchouseobj.housename
+                aucid = auction.id
+                aucimg = auction.coverimage
+                favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
+            except:
+                pass
+    context['favourites'] = favouritesdict
     artistsdict = {}
     try:
         artistsdict = pickle.loads(redis_instance.get('h_artistsdict'))
@@ -272,7 +335,10 @@ def dologin(request):
         username = request.POST.get('username')
         raw_password = request.POST.get('passwd')
         user = authenticate(username=username, password=raw_password)
-        login(request, user)
+        if user is not None:
+            login(request, user)
+        else:
+            return HttpResponse(0)
         return HttpResponseRedirect("/login/index/") # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
     else:
         return HttpResponse("Invalid request method")
@@ -285,7 +351,8 @@ def dologout(request):
 
 @login_required(login_url='/login/show/')
 def showprofile(request):
-    pass
+    context = {}
+    return render(request, 'profile.html', context)
 
 
 def checkloginstatus(request):
@@ -342,6 +409,95 @@ def contactus(request):
     else:
         return HttpResponse("Incorrect request method")
 
+
+@login_required(login_url="/login/show/")
+def followartist(request):
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    userobj = request.user
+    sessionkey = request.session.session_key
+    aid, divid = None, None
+    requestbody = str(request.body)
+    bodycomponents = requestbody.split("&")
+    requestdict = {}
+    for comp in bodycomponents:
+        compparts = comp.split("=")
+        if compparts.__len__() > 1:
+            compparts[0] = compparts[0].replace("b'", "")
+            requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+    if 'aid' in requestdict.keys():
+        aid = requestdict['aid']
+    if 'div_id' in requestdict.keys():
+        divid = requestdict['div_id'].replace("'", "")
+    if not aid or not divid:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    artist = None
+    try:
+        artist = Artist.objects.get(id=aid)
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Operation failed! Can't proceed without an artist.
+    # Check if there is any existing record for this artist/user combination 
+    follow = None
+    try:
+        follow = Follow.objects.get(artist=artist, user=request.user)
+    except:
+        pass
+    if not follow:
+        follow = Follow()
+    follow.artist = artist
+    follow.user = userobj
+    follow.user_session_key = sessionkey
+    follow.status = True # Explicitly set it True, just in case we had an existing record with a False value.
+    try:
+        follow.save()
+        return HttpResponse(json.dumps({'msg' : 1, 'div_id' : divid, 'aid' : aid})) # Successfully following...
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Failed again.
+
+
+@login_required(login_url="/login/show/")
+def unfollowartist(request):
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    userobj = request.user
+    sessionkey = request.session.session_key
+    aid, divid = None, None
+    requestbody = str(request.body)
+    bodycomponents = requestbody.split("&")
+    requestdict = {}
+    for comp in bodycomponents:
+        compparts = comp.split("=")
+        if compparts.__len__() > 1:
+            compparts[0] = compparts[0].replace("b'", "")
+            requestdict[compparts[0]] = urllib.parse.unquote(compparts[1])
+    if 'aid' in requestdict.keys():
+        aid = requestdict['aid']
+    if 'div_id' in requestdict.keys():
+        divid = requestdict['div_id'].replace("'", "")
+    if not aid or not divid:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+    artist = None
+    try:
+        artist = Artist.objects.get(id=aid)
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Operation failed! Can't proceed without an artist.
+    followqset = Follow.objects.filter(artist=artist, user=request.user)
+    follow = None
+    if followqset.__len__() > 0:
+        follow = followqset[0]
+    else:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # The user was not following this artist.
+    follow.status = False # This means user left the artist.
+    follow.user_session_key = sessionkey
+    try:
+        follow.save()
+        return HttpResponse(json.dumps({'msg' : 1, 'div_id' : divid, 'aid' : aid})) # Successfully left...
+    except:
+        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Failed again.
 
 
 
