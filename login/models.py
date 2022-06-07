@@ -140,7 +140,7 @@ class Carousel(models.Model):
 class Follow(models.Model):
     user = models.ForeignKey(djUser, db_column='user_id', on_delete=models.CASCADE)
     artist = models.ForeignKey(Artist, db_column='artist_id', on_delete=models.CASCADE)
-    user_session_key = models.CharField(max_length=40, default=None) # Actually, this is also a foreign key in the DB, but here we define it without specifying the relationship.
+    user_session_key = models.CharField(max_length=40, default=None)
     status = models.BooleanField(default=True)
     createdon = models.DateTimeField(auto_now_add=True)
     updatedon = models.DateTimeField(auto_now=True)

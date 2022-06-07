@@ -240,6 +240,59 @@ footer .under-footer a:hover {
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
 
+    <script>
+    function showstats(aid, statsdivid){
+	  statsdiv = document.getElementById(statsdivid);
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    context = JSON.parse(xmlhttp.responseText);
+	    divid = context['div_id'];
+	    aid = context['aid'];
+	    err = context['err'];
+	    statsdiv = document.getElementById(divid);
+            if(err == "nologin"){
+		htmlcontent = context['stats'];
+		statsdiv.innerHTML = htmlcontent;
+	    }
+	    else if(err == "noaid"){
+		htmlcontent = context['stats'];
+		statsdiv.innerHTML = htmlcontent;
+	    }
+	    else if(err == "nodiv"){
+		htmlcontent = context['stats'];
+		statsdiv.innerHTML = htmlcontent;
+	    }
+	    else if(err == "noartist"){
+		htmlcontent = context['stats'];
+		statsdiv.innerHTML = htmlcontent;
+	    }
+	    else if(err == ""){
+	        htmlcontent = context['stats'] + "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:hidestats(" + aid + ", '" + divid + "');\">Hide Stats</a></h6>";
+	        statsdiv.innerHTML = htmlcontent;
+	    }
+	  }
+	  };
+	  xmlhttp.open("GET", "/artist/showstats/?aid=" + aid + "&div_id=" + statsdivid); // Need to keep track of the div id values. 
+	  // Javascript runs separate threads for each call, so data is shared. So, javascript will not be able to keep track of data
+	  // returned and the corresponding div it should be placed in.
+	  xmlhttp.send();
+          statsdiv.innerHTML = "<img src='/static/images/loading.gif' style='height:20px;width:20px;'>";
+	}
+
+	function hidestats(aid, statsdivid){
+	  statsdivelement = document.getElementById(statsdivid);
+	  statsdivelement.innerHTML = "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:showstats(" + aid + ", '" + statsdivid + "');\">Show Stats</a></h6>";
+	}
+    </script>
+
     </head>
     
     <body>
@@ -583,6 +636,7 @@ footer .under-footer a:hover {
 
     <!-- ***** Main Area Starts ***** -->
     <!-- ***** Explore Area Ends ***** -->
+	{% if follows.items|length > 0 %}
 	<section class="section" id="men">
         <div class="container">
             <div class="row">
@@ -646,9 +700,9 @@ footer .under-footer a:hover {
             </div>
         </div>
     </section>
+    {% endif %}
 
-
-
+    {% if favourites.items|length > 0 %}
     <section class="section" id="men">
         <div class="container">
             <div class="row">
@@ -736,6 +790,7 @@ footer .under-footer a:hover {
             </div>
         </div>
     </section>
+    {% endif %}
     <!-- ***** Men Area Ends ***** -->
 	<!-- ***** Explore Area Starts ***** -->
     <!-- <section class="section wrapper" id="explore">
@@ -841,12 +896,25 @@ footer .under-footer a:hover {
 			{% for aname, adata in artists.items %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
+				<a href="/artist/details/?aid={{adata.4}}"><img src="/media/artists/{{adata.4}}/{{adata.2}}" alt=""></a>
 		                <a href="/artist/details/?aid={{adata.4}}" style="color:#000000;">
 					<h4>{{aname}}</h4>
 					<h6>{{adata.3}}</h6>
 
 				</a>
+				{% if not user.is_authenticated %}
+				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+			        {% else %}
+				<div id='statsview_2_{{forloop.counter}}'>
+				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{adata.4}}, 'statsview_2_{{forloop.counter}}');">Show Stats</a></h6>
+				</div>
+				<div id='follow_2_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{adata.4}}, 'follow_2_{{forloop.counter}}');">Follow</a></h6>
+				</div>
+				<div id='favourite_2_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{adata.4}}, 'favourite_2_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
+			      {% endif %}
 				{% if adminuser == 1 %}
 				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{adata.4}}');">Edit</a></div>
 				{% endif %}
@@ -900,7 +968,7 @@ footer .under-footer a:hover {
                             {% for aucdata in auctionhouses %}
                             <div class="item">
                                 <div class="thumb">
-                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
+                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="/media/auctions/{{aucdata.ahid}}/{{aucdata.aucid}}/{{aucdata.coverimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
 					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}" style="color:#000000;">
@@ -941,11 +1009,18 @@ footer .under-footer a:hover {
 			{% for aucname, aucdata in upcomingauctions.items %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
+				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="/media/auctions/{{aucdata.ahid}}/{{aucdata.aucid}}/{{aucdata.coverimage}}" alt=""></a>
 		                <a href="/auction/details/?lid={{aucdata.lid}}" style="color:#000000;">
 						<h4>{{aucname}}</h4>
 						<h6>{{aucdata.description}}</h6>
 				</a>
+				{% if not user.is_authenticated %}
+				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+			        {% else %}
+				<div id='favourite_auc_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{aucdata.aucid}}, 'favourite_auc_{{forloop.counter}}');">Add to Favourites</a></h6>
+				</div>
+			        {% endif %}
 				<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
 				{% if adminuser == 1 %}
 				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{aucdata.aucid}}');">Edit</a></div>

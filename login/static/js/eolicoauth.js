@@ -218,6 +218,7 @@ function addtofavourites(entitytype, entityid, divid){
     aucid = resp['aucid']; // Only one of the above 3 Ids will be returned by the python API.
     if(msg == 1){
       divelement = document.getElementById(divid);
+      //alert("Added to My Favourites");
       divelement.innerHTML = "<h6>My Favourite</h6>";
     }
     else{
@@ -227,7 +228,7 @@ function addtofavourites(entitytype, entityid, divid){
     }
   }
   };
-  divelement.innerHTML = "<img src='/static/images/loading.gif'>";
+  divelement.innerHTML = "<img src='/static/images/loading.gif' style='height:20px;width:20px;'>";
   postdata="entitytype=" + entitytype + "&entityid=" + entityid + "&csrfmiddlewaretoken=" + csrf + "&div_id=" + divid;
   //alert(postdata);
   if(entitytype == 'artist'){

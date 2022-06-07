@@ -73,63 +73,65 @@ def index(request):
     chunksize = 3
     context = {}
     followsdict = {}
-    followsqset = Follow.objects.filter(user=request.user, status=True).order_by("-updatedon")
-    for follow in followsqset:
-        artist = follow.artist
-        artistname = artist.artistname
-        aimg = artist.artistimage
-        anat = artist.nationality
-        aid = artist.id
-        about = artist.description
-        followsdict[artistname] = [about, aimg, anat, aid]
+    if request.user.is_authenticated:
+        followsqset = Follow.objects.filter(user=request.user, status=True).order_by("-updatedon")
+        for follow in followsqset:
+            artist = follow.artist
+            artistname = artist.artistname
+            aimg = artist.artistimage
+            anat = artist.nationality
+            aid = artist.id
+            about = artist.description
+            followsdict[artistname] = [about, aimg, anat, aid]
     context['follows'] = followsdict
     favouritesdict = {}
-    favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
-    for fav in favsqset:
-        favtype = fav.reference_model
-        if favtype == "fineart_artists":
-            favmodelid = fav.reference_model_id
-            try:
-                artist = Artist.objects.get(id=favmodelid)
-                artistname = artist.artistname
-                aimg = artist.artistimage
-                anat = artist.nationality
-                aid = artist.id
-                about = artist.description
-                favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
-            except:
-                pass
-        elif favtype == "fineart_artworks":
-            favmodelid = fav.reference_model_id
-            try:
-                artwork = Artwork.objects.get(id=favmodelid)
-                artworkname = artwork.artworkname
-                artist_id = artwork.artist_id
-                artworkimg = artwork.image1
-                size = artwork.sizedetails
-                medium = artwork.medium
-                awid = artwork.id
-                artist = Artist.objects.get(id=artist_id)
-                artistname = artist.artistname
-                favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
-            except:
-                pass
-        elif favtype == "fineart_auction_calendar":
-            favmodelid = fav.reference_model_id
-            try:
-                auction = Auction.objects.get(id=favmodelid)
-                auctionname = auction.auctionname
-                period = auction.auctionstartdate.strftime("%d %b, %Y")
-                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    period = period + " - " + auction.auctionenddate.strftime("%d %b, %Y")
-                auchouseid = auction.auctionhouse_id
-                auchouseobj = AuctionHouse.objects.get(id=auchouseid)
-                housename = auchouseobj.housename
-                aucid = auction.id
-                aucimg = auction.coverimage
-                favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
-            except:
-                pass
+    if request.user.is_authenticated:
+        favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
+        for fav in favsqset:
+            favtype = fav.reference_model
+            if favtype == "fineart_artists":
+                favmodelid = fav.reference_model_id
+                try:
+                    artist = Artist.objects.get(id=favmodelid)
+                    artistname = artist.artistname
+                    aimg = artist.artistimage
+                    anat = artist.nationality
+                    aid = artist.id
+                    about = artist.description
+                    favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
+                except:
+                    pass
+            elif favtype == "fineart_artworks":
+                favmodelid = fav.reference_model_id
+                try:
+                    artwork = Artwork.objects.get(id=favmodelid)
+                    artworkname = artwork.artworkname
+                    artist_id = artwork.artist_id
+                    artworkimg = artwork.image1
+                    size = artwork.sizedetails
+                    medium = artwork.medium
+                    awid = artwork.id
+                    artist = Artist.objects.get(id=artist_id)
+                    artistname = artist.artistname
+                    favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
+                except:
+                    pass
+            elif favtype == "fineart_auction_calendar":
+                favmodelid = fav.reference_model_id
+                try:
+                    auction = Auction.objects.get(id=favmodelid)
+                    auctionname = auction.auctionname
+                    period = auction.auctionstartdate.strftime("%d %b, %Y")
+                    if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                        period = period + " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                    auchouseid = auction.auctionhouse_id
+                    auchouseobj = AuctionHouse.objects.get(id=auchouseid)
+                    housename = auchouseobj.housename
+                    aucid = auction.id
+                    aucimg = auction.coverimage
+                    favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
+                except:
+                    pass
     context['favourites'] = favouritesdict
     artistsdict = {}
     try:
@@ -233,7 +235,7 @@ def index(request):
                 auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
                 if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                     auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
-            d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auchousename, 'location' : ahlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'auctionperiod' : auctionperiod, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id}
+            d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auchousename, 'location' : ahlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'auctionperiod' : auctionperiod, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id, 'ahid' : auction.auctionhouse_id}
             upcomingauctions[auction.auctionname] = d
             actr += 1
             if actr >= chunksize:
@@ -257,7 +259,7 @@ def index(request):
             if auctionsqset.__len__() == 0:
                 continue
             print(auctionsqset[0].coverimage)
-            d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : '', 'coverimage' : auctionsqset[0].coverimage}
+            d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : '', 'coverimage' : auctionsqset[0].coverimage, 'ahid' : auchouse.id}
             auctionhouses.append(d)
             actr += 1
             if actr >= chunksize:
