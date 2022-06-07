@@ -13,5 +13,7 @@ urlpatterns = [
     path('logout/', views.dologout, name='dologout'),
     path('follow/', views.followartist, name='followartist'),
     path('unfollow/', views.unfollowartist, name='unfollowartist'),
+    path('morefollows/', views.morefollows, name='morefollows'),
+    path('morefavourites/', views.morefavourites, name='morefavourites'),
 ]
 

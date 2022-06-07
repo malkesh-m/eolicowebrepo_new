@@ -588,72 +588,6 @@ footer .under-footer a:hover {
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-                        <h2>My Follows</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aname, adata in follows.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.3}}"><img src="/media/artists/{{adata.3}}/{{adata.1}}" alt=""></a>
-		                <a href="/artist/details/?aid={{adata.3}}" style="color:#000000;">
-					<h4>{{aname}}</h4>
-					<h6>{{adata.2}}</h6>
-					<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{adata.3}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-			<!--
-                        <div class="owl-men-item owl-carousel">
-                            {% for gname, gdata in galleries.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/gallery/details/?gid={{gdata.3}}">
-										<h4>{{gname}}</h4>
-										<span>{{gdata.0}}</span>
-										<a class="btn btn-slider" href="#">Follow</a>
-									</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div> 
-			-->
-			<div class="container">
-			    <div class="row">
-			    	<div class="col-lg-12">
-				    <a class="btn btn-slider" href="/login/morefollows/">View More</a>
-			    	</div>
-			    </div>
-			</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
-    <section class="section" id="men">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
                         <h2>My Favourites</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
 						<hr>
@@ -708,275 +642,61 @@ footer .under-footer a:hover {
 		    	</div>
 			<!--
                         <div class="owl-men-item owl-carousel">
-                            {% for ename, edata in events.items %}
+                            {% for gname, gdata in galleries.items %}
                             <div class="item">
                                 <div class="thumb">
-                                    <a href="/gallery/eventdetails/?gevid={{edata.3}}"><img src="{{edata.4}}" alt=""></a>
+                                    <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-									<a href="/gallery/eventdetails/?gevid={{edata.3}}">
-										<h4>{{ename}}</h4>
-										<span>{{edata.1}}</span>
-										<span>{{edata.2}}</span>
+									<a href="/gallery/details/?gid={{gdata.3}}">
+										<h4>{{gname}}</h4>
+										<span>{{gdata.0}}</span>
+										<a class="btn btn-slider" href="#">Follow</a>
 									</a>
                                 </div>
                             </div>
                             {% endfor %}
-                        </div>
+                        </div> 
 			-->
-			<div class="container">
-			    <div class="row">
-			    	<div class="col-lg-12">
-				    <a class="btn btn-slider" href="/login/morefavourites/">View More</a>
-			    	</div>
-			    </div>
-			</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- ***** Men Area Ends ***** -->
-	<!-- ***** Explore Area Starts ***** -->
-    <!-- <section class="section wrapper" id="explore">
-        <div class="container">
-			<div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Market News</h2>
-                        <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-						<hr>
-                    </div>
-                </div>
-            </div>
-		   <div class="row">
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-03.jpg');">
-					<img class="card-img d-none" src="/static/images/men-03.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art Market</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">This New Code of Conduct for Collectors Aims to Encourage More Ethical Art Buying</a></h4>
-						  <small><i class="far fa-clock"></i> October 15, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Harley Wong</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-01.jpg');">
-					<img class="card-img d-none" src="/static/images/men-01.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">An-My Lê’s Ghostly Photographs Capture the Complex Consequences of War</a></h4>
-						  <small><i class="far fa-clock"></i> October 25, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Leah Gallant</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-			  
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-03.jpg');">
-					<img class="card-img d-none" src="/static/images/men-03.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art Market</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">This New Code of Conduct for Collectors Aims to Encourage More Ethical Art Buying</a></h4>
-						  <small><i class="far fa-clock"></i> October 15, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Harley Wong</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-		   </div>
-		</div>
-		<div class="btn-box text-center">
-			<a class="btn btn-slider" href="#">Explore</a>
-		</div>
-    </section> -->
-	
-    <section class="section" id="women">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Trending Artists</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aname, adata in artists.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
-		                <a href="/artist/details/?aid={{adata.4}}" style="color:#000000;">
-					<h4>{{aname}}</h4>
-					<h6>{{adata.3}}</h6>
-
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{adata.4}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-
-			<!--
-                        <div class="owl-men-item owl-carousel">
-                            {% for aname, adata in artists.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/artist/details/?aid={{adata.4}}">
-										<h4>{{aname}}</h4>
-										<span>{{adata.3}}</span>
-
-									</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                            
-                        </div>
-			-->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="men">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Auction Houses</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-                        <div class="owl-men-item owl-carousel">
-                            {% for aucdata in auctionhouses %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}" style="color:#000000;">
-						<h4>{{aucdata.housename}}</h4>
-						<h6>{{aucdata.location}}</h6>
-						<h6>{{aucdata.description}}</h6>
-					</a>
-					{% if adminuser == 1 %}
-					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauctionhouse('{{aucdata.aucid}}');">Edit</a></div>
+			<div class="auction-pagination"> <!-- Pagination div starts here -->
+				<nav aria-label="Page navigation example">
+				    <ul class="pagination">
+					<li class="page-item">
+					    {% if pages.prevpage >= 1 %}
+					    <a class="page-link" href="/login/morefavourites/?page={{pages.prevpage}}" aria-label="Previous">
+						<span aria-hidden="true">Previous</span>
+						<span class="sr-only">Previous</span>
+					    </a>
+					    {% endif %}
+					</li>
+					{% if pages.displayedprevpage2 > 0 %}
+					<li class="page-item"><a class="page-link" href="/login/morefavourites/?page={{pages.displayedprevpage2}}">{{pages.displayedprevpage2}}</a></li>
 					{% endif %}
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
+					{% if pages.displayedprevpage1 > 0 %}
+					<li class="page-item"><a class="page-link" href="/login/morefavourites/?page={{pages.displayedprevpage1}}">{{pages.displayedprevpage1}}</a></li>
+					{% endif %}
+					<li class="page-item"><a class="page-link" href="#">{{pages.currentpage}}</a></li>
+					<li class="page-item"><a class="page-link" href="/login/morefavourites/?page={{pages.nextpage}}">{{pages.nextpage}}</a></li>
+					<li class="page-item"><a class="page-link" href="/login/morefavourites/?page={{pages.displayednextpage1}}">{{pages.displayednextpage1}}</a></li>
+					<li class="page-item"><a class="page-link" href="/login/morefavourites/?page={{pages.displayednextpage2}}">{{pages.displayednextpage2}}</a></li>
+					<li class="page-item">
+					    <a class="page-link" href="/login/morefavourites/?page={{pages.nextpage}}" aria-label="Next">
+						<span aria-hidden="true">Next</span>
+						<span class="sr-only">Next</span>
+					    </a>
+					</li>
+				    </ul>
+				</nav>
+		    	    </div> <!-- Pagination div ends here -->
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section" id="men">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Upcoming Auctions</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aucname, aucdata in upcomingauctions.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-		                <a href="/auction/details/?lid={{aucdata.lid}}" style="color:#000000;">
-						<h4>{{aucname}}</h4>
-						<h6>{{aucdata.description}}</h6>
-				</a>
-				<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{aucdata.aucid}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		        
-		    	</div>
-			<!--
-                        <div class="owl-men-item owl-carousel">
-                            {% for aucname, aucdata in upcomingauctions.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-					<a href="/auction/details/?lid={{aucdata.lid}}">
-						<h4>{{aucname}}</h4>
-						<span>{{aucdata.description}}</span>
-					</a>
-					<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
+
+    
 
     <div id="adminScreen">
 	  <a href="#" class="cancel">×</a>

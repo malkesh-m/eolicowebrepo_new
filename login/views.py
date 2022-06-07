@@ -72,28 +72,6 @@ def index(request):
         return HttpResponse("Invalid method of call")
     chunksize = 3
     context = {}
-    """
-    galleriesdict = {}
-    try:
-        galleriesdict = pickle.loads(redis_instance.get('h_galleriesdict'))
-    except:
-        pass
-    if galleriesdict.keys().__len__() == 0:
-        galleries = Gallery.objects.all().order_by('priority', '-edited')
-        gallerieslist = galleries[0:4]
-        for g in gallerieslist:
-            gname = g.galleryname
-            gloc = g.location
-            gimg = g.coverimage
-            gurl = g.galleryurl
-            gid = g.id
-            galleriesdict[gname] = [gloc, gimg, gurl, gid]
-        try:
-            redis_instance.set('h_galleriesdict', pickle.dumps(galleriesdict))
-        except:
-            pass
-    context = {'galleries' : galleriesdict}
-    """
     followsdict = {}
     followsqset = Follow.objects.filter(user=request.user, status=True).order_by("-updatedon")
     for follow in followsqset:
@@ -498,6 +476,129 @@ def unfollowartist(request):
         return HttpResponse(json.dumps({'msg' : 1, 'div_id' : divid, 'aid' : aid})) # Successfully left...
     except:
         return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Failed again.
+
+
+@login_required(login_url="/login/show/")
+def morefollows(request):
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'msg' : 0, 'aid' : ''})) # Operation failed!
+    page = 1
+    if 'page' in request.GET.keys():
+        page = request.GET['page']
+    cols = 4
+    rows = 5
+    startctr = int(page) * rows * cols - rows * cols
+    endctr = int(page) * rows * cols
+    followqset = Follow.objects.filter(user=request.user).order_by("-updatedon")[startctr:endctr]
+    follow = None
+    followsdict = {}
+    context = {}
+    for follow in followqset:
+        artist = follow.artist
+        artistname = artist.artistname
+        aimg = artist.artistimage
+        anat = artist.nationality
+        aid = artist.id
+        about = artist.description
+        followsdict[artistname] = [about, aimg, anat, aid]
+    context['follows'] = followsdict
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    if request.user.is_authenticated and request.user.is_staff:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    template = loader.get_template('morefollows.html')
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url="/login/show/")
+def morefavourites(request):
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'msg' : 0, 'aid' : ''})) # Operation failed!
+    page = 1
+    if 'page' in request.GET.keys():
+        page = request.GET['page']
+    cols = 4
+    rows = 5
+    startctr = int(page) * rows * cols - rows * cols
+    endctr = int(page) * rows * cols
+    favouritesdict = {}
+    context = {}
+    favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")[startctr:endctr]
+    for fav in favsqset:
+        favtype = fav.reference_model
+        if favtype == "fineart_artists":
+            favmodelid = fav.reference_model_id
+            try:
+                artist = Artist.objects.get(id=favmodelid)
+                artistname = artist.artistname
+                aimg = artist.artistimage
+                anat = artist.nationality
+                aid = artist.id
+                about = artist.description
+                favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
+            except:
+                pass
+        elif favtype == "fineart_artworks":
+            favmodelid = fav.reference_model_id
+            try:
+                artwork = Artwork.objects.get(id=favmodelid)
+                artworkname = artwork.artworkname
+                artist_id = artwork.artist_id
+                artworkimg = artwork.image1
+                size = artwork.sizedetails
+                medium = artwork.medium
+                awid = artwork.id
+                artist = Artist.objects.get(id=artist_id)
+                artistname = artist.artistname
+                favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
+            except:
+                pass
+        elif favtype == "fineart_auction_calendar":
+            favmodelid = fav.reference_model_id
+            try:
+                auction = Auction.objects.get(id=favmodelid)
+                auctionname = auction.auctionname
+                period = auction.auctionstartdate.strftime("%d %b, %Y")
+                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+                    period = period + " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                auchouseid = auction.auctionhouse_id
+                auchouseobj = AuctionHouse.objects.get(id=auchouseid)
+                housename = auchouseobj.housename
+                aucid = auction.id
+                aucimg = auction.coverimage
+                favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
+            except:
+                pass
+    context['favourites'] = favouritesdict
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    if request.user.is_authenticated and request.user.is_staff:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    template = loader.get_template('morefavourites.html')
+    return HttpResponse(template.render(context, request))
+
 
 
 
