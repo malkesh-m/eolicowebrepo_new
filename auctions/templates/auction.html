@@ -682,9 +682,15 @@ https://templatemo.com/tm-571-hexashop
 				{% if not user.is_authenticated %}
 				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 			        {% else %}
+				{% if auctiondict.favourite == 0 %}
 				<div id='favourite_auc1_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{auctiondict.aucid}}, 'favourite_auc1_{{forloop.counter}}');">Add to Favourites</a></h6>
 				</div>
+				{% else %}
+				<div id='favourite_auc1_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+				</div>
+				{% endif %}
 			        {% endif %}
 				<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
 			</a>
@@ -753,9 +759,15 @@ https://templatemo.com/tm-571-hexashop
 						{% if not user.is_authenticated %}
 						<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
 						{% else %}
+						{% if auctiondict.favourite == 0 %}
 						<div id='favourite_auc2{{forloop.parentloop.counter}}_{{forloop.counter}}'>
 						<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{auctiondict.aucid}}, 'favourite_auc2{{forloop.parentloop.counter}}_{{forloop.counter}}');">Add to Favourites</a></h6>
 						</div>
+						{% else %}
+						<div id='favourite_auc2{{forloop.parentloop.counter}}_{{forloop.counter}}'>
+						<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+						</div>
+						{% endif %}
 						{% endif %}
 						<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
 					</a>

@@ -433,8 +433,21 @@
                                                             <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" style="width:100%">
                                                             <h4>{{ artwork.artworkname }}</h4>
                                                             <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
-                                                            <p>{{artwork.size}}</p>
+                                                            <h6>{{artwork.size}}</h6>
 							    </a>
+							    {% if not user.is_authenticated %}
+								<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+							    {% else %}
+								{% if artwork.favourite == 0 %}
+								<div id='favourite_notaw_{{forloop.counter}}'>
+								<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artwork', {{artwork.awid}}, 'favourite_notaw_{{forloop.counter}}');">Add to Favourites</a></h6>
+								</div>
+								{% else %}
+								<div id='favourite_notaw_{{forloop.counter}}'>
+								<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+								</div>
+								{% endif %}
+							    {% endif %}
 							    {% if adminuser == 1 %}
 			    				        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 							    {% endif %}
@@ -1324,8 +1337,21 @@
                                                             <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" style="width:100%">
                                                             <h4>{{ artwork.artworkname }}</h4>
                                                             <h6>{{artwork.creationdate}} {{artwork.medium}}</h6>
-                                                            <p>{{artwork.size}}</p>
+                                                            <h6>{{artwork.size}}</h6>
 							    </a>
+							    {% if not user.is_authenticated %}
+								<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+							    {% else %}
+								{% if artwork.favourite == 0 %}
+								<div id='favourite_salaw_{{forloop.counter}}'>
+								<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artwork', {{artwork.awid}}, 'favourite_salaw_{{forloop.counter}}');">Add to Favourites</a></h6>
+								</div>
+								{% else %}
+								<div id='favourite_salaw_{{forloop.counter}}'>
+								<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+								</div>
+								{% endif %}
+							    {% endif %}
 							    {% if adminuser == 1 %}
 			    				        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 							    {% endif %}

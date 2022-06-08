@@ -104,7 +104,12 @@ def index(request):
                     location = auctionhouse.location
                 except:
                     pass
-                d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location}
+                # Check for favourites
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+                favflag = 0
+                if favqset.__len__() > 0:
+                    favflag = 1        
+                d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
                 featuredauctions[auctionname] = d
                 if featuredauctions.keys().__len__() > chunksize:
                     break
@@ -142,7 +147,12 @@ def index(request):
                 location = auctionhouse.location
             except:
                 pass
-            d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location}
+            # Check for favourites
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+            favflag = 0
+            if favqset.__len__() > 0:
+                favflag = 1   
+            d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
             if allauctions.keys().__len__() > maxpastauctionsperrow * maxpastauctions:
                 break
             if aucctr % 4 == 0:
@@ -489,7 +499,12 @@ def moreauctions(request):
                 location = auctionhouse.location
             except:
                 pass
-            d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location}
+            # Check for favourites
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+            favflag = 0
+            if favqset.__len__() > 0:
+                favflag = 1   
+            d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
             if allauctions.keys().__len__() > maxauctions * chunksize:
                 break
             if aucctr % 4 == 0:
@@ -612,7 +627,12 @@ def showauction(request):
         if lotobj.highestimateUSD > 0.00:
             estimate += " - " + str(lotobj.highestimateUSD)
         soldprice = str(lotobj.soldpriceUSD)
-        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'image' : lotobj.lotimage1, 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj.id, 'aid' : artistobj.id, 'lotno' : lotobj.lotid, 'category' : lotobj.category, 'soldprice' : soldprice}
+        # Check for favourites
+        favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lotobj.artwork_id)
+        favflag = 0
+        if favqset.__len__() > 0:
+            favflag = 1   
+        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'image' : lotobj.lotimage1, 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj.id, 'aid' : artistobj.id, 'lotno' : lotobj.lotid, 'category' : lotobj.category, 'soldprice' : soldprice, 'awid' : lotobj.artwork_id, 'favourite' : favflag}
         if artistname not in allartists.keys():
             allartists[artistname] = artistobj.id
         alllots.append(d)
@@ -707,7 +727,12 @@ def morefilter(request):
                 auctionhousename = auctionhouseobj.housename
             except:
                 pass
-            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id, 'lotno' : lot.lotid, 'category' : lot.category, 'auctionhouse' : auctionhousename}
+            # Check for favourites
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lot.artwork_id)
+            favflag = 0
+            if favqset.__len__() > 0:
+                favflag = 1   
+            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id, 'lotno' : lot.lotid, 'category' : lot.category, 'auctionhouse' : auctionhousename, 'favourite' : favflag}
             for medium in mediumlist:
                 if medium in artwork.medium.lower():
                     if artwork.artworkname not in uniquelots.keys():

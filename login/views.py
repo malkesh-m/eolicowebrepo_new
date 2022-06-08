@@ -150,7 +150,16 @@ def index(request):
             aimg = a.artistimage
             anat = a.nationality
             aid = a.artist_id
-            artistsdict[aname] = [about, aurl, aimg, anat, aid]
+            # Check for follows and favourites
+            folqset = Follow.objects.filter(user=request.user, artist__id=a.artist_id)
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=a.artist_id)
+            folflag = 0
+            if folqset.__len__() > 0:
+                folflag = 1
+            favflag = 0
+            if favqset.__len__() > 0:
+                favflag = 1         
+            artistsdict[aname] = [about, aurl, aimg, anat, aid, folflag, favflag]
         try:
             redis_instance.set('h_artistsdict', pickle.dumps(artistsdict))
         except:
@@ -235,7 +244,12 @@ def index(request):
                 auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
                 if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                     auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
-            d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auchousename, 'location' : ahlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'auctionperiod' : auctionperiod, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id, 'ahid' : auction.auctionhouse_id}
+            # Check for favourites
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+            favflag = 0
+            if favqset.__len__() > 0:
+                favflag = 1         
+            d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auchousename, 'location' : ahlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'auctionperiod' : auctionperiod, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id, 'ahid' : auction.auctionhouse_id, 'favourite' : favflag}
             upcomingauctions[auction.auctionname] = d
             actr += 1
             if actr >= chunksize:

@@ -257,6 +257,8 @@ https://templatemo.com/tm-571-hexashop
 	}
     </script>
 
+    <script src="/static/js/eolicoauth.js"></script>
+
     </head>
     
     <body onload="javascript:autocomplete(document.getElementById('auctionsearch'), auctions);">
@@ -710,10 +712,22 @@ https://templatemo.com/tm-571-hexashop
                         </div>
                         <div class="down-content">
 				<a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">
-					<h4>{{auctiondict.auctionhouse}}</h4>
-					<h6>{{auctiondict.location}}</h6>
+					<h4>{{auctiondict.auctionhouse}}, {{auctiondict.location}}</h4>
 					<h4>{{auctiondict.auctionname}}</h4>
 					<h6>{{auctiondict.auctionperiod}}</h6>
+					{% if not user.is_authenticated %}
+					<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+					{% else %}
+					{% if auctiondict.favourite == 0 %}
+					<div id='favourite_auc{{forloop.parentloop.counter}}_{{forloop.counter}}'>
+					<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{auctiondict.aucid}}, 'favourite_auc{{forloop.parentloop.counter}}_{{forloop.counter}}');">Add to Favourites</a></h6>
+					</div>
+					{% else %}
+					<div id='favourite_auc{{forloop.parentloop.counter}}_{{forloop.counter}}'>
+					<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+					</div>
+					{% endif %}
+					{% endif %}
 					<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
 				</a>
                         </div>

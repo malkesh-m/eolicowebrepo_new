@@ -28,7 +28,7 @@ import MySQLdb
 import urllib
 
 from gallery.models import Gallery, Event
-from login.models import User, Session, WebConfig, Carousel, Favourite
+from login.models import User, Session, WebConfig, Carousel, Favourite, Follow
 from login.views import getcarouselinfo
 from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
@@ -140,7 +140,16 @@ def index(request):
                 birthyear = ""
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
-            d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath}
+            # Check for follows and favourites
+            folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+            folflag = 0
+            if folqset.__len__() > 0:
+                folflag = 1
+            favflag = 0
+            if favqset.__len__() > 0:
+                favflag = 1
+            d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag}
             artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
             cursor.execute(artworksql)
             artworkqset = cursor.fetchall()
@@ -206,8 +215,17 @@ def index(request):
                 if birthyear == 0:
                     birthyear = ""
                 if prefix != "" and prefix != "na":
-                    prefix = prefix + " "                
-                d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath}
+                    prefix = prefix + " "
+                # Check for follows and favourites
+                folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+                folflag = 0
+                if folqset.__len__() > 0:
+                    folflag = 1
+                favflag = 0
+                if favqset.__len__() > 0:
+                    favflag = 1         
+                d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag}
                 #artworkqset1 = Artwork.objects.filter(artist_id=artistid)
                 artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
                 cursor.execute(artworksql1)
@@ -774,7 +792,12 @@ def showartwork(request):
             creationdate = str(artwork.creationstartdate)
             if creationdate == "0":
                 creationdate = ""
-            d = {'artworkname' : artwork.artworkname, 'creationdate' : creationdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : artwork.artist_id}
+            # Check for favourites
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=artwork.id)
+            favflag = 0
+            if favqset.__len__() > 0:
+                favflag = 1         
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : creationdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : artwork.artist_id, 'favourite' : favflag}
             if artwork.artworkname not in uniqueartworks.keys():
                 allartworks.append(d)
                 uniqueartworks[artwork.artworkname] = artwork.id
