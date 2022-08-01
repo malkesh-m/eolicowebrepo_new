@@ -141,8 +141,12 @@ def index(request):
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
             # Check for follows and favourites
-            folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+            if request.user.is_authenticated:
+                folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+            else:
+                folqset = []
+                favqset = []
             folflag = 0
             if folqset.__len__() > 0:
                 folflag = 1
@@ -217,8 +221,12 @@ def index(request):
                 if prefix != "" and prefix != "na":
                     prefix = prefix + " "
                 # Check for follows and favourites
-                folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+                if request.user.is_authenticated:
+                    folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
+                    favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+                else:
+                    folqset = []
+                    favqset = []
                 folflag = 0
                 if folqset.__len__() > 0:
                     folflag = 1
@@ -768,7 +776,7 @@ def showartwork(request):
     if description.__len__() < 30:
         shortlen = description.__len__()
     shortdescription = description[:shortlen] + "..."
-    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : description, 'awid' : artworkobj.id, 'aid' : artistobj.id, 'shortdescription' : shortdescription}
+    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : description, 'awid' : artworkobj.id, 'aid' : artistobj.id, 'shortdescription' : shortdescription, 'artworkimage' : artworkobj.image1}
     allartworks = []
     allartworks1 = []
     allartworks2 = []
@@ -1196,7 +1204,7 @@ def showstats(request):
             totalartworks += 1
         elif saledate and saledate < date2yearsago:
             continue # If saledate is prior to date2yearsago, skip it.
-        elif not saledate:
+        elif not saledate: # If there is no saledate, we need to check if the auction of this lot was held within the last 2 years or not.
             totalartworks += 1
     yearlylotssold = int(float(totallotssold)/2.0)
     sellthrurate = "NA"

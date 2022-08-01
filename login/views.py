@@ -16,7 +16,7 @@ from django.template import loader
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
-from django.contrib.auth.models import User as djUser
+from django.contrib.auth.models import User as djUser, AnonymousUser
 from django.contrib.auth.decorators import login_required
 
 import os, sys, re, time, datetime
@@ -151,8 +151,12 @@ def index(request):
             anat = a.nationality
             aid = a.artist_id
             # Check for follows and favourites
-            folqset = Follow.objects.filter(user=request.user, artist__id=a.artist_id)
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=a.artist_id)
+            if request.user.is_authenticated:
+                folqset = Follow.objects.filter(user=request.user, artist__id=a.artist_id)
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=a.artist_id)
+            else:
+                folqset = []
+                favqset = []
             folflag = 0
             if folqset.__len__() > 0:
                 folflag = 1
@@ -323,6 +327,7 @@ def signup(request):
     return render(request, 'registration.html', context)
 
 
+@csrf_exempt
 def dologin(request):
     if request.method == 'POST':
         context = {}

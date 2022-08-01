@@ -105,7 +105,10 @@ def index(request):
                 except:
                     pass
                 # Check for favourites
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+                if request.user.is_authenticated:
+                    favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+                else:
+                    favqset = []
                 favflag = 0
                 if favqset.__len__() > 0:
                     favflag = 1        
@@ -148,7 +151,10 @@ def index(request):
             except:
                 pass
             # Check for favourites
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+            if request.user.is_authenticated:
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+            else:
+                favqset = []
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
@@ -500,7 +506,10 @@ def moreauctions(request):
             except:
                 pass
             # Check for favourites
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+            if request.user.is_authenticated:
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+            else:
+                favqset = []
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
@@ -628,7 +637,10 @@ def showauction(request):
             estimate += " - " + str(lotobj.highestimateUSD)
         soldprice = str(lotobj.soldpriceUSD)
         # Check for favourites
-        favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lotobj.artwork_id)
+        if request.user.is_authenticated:
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lotobj.artwork_id)
+        else:
+            favqset = []
         favflag = 0
         if favqset.__len__() > 0:
             favflag = 1   
@@ -728,7 +740,10 @@ def morefilter(request):
             except:
                 pass
             # Check for favourites
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lot.artwork_id)
+            if request.user.is_authenticated:
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lot.artwork_id)
+            else:
+                favqset = []
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
