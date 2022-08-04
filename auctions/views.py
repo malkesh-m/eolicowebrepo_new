@@ -83,6 +83,7 @@ def index(request):
                 if featuredauctions.keys().__len__() > maxupcomingauctions:
                     break
                 auctionname = auction.auctionname
+                salecode = auction.auctionid
                 filterauctions.append(auctionname)
                 if auction.auctionstartdate <= curdatetime: # this is a past auction, so skip.
                     continue
@@ -112,7 +113,7 @@ def index(request):
                 favflag = 0
                 if favqset.__len__() > 0:
                     favflag = 1        
-                d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
+                d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
                 featuredauctions[auctionname] = d
                 if featuredauctions.keys().__len__() > chunksize:
                     break
@@ -134,6 +135,7 @@ def index(request):
             auctionname = auction.auctionname
             filterauctions.append(auctionname)
             auction_id = auction.id
+            salecode = auction.auctionid
             auctionlots = Lot.objects.filter(auction_id=auction.id)
             #if auctionlots.__len__() == 0:
             #    continue
@@ -158,7 +160,7 @@ def index(request):
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
-            d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
+            d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
             if allauctions.keys().__len__() > maxpastauctionsperrow * maxpastauctions:
                 break
             if aucctr % 4 == 0:
