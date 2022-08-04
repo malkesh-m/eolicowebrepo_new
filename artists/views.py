@@ -153,7 +153,12 @@ def index(request):
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1
-            d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag}
+            bdstring = str(birthyear)
+            if deathyear is not None:
+                bdstring = bdstring + " - " + str(deathyear)
+            else:
+                bdstring = "Born " + bdstring
+            d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
             artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
             cursor.execute(artworksql)
             artworkqset = cursor.fetchall()
@@ -232,8 +237,13 @@ def index(request):
                     folflag = 1
                 favflag = 0
                 if favqset.__len__() > 0:
-                    favflag = 1         
-                d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag}
+                    favflag = 1
+                bdstring = str(birthyear)
+                if deathyear is not None:
+                    bdstring = bdstring + " - " + str(deathyear)
+                else:
+                    bdstring = "Born " + bdstring  
+                d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
                 #artworkqset1 = Artwork.objects.filter(artist_id=artistid)
                 artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
                 cursor.execute(artworksql1)
@@ -685,7 +695,12 @@ def search(request):
                 prefix = ""
                 if artist.prefix != "" and artist.prefix != "na":
                     prefix = artist.prefix + " "
-                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id)}
+                bdstring = str(artist.birthyear)
+                if artist.deathyear is not None:
+                    bdstring = bdstring + " - " + str(artist.deathyear)
+                else:
+                    bdstring = "Born " + bdstring
+                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id), 'bdstring' : bdstring}
                 artworkqset = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority')
                 if artworkqset.__len__() == 0:
                     #continue
