@@ -600,18 +600,20 @@
                             </div>
                         </div>
                         <div class="bid-details">
-                            <h3>{{lotinfo.title}}, {{lotinfo.created}}</h3>
-                            <h6>{{lotinfo.medium}}</h6>
+                            <h3>{{lotinfo.title}}</h3>
+                            <h6>Lot #: {{lotinfo.lotno}}, {{lotinfo.auctionname}}</h6>
+			    <h6>{{lotinfo.auctionperiod}}</h6>
                             <p>
+				{{lotinfo.medium}}
                                 {{lotinfo.size}}
                             </p>
 
                             <!-- <p>182.9 × 121.9 cm</p>
                             <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">This is a unique work.</a> -->
                         </div>
-                        <div class="bid-details">
+                        <!-- <div class="bid-details">
                             <h4>Bidding closed</h4>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
