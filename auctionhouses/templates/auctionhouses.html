@@ -571,10 +571,11 @@
 			{% for auction in show.auctionslist %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="{{auction.auctionurl}}"><img src="/media/auctions/{{auction.ahid}}/{{auction.aucid}}/{{auction.coverimage}}" alt="" /></a>
-		                <a href="{{auction.auctionurl}}" style="color:#000000;">
-		                    <h4>{{auction.auctionname}}</h4>
-		                    <h6>{{show.housename}} | {{show.location}}</h6>
+				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="/media/auctions/{{auction.ahid}}/{{auction.aucid}}/{{auction.coverimage}}" alt="" /></a>
+		                <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+				    <h4>{{auction.housename}}, {{auction.location}}</h4>
+		                    <h6>Sale Code: {{auction.salecode}}</h6>
+				    <h4>{{auction.auctionname}}</h4>
 		                    <h6>{{auction.auctionperiod}}</h6>
 		                </a>
 				{% if adminuser == 1 %}
@@ -655,9 +656,10 @@
                     <div class="img-box">
 			<a href='/auction/showauction/?aucid={{auction.aucid}}' style="color:#000000;">
                         <img src="/media/auctions/{{auction.ahid}}/{{auction.aucid}}/{{auction.coverimage}}" style="width:100%">
+                        <h4>{{auctionhousename}}, {{auction.location}}</h4>
+                        <h6 style="padding-left:10px;">Sale Code: {{auction.salecode}}</h6>
                         <h4>{{auction.auctionname}}</h4>
-                        <h6 style="padding-left:10px;">{{auction.auctionperiod}}</h6>
-                        <h6>{{auction.location}}</h6>
+			<h6 style="padding-left:10px;">{{auction.auctionperiod}}</h6>
 			</a>
 			{% if adminuser == 1 %}
 			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>

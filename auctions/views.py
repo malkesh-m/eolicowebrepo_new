@@ -246,6 +246,13 @@ def details(request):
             auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
     except:
         pass
+    auctionhousename, houselocation = "", ""
+    try:
+        auctionhouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+        auctionhousename = auctionhouseobj.housename
+        houselocation = auctionhouseobj.location
+    except:
+        pass
     estimate = str(lotobj.lowestimateUSD)
     if lotobj.highestimateUSD > 0.00:
         estimate += " - " + str(lotobj.highestimateUSD)
@@ -253,7 +260,7 @@ def details(request):
     artworkdesc = artworkdesc.replace("<strong>Description:</strong>", "")
     artworkdesc = artworkdesc.replace("<br>", "")
     artworkdesc = artworkdesc.replace("<strong>", "").replace("</strong>", "")
-    lotinfo = {'title' : artworkname, 'description' : artworkdesc, 'artist' : artistname, 'birth' : artistbirth, 'death' : artistdeath, 'nationality' : nationality, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'auctionname' : auctionname, 'estimate' : estimate, 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'provenance' : lotobj.provenance, 'literature' : literature, 'exhibitions' : exhibition, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.source, 'category' : lotobj.category, 'created' : createdate, 'lotid' : lotobj.id, 'aid' : artistid, 'lotno' : lotobj.lotid, 'auctionperiod' : auctionperiod}
+    lotinfo = {'title' : artworkname, 'description' : artworkdesc, 'artist' : artistname, 'birth' : artistbirth, 'death' : artistdeath, 'nationality' : nationality, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'auctionname' : auctionname, 'estimate' : estimate, 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'provenance' : lotobj.provenance, 'literature' : literature, 'exhibitions' : exhibition, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.source, 'category' : lotobj.category, 'created' : createdate, 'lotid' : lotobj.id, 'aid' : artistid, 'lotno' : lotobj.lotid, 'auctionperiod' : auctionperiod, 'housename' : auctionhousename, 'location' : houselocation}
     context['lotinfo'] = lotinfo
     try:
         aboutartist = pickle.loads(redis_instance.get('ac_aboutartist_%s'%lotobj.auction.id))

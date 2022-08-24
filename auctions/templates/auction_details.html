@@ -491,7 +491,7 @@
                                                         <div class="tb pdt20">
                                                             <h6>Medium</h6>
                                                             <span>
-                                                                <a href="">{{lotinfo.medium}}</a>
+                                                                {{lotinfo.medium}}
                                                             </span>
                                                         </div>
                                                         <!-- <div class="tb pdt20">
@@ -601,7 +601,8 @@
                         </div>
                         <div class="bid-details">
                             <h3>{{lotinfo.title}}</h3>
-                            <h6>Lot #: {{lotinfo.lotno}}, {{lotinfo.auctionname}}</h6>
+                            <h6>Lot #: {{lotinfo.lotno}}</h6>
+			    <h6>{{lotinfo.housename}}, {{lotinfo.location}}: {{lotinfo.auctionname}}</h6>
 			    <h6>{{lotinfo.auctionperiod}}</h6>
                             <p>
 				{{lotinfo.medium}}
@@ -642,6 +643,7 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
 			{% if adminuser == 1 %}
 		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
 		        {% endif %}
@@ -657,6 +659,7 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
 			{% if adminuser == 1 %}
 		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
 		        {% endif %}
@@ -672,6 +675,7 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
 			{% if adminuser == 1 %}
 		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
 		        {% endif %}
@@ -687,6 +691,7 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
 			{% if adminuser == 1 %}
 		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
 		        {% endif %}
@@ -718,6 +723,7 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
 			{% if adminuser == 1 %}
 		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
 		        {% endif %}
@@ -733,6 +739,7 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
 			{% if adminuser == 1 %}
 		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
 		        {% endif %}
@@ -748,6 +755,7 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
 			{% if adminuser == 1 %}
 		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
 		        {% endif %}
@@ -763,6 +771,7 @@
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
 			</a>
+			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
 			{% if adminuser == 1 %}
 		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
 		        {% endif %}

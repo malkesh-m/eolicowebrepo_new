@@ -54,11 +54,12 @@ def index(request):
     auctionhouses = [] # Auctions in various auction houses section.
     filterauctionhouses = []
     maxauctionsperhouse = 4
-    maxfeaturedauctionsperhouse = 2
+    maxfeaturedauctionsperhouse = 4
     maxfeaturedshows = 8
     featuredshowscutoffdate = datetime.datetime.now() - datetime.timedelta(days=2 * 365) # date of 2 year back in time. TODO: This should be changed to 3 months later during deployment.
     featuredshows = [] # Featured shows section, will show 5 top priority auctions only.
     currentmngshows = {} # Current museum and gallery shows section - keys are auction houses, values are list of priority auctions in each house. Will need association of auctions to galleries and museums, which is to be implemented later.
+    uniqueauctions = {}
     try:
         filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
         auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))
@@ -86,6 +87,7 @@ def index(request):
                         auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
                 d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
                 auctionslist.append(d1)
+                uniqueauctions[str(auction.id)] = auction.auctionname
             d['auctionslist'] = auctionslist
             auctionhouses.append(d)
             if auctionhouse.housename not in filterauctionhouses:
@@ -112,8 +114,9 @@ def index(request):
                     auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
                     if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                         auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
-                d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
+                d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id, 'housename' : auctionhouse.housename, 'salecode' : auction.auctionid}
                 auctionslist.append(d1)
+                uniqueauctions[str(auction.id)] = auction.auctionname
             d['auctionslist'] = auctionslist
             featuredshows.append(d)
             if featuredshows.__len__() >= maxfeaturedshows:
@@ -131,8 +134,12 @@ def index(request):
     except:
         currentmngshows = {}
     if currentmngshows.keys().__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')[:maxauctionsperhouse]
+        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')[:maxauctionsperhouse * rows * 4]
         for auction in auctionsqset:
+            if str(auction.id) in uniqueauctions.keys():
+                continue
+            else:
+                uniqueauctions[str(auction.id)] = auction.auctionname
             auctionhouse = None
             try:
                 auctionhouse = AuctionHouse.objects.get(id=auction.auctionhouse_id)
@@ -146,12 +153,14 @@ def index(request):
                     auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
             if auctionhousename in currentmngshows.keys():
                 l = currentmngshows[auctionhousename]
-                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
+                if l.__len__() >= maxauctionsperhouse:
+                    continue
+                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id, 'salecode' : auction.auctionid}
                 l.append(d)
                 currentmngshows[auctionhousename] = l
             else:
                 l = []
-                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
+                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id, 'salecode' : auction.auctionid}
                 l.append(d)
                 currentmngshows[auctionhousename] = l
         context['currentmngshows'] = currentmngshows
