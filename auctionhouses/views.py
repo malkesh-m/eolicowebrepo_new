@@ -25,7 +25,7 @@ from login.models import User, Session #, WebConfig, Carousel
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
-from artists.models import Artist, Artwork
+from artists.models import Artist, Artwork, LotArtist
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -210,8 +210,10 @@ def details(request):
     except:
         auctioninfo = {}
     if auctioninfo.keys().__len__() == 0:
-        auctionsqset = Auction.objects.filter(auctionhouse__iexact=auctionobj.auctionhouse).order_by('-auctionstartdate')
-        auctioninfo = {'auctionname' : auctionobj.auctionname, 'auctionhouse' : auctionobj.auctionhouse, 'auctionlocation' : auctionobj.auctionlocation, 'description' : auctionobj.description, 'auctionurl' : auctionobj.auctionurl, 'lotsurl' : auctionobj.lotslistingurl, 'coverimage' : auctionobj.coverimage, 'auctiondate' : auctionobj.auctiondate, 'auctionid' : auctionobj.auctionid, 'aucid' : auctionobj.id}
+        auctionsqset = Auction.objects.filter(auctionhouse_id__iexact=auctionobj.auctionhouse_id).order_by('-auctionstartdate')
+        auctionhouse = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+        auchousename = auctionhouse.housename
+        auctioninfo = {'auctionname' : auctionobj.auctionname, 'auctionhouse' : auchousename, 'auctionlocation' : auctionhouse.location, 'auctionurl' : auctionobj.auctionurl, 'coverimage' : auctionobj.coverimage, 'auctiondate' : auctionobj.auctionstartdate, 'auctionid' : auctionobj.auctionid, 'aucid' : auctionobj.id}
         try:
             redis_instance.set('ah_auctioninfo_%s'%auctionobj.id, pickle.dumps(auctioninfo))
         except:
@@ -229,10 +231,16 @@ def details(request):
         overviewlots = []
     if alllots.__len__() == 0:
         # This is going to be a very costly query. Lot (lots table) needs to be indexed on auction field. 
-        lotsqset = Lot.objects.filter(auction=auctionobj)#.order_by('priority')
+        lotsqset = Lot.objects.filter(auction_id=auctionobj.id)#.order_by('priority')
         lctr = 0
         for lotobj in lotsqset:
-            d = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artistname' : lotobj.artistname, 'loturl' : lotobj.loturl, 'lotimage' : lotobj.lotimage1, 'medium' : lotobj.medium, 'size' : lotobj.size, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'nationality' : lotobj.artistnationality, 'lid' : lotobj.id}
+            artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
+            artworkname = artworkobj.artworkname
+            artworkdesc = artworkobj.description
+            lotartistqset = LotArtist.objects.filter(artist_id=artworkobj.artist_id)
+            lotartistobj = lotartistqset[0]
+            artistname = lotartistobj.artist_name
+            d = {'title' : artworkname, 'description' : artworkdesc, 'artistname' : str(artistname), 'loturl' : lotobj.source, 'lotimage' : lotobj.lotimage1, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'estimate' : str(lotobj.lowestimateUSD) + " - " + str(lotobj.highestimateUSD), 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'nationality' : lotartistobj.nationality, 'lid' : lotobj.id}
             if lctr < chunksize:
                 overviewlots.append(d)
             else:
@@ -244,20 +252,27 @@ def details(request):
         except:
             pass
         for auction in auctionsqset:
-            d = {'auctionname' : auction.auctionname, 'auctionhouse' : auction.auctionhouse, 'auctionlocation' : auction.auctionlocation, 'description' : auction.description, 'auctionurl' : auction.auctionurl, 'lotsurl' : auction.lotslistingurl, 'coverimage' : auction.coverimage, 'auctionid' : auction.auctionid, 'aucid' : auction.id, 'auctiondate' : auctionobj.auctiondate}
+            auctionhouseobj = AuctionHouse.objects.get(id=auction.auctionhouse_id)
+            d = {'auctionname' : auction.auctionname, 'auctionhouse' : auctionhouseobj.housename, 'auctionlocation' : auctionhouseobj.location, 'description' : '', 'auctionurl' : '', 'lotsurl' : '', 'coverimage' : auction.coverimage, 'auctionid' : auction.auctionid, 'aucid' : auction.id, 'auctiondate' : auctionobj.auctionstartdate}
             # Get 'chunksize' number of lots for this auction
-            lotsqset = Lot.objects.filter(auction=auction)#.order_by() # Ordered by priority
+            lotsqset = Lot.objects.filter(auction_id=auction.id)#.order_by() # Ordered by priority
             lots = []
             numlots = chunksize
             if numlots > lotsqset.__len__():
                 numlots = lotsqset.__len__()
             for lotobj in lotsqset[0:numlots]:
-                ld = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artistname' : lotobj.artistname, 'loturl' : lotobj.loturl, 'lotimage' : lotobj.lotimage1, 'medium' : lotobj.medium, 'size' : lotobj.size, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'nationality' : lotobj.artistnationality, 'lid' : lotobj.id}
+                artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
+                artworkname = artworkobj.artworkname
+                artworkdesc = artworkobj.description
+                lotartistqset = LotArtist.objects.filter(artist_id=artworkobj.artist_id)
+                lotartistobj = lotartistqset[0]
+                artistname = lotartistobj.artist_name
+                ld = {'title' : artworkname, 'description' : artworkdesc, 'artistname' : artistname, 'loturl' : '', 'lotimage' : lotobj.lotimage1, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'estimate' : str(lotobj.lowestimateUSD) + " - " + str(lotobj.highestimateUSD), 'soldprice' : lotobj.soldpriceUSD, 'currency' : "USD", 'nationality' : lotartistobj.nationality, 'lid' : lotobj.id}
                 lots.append(ld)
-                if lotobj.artistname not in relatedartists.keys():
-                    artistqset = Artist.objects.filter(artistname__iexact=lotobj.artistname)
+                if artistname not in relatedartists.keys():
+                    artistqset = Artist.objects.filter(artistname__iexact=artistname)
                     if artistqset.__len__() > 0:
-                        relatedartists[lotobj.artistname] = [ artistqset[0].id, lotobj.lottitle, lotobj.lotimage1 ]
+                        relatedartists[artistname] = [ artistqset[0].id, artworkname, lotobj.lotimage1 ]
             d['lots'] = lots
             auctionslist.append(d)
         try:

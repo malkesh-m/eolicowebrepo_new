@@ -27,7 +27,7 @@ import urllib
 
 #from gallery.models import Gallery, Event
 #from museum.models import Museum, MuseumEvent, MuseumPieces
-from login.models import User, Session #,WebConfig, Carousel, Follow, Favourite
+from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist
@@ -122,8 +122,9 @@ def index(request):
                     auction = Auction.objects.get(id=favmodelid)
                     auctionname = auction.auctionname
                     period = auction.auctionstartdate.strftime("%d %b, %Y")
-                    if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                        period = period + " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                    aucenddate = auction.auctionenddate
+                    if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                        period = period + " - " + str(aucenddate)
                     auchouseid = auction.auctionhouse_id
                     auchouseobj = AuctionHouse.objects.get(id=auchouseid)
                     housename = auchouseobj.housename
@@ -169,6 +170,7 @@ def index(request):
         except:
             pass
     context['artists'] = artistsdict
+    """
     eventsdict = {}
     try:
         eventsdict = pickle.loads(redis_instance.get('h_eventsdict'))
@@ -211,6 +213,7 @@ def index(request):
         except:
             pass
     context['museums'] = museumsdict
+    """
     upcomingauctions = {}
     try:
         upcomingauctions = pickle.loads(redis_instance.get('h_upcomingauctions'))
@@ -221,8 +224,9 @@ def index(request):
         actr = 0
         srcPattern = re.compile("src=(.*)$")
         curdate = datetime.datetime.now()
+        datenow = str(datetime.date(curdate.year, curdate.month,curdate.day))
         for auction in auctionsqset:
-            if auction.auctionstartdate < curdate: # Past auction - leave it.
+            if str(auction.auctionstartdate) < datenow: # Past auction - leave it.
                 continue
             lotsqset = Lot.objects.filter(auction_id=auction.id)
             if lotsqset.__len__() == 0:
@@ -246,13 +250,17 @@ def index(request):
             auctionperiod = ""
             if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
                 auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                aucenddate = auction.auctionenddate
+                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                    auctionperiod += " - " + str(aucenddate)
             # Check for favourites
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+            #print(request.user)
             favflag = 0
-            if favqset.__len__() > 0:
-                favflag = 1         
+            if request.user.is_authenticated:
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+                favflag = 0
+                if favqset.__len__() > 0:
+                    favflag = 1         
             d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auchousename, 'location' : ahlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'auctionperiod' : auctionperiod, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id, 'ahid' : auction.auctionhouse_id, 'favourite' : favflag}
             upcomingauctions[auction.auctionname] = d
             actr += 1
@@ -599,8 +607,9 @@ def morefavourites(request):
                 auction = Auction.objects.get(id=favmodelid)
                 auctionname = auction.auctionname
                 period = auction.auctionstartdate.strftime("%d %b, %Y")
-                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    period = period + " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                aucenddate = auction.auctionenddate
+                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                    period = period + " - " + str(aucenddate)
                 auchouseid = auction.auctionhouse_id
                 auchouseobj = AuctionHouse.objects.get(id=auchouseid)
                 housename = auchouseobj.housename
