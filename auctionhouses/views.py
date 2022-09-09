@@ -19,10 +19,10 @@ import simplejson as json
 import redis
 import pickle
 
-from gallery.models import Gallery, Event
-from login.models import User, Session, WebConfig, Carousel
-from login.views import getcarouselinfo
-from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
+#from gallery.models import Gallery, Event
+from login.models import User, Session #, WebConfig, Carousel
+#from login.views import getcarouselinfo
+#from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork
@@ -69,7 +69,7 @@ def index(request):
         auctionhouses = []
         featuredshows = []
     if auctionhouses.__len__() == 0:
-        auctionhousesqset = AuctionHouse.objects.all().order_by('-priority')
+        auctionhousesqset = AuctionHouse.objects.all()#.order_by('-priority')
         if auctionhousesqset.__len__() <= fstartctr:
             fstartctr = 0
         for auctionhouse in auctionhousesqset[fstartctr:]:
@@ -83,8 +83,9 @@ def index(request):
                 auctionperiod = ""
                 if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
                     auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                    if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                        auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                    aucenddate = auction.auctionenddate
+                    if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                        auctionperiod += " - " + str(aucenddate)
                 d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
                 auctionslist.append(d1)
                 uniqueauctions[str(auction.id)] = auction.auctionname
@@ -108,12 +109,14 @@ def index(request):
             auctionslist = []
             for auction in auctionsqset:
                 auctionperiod = ""
+                featuredshowscutoffdate = datetime.date(featuredshowscutoffdate.year, featuredshowscutoffdate.month, featuredshowscutoffdate.day)
                 if auction.auctionstartdate < featuredshowscutoffdate: # We won't consider auctions that have happened before the last 1 year.
                     continue
                 if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
                     auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                    if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                        auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                    aucenddate = auction.auctionenddate
+                    if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                        auctionperiod += " - " + str(aucenddate)
                 d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id, 'housename' : auctionhouse.housename, 'salecode' : auction.auctionid}
                 auctionslist.append(d1)
                 uniqueauctions[str(auction.id)] = auction.auctionname
@@ -149,8 +152,9 @@ def index(request):
             auctionperiod = ""
             if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
                 auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                aucenddate = auction.auctionenddate
+                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                    auctionperiod += " - " + str(aucenddate)
             if auctionhousename in currentmngshows.keys():
                 l = currentmngshows[auctionhousename]
                 if l.__len__() >= maxauctionsperhouse:
@@ -170,8 +174,8 @@ def index(request):
             pass
     else:
         context['currentmngshows'] = currentmngshows
-    carouselentries = getcarouselinfo()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo()
+    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -225,7 +229,7 @@ def details(request):
         overviewlots = []
     if alllots.__len__() == 0:
         # This is going to be a very costly query. Lot (lots table) needs to be indexed on auction field. 
-        lotsqset = Lot.objects.filter(auction=auctionobj).order_by('priority')
+        lotsqset = Lot.objects.filter(auction=auctionobj)#.order_by('priority')
         lctr = 0
         for lotobj in lotsqset:
             d = {'title' : lotobj.lottitle, 'description' : lotobj.lotdescription, 'artistname' : lotobj.artistname, 'loturl' : lotobj.loturl, 'lotimage' : lotobj.lotimage1, 'medium' : lotobj.medium, 'size' : lotobj.size, 'estimate' : lotobj.estimate, 'soldprice' : lotobj.soldprice, 'currency' : lotobj.currency, 'nationality' : lotobj.artistnationality, 'lid' : lotobj.id}
@@ -242,7 +246,7 @@ def details(request):
         for auction in auctionsqset:
             d = {'auctionname' : auction.auctionname, 'auctionhouse' : auction.auctionhouse, 'auctionlocation' : auction.auctionlocation, 'description' : auction.description, 'auctionurl' : auction.auctionurl, 'lotsurl' : auction.lotslistingurl, 'coverimage' : auction.coverimage, 'auctionid' : auction.auctionid, 'aucid' : auction.id, 'auctiondate' : auctionobj.auctiondate}
             # Get 'chunksize' number of lots for this auction
-            lotsqset = Lot.objects.filter(auction=auction).order_by() # Ordered by priority
+            lotsqset = Lot.objects.filter(auction=auction)#.order_by() # Ordered by priority
             lots = []
             numlots = chunksize
             if numlots > lotsqset.__len__():
@@ -303,7 +307,7 @@ def search(request):
     ahstart = int(page) * chunksize - chunksize
     ahend = int(page) * chunksize
     context = {}
-    auctionhousesqset = AuctionHouse.objects.filter(housename__icontains=searchkey).order_by('priority')[ahstart:ahend]
+    auctionhousesqset = AuctionHouse.objects.filter(housename__icontains=searchkey)[ahstart:ahend]
     auctionhousematches = []
     for auctionhouse in auctionhousesqset:
         housename = auctionhouse.housename
@@ -317,8 +321,9 @@ def search(request):
             auctionperiod = ""
             if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
                 auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                aucenddate = auction.auctionenddate
+                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                    auctionperiod += " - " + str(aucenddate)
             if coverimage == "":
                 coverimage = auction.coverimage
                 d['coverimage'] = coverimage

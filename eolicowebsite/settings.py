@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'login',
-    'gallery',
-    'museum',
+    #'gallery',
+    #'museum',
     'artists',
     'auctions',
     'auctionhouses',
@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'eolicowebsite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
@@ -104,6 +104,17 @@ DATABASES = {
         'PASSWORD': 'secretpasswd', 
         'HOST': 'localhost',  
         'PORT': '3306',
+    }
+}
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'Artcurv-production', 
+        'USER': 'websiteadmin',  
+        'PASSWORD': 'AVNS_UHIULiqroqLJ4x2ivN_', 
+        'HOST': 'art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com',  
+        'PORT': '25060',
     }
 }
 

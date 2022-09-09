@@ -70,7 +70,7 @@ class Session(models.Model):
     def save(self, **kwargs):
         super(Session, self).save(kwargs)
 
-
+"""
 class Privilege(models.Model):
     privname = models.CharField(max_length=50, unique=True)
     privdesc = models.TextField(default="")
@@ -151,7 +151,7 @@ class Follow(models.Model):
 
     def __unicode__(self):
         return ""
-
+"""
 
 class Favourite(models.Model):
     user = models.ForeignKey(djUser, db_column='user_id', on_delete=models.CASCADE)

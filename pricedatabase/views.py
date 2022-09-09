@@ -21,10 +21,10 @@ import pickle
 import urllib
 import MySQLdb
 
-from gallery.models import Gallery, Event
-from login.models import User, Session, WebConfig, Carousel
-from login.views import getcarouselinfo
-from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
+#from gallery.models import Gallery, Event
+from login.models import User, Session #, WebConfig, Carousel
+#from login.views import getcarouselinfo
+#from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist
@@ -144,8 +144,8 @@ def index(request):
     context['entities'] = entitieslist
     context['filterpdb'] = filterpdb
     context['auctionhouses'] = auctionhouses
-    carouselentries = getcarouselinfo()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo()
+    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:

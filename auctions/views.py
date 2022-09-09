@@ -25,10 +25,10 @@ import redis
 import pickle
 import urllib
 
-from gallery.models import Gallery, Event
-from login.models import User, Session, WebConfig, Carousel, Favourite
-from login.views import getcarouselinfo
-from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
+#from gallery.models import Gallery, Event
+from login.models import User, Session #, WebConfig, Carousel, Favourite
+#from login.views import getcarouselinfo
+#from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from artists.models import Artist, Artwork
 from auctionhouses.models import AuctionHouse
@@ -75,8 +75,9 @@ def index(request):
         filterauctions = []
         allauctions = {}
     curdatetime = datetime.datetime.now()
+    curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
     if allauctions.__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('-auctionstartdate', 'priority')
+        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')
         try:
             aucctr = 0
             for auction in auctionsqset[rowstartctr:]:
@@ -85,7 +86,7 @@ def index(request):
                 auctionname = auction.auctionname
                 salecode = auction.auctionid
                 filterauctions.append(auctionname)
-                if auction.auctionstartdate <= curdatetime: # this is a past auction, so skip.
+                if auction.auctionstartdate <= curdate: # this is a past auction, so skip.
                     continue
                 if aucctr > rowendctr:
                     break
@@ -95,8 +96,9 @@ def index(request):
                 #if auctionlots.__len__() == 0:
                 #    continue
                 auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+                aucenddate = auction.auctionenddate
+                if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+                    auctionperiod += " - " + str(aucenddate)
                 auctionhouse = None
                 auctionhousename, ahid, location = "", auction.auctionhouse_id, ""
                 try:
@@ -130,7 +132,7 @@ def index(request):
         rctr = 0
         allauctions['row0'] = []
         for auction in auctionsqset[pastrowstartctr:]:
-            if auction.auctionstartdate > curdatetime:
+            if auction.auctionstartdate > curdate:
                 continue
             auctionname = auction.auctionname
             filterauctions.append(auctionname)
@@ -142,8 +144,9 @@ def index(request):
             if auctionname not in allauctions.keys():
                 allauctions[auctionname] = []
             auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-            if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+            aucenddate = auction.auctionenddate
+            if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+                auctionperiod += " - " + str(aucenddate)
             auctionhouse = None
             auctionhousename, ahid, location = "", auction.auctionhouse_id, ""
             try:
@@ -176,8 +179,8 @@ def index(request):
             redis_instance.set('ac_filterauctions', pickle.dumps(filterauctions))
         except:
             pass
-    carouselentries = getcarouselinfo()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo()
+    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -242,8 +245,9 @@ def details(request):
         auctionobj = Auction.objects.get(id=lotobj.auction_id)
         auctionname = auctionobj.auctionname
         auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-        if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-            auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+        aucenddate = auction.auctionenddate
+        if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+            auctionperiod += " - " + str(aucenddate)
     except:
         pass
     auctionhousename, houselocation = "", ""
@@ -293,7 +297,7 @@ def details(request):
         relatedworks = [[], [], [], []]
         allartists = {}
     if otherworks[0].__len__() == 0:
-        lotsqset = Lot.objects.filter(auction_id=lotobj.auction_id).order_by() # Ordered by priority, by default
+        lotsqset = Lot.objects.filter(auction_id=lotobj.auction_id).order_by()
         numlots = chunksize * rows
         if lotsqset.__len__() < numlots:
             numlots = lotsqset.__len__()
@@ -412,7 +416,7 @@ def search(request):
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
     #print(searchkey)
     context = {}
-    auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey).order_by('priority')
+    auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey)
     allauctions = []
     maxsearchresults = 30
     aucctr = 0
@@ -427,8 +431,9 @@ def search(request):
         except:
             pass
         auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-        if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-            auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+        aucenddate = auction.auctionenddate
+        if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+            auctionperiod += " - " + str(aucenddate)
         d = {'auctionname' : auctionobj.auctionname, 'auctionid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj.coverimage, 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount)}
         if aucctr > maxsearchresults:
             break
@@ -472,6 +477,7 @@ def moreauctions(request):
     allauctions = {}
     filterauctions = []
     curdatetime = datetime.datetime.now()
+    curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
     try:
         if int(atype) == 0: # get all upcoming auctions
             allauctions = pickle.loads(redis_instance.get('ac_upcomingauctions'))
@@ -488,16 +494,16 @@ def moreauctions(request):
         #allartists = {}
         allauctions = {}
     if allauctions.__len__() == 0: # We didn't get any data from redis cache...
-        auctionsqset = Auction.objects.all().order_by('-auctionstartdate', 'priority')
+        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')
         aucctr = 0
         rctr = 0
         allauctions['row0'] = []
         for auction in auctionsqset[rowstartctr:]:
             auctionname = auction.auctionname
             filterauctions.append(auctionname)
-            if int(atype) == 1 and auction.auctionstartdate > curdatetime: # This is an upcoming auction, but we want past auctions only.
+            if int(atype) == 1 and auction.auctionstartdate > curdate: # This is an upcoming auction, but we want past auctions only.
                 continue
-            elif int(atype) == 0 and auction.auctionstartdate <= curdatetime: # This is a past auction, we want upcoming only.
+            elif int(atype) == 0 and auction.auctionstartdate <= curdate: # This is a past auction, we want upcoming only.
                 continue
             auction_id = auction.id
             #auctionlots = Lot.objects.filter(auction_id=auction.id)
@@ -507,8 +513,9 @@ def moreauctions(request):
             if auctionname not in allauctions.keys():
                 allauctions[auctionname] = []
             auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-            if auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                auctionperiod += " - " + auction.auctionenddate.strftime("%d %b, %Y")
+            aucenddate = auction.auctionenddate
+            if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+                auctionperiod += " - " + str(aucenddate)
             auctionhouse = None
             auctionhousename, ahid, location = "", auction.auctionhouse_id, ""
             try:
@@ -544,8 +551,8 @@ def moreauctions(request):
     #context['allartists'] = allartists
     context['allauctions'] = allauctions
     context['filterauctions'] = filterauctions
-    carouselentries = getcarouselinfo()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo()
+    #context['carousel'] = carouselentries
     context['atype'] = atype
     prevpage = int(page) - 1
     nextpage = int(page) + 1
@@ -594,14 +601,16 @@ def showauction(request):
     nationalities = {}
     auctioninfo = {}
     curdatetime = datetime.datetime.now()
+    curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
     auctionobj = None
     try:
         auctionobj = Auction.objects.get(id=aucid)
     except:
         return HttpResponse("Could not find auction identified by ID %s: %s"%(aucid, sys.exc_info()[1].__str__()))
     auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-        auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+    aucenddate = auctionobj.auctionenddate
+    if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+        auctionperiod += " - " + str(aucenddate)
     auctioninfo['auctionname'] = auctionobj.auctionname
     auctioninfo['auctionperiod'] = auctionperiod
     auctioninfo['auctionid'] = auctionobj.auctionid
@@ -742,8 +751,9 @@ def morefilter(request):
             except:
                 pass
             aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-            if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+            aucenddate = auction.auctionenddate
+            if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+                aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
             auctionhouseobj = None
             auctionhousename = ""
             try:
@@ -759,7 +769,7 @@ def morefilter(request):
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
-            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id, 'lotno' : lot.lotid, 'category' : lot.category, 'auctionhouse' : auctionhousename, 'favourite' : favflag}
+            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id, 'lotno' : lot.lotid, 'category' : lot.category, 'auctionhouse' : auctionhousename, 'favourite' : favflag}
             for medium in mediumlist:
                 if medium in artwork.medium.lower():
                     if artwork.artworkname not in uniquelots.keys():

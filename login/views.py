@@ -25,9 +25,9 @@ import redis
 import pickle
 import urllib
 
-from gallery.models import Gallery, Event
-from museum.models import Museum, MuseumEvent, MuseumPieces
-from login.models import User, Session, WebConfig, Carousel, Follow, Favourite
+#from gallery.models import Gallery, Event
+#from museum.models import Museum, MuseumEvent, MuseumPieces
+from login.models import User, Session #,WebConfig, Carousel, Follow, Favourite
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist
@@ -40,7 +40,7 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
-
+"""
 def getcarouselinfo():
     entrieslist = []
     countqset = WebConfig.objects.filter(paramname="carousel entries count")
@@ -64,7 +64,7 @@ def getcarouselinfo():
         except:
             pass
     return entrieslist
-
+"""
 
 #@cache_page(CACHE_TTL)
 def index(request):
@@ -287,8 +287,10 @@ def index(request):
         except:
             pass
     context['auctionhouses'] = auctionhouses
+    """
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
+    """
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -364,6 +366,7 @@ def checkloginstatus(request):
 #@cache_page(CACHE_TTL)
 def about(request):
     if request.method == 'GET':
+        """
         wcqset = WebConfig.objects.filter(paramname="About")
         #wcqset = WebConfig.objects.filter(path="/about/")
         wcobj = None
@@ -375,6 +378,8 @@ def about(request):
             context['aboutid'] = wcobj.id
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
+        """
+        context = {'aboutcontent' : ''}
         if request.user.is_authenticated and request.user.is_staff:
             context['adminuser'] = 1
         else:
@@ -388,6 +393,7 @@ def about(request):
 #@cache_page(CACHE_TTL)
 def contactus(request):
     if request.method == 'GET':
+        """
         wcqset = WebConfig.objects.filter(paramname="ContactUs")
         #wcqset = WebConfig.objects.filter(path="/contactus/")
         wcobj = None
@@ -399,6 +405,8 @@ def contactus(request):
             context['contactid'] = wcobj.id
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
+        """
+        context = {'contactus' : ''}
         if request.user.is_authenticated and request.user.is_staff:
             context['adminuser'] = 1
         else:

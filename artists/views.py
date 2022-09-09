@@ -27,10 +27,10 @@ import pickle
 import MySQLdb
 import urllib
 
-from gallery.models import Gallery, Event
-from login.models import User, Session, WebConfig, Carousel, Favourite, Follow
-from login.views import getcarouselinfo
-from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
+#from gallery.models import Gallery, Event
+from login.models import User, Session #, WebConfig, Carousel, Favourite, Follow
+#from login.views import getcarouselinfo
+#from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
 from auctions.models import Auction, Lot
 
@@ -315,8 +315,8 @@ def index(request):
         except:
             pass
     context['filterartists'] = filterartists
-    carouselentries = getcarouselinfo()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo()
+    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -425,7 +425,8 @@ def details(request):
                 continue # If we fail to find the auction, there is no use going ahead.
             auctionstartdate = auctionobj.auctionstartdate
             auctionname = auctionobj.auctionname
-            if auctionstartdate > curdatetime: # This is an upcoming auction
+            curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
+            if auctionstartdate > curdate: # This is an upcoming auction
                 auchouseobj = None
                 try:
                     #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
@@ -439,21 +440,23 @@ def details(request):
                 except:
                     auchousename = ""
                 auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-                if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "":
-                    auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+                aucenddate = auctionobj.auctionenddate
+                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "":
+                    auctionperiod += " - " + str(aucenddate)
                 try:
                     artwork = Artwork.objects.get(id=lotartist.artworkid)
-                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
                 except:
-                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : '', 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : '', 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : '', 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : '', 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
                 if maxupcominglots > lotsinupcomingauctions.__len__():
                     lotsinupcomingauctions.append(d)
                 else:
                     upcomingflag = 1
             else: # Past auction case
                 auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-                if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+                aucenddate = auctionobj.auctionenddate
+                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                    auctionperiod += " - " + str(aucenddate)
                 auchouseobj = None
                 try:
                     ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
@@ -469,9 +472,9 @@ def details(request):
                     auchousename = ""
                 try:
                     artwork = Artwork.objects.get(id=lotartist.artworkid)
-                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotartist.artist_price_usd), 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist.artist_price_usd), 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
                 except:
-                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : '', 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : '', 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auchousename' : auchousename, 'soldprice' : str(lotartist.artist_price_usd), 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : '', 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : '', 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist.artist_price_usd), 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
                 if maxpastlots > lotsinpastauctions.__len__():
                     lotsinpastauctions.append(d)
                 else:
@@ -738,8 +741,8 @@ def search(request):
         except:
             pass
     context['filterartists'] = filterartists
-    carouselentries = getcarouselinfo()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo()
+    #context['carousel'] = carouselentries
     prevpage = int(page) - 1
     nextpage = int(page) + 1
     displayedprevpage1 = 0
@@ -844,8 +847,9 @@ def showartwork(request):
                 except:
                     continue
                 eventperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-                if auctionobj.auctionenddate.strftime("%d %b, %Y") != '01 Jan, 0001' and auctionobj.auctionenddate.strftime("%d %b, %Y") != '01 Jan, 1':
-                    eventperiod = eventperiod + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
+                aucenddate = auctionobj.auctionenddate
+                if str(aucenddate) != '0000-00-00' and str(aucenddate) != '01 Jan, 1':
+                    eventperiod = eventperiod + " - " + str(aucenddate)
                 d2 = {'eventname' : auctionobj.auctionname, 'eventimage' : auctionobj.coverimage, 'eventperiod' : eventperiod, 'aucid' : auctionobj.id}
                 allevents.append(d2)
             if allartworks.__len__() >= maxartworkstoshow:
@@ -939,9 +943,10 @@ def textfilter(request):
                 #print(artwork.artworkname)
                 if auctionobj is not None:
                     aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-                    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                        aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    aucenddate = auctionobj.auctionenddate
+                    if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                        aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
                     d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate, 'auctionperiod' : ''}
                 pastartworks.append(d)
@@ -1045,9 +1050,10 @@ def morefilter(request):
                 estimate = estimatelow + " - " + estimatehigh
                 if auctionobj is not None:
                     aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-                    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                        aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    aucenddate = auctionobj.auctionenddate
+                    if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                        aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
                     d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'auctionperiod' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 if maxsearchresults < pastartworks.__len__():
@@ -1062,9 +1068,10 @@ def morefilter(request):
                 estimate = estimatelow + " - " + estimatehigh
                 if auctionobj is not None:
                     aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-                    if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                        aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : auctionobj.auctionenddate.strftime("%d %b, %Y"), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    aucenddate = auctionobj.auctionenddate
+                    if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                        aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
                     d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'auctionperiod' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 for medium in mediumlist:
