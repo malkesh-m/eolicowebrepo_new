@@ -64,7 +64,7 @@ def index(request):
     startctr = (chunksize * rows) * (int(page) -1) + featuredsize
     endctr = (chunksize * rows) * int(page) + featuredsize
     maxartworkstoconsider = 100
-    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="Artcurv-production")
     cursor = dbconn.cursor()
     context = {}
     featuredartists = []
@@ -344,7 +344,7 @@ def details(request):
     maxrelatedartist = 8
     artistobj = None
     context = {}
-    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="Artcurv-production")
     cursor = dbconn.cursor()
     try:
         artistobj = Artist.objects.get(id=aid)

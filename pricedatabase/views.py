@@ -185,7 +185,7 @@ def search(request):
     endsearchctr = int(page) * maxsearchresults + 1
     objectstartctr = maxperobjectsearchresults * int(page) - maxperobjectsearchresults
     objectendctr = maxperobjectsearchresults * int(page)
-    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="Artcurv-production")
     cursor = dbconn.cursor()
     # Remember to close db connection at the end of the function...
     auctionhouseqset = AuctionHouse.objects.filter(housename__icontains=searchkey)
@@ -375,7 +375,7 @@ def dofilter(request):
     sizelist = sizespec.split("|")
     entitieslist = []
     context = {}
-    dbconn = MySQLdb.connect(user="eolicouser",passwd="secretpasswd",host="localhost",db="gaidbpure")
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="Artcurv-production")
     cursor = dbconn.cursor()
     l_entities = []
     if lottitle != "":
