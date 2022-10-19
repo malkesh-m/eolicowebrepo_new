@@ -99,6 +99,8 @@ def index(request):
             if artistid in settings.BLACKLISTED_ARTISTS:
                 continue
             artistname = artist.artist_name
+            if artistname == "Missing":
+                continue
             price = artist.totalsoldprice
             prefix = artist.prefix
             nationality = artist.nationality
@@ -309,7 +311,32 @@ def index(request):
     if filterartists.__len__() == 0:
         allartistsqset = FeaturedArtist.objects.all()[0:20000]
         for artist in allartistsqset:
-            filterartists.append(artist.artist_name)
+            if artist.nationality != "" and artist.nationality is not None:
+                nationality = artist.nationality
+            else:
+                nationality = ""
+            if artist.birthyear != "" and artist.birthyear is not None and artist.birthyear != 0:
+                birthyear = str(artist.birthyear)
+            else:
+                birthyear = ""
+            if artist.deathyear != "" and artist.deathyear is not None and artist.deathyear != 0:
+                deathyear = str(artist.deathyear)
+            else:
+                deathyear = ""
+            artistinfo = ""
+            if nationality != "":
+                artistinfo = artist.artist_name + " (" + nationality + ", "
+            else:
+                artistinfo = artist.artist_name + " ("
+            if birthyear != "":
+                artistinfo = artistinfo + birthyear + " - "
+            else:
+                pass
+            if deathyear != "":
+                artistinfo = artistinfo + deathyear + ")"
+            else:
+                artistinfo = artistinfo + ")"
+            filterartists.append(artistinfo)
         try:
             redis_instance.set('at_filterartists', pickle.dumps(filterartists))
         except:
@@ -666,7 +693,7 @@ def search(request):
             searchkey = str(request.GET['q']).strip()
     if not searchkey:
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
-    #print(searchkey)
+    #print(searchkey + " -------------------------------------")
     pageno = 1
     if request.method == 'GET':
         if 'page' in request.GET.keys():
@@ -682,13 +709,15 @@ def search(request):
     context = {}
     featuredartists = []
     uniqartists = {}
+    searchedname = searchkey.split("(")[0]
+    searchedname = searchedname.strip()
     try:
-        featuredartists = pickle.loads(redis_instance.get('at_featuredartists_%s'%searchkey.lower()))
+        featuredartists = pickle.loads(redis_instance.get('at_featuredartists_%s'%searchedname.lower()))
     except:
         featuredartists = []
     uniqartists = {}
     if featuredartists.__len__() == 0:
-        matchingartistsqset = Artist.objects.filter(artistname__icontains=searchkey) #.order_by('priority')
+        matchingartistsqset = Artist.objects.filter(artistname__icontains=searchedname) #.order_by('priority')
         for artist in matchingartistsqset[startctr:endctr]:
             if artist.artistname.title() not in uniqartists.keys():
                 if artist.nationality == "na":
@@ -735,7 +764,32 @@ def search(request):
     if filterartists.__len__() == 0:
         allartistsqset = Artist.objects.all()
         for artist in allartistsqset[:2000]:
-            filterartists.append(artist.artistname)
+            if artist.nationality != "" and artist.nationality is not None:
+                nationality = artist.nationality
+            else:
+                nationality = ""
+            if artist.birthyear != "" and artist.birthyear is not None and artist.birthyear != 0:
+                birthyear = str(artist.birthyear)
+            else:
+                birthyear = ""
+            if artist.deathyear != "" and artist.deathyear is not None and artist.deathyear != 0:
+                deathyear = str(artist.deathyear)
+            else:
+                deathyear = ""
+            artistinfo = ""
+            if nationality != "":
+                artistinfo = artist.artistname + "(" + nationality
+            else:
+                artistinfo = artist.artistname + "("
+            if birthyear != "":
+                artistinfo = artistinfo + ", " + birthyear
+            else:
+                pass
+            if deathyear != "":
+                artistinfo = artistinfo + " - " + deathyear + ")"
+            else:
+                artistinfo = artistinfo + ")"
+            filterartists.append(artistinfo)
         try:
             redis_instance.set('at_filterartists', pickle.dumps(filterartists))
         except:
