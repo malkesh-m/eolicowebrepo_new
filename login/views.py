@@ -74,15 +74,36 @@ def index(request):
     context = {}
     followsdict = {}
     if request.user.is_authenticated:
-        followsqset = Follow.objects.filter(user=request.user, status=True).order_by("-updatedon")
+        followsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
         for follow in followsqset:
-            artist = follow.artist
-            artistname = artist.artistname
-            aimg = artist.artistimage
-            anat = artist.nationality
-            aid = artist.id
-            about = artist.description
-            followsdict[artistname] = [about, aimg, anat, aid]
+            objectname = follow.reference_model
+            objectid = follow.reference_model_id
+            if objectname == "fineart_artists":
+                artist = Artist.objects.get(id=objectid)
+                artistname = artist.artistname
+                aimg = artist.artistimage
+                anat = artist.nationality
+                aid = artist.id
+                about = artist.description
+                followsdict[artistname] = [about, aimg, anat, aid]
+            elif objectname == "fineart_artworks":
+                artwork = Artwork.objects.get(id=objectid)
+                artworkname = artwork.artworkname
+                artworkimg = artwork.image1
+                about = artwork.description
+                sizedetails = artwork.sizedetails
+                aid = artwork.id
+                followsdict[artworkname] = [about, artworkimg, sizedetails, aid]
+            elif objectname == "fineart_auction_calendar":
+                auction = Auction.objects.get(id=objectid)
+                auctionname = auction.auctionname
+                aucimg = auction.coverimage
+                aucstartdate = auction.auctionstartdate.strftime("%d %b, %Y")
+                aid = auction.id
+                auchouseid = auction.auctionhouse_id
+                auctionhouse = AuctionHouse.objects.get(id=auchouseid)
+                auchousename = auctionhouse.housename
+                followsdict[artworkname] = [auchousename, aucimg, aucstartdate, aid]
     context['follows'] = followsdict
     favouritesdict = {}
     if request.user.is_authenticated:
@@ -153,7 +174,8 @@ def index(request):
             aid = a.artist_id
             # Check for follows and favourites
             if request.user.is_authenticated:
-                folqset = Follow.objects.filter(user=request.user, artist__id=a.artist_id)
+                #folqset = Follow.objects.filter(user=request.user, artist__id=a.artist_id)
+                folqset = []
                 favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=a.artist_id)
             else:
                 folqset = []
@@ -284,7 +306,7 @@ def index(request):
             auctionsqset = Auction.objects.filter(auctionhouse_id=auchouse.id)
             if auctionsqset.__len__() == 0:
                 continue
-            print(auctionsqset[0].coverimage)
+            #print(auctionsqset[0].coverimage)
             d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : '', 'coverimage' : auctionsqset[0].coverimage, 'ahid' : auchouse.id}
             auctionhouses.append(d)
             actr += 1

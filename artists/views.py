@@ -28,7 +28,7 @@ import MySQLdb
 import urllib
 
 #from gallery.models import Gallery, Event
-from login.models import User, Session #, WebConfig, Carousel, Favourite, Follow
+from login.models import User, Session, Favourite #, WebConfig, Carousel, Follow
 #from login.views import getcarouselinfo
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
@@ -47,7 +47,7 @@ redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS
 def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    pagemap = {'a' : 1, 'b' : 2, 'c' : 3, 'd' : 4, 'e' : 5, 'f' : 6, 'g' : 7, 'h' : 8, 'i' : 9, 'j' : 10, 'k' : 11, 'l' : 12, 'm' : 13, 'n' : 14, 'o' : 15, 'p' : 16, 'q' : 17, 'r' : 18, 's' : 19, 't' : 20, 'u' : 21, 'v' : 22, 'w' : 23, 'x' : 24, 'y' : 25, 'z' : 26, '-' : 1}
+    pagemap = {'a' : 1, 'b' : 2, 'c' : 3, 'd' : 4, 'e' : 5, 'f' : 6, 'g' : 7, 'h' : 8, 'i' : 9, 'j' : 10, 'k' : 11, 'l' : 12, 'm' : 13, 'n' : 14, 'o' : 15, 'p' : 16, 'q' : 17, 'r' : 18, 's' : 19, 't' : 20, 'u' : 21, 'v' : 22, 'w' : 23, 'x' : 24, 'y' : 25, 'z' : 26, '-' : -1}
     pageno = "-"
     if request.method == 'GET':
         if 'page' in request.GET.keys():
@@ -55,16 +55,16 @@ def index(request):
     try:
         page = pagemap[pageno]
     except:
-        page = 1
+        page = -1
     chunksize = 4
     rows = 4
     featuredsize = 4
-    rowstartctr = int(page) * rows - rows
-    rowendctr = int(page) * rows
-    startctr = (chunksize * rows) * (int(page) -1) + featuredsize
-    endctr = (chunksize * rows) * int(page) + featuredsize
+    rowstartctr = int(abs(page)) * rows - rows
+    rowendctr = int(abs(page)) * rows
+    startctr = (chunksize * rows) * (int(abs(page)) -1) + featuredsize
+    endctr = (chunksize * rows) * int(abs(page)) + featuredsize
     maxartworkstoconsider = 100
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="Artcurv-production")
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     context = {}
     featuredartists = []
@@ -91,26 +91,34 @@ def index(request):
         cursor.execute(getview_sql)
         artistsqset = cursor.fetchall()
         """
-        artistsqset = FeaturedArtist.objects.all().order_by('-totalsoldprice')[0:endctr]
-        if page != 1:
-            artistsqset = FeaturedArtist.objects.filter(artist_name__istartswith=str(pageno)).order_by('-totalsoldprice')[0:endctr]
+        featuredartistsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A ORDER BY A.totalsoldprice DESC LIMIT %s"%endctr
+        cursor.execute(featuredartistsql)
+        artistsqset = cursor.fetchall()
+        #artistsqset = FeaturedArtist.objects.all().order_by('-totalsoldprice')[0:endctr]
+        if page != -1:
+            artistnamestartswithsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A WHERE A.artist_name LIKE '" + str(pageno) + "%' or A.artist_name LIKE '" + str(pageno).upper() + "%'"
+            cursor.execute(artistnamestartswithsql)
+            artistsqset = cursor.fetchall()
+            #artistsqset = FeaturedArtist.objects.filter(artist_name__istartswith=str(pageno)).order_by('-totalsoldprice')[0:endctr]
         for artist in artistsqset:
-            artistid = artist.artist_id
+            artistid = artist[0]
             if artistid in settings.BLACKLISTED_ARTISTS:
                 continue
-            artistname = artist.artist_name
+            artistname = artist[1]
             if artistname == "Missing":
                 continue
-            price = artist.totalsoldprice
-            prefix = artist.prefix
-            nationality = artist.nationality
-            birthyear = artist.birthyear
-            deathyear = artist.deathyear
-            description = artist.description
-            aka = artist.aka
-            bio = artist.bio
-            artistimage = artist.artistimage
-            genre = artist.genre
+            price = artist[11]
+            if price is None:
+                price = 0.00
+            prefix = artist[2]
+            nationality = artist[3]
+            birthyear = artist[4]
+            deathyear = artist[5]
+            description = artist[6]
+            aka = artist[7]
+            bio = artist[8]
+            artistimage = artist[9]
+            genre = artist[10]
             if artistname not in uniqartists.keys():
                 uniqartists[artistname] = [artistid, artistname, float(price), prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre]
             else:
@@ -122,6 +130,8 @@ def index(request):
             artistid = artist[0]
             artistname = artist[1]
             price = "{:,}".format(artist[2])
+            if not price or price is None:
+                price = 0.00
             prefix = artist[3]
             nationality = artist[4]
             birthyear = artist[5]
@@ -144,8 +154,9 @@ def index(request):
                 prefix = prefix + " "
             # Check for follows and favourites
             if request.user.is_authenticated:
-                folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
+                #folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
                 favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+                folqset = favqset
             else:
                 folqset = []
                 favqset = []
@@ -229,8 +240,9 @@ def index(request):
                     prefix = prefix + " "
                 # Check for follows and favourites
                 if request.user.is_authenticated:
-                    folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
+                    #folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
                     favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+                    folqset = favqset
                 else:
                     folqset = []
                     favqset = []
@@ -248,6 +260,7 @@ def index(request):
                 d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
                 #artworkqset1 = Artwork.objects.filter(artist_id=artistid)
                 artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
+                #print(artworksql1)
                 cursor.execute(artworksql1)
                 artworkqset1 = cursor.fetchall()
                 try: # Getting a stupid "Protocol error, expecting EOF" for artistid 90761...
@@ -371,7 +384,7 @@ def details(request):
     maxrelatedartist = 8
     artistobj = None
     context = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="Artcurv-production")
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     try:
         artistobj = Artist.objects.get(id=aid)
@@ -1023,7 +1036,7 @@ def textfilter(request):
     return HttpResponse(json.dumps(context))
 
 
-
+@csrf_protect
 def morefilter(request):
     if request.method != 'POST':
         return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
