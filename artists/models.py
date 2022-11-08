@@ -65,6 +65,7 @@ class LotArtist(models.Model):
     artworkname = models.TextField()
     lotimage1 = models.TextField(default='')
     lotimage2 = models.TextField(default='')
+    #last_edited = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Artwork/Lot/Artist Combined Information Table"
