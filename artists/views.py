@@ -256,7 +256,7 @@ def index(request):
                 if deathyear is not None:
                     bdstring = bdstring + " - " + str(deathyear)
                 else:
-                    bdstring = "Born " + bdstring  
+                    bdstring = "Born " + bdstring
                 d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
                 #artworkqset1 = Artwork.objects.filter(artist_id=artistid)
                 artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
@@ -387,13 +387,17 @@ def details(request):
     dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     try:
-        artistobj = Artist.objects.get(id=aid)
+        artistsql = "SELECT fa_artist_name, fa_artist_ID, fa_artist_name_prefix, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_description, fa_artist_aka, fa_artist_bio, fa_artist_genre, fa_artist_image, fa_artist_record_created from fineart_artists Where fa_artist_ID=%s"%aid
+        cursor.execute(artistsql)
+        artistobj = cursor.fetchone()
+        #print("1. %s"%artistsql)
+        #artistobj = Artist.objects.get(id=aid)
     except:
         context['error'] = "Artist with the given identifier (%s) doesn't exist"%aid
         template = loader.get_template('artist_details.html')
         return HttpResponse(template.render(context, request))
     context['aid'] = aid
-    artistname = artistobj.artistname
+    artistname = artistobj[0]
     # Get all artworks by the given artist.
     allartworks = []
     allartworks1 = []
@@ -411,22 +415,22 @@ def details(request):
     soldlotsprice = 0.00
     maxpastlots = 25
     maxupcominglots = 8
-    maxartworkstoconsider = 500
+    maxartworkstoconsider = 100
     artworkstartctr = int(page) * maxartworkstoconsider - maxartworkstoconsider
     artworkendctr = int(page) * maxartworkstoconsider
     try:
-        allartworks = pickle.loads(redis_instance.get('at_allartworks_%s'%artistobj.id))
-        allartworks1 = pickle.loads(redis_instance.get('at_allartworks1_%s'%artistobj.id))
-        allartworks2 = pickle.loads(redis_instance.get('at_allartworks2_%s'%artistobj.id))
-        allartworks3 = pickle.loads(redis_instance.get('at_allartworks3_%s'%artistobj.id))
-        allartworks4 = pickle.loads(redis_instance.get('at_allartworks4_%s'%artistobj.id))
-        lotsinupcomingauctions = pickle.loads(redis_instance.get('at_lotsinupcomingauctions_%s'%artistobj.id))
-        lotsinpastauctions = pickle.loads(redis_instance.get('at_lotsinpastauctions_%s'%artistobj.id))
-        yearlylotssold = redis_instance.get('at_yearlylotssold_%s'%artistobj.id)
-        sellthrurate = redis_instance.get('at_sellthrurate_%s'%artistobj.id)
-        avgsaleprice = redis_instance.get('at_avgsaleprice_%s'%artistobj.id)
-        salepriceoverestimate = redis_instance.get('at_salepriceoverestimate_%s'%artistobj.id)
-        totallotssold = redis_instance.get('at_totallotssold_%s'%artistobj.id)
+        allartworks = pickle.loads(redis_instance.get('at_allartworks_%s'%artistobj[1]))
+        allartworks1 = pickle.loads(redis_instance.get('at_allartworks1_%s'%artistobj[1]))
+        allartworks2 = pickle.loads(redis_instance.get('at_allartworks2_%s'%artistobj[1]))
+        allartworks3 = pickle.loads(redis_instance.get('at_allartworks3_%s'%artistobj[1]))
+        allartworks4 = pickle.loads(redis_instance.get('at_allartworks4_%s'%artistobj[1]))
+        lotsinupcomingauctions = pickle.loads(redis_instance.get('at_lotsinupcomingauctions_%s'%artistobj[1]))
+        lotsinpastauctions = pickle.loads(redis_instance.get('at_lotsinpastauctions_%s'%artistobj[1]))
+        yearlylotssold = redis_instance.get('at_yearlylotssold_%s'%artistobj[1])
+        sellthrurate = redis_instance.get('at_sellthrurate_%s'%artistobj[1])
+        avgsaleprice = redis_instance.get('at_avgsaleprice_%s'%artistobj[1])
+        salepriceoverestimate = redis_instance.get('at_salepriceoverestimate_%s'%artistobj[1])
+        totallotssold = redis_instance.get('at_totallotssold_%s'%artistobj[1])
     except:
         pass
     uniqueartworks = {}
@@ -435,23 +439,31 @@ def details(request):
     if allartworks.__len__() == 0:
         # The following limited queryset would make the stats slightly inaccurate for some artists (who have more than 500 artworks).
         # Unfortunately, we can't do an exhaustive retrieval since that would not be possible because of time constraints.
-        lotartistqset = LotArtist.objects.filter(artist_id=aid)[artworkstartctr:artworkendctr]
+        """
+        The following sql should be used after adding the column 'last_edited' in 'fa_artwork_lot_artist' table.
+        """
+        #lotartistsql = "SELECT artist_id, artist_name, artist_price_usd, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre, saledate, auctionid, lotstatus, medium, sizedetails, lotcategory, lotnum, artworkid, artworkname, highestimate, lowestimate, lotimage1, id FROM fa_artwork_lot_artist Where artist_id=%s order by last_edited desc limit %s offset %s"%(aid, maxartworkstoconsider, artworkstartctr)
+        lotartistsql = "SELECT artist_id, artist_name, artist_price_usd, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre, saledate, auctionid, lotstatus, medium, sizedetails, lotcategory, lotnum, artworkid, artworkname, highestimate, lowestimate, lotimage1, id FROM fa_artwork_lot_artist Where artist_id=%s limit %s offset %s"%(aid, maxartworkstoconsider, artworkstartctr)
+        cursor.execute(lotartistsql)
+        lotartistqset = cursor.fetchall()
+        #print("2. %s"%lotartistsql)
+        #lotartistqset = LotArtist.objects.filter(artist_id=aid)[artworkstartctr:artworkendctr]
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
         curdatetime = datetime.datetime.now()
         upcomingflag = 0
         pastauctionsflag = 0
-        for lotartist in lotartistqset: 
+        for lotartist in lotartistqset:
             if upcomingflag == 1 and pastauctionsflag == 1:
                 break
             #for lotobj in lotqset:
-            saledate = datetime.datetime.combine(lotartist.saledate, datetime.time(0, 0))
+            saledate = datetime.datetime.combine(lotartist[12], datetime.time(0, 0))
             if saledate and saledate > date2yearsago:
                 totallotssold += 1
-                soldlotsprice += float(lotartist.artist_price_usd)
-                midestimate = (float(lotartist.highestimate) + float(lotartist.lowestimate))/2.0
-                if lotartist.artist_price_usd > 0.00:
-                    delta = (float(lotartist.artist_price_usd) - float(midestimate))/float(lotartist.artist_price_usd)
+                soldlotsprice += float(lotartist[2])
+                midestimate = (float(lotartist[21]) + float(lotartist[22]))/2.0
+                if lotartist[2] > 0.00:
+                    delta = (float(lotartist[2]) - float(midestimate))/float(lotartist[2])
                     totaldelta += delta
                 totalartworks += 1
             elif saledate and saledate < date2yearsago:
@@ -460,7 +472,7 @@ def details(request):
                 totalartworks += 1
             auctionobj = None
             try:
-                auctionobj = Auction.objects.get(id=lotartist.auctionid)
+                auctionobj = Auction.objects.get(id=lotartist[13])
             except:
                 continue # If we fail to find the auction, there is no use going ahead.
             auctionstartdate = auctionobj.auctionstartdate
@@ -473,6 +485,7 @@ def details(request):
                     ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
                     cursor.execute(ahsql)
                     ahqset = cursor.fetchall()
+                    #print("3. %s"%ahsql)
                     if ahqset.__len__() == 0:
                         continue
                     ahrow = ahqset[0]
@@ -484,10 +497,14 @@ def details(request):
                 if str(aucenddate) != "0000-00-00" and str(aucenddate) != "":
                     auctionperiod += " - " + str(aucenddate)
                 try:
-                    artwork = Artwork.objects.get(id=lotartist.artworkid)
-                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                    artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artwork_ID=%s"%lotartist[19]
+                    cursor.execute(artworksql)
+                    artwork = cursor.fetchone()
+                    #print("4. %s"%artworksql)
+                    #artwork = Artwork.objects.get(id=lotartist[19])
+                    d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
                 except:
-                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : '', 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : '', 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                    d = {'artworkname' : lotartist[20], 'creationdate' : '', 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : '', 'image' : lotartist[23], 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist[19], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
                 if maxupcominglots > lotsinupcomingauctions.__len__():
                     lotsinupcomingauctions.append(d)
                 else:
@@ -502,6 +519,7 @@ def details(request):
                     ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
                     cursor.execute(ahsql)
                     ahqset = cursor.fetchall()
+                    #print("5. %s"%ahsql)
                     if ahqset.__len__() == 0:
                         continue
                     ahrow = ahqset[0]
@@ -511,10 +529,14 @@ def details(request):
                 except:
                     auchousename = ""
                 try:
-                    artwork = Artwork.objects.get(id=lotartist.artworkid)
-                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist.artist_price_usd), 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                    artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artwork_ID=%s"%lotartist[19]
+                    cursor.execute(artworksql)
+                    artwork = cursor.fetchone()
+                    #print("6. %s"%artworksql)
+                    #artwork = Artwork.objects.get(id=lotartist[19])
+                    d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist[2]), 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
                 except:
-                    d = {'artworkname' : lotartist.artworkname, 'creationdate' : '', 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : '', 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist.artist_price_usd), 'estimate' : str(lotartist.lowestimate) + " - " + str(lotartist.highestimate), 'auctionperiod' : auctionperiod}
+                    d = {'artworkname' : lotartist[20], 'creationdate' : '', 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : '', 'image' : lotartist[23], 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist[2]), 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
                 if maxpastlots > lotsinpastauctions.__len__():
                     lotsinpastauctions.append(d)
                 else:
@@ -523,8 +545,12 @@ def details(request):
             #break # Expecting one artwork should correspond to one lot obj. Is this assumption correct? If not, this could be  the most expensive call.
             artwork = None
             try:
-                artwork = Artwork.objects.get(id=lotartist.artworkid)
-                d = {'artworkname' : lotartist.artworkname, 'creationdate' : artwork.creationstartdate, 'size' : lotartist.sizedetails, 'medium' : lotartist.medium, 'description' : artwork.description, 'image' : lotartist.lotimage1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : aid}
+                artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artwork_ID=%s"%lotartist[19]
+                cursor.execute(artworksql)
+                artwork = cursor.fetchone()
+                #print("7. %s"%artworksql)
+                #artwork = Artwork.objects.get(id=lotartist[19])
+                d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid}
                 if artwork.artworkname not in uniqueartworks.keys():
                     allartworks.append(d)
                     uniqueartworks[artwork.artworkname] = artwork.id
@@ -555,18 +581,18 @@ def details(request):
         salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
         salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
     try:
-        redis_instance.set('at_allartworks_%s'%artistobj.id, pickle.dumps(allartworks))
-        redis_instance.set('at_allartworks1_%s'%artistobj.id, pickle.dumps(allartworks1))
-        redis_instance.set('at_allartworks2_%s'%artistobj.id, pickle.dumps(allartworks2))
-        redis_instance.set('at_allartworks3_%s'%artistobj.id, pickle.dumps(allartworks3))
-        redis_instance.set('at_allartworks4_%s'%artistobj.id, pickle.dumps(allartworks4))
-        redis_instance.set('at_lotsinupcomingauctions_%s'%artistobj.id, pickle.dumps(lotsinupcomingauctions))
-        redis_instance.set('at_lotsinpastauctions_%s'%artistobj.id, pickle.dumps(lotsinpastauctions))
-        redis_instance.set('at_yearlylotssold_%s'%artistobj.id, yearlylotssold)
-        redis_instance.set('at_sellthrurate_%s'%artistobj.id, sellthrurate)
-        redis_instance.set('at_avgsaleprice_%s'%artistobj.id, avgsaleprice)
-        redis_instance.set('at_totallotssold_%s'%artistobj.id, totallotssold)
-        redis_instance.set('at_salepriceoverestimate_%s'%artistobj.id, salepriceoverestimate)
+        redis_instance.set('at_allartworks_%s'%artistobj[1], pickle.dumps(allartworks))
+        redis_instance.set('at_allartworks1_%s'%artistobj[1], pickle.dumps(allartworks1))
+        redis_instance.set('at_allartworks2_%s'%artistobj[1], pickle.dumps(allartworks2))
+        redis_instance.set('at_allartworks3_%s'%artistobj[1], pickle.dumps(allartworks3))
+        redis_instance.set('at_allartworks4_%s'%artistobj[1], pickle.dumps(allartworks4))
+        redis_instance.set('at_lotsinupcomingauctions_%s'%artistobj[1], pickle.dumps(lotsinupcomingauctions))
+        redis_instance.set('at_lotsinpastauctions_%s'%artistobj[1], pickle.dumps(lotsinpastauctions))
+        redis_instance.set('at_yearlylotssold_%s'%artistobj[1], yearlylotssold)
+        redis_instance.set('at_sellthrurate_%s'%artistobj[1], sellthrurate)
+        redis_instance.set('at_avgsaleprice_%s'%artistobj[1], avgsaleprice)
+        redis_instance.set('at_totallotssold_%s'%artistobj[1], totallotssold)
+        redis_instance.set('at_salepriceoverestimate_%s'%artistobj[1], salepriceoverestimate)
     except:
         pass
     context['yearlylotssold'] = yearlylotssold
@@ -574,15 +600,15 @@ def details(request):
     context['avgsaleprice'] = avgsaleprice
     context['salepriceoverestimate'] = salepriceoverestimate
     prefix = ""
-    if artistobj.prefix != "" and artistobj.prefix != "na":
-        prefix = artistobj.prefix + " "
+    if artistobj[2] != "" and artistobj[2] != "na":
+        prefix = artistobj[2] + " "
     shortlen = 100
-    if artistobj.bio is None:
-        artistobj.bio = ""
-    if artistobj.bio.__len__() < shortlen:
-        shortlen = artistobj.bio.__len__()
-    shortabout = artistobj.bio[:shortlen] + "..."
-    artistinfo = {'name' : prefix + artistobj.artistname, 'nationality' : artistobj.nationality, 'birthdate' : artistobj.birthyear, 'deathdate' : artistobj.deathyear, 'profileurl' : '', 'desctiption' : artistobj.description, 'image' : artistobj.artistimage, 'gender' : '', 'about' : artistobj.bio, 'artistid' : artistobj.id, 'shortabout' : shortabout}
+    if artistobj[8] is None:
+        artistobj[8] = ""
+    if artistobj[8].__len__() < shortlen:
+        shortlen = artistobj[8].__len__()
+    shortabout = artistobj[8][:shortlen] + "..."
+    artistinfo = {'name' : prefix + artistobj[0], 'nationality' : artistobj[3], 'birthdate' : artistobj[4], 'deathdate' : artistobj[5], 'profileurl' : '', 'desctiption' : artistobj[6], 'image' : artistobj[10], 'gender' : '', 'about' : artistobj[8], 'artistid' : artistobj[1], 'shortabout' : shortabout}
     context['allartworks'] = allartworks
     context['allartworks1'] = allartworks1
     context['allartworks2'] = allartworks2
@@ -595,15 +621,15 @@ def details(request):
     artistevents = {} # All events featuring the artist under consideration.
     relatedartistqset = None
     try:
-        relatedartists = pickle.loads(redis_instance.get('at_relatedartists_%s'%artistobj.id))
-        artistevents = pickle.loads(redis_instance.get('at_artistevents_%s'%artistobj.id))
+        relatedartists = pickle.loads(redis_instance.get('at_relatedartists_%s'%artistobj[1]))
+        artistevents = pickle.loads(redis_instance.get('at_artistevents_%s'%artistobj[1]))
     except:
         pass
-    #print("HERE..........")
+    print("HERE..........")
     if relatedartists.__len__() == 0:
         try:
-            if artistobj.genre is not None:
-                a_genre = artistobj.genre
+            if artistobj[9] is not None:
+                a_genre = artistobj[9]
                 genreparts = a_genre.split(",")
                 # Related Artists can be sought out based on the 'genre' or on 'nationality'. Though 'genre' is a better
                 # way to seek out "Related" artists, we may use 'nationality' for faster processing. Unfortunately, this
@@ -614,12 +640,12 @@ def details(request):
                     for artistob in rartistqset:
                         relatedartistqset.append(artistob)
             else:
-                relatedartistqset = FeaturedArtist.objects.filter(nationality=artistobj.nationality)
+                relatedartistqset = FeaturedArtist.objects.filter(nationality=artistobj[3])
         except:
             genre = None
-            relatedartistqset = FeaturedArtist.objects.filter(nationality=artistobj.nationality)
+            relatedartistqset = FeaturedArtist.objects.filter(nationality=artistobj[3])
         for artist in relatedartistqset[:maxrelatedartist]:
-            if artistobj.id == artist.artist_id: # Same artist, so just skip.
+            if artistobj[1] == artist.artist_id: # Same artist, so just skip.
                 continue
             #print(artist.id)
             prefix = ""
@@ -628,7 +654,7 @@ def details(request):
             aliveperiod = "b. " + str(artist.birthyear)
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
-            d = {'artistname' : artist.artist_name, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj.description, 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.artist_id), 'aliveperiod' : aliveperiod}
+            d = {'artistname' : artist.artist_name, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj[6], 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.artist_id), 'aliveperiod' : aliveperiod}
             #artworkqset2 = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority', '-edited')
             artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_description from fineart_artworks where faa_artist_ID=%s limit 1"%artist.artist_id # We need 1 record only.
             cursor.execute(artworksql)
@@ -644,8 +670,9 @@ def details(request):
                 relatedartists.append(d)
             else:
                 break
-        for lotartist in lotartistqset[maxartworkstoconsider:maxartworkstoconsider+maxartworkstoconsider]:
-            auctionid = lotartist.auctionid
+        #for lotartist in lotartistqset[maxartworkstoconsider:maxartworkstoconsider+maxartworkstoconsider]:
+        for lotartist in lotartistqset:
+            auctionid = lotartist[13]
             auctionsqset = Auction.objects.filter(id=auctionid)
             if auctionsqset.__len__() == 0:
                 continue
@@ -653,7 +680,7 @@ def details(request):
             eventurl = auctionsqset[0].auctionurl
             eventinfo = ''
             eventperiod = auctionsqset[0].auctionstartdate.strftime("%d %b, %Y")
-            if auctionsqset[0].auctionenddate.strftime("%d %b, %Y") != '01 Jan, 0001' and auctionsqset[0].auctionenddate.strftime("%d %b, %Y") != '01 Jan, 1':
+            if type(auctionsqset[0].auctionenddate) != str and auctionsqset[0].auctionenddate.strftime("%d %b, %Y") != '01 Jan, 0001' and auctionsqset[0].auctionenddate.strftime("%d %b, %Y") != '01 Jan, 1':
                 eventperiod = eventperiod + " - " + auctionsqset[0].auctionenddate.strftime("%d %b, %Y")
             eventimage = auctionsqset[0].coverimage
             eventlocation = ''
@@ -662,8 +689,8 @@ def details(request):
             if l.__len__() < chunksize and eventname not in l:
                 artistevents[eventname] = {'eventurl' : eventurl, 'eventinfo' : eventinfo, 'eventperiod' : eventperiod, 'eventimage' : eventimage, 'eventlocation' : eventlocation, 'aucid' : aucid}
         try:
-            redis_instance.set('at_relatedartists_%s'%artistobj.id, pickle.dumps(relatedartists))
-            redis_instance.set('at_artistevents_%s'%artistobj.id, pickle.dumps(artistevents))
+            redis_instance.set('at_relatedartists_%s'%artistobj[1], pickle.dumps(relatedartists))
+            redis_instance.set('at_artistevents_%s'%artistobj[1], pickle.dumps(artistevents))
         except:
             pass
     context['relatedartists'] = relatedartists
