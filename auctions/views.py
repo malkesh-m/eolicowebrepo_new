@@ -24,6 +24,7 @@ import simplejson as json
 import redis
 import pickle
 import urllib
+import MySQLdb
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session #, WebConfig, Carousel, Favourite
@@ -76,46 +77,60 @@ def index(request):
         allauctions = {}
     curdatetime = datetime.datetime.now()
     curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    cursor = dbconn.cursor()
     if allauctions.__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar order by faac_auction_start_date desc"
+        cursor.execute(auctionsql)
+        auctionsqset = cursor.fetchall()
         try:
+            auctionhouseidslist = []
+            auctionauctionhousesdict = {}
+            for auction in auctionsqset[rowstartctr:]:
+                if type(auction[5]) == datetime.date and auction[5] <= curdate: # this is a past auction, so skip.
+                    continue
+                auchouseid = auction[3]
+                auctionhouseidslist.append(auchouseid)
+            auctionhousesqset = AuctionHouse.objects.filter(id__in=auctionhouseidslist)
+            for auchouse in auctionhousesqset:
+                auctionauctionhousesdict[str(auchouse.id)] = auchouse
             aucctr = 0
             for auction in auctionsqset[rowstartctr:]:
                 if featuredauctions.keys().__len__() > maxupcomingauctions:
                     break
-                auctionname = auction.auctionname
-                salecode = auction.auctionid
+                auctionname = auction[1]
+                salecode = auction[2]
                 filterauctions.append(auctionname)
-                if auction.auctionstartdate <= curdate: # this is a past auction, so skip.
+                if auction[5] <= curdate: # this is a past auction, so skip.
                     continue
                 if aucctr > rowendctr:
                     break
                 aucctr += 1
-                auctionurl = auction.auctionurl
-                auctionlots = Lot.objects.filter(auction_id=auction.id)
+                auctionurl = auction[4]
+                #auctionlots = Lot.objects.filter(auction_id=auction[0])
                 #if auctionlots.__len__() == 0:
                 #    continue
-                auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                aucenddate = auction.auctionenddate
+                auctionperiod = auction[5].strftime("%d %b, %Y")
+                aucenddate = auction[6]
                 if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
                     auctionperiod += " - " + str(aucenddate)
                 auctionhouse = None
-                auctionhousename, ahid, location = "", auction.auctionhouse_id, ""
+                auctionhousename, ahid, location = "", auction[3], ""
                 try:
-                    auctionhouse = AuctionHouse.objects.get(id=auction.auctionhouse_id)
+                    auctionhouse = auctionauctionhousesdict[str(auction[3])]
                     auctionhousename = auctionhouse.housename
                     location = auctionhouse.location
                 except:
                     pass
                 # Check for favourites
                 if request.user.is_authenticated:
-                    favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+                    favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction[0])
                 else:
                     favqset = []
                 favflag = 0
                 if favqset.__len__() > 0:
                     favflag = 1        
-                d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
+                d = {'auctionname' : auctionname, 'image' : auction[8], 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
                 featuredauctions[auctionname] = d
                 if featuredauctions.keys().__len__() > chunksize:
                     break
@@ -127,43 +142,52 @@ def index(request):
             redis_instance.set('ac_featuredauctions', pickle.dumps(featuredauctions))
         except:
             pass
-        #print(" ########################### " + str(pastrowstartctr) + " ##########################")
+        pastauctionhouseidslist = []
+        pastauctionauctionhousesdict = {}
+        for auction in auctionsqset[pastrowstartctr:]:
+            if type(auction[5]) == datetime.date and auction[5] > curdate:
+                continue
+            auchouseid = auction[3]
+            pastauctionhouseidslist.append(auchouseid)
+        auctionhousesqset = AuctionHouse.objects.filter(id__in=pastauctionhouseidslist)
+        for auchouse in auctionhousesqset:
+            pastauctionauctionhousesdict[str(auchouse.id)] = auchouse
         aucctr = 0
         rctr = 0
         allauctions['row0'] = []
         for auction in auctionsqset[pastrowstartctr:]:
-            if auction.auctionstartdate > curdate:
+            if auction[5] > curdate:
                 continue
-            auctionname = auction.auctionname
+            auctionname = auction[1]
             filterauctions.append(auctionname)
-            auction_id = auction.id
-            salecode = auction.auctionid
-            auctionlots = Lot.objects.filter(auction_id=auction.id)
+            auction_id = auction[0]
+            salecode = auction[2]
+            #auctionlots = Lot.objects.filter(auction_id=auction[0])
             #if auctionlots.__len__() == 0:
             #    continue
             if auctionname not in allauctions.keys():
                 allauctions[auctionname] = []
-            auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-            aucenddate = auction.auctionenddate
+            auctionperiod = auction[5].strftime("%d %b, %Y")
+            aucenddate = auction[6]
             if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
                 auctionperiod += " - " + str(aucenddate)
             auctionhouse = None
-            auctionhousename, ahid, location = "", auction.auctionhouse_id, ""
+            auctionhousename, ahid, location = "", auction[3], ""
             try:
-                auctionhouse = AuctionHouse.objects.get(id=auction.auctionhouse_id)
+                auctionhouse = pastauctionauctionhousesdict[str(auction[3])]
                 auctionhousename = auctionhouse.housename
                 location = auctionhouse.location
             except:
                 pass
             # Check for favourites
             if request.user.is_authenticated:
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction[0])
             else:
                 favqset = []
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
-            d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
+            d = {'auctionname' : auctionname, 'image' : auction[8], 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
             if allauctions.keys().__len__() > maxpastauctionsperrow * maxpastauctions:
                 break
             if aucctr % 4 == 0:

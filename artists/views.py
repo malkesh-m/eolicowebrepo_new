@@ -389,7 +389,7 @@ def details(request):
     try:
         artistsql = "SELECT fa_artist_name, fa_artist_ID, fa_artist_name_prefix, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_description, fa_artist_aka, fa_artist_bio, fa_artist_genre, fa_artist_image, fa_artist_record_created from fineart_artists Where fa_artist_ID=%s"%aid
         cursor.execute(artistsql)
-        artistobj = cursor.fetchone()
+        artistobj = list(cursor.fetchone())
         #print("1. %s"%artistsql)
         #artistobj = Artist.objects.get(id=aid)
     except:
@@ -413,6 +413,7 @@ def details(request):
     totallotssold = 0
     totalartworks = 0
     soldlotsprice = 0.00
+    totaldelta = 0.00
     maxpastlots = 25
     maxupcominglots = 8
     maxartworkstoconsider = 100
@@ -453,6 +454,24 @@ def details(request):
         curdatetime = datetime.datetime.now()
         upcomingflag = 0
         pastauctionsflag = 0
+        artworkidslist = []
+        artworkauctionidslist = []
+        for lotartist in lotartistqset:
+            artworkidslist.append(str(lotartist[19]))
+            artworkauctionidslist.append(lotartist[13])
+        artworkidsstr = "(" + ",".join(artworkidslist) + ")"
+        artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artwork_ID in %s"%artworkidsstr
+        cursor.execute(artworksql)
+        artworksqset = cursor.fetchall()
+        artworkartistdict = {}
+        artworkauctiondict = {}
+        for artworkrow in artworksqset:
+            artworkid = artworkrow[0]
+            artworkartistdict[str(artworkid)] = [artworkrow[0], artworkrow[1], artworkrow[2], artworkrow[3], artworkrow[4], artworkrow[5], artworkrow[6], artworkrow[7], artworkrow[8], artworkrow[9], artworkrow[10], artworkrow[11], artworkrow[12], artworkrow[13], artworkrow[14], artworkrow[15], artworkrow[16], artworkrow[17]]
+        auctionsqset = Auction.objects.filter(id__in=artworkauctionidslist)
+        for auc in auctionsqset:
+            aucidstr = str(auc.id)
+            artworkauctiondict[aucidstr] = auc
         for lotartist in lotartistqset:
             if upcomingflag == 1 and pastauctionsflag == 1:
                 break
@@ -472,7 +491,7 @@ def details(request):
                 totalartworks += 1
             auctionobj = None
             try:
-                auctionobj = Auction.objects.get(id=lotartist[13])
+                auctionobj = artworkauctiondict[str(lotartist[13])]
             except:
                 continue # If we fail to find the auction, there is no use going ahead.
             auctionstartdate = auctionobj.auctionstartdate
@@ -497,14 +516,11 @@ def details(request):
                 if str(aucenddate) != "0000-00-00" and str(aucenddate) != "":
                     auctionperiod += " - " + str(aucenddate)
                 try:
-                    artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artwork_ID=%s"%lotartist[19]
-                    cursor.execute(artworksql)
-                    artwork = cursor.fetchone()
-                    #print("4. %s"%artworksql)
-                    #artwork = Artwork.objects.get(id=lotartist[19])
+                    artwork = artworkartistdict[str(lotartist[19])]
                     d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
                 except:
-                    d = {'artworkname' : lotartist[20], 'creationdate' : '', 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : '', 'image' : lotartist[23], 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist[19], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
+                    print("Could not find artwork identified by Id %s"%str(lotartist[19]))
+                    continue
                 if maxupcominglots > lotsinupcomingauctions.__len__():
                     lotsinupcomingauctions.append(d)
                 else:
@@ -529,14 +545,11 @@ def details(request):
                 except:
                     auchousename = ""
                 try:
-                    artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artwork_ID=%s"%lotartist[19]
-                    cursor.execute(artworksql)
-                    artwork = cursor.fetchone()
-                    #print("6. %s"%artworksql)
-                    #artwork = Artwork.objects.get(id=lotartist[19])
+                    artwork = artworkartistdict[str(lotartist[19])]
                     d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist[2]), 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
                 except:
-                    d = {'artworkname' : lotartist[20], 'creationdate' : '', 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : '', 'image' : lotartist[23], 'provenance' : '', 'literature' : '', 'exhibitions' : '', 'href' : '', 'estimate' : '', 'awid' : lotartist.artworkid, 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist[2]), 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
+                    print("Could not find artwork identified by Id %s"%str(lotartist[19]))
+                    continue
                 if maxpastlots > lotsinpastauctions.__len__():
                     lotsinpastauctions.append(d)
                 else:
@@ -545,11 +558,7 @@ def details(request):
             #break # Expecting one artwork should correspond to one lot obj. Is this assumption correct? If not, this could be  the most expensive call.
             artwork = None
             try:
-                artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artwork_ID=%s"%lotartist[19]
-                cursor.execute(artworksql)
-                artwork = cursor.fetchone()
-                #print("7. %s"%artworksql)
-                #artwork = Artwork.objects.get(id=lotartist[19])
+                artwork = artworkartistdict[str(lotartist[19])]
                 d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid}
                 if artwork.artworkname not in uniqueartworks.keys():
                     allartworks.append(d)
@@ -644,6 +653,21 @@ def details(request):
         except:
             genre = None
             relatedartistqset = FeaturedArtist.objects.filter(nationality=artistobj[3])
+        artistidslist = []
+        artistidsstr = ""
+        for artist in relatedartistqset[:maxrelatedartist]:
+            if artistobj[1] == artist.artist_id: # Same artist, so just skip.
+                continue
+            artistidslist.append(str(artist.artist_id))
+        artistidsstr = "(" + ",".join(artistidslist) + ")"
+        artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_description, faa_artist_ID from fineart_artworks where faa_artist_ID in %s"%artistidsstr
+        cursor.execute(artworksql)
+        artworkqset2 = cursor.fetchall()
+        artistartworkdict = {}
+        for aw in artworkqset2:
+            artid = aw[5]
+            if str(artid) not in artistartworkdict.keys():
+                artistartworkdict[str(artid)] = [[aw[0], aw[1], aw[2], aw[3], aw[4]],]
         for artist in relatedartistqset[:maxrelatedartist]:
             if artistobj[1] == artist.artist_id: # Same artist, so just skip.
                 continue
@@ -655,10 +679,7 @@ def details(request):
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
             d = {'artistname' : artist.artist_name, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj[6], 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.artist_id), 'aliveperiod' : aliveperiod}
-            #artworkqset2 = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority', '-edited')
-            artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_description from fineart_artworks where faa_artist_ID=%s limit 1"%artist.artist_id # We need 1 record only.
-            cursor.execute(artworksql)
-            artworkqset2 = cursor.fetchall()
+            artworkqset2 = artistartworkdict[str(artist.artist_id)]
             if artworkqset2.__len__() == 0:
                 continue
             d['artworkname'] = artworkqset2[0][1]
@@ -673,9 +694,7 @@ def details(request):
         #for lotartist in lotartistqset[maxartworkstoconsider:maxartworkstoconsider+maxartworkstoconsider]:
         for lotartist in lotartistqset:
             auctionid = lotartist[13]
-            auctionsqset = Auction.objects.filter(id=auctionid)
-            if auctionsqset.__len__() == 0:
-                continue
+            auctionsqset = [artworkauctiondict[str(auctionid)],]
             eventname = auctionsqset[0].auctionname
             eventurl = auctionsqset[0].auctionurl
             eventinfo = ''
@@ -758,6 +777,22 @@ def search(request):
     uniqartists = {}
     if featuredartists.__len__() == 0:
         matchingartistsqset = Artist.objects.filter(artistname__icontains=searchedname) #.order_by('priority')
+        artistidslist = []
+        #print("Matching Artist Qset: %s"%matchingartistsqset.__len__())
+        #print("Start Counter: %s"%startctr)
+        #print("End Counter: %s"%endctr)
+        for artist in matchingartistsqset[startctr:endctr]:
+            artistidslist.append(artist.id)
+        artistartworksdict = {}
+        artworksqset = Artwork.objects.filter(artist_id__in=artistidslist)
+        for artwork in artworksqset:
+            artistid = str(artwork.artist_id)
+            if artistid in artistartworksdict.keys():
+                artworkslist = artistartworksdict[artistid]
+            else:
+                artworkslist = []
+            artworkslist.append(artwork)
+            artistartworksdict[artistid] = artworkslist
         for artist in matchingartistsqset[startctr:endctr]:
             if artist.artistname.title() not in uniqartists.keys():
                 if artist.nationality == "na":
@@ -773,7 +808,10 @@ def search(request):
                 else:
                     bdstring = "Born " + bdstring
                 d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id), 'bdstring' : bdstring}
-                artworkqset = Artwork.objects.filter(artist_id=artist.id) #.order_by('priority')
+                try:
+                    artworkqset = artistartworksdict[str(artist.id)]
+                except:
+                    artworkqset = []
                 if artworkqset.__len__() == 0:
                     #continue
                     d['artworkname'] = ""
@@ -908,12 +946,35 @@ def showartwork(request):
     if allartworks.__len__() == 0:
         artworksqset = Artwork.objects.filter(artist_id=artistobj.id)
         actr = 0
+        artworkidslist = []
+        auctionidslist = []
+        for artwork in artworksqset:
+            artworkidslist.append(artwork.id)
+        lotqset = Lot.objects.filter(artwork_id__in=artworkidslist)
+        lotartworkdict = {}
+        auctionartworkdict = {}
+        for lot in lotqset:
+            artworkid = str(lot.artwork_id)
+            if artworkid in lotartworkdict.keys():
+                lotslist = lotartworkdict[artworkid]
+            else:
+                lotslist = []
+            lotslist.append(lot)
+            lotartworkdict[artworkid] = lotslist
+            auctionidslist.append(lot.auction_id)
+        auctionsqset = Auction.objects.filter(id__in=auctionidslist)
+        for auc in auctionsqset:
+            aucidstr = str(auc.id)
+            auctionartworkdict[aucidstr] = auc
         for artwork in artworksqset:
             creationdate = str(artwork.creationstartdate)
             if creationdate == "0":
                 creationdate = ""
             # Check for favourites
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=artwork.id)
+            if request.user.is_authenticated:
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=artwork.id)
+            else:
+                favqset = []
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1         
@@ -932,12 +993,12 @@ def showartwork(request):
                     actr = 0
                     continue
                 actr += 1
-            lotqset = Lot.objects.filter(artwork_id=artwork.id)
+            lotqset = lotartworkdict[str(artwork.id)]
             for lot in lotqset:
                 auctionid = lot.auction_id
                 auctionobj = None
                 try:
-                    auctionobj = Auction.objects.get(id=auctionid)
+                    auctionobj = auctionartworkdict[str(auctionid)]
                 except:
                     continue
                 eventperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")

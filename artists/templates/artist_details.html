@@ -250,7 +250,8 @@
 	  }
 	  };
 	  searchkey = document.getElementById('txtfilter').value;
-	  csrf = document.frmtextfilter.csrfmiddlewaretoken.value;
+	  csrf = document.frmotherfilter.csrfmiddlewaretoken.value;
+          //alert(csrf);
           aid = document.frmtextfilter.aid.value;
 	  document.frmtextfilter.pageno.value = page;
 	  postdata = "csrfmiddlewaretoken=" + csrf + "&aid=" + aid + "&txtfilter=" + searchkey + mediumparam + periodparam + sizeparam + sizeunitparam + auchouseparam + "&pageno=" + page;
