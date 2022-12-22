@@ -440,25 +440,47 @@ def search(request):
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
     #print(searchkey)
     context = {}
-    auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey)
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    cursor = dbconn.cursor()
+    auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_title like '%" + searchkey + "%'";
+    cursor.execute(auctionsql)
+    auctionsqset = cursor.fetchall()
+    #auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey)
     allauctions = []
     maxsearchresults = 30
     aucctr = 0
+    auctionhouseidslist = []
+    auctionhousesdict = {}
+    auctionhouseidsstr = ""
     for auctionobj in auctionsqset:
-        auctionhouseid = auctionobj.auctionhouse_id
+        auctionhouseid = auctionobj[3]
+        auctionhouseidslist.append(str(auctionhouseid))
+    auctionhouseidsstr = "(" + ",".join(auctionhouseidslist) + ")"
+    ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID in %s"%auctionhouseidsstr
+    cursor.execute(ahsql)
+    auchouserecords = cursor.fetchall()
+    for auchouse in auchouserecords:
+        auchousename = auchouse[0]
+        auchouseid = auchouse[1]
+        auctionhousesdict[str(auchouseid)] = auchouse
+    for auctionobj in auctionsqset:
+        auctionhouseid = auctionobj[3]
         ahobj = None
         auctionhousename, ahid = "", ""
         try:
-            ahobj = AuctionHouse.objects.get(id=auctionhouseid)
-            auctionhousename = ahobj.housename
-            ahid = ahobj.id
+            ahobj = auctionhousesdict[str(auctionhouseid)]
+            auctionhousename = ahobj[0]
+            ahid = ahobj[1]
         except:
             pass
-        auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-        aucenddate = auction.auctionenddate
+        auctionperiod = auctionobj[5].strftime("%d %b, %Y")
+        aucenddate = auctionobj[6]
         if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
             auctionperiod += " - " + str(aucenddate)
-        d = {'auctionname' : auctionobj.auctionname, 'auctionid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj.coverimage, 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount)}
+        lotcount = auctionobj[7]
+        if not lotcount:
+            lotcount = 0
+        d = {'auctionname' : auctionobj[1], 'auctionid' : auctionobj[2], 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj[8], 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj[0], 'lotcount' : str(lotcount)}
         if aucctr > maxsearchresults:
             break
         aucctr += 1
@@ -517,46 +539,51 @@ def moreauctions(request):
         filterauctions = []
         #allartists = {}
         allauctions = {}
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    cursor = dbconn.cursor()
     if allauctions.__len__() == 0: # We didn't get any data from redis cache...
-        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar order by faac_auction_start_date desc"
+        cursor.execute(auctionsql)
+        auctionsqset = cursor.fetchall()
+        #auctionsqset = Auction.objects.all().order_by('-auctionstartdate')
         aucctr = 0
         rctr = 0
         allauctions['row0'] = []
         for auction in auctionsqset[rowstartctr:]:
-            auctionname = auction.auctionname
+            auctionname = auction[1]
             filterauctions.append(auctionname)
-            if int(atype) == 1 and auction.auctionstartdate > curdate: # This is an upcoming auction, but we want past auctions only.
+            if int(atype) == 1 and type(auction[5]) == datetime.date and auction[5] > curdate: # This is an upcoming auction, but we want past auctions only.
                 continue
-            elif int(atype) == 0 and auction.auctionstartdate <= curdate: # This is a past auction, we want upcoming only.
+            elif int(atype) == 0 and type(auction[5]) == datetime.date and auction[5] <= curdate: # This is a past auction, we want upcoming only.
                 continue
-            auction_id = auction.id
-            #auctionlots = Lot.objects.filter(auction_id=auction.id)
+            auction_id = auction[0]
+            #auctionlots = Lot.objects.filter(auction_id=auction[0])
             #if auctionlots.__len__() == 0:
             #    continue
             aucctr += 1
             if auctionname not in allauctions.keys():
                 allauctions[auctionname] = []
-            auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-            aucenddate = auction.auctionenddate
+            auctionperiod = auction[5].strftime("%d %b, %Y")
+            aucenddate = auction[6]
             if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
                 auctionperiod += " - " + str(aucenddate)
             auctionhouse = None
-            auctionhousename, ahid, location = "", auction.auctionhouse_id, ""
+            auctionhousename, ahid, location = "", auction[3], ""
             try:
-                auctionhouse = AuctionHouse.objects.get(id=auction.auctionhouse_id)
+                auctionhouse = AuctionHouse.objects.get(id=auction[3])
                 auctionhousename = auctionhouse.housename
                 location = auctionhouse.location
             except:
                 pass
             # Check for favourites
             if request.user.is_authenticated:
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction[0])
             else:
                 favqset = []
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
-            d = {'auctionname' : auctionname, 'image' : auction.coverimage, 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'salecode' : auction.auctionid, 'aucid' : auction.id, 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
+            d = {'auctionname' : auctionname, 'image' : auction[8], 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'salecode' : auction[2], 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
             if allauctions.keys().__len__() > maxauctions * chunksize:
                 break
             if aucctr % 4 == 0:
@@ -639,7 +666,10 @@ def showauction(request):
     auctioninfo['auctionperiod'] = auctionperiod
     auctioninfo['auctionid'] = auctionobj.auctionid
     auctioninfo['coverimage'] = auctionobj.coverimage
-    auctioninfo['lotcount'] = auctionobj.lotcount
+    lotcount = auctionobj.lotcount
+    if not lotcount:
+        lotcount = 0
+    auctioninfo['lotcount'] = lotcount
     auctioninfo['aucid'] = aucid
     housename, ahid = "", ""
     ahobj = None
@@ -702,7 +732,6 @@ def showauction(request):
     context['nationalities'] = nationalities
     template = loader.get_template('showauction.html')
     return HttpResponse(template.render(context, request))
-
 
 
 def morefilter(request):
