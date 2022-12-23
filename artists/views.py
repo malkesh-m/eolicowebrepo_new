@@ -312,6 +312,8 @@ def index(request):
                 redis_instance.set('at_uniqueartworks', pickle.dumps(uniqueartworks))
             except:
                 pass    
+    cursor.close()
+    dbconn.close()
     context['allartists'] = allartists
     context['uniqueartists'] = uniqueartists
     context['uniqueartworks'] = uniqueartworks
@@ -712,6 +714,8 @@ def details(request):
             redis_instance.set('at_artistevents_%s'%artistobj[1], pickle.dumps(artistevents))
         except:
             pass
+    cursor.close()
+    dbconn.close()
     context['relatedartists'] = relatedartists
     context['artistevents'] = artistevents
     if request.user.is_authenticated and request.user.is_staff:

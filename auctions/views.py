@@ -203,6 +203,8 @@ def index(request):
             redis_instance.set('ac_filterauctions', pickle.dumps(filterauctions))
         except:
             pass
+    cursor.close()
+    dbconn.close()
     #carouselentries = getcarouselinfo()
     #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
@@ -456,7 +458,15 @@ def search(request):
         auctionhouseid = auctionobj[3]
         auctionhouseidslist.append(str(auctionhouseid))
     auctionhouseidsstr = "(" + ",".join(auctionhouseidslist) + ")"
+    if auctionhouseidslist.__len__() == 0: # In case we don't find any matching records, we return with empty list.
+        context['allauctions'] = []
+        if request.user.is_authenticated and request.user.is_staff:
+            context['adminuser'] = 1
+        else:
+            context['adminuser'] = 0
+        return HttpResponse(json.dumps(context))
     ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID in %s"%auctionhouseidsstr
+    #print(ahsql)
     cursor.execute(ahsql)
     auchouserecords = cursor.fetchall()
     for auchouse in auchouserecords:
@@ -485,6 +495,8 @@ def search(request):
             break
         aucctr += 1
         allauctions.append(d)
+    cursor.close()
+    dbconn.close()
     context['allauctions'] = allauctions
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
@@ -599,6 +611,8 @@ def moreauctions(request):
                 redis_instance.set('ac_pastauctions', pickle.dumps(allauctions))
         except:
             pass
+    cursor.close()
+    dbconn.close()
     #context['allartists'] = allartists
     context['allauctions'] = allauctions
     context['filterauctions'] = filterauctions
@@ -622,7 +636,6 @@ def moreauctions(request):
         context['adminuser'] = 0
     template = loader.get_template('moreauctions.html')
     return HttpResponse(template.render(context, request))
-
 
 
 def showauction(request):
@@ -653,6 +666,8 @@ def showauction(request):
     auctioninfo = {}
     curdatetime = datetime.datetime.now()
     curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    cursor = dbconn.cursor()
     auctionobj = None
     try:
         auctionobj = Auction.objects.get(id=aucid)
@@ -684,22 +699,39 @@ def showauction(request):
     context['auctioninfo'] = auctioninfo
     # We won't be using redis cache in this controller function. It would be a drain on memory if we 
     # start loading the lots info for every auction the user chooses to dig into.
-    alllotsqset = Lot.objects.filter(auction_id=aucid)
+    lotssql = "select fal_lot_ID, fal_lot_no, fal_sub_lot_no, fal_artwork_ID, fal_auction_ID, fal_lot_sale_date, fal_lot_material, fal_lot_size_details, fal_lot_height, fal_lot_width, fal_lot_depth, fal_lot_measurement_unit, fal_lot_category, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price, fal_lot_sale_price_USD, fal_lot_price_type, fal_lot_condition, fal_lot_status, fal_lot_provenance, fal_lot_published, fal_lot_image1, fal_lot_image2, fal_lot_image3, fal_lot_image4, fal_lot_image5, fal_lot_record_created, fal_lot_record_updated, fal_lot_record_createdby, fal_lot_record_updatedby, fal_lot_source from fineart_lots where fal_auction_ID=%s"%aucid
+    cursor.execute(lotssql)
+    alllotsqset = cursor.fetchall()
     if alllotsqset.__len__() == 0:
         context['warning'] = "Could not find any lot/artwork information for '%s'"%auctionobj.auctionname
         template = loader.get_template('showauction.html')
         return HttpResponse(template.render(context, request))
     lotctr = 0
+    artworkidslist = []
+    lotartworksdict = {}
+    artistidslist = []
+    artworkartistsdict = {}
+    for lotobj in alllotsqset:
+        artworkid = lotobj[3]
+        artworkidslist.append(artworkid)
+    artworksqset = Artwork.objects.filter(id__in=artworkidslist)
+    for artwork in artworksqset:
+        lotartworksdict[str(artwork.id)] = artwork
+        artistid = artwork.artist_id
+        artistidslist.append(artistid)
+    artistsqset = Artist.objects.filter(id__in=artistidslist)
+    for artist in artistsqset:
+        artworkartistsdict[str(artist.id)] = artist
     for lotobj in alllotsqset:
         artwork = None
         try:
-            artwork = Artwork.objects.get(id=lotobj.artwork_id)
+            artwork = lotartworksdict[str(lotobj[3])]
         except:
             continue # If we could not find the corresponding artwork, then we simply skip it.
             # Ideally, we should be logging this somewhere, and it should be implemented later.
         artistobj = None
         try:
-            artistobj = Artist.objects.get(id=artwork.artist_id)
+            artistobj = artworkartistsdict[str(artwork.artist_id)]
         except:
             continue # Again, if artist could not be identified for the lot, we skip the lot entirely.
             # This too should be logged. TO DO later.
@@ -707,25 +739,27 @@ def showauction(request):
         nationalities[artistnationality] = 1
         artistname = artistobj.artistname
         lottitle = artwork.artworkname
-        estimate = str(lotobj.lowestimateUSD)
-        if lotobj.highestimateUSD > 0.00:
-            estimate += " - " + str(lotobj.highestimateUSD)
-        soldprice = str(lotobj.soldpriceUSD)
+        estimate = str(lotobj[16])
+        if lotobj[15] > 0.00:
+            estimate += " - " + str(lotobj[15])
+        soldprice = str(lotobj[18])
         # Check for favourites
         if request.user.is_authenticated:
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lotobj.artwork_id)
+            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lotobj[3])
         else:
             favqset = []
         favflag = 0
         if favqset.__len__() > 0:
             favflag = 1   
-        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'image' : lotobj.lotimage1, 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj.id, 'aid' : artistobj.id, 'lotno' : lotobj.lotid, 'category' : lotobj.category, 'soldprice' : soldprice, 'awid' : lotobj.artwork_id, 'favourite' : favflag}
+        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj[6], 'size' : lotobj[7], 'image' : lotobj[24], 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj[0], 'aid' : artistobj.id, 'lotno' : lotobj[1], 'category' : lotobj[12], 'soldprice' : soldprice, 'awid' : lotobj[3], 'favourite' : favflag}
         if artistname not in allartists.keys():
             allartists[artistname] = artistobj.id
         alllots.append(d)
         if lotctr < maxselectlots:
             selectlots.append(d)
         lotctr += 1
+    cursor.close()
+    dbconn.close()
     context['alllots'] = alllots
     context['selectlots'] = selectlots
     context['allartists'] = allartists

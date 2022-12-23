@@ -18,6 +18,7 @@ import os, sys, re, time, datetime
 import simplejson as json
 import redis
 import pickle
+import MySQLdb
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session #, WebConfig, Carousel
@@ -60,6 +61,8 @@ def index(request):
     featuredshows = [] # Featured shows section, will show 5 top priority auctions only.
     currentmngshows = {} # Current museum and gallery shows section - keys are auction houses, values are list of priority auctions in each house. Will need association of auctions to galleries and museums, which is to be implemented later.
     uniqueauctions = {}
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    cursor = dbconn.cursor()
     try:
         filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
         auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))
@@ -72,23 +75,50 @@ def index(request):
         auctionhousesqset = AuctionHouse.objects.all()#.order_by('-priority')
         if auctionhousesqset.__len__() <= fstartctr:
             fstartctr = 0
+        auctionhouseidslist = []
+        auctionhouseidsstr = ""
+        for auctionhouse in auctionhousesqset:
+            auchouseid = str(auctionhouse.id)
+            auctionhouseidslist.append(auchouseid)
+        #print(auctionhouseidslist)
+        auctionhouseidsstr = "(" + ",".join(auctionhouseidslist) + ")"
+        auctionhouseauctionsdict = {}
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_house_ID in %s order by faac_auction_start_date desc"%(auctionhouseidsstr)
+        cursor.execute(auctionsql)
+        auctionsqset = cursor.fetchall()
+        for auction in auctionsqset:
+            auctionhouseid = auction[3]
+            if str(auctionhouseid) in auctionhouseauctionsdict.keys():
+                auctionslist = auctionhouseauctionsdict[str(auctionhouseid)]
+                if auctionslist.__len__() < maxauctionsperhouse: # We won't keep more than 'maxauctionsperhouse' records per house.
+                    auctionslist.append(auction)
+                    auctionhouseauctionsdict[str(auctionhouseid)] = auctionslist
+                else:
+                    pass
+            else:
+                auctionslist = [auction,]
+                auctionhouseauctionsdict[str(auctionhouseid)] = auctionslist
+        #print(auctionhouseauctionsdict.keys())
         for auctionhouse in auctionhousesqset[fstartctr:]:
-            auctionsqset = Auction.objects.filter(auctionhouse_id=auctionhouse.id).order_by('-auctionstartdate')[:maxauctionsperhouse]
+            try:
+                auctionsqset = auctionhouseauctionsdict[str(auctionhouse.id)]
+            except: # We found a auction house reference in auction model that doesn't exist in auctionhouse model
+                continue
             coverimage = ""
             if auctionsqset.__len__() > 0:
-                coverimage = auctionsqset[0].coverimage
+                coverimage = auctionsqset[0][8]
             d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'image' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
             auctionslist = []
             for auction in auctionsqset:
                 auctionperiod = ""
-                if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                    aucenddate = auction.auctionenddate
+                if auction[5].strftime("%d %b, %Y") != "01 Jan, 0001" and auction[5].strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod = auction[5].strftime("%d %b, %Y")
+                    aucenddate = auction[6]
                     if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                         auctionperiod += " - " + str(aucenddate)
-                d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
+                d1 = {'auctionname' : auction[1], 'coverimage' : auction[8], 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id}
                 auctionslist.append(d1)
-                uniqueauctions[str(auction.id)] = auction.auctionname
+                uniqueauctions[str(auction[0])] = auction[1]
             d['auctionslist'] = auctionslist
             auctionhouses.append(d)
             if auctionhouse.housename not in filterauctionhouses:
@@ -101,25 +131,29 @@ def index(request):
         except:
             pass
         for auctionhouse in auctionhousesqset:
-            auctionsqset = Auction.objects.filter(auctionhouse_id=auctionhouse.id).order_by('-auctionstartdate')[:maxfeaturedauctionsperhouse]
+            try:
+                auctionsqset = auctionhouseauctionsdict[str(auctionhouse.id)]
+            except:
+                continue
             coverimage = ""
             if auctionsqset.__len__() > 0:
-                coverimage = auctionsqset[0].coverimage
+                coverimage = auctionsqset[0][8]
             d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'image' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
             auctionslist = []
             for auction in auctionsqset:
                 auctionperiod = ""
                 featuredshowscutoffdate = datetime.date(featuredshowscutoffdate.year, featuredshowscutoffdate.month, featuredshowscutoffdate.day)
-                if auction.auctionstartdate < featuredshowscutoffdate: # We won't consider auctions that have happened before the last 1 year.
+                if auction[5] < featuredshowscutoffdate: # We won't consider auctions that have happened before the last 1 year.
                     continue
-                if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
-                    auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                    aucenddate = auction.auctionenddate
+                if auction[5].strftime("%d %b, %Y") != "01 Jan, 0001" and auction[5].strftime("%d %b, %Y") != "01 Jan, 1":
+                    auctionperiod = auction[5].strftime("%d %b, %Y")
+                    aucenddate = auction[6]
                     if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                         auctionperiod += " - " + str(aucenddate)
-                d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auction.auctionurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id, 'housename' : auctionhouse.housename, 'salecode' : auction.auctionid}
+                #print(auction[2])
+                d1 = {'auctionname' : auction[1], 'coverimage' : auction[8], 'auctionurl' : auction[4], 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id, 'housename' : auctionhouse.housename, 'salecode' : auction[2]}
                 auctionslist.append(d1)
-                uniqueauctions[str(auction.id)] = auction.auctionname
+                uniqueauctions[str(auction[0])] = auction[1]
             d['auctionslist'] = auctionslist
             featuredshows.append(d)
             if featuredshows.__len__() >= maxfeaturedshows:
@@ -137,34 +171,37 @@ def index(request):
     except:
         currentmngshows = {}
     if currentmngshows.keys().__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')[:maxauctionsperhouse * rows * 4]
+        maxrecs = maxauctionsperhouse * rows * 4
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar order by faac_auction_start_date desc limit %s"%maxrecs
+        cursor.execute(auctionsql)
+        auctionsqset = cursor.fetchall()
         for auction in auctionsqset:
-            if str(auction.id) in uniqueauctions.keys():
+            if str(auction[0]) in uniqueauctions.keys():
                 continue
             else:
-                uniqueauctions[str(auction.id)] = auction.auctionname
+                uniqueauctions[str(auction[0])] = auction[1]
             auctionhouse = None
             try:
-                auctionhouse = AuctionHouse.objects.get(id=auction.auctionhouse_id)
+                auctionhouse = AuctionHouse.objects.get(id=auction[3])
             except:
                 continue
             auctionhousename = auctionhouse.housename.title()
             auctionperiod = ""
-            if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
-                auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                aucenddate = auction.auctionenddate
+            if auction[5].strftime("%d %b, %Y") != "01 Jan, 0001" and auction[5].strftime("%d %b, %Y") != "01 Jan, 1":
+                auctionperiod = auction[5].strftime("%d %b, %Y")
+                aucenddate = auction[6]
                 if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                     auctionperiod += " - " + str(aucenddate)
             if auctionhousename in currentmngshows.keys():
                 l = currentmngshows[auctionhousename]
                 if l.__len__() >= maxauctionsperhouse:
                     continue
-                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id, 'salecode' : auction.auctionid}
+                d = {'auctionname' : auction[1], 'coverimage' : auction[8], 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id, 'salecode' : auction[2]}
                 l.append(d)
                 currentmngshows[auctionhousename] = l
             else:
                 l = []
-                d = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id, 'salecode' : auction.auctionid}
+                d = {'auctionname' : auction[1], 'coverimage' : auction[8], 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id, 'salecode' : auction[2]}
                 l.append(d)
                 currentmngshows[auctionhousename] = l
         context['currentmngshows'] = currentmngshows
@@ -174,6 +211,8 @@ def index(request):
             pass
     else:
         context['currentmngshows'] = currentmngshows
+    cursor.close()
+    dbconn.close()
     #carouselentries = getcarouselinfo()
     #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
