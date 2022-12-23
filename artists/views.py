@@ -312,8 +312,6 @@ def index(request):
                 redis_instance.set('at_uniqueartworks', pickle.dumps(uniqueartworks))
             except:
                 pass    
-    cursor.close()
-    dbconn.close()
     context['allartists'] = allartists
     context['uniqueartists'] = uniqueartists
     context['uniqueartworks'] = uniqueartworks
@@ -363,6 +361,7 @@ def index(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    cursor.close()
     dbconn.close() # Closing db connection. Don't want unwanted open connections.
     template = loader.get_template('artist.html')
     return HttpResponse(template.render(context, request))
@@ -714,8 +713,6 @@ def details(request):
             redis_instance.set('at_artistevents_%s'%artistobj[1], pickle.dumps(artistevents))
         except:
             pass
-    cursor.close()
-    dbconn.close()
     context['relatedartists'] = relatedartists
     context['artistevents'] = artistevents
     if request.user.is_authenticated and request.user.is_staff:
@@ -733,6 +730,7 @@ def details(request):
     displayednextpage2 = nextpage + 2
     firstpage = 1
     context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    cursor.close()
     dbconn.close()
     template = loader.get_template('artist_details.html')
     return HttpResponse(template.render(context, request))

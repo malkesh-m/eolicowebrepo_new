@@ -25,6 +25,7 @@ import redis
 import pickle
 import urllib
 import MySQLdb
+import unicodedata, itertools
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session #, WebConfig, Carousel, Favourite
@@ -41,6 +42,14 @@ from django.conf import settings
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
+
+
+def removecontrolcharacters(s):
+    all_chars = (chr(i) for i in range(sys.maxunicode))
+    categories = {'Cc'}
+    control_chars = ''.join(map(chr, itertools.chain(range(0x00,0x20), range(0x7f,0xa0))))
+    control_char_re = re.compile('[%s]' % re.escape(control_chars))
+    return control_char_re.sub('', s)
 
 
 #@cache_page(CACHE_TTL)
@@ -100,7 +109,10 @@ def index(request):
                     break
                 auctionname = auction[1]
                 salecode = auction[2]
-                filterauctions.append(auctionname)
+                autocompleteauctionname = auctionname
+                autocompleteauctionname = autocompleteauctionname.replace('"', "")
+                autocompleteauctionname = removecontrolcharacters(autocompleteauctionname)
+                filterauctions.append(autocompleteauctionname)
                 if auction[5] <= curdate: # this is a past auction, so skip.
                     continue
                 if aucctr > rowendctr:
@@ -159,7 +171,10 @@ def index(request):
             if auction[5] > curdate:
                 continue
             auctionname = auction[1]
-            filterauctions.append(auctionname)
+            autocompleteauctionname = auctionname
+            autocompleteauctionname = autocompleteauctionname.replace('"', "")
+            autocompleteauctionname = removecontrolcharacters(autocompleteauctionname)
+            filterauctions.append(autocompleteauctionname)
             auction_id = auction[0]
             salecode = auction[2]
             #auctionlots = Lot.objects.filter(auction_id=auction[0])
@@ -245,6 +260,8 @@ def details(request):
     rows = 2
     context = {}
     artworkobj = None
+    #dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    #cursor = dbconn.cursor()
     try:
         artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
     except:
@@ -284,7 +301,7 @@ def details(request):
     except:
         pass
     estimate = str(lotobj.lowestimateUSD)
-    if lotobj.highestimateUSD > 0.00:
+    if lotobj.highestimateUSD is not None and lotobj.highestimateUSD > 0.00:
         estimate += " - " + str(lotobj.highestimateUSD)
     artworkdesc = artworkdesc.replace("<strong><br>Description:</strong><br>", "")
     artworkdesc = artworkdesc.replace("<strong>Description:</strong>", "")
@@ -327,22 +344,36 @@ def details(request):
         numlots = chunksize * rows
         if lotsqset.__len__() < numlots:
             numlots = lotsqset.__len__()
+        artworkidslist = []
+        artistidslist = []
+        for lot in lotsqset[0:numlots]:
+            awid = lot.artwork_id
+            artworkidslist.append(awid)
+        artworksqset = Artwork.objects.filter(id__in=artworkidslist)
+        artworksdict = {}
+        for aw in artworksqset:
+            artworksdict[str(aw.id)] = aw
+            artistidslist.append(aw.artist_id)
+        artistsdict = {}
+        artistsqset = Artist.objects.filter(id__in=artistidslist)
+        for aobj in artistsqset:
+            artistsdict[str(aobj.id)] = aobj
         actr = 0
         rctr = 0
         for lot in lotsqset[0:numlots]:
             artwork = None
             try:
-                artwork = Artwork.objects.get(id=lot.artwork_id)
+                artwork = artworksdict[str(lot.artwork_id)]
             except:
                 continue
             artistname = ""
             try:
-                artist = Artist.objects.get(id=artwork.artist_id)
+                artist = artistsdict[str(artwork.artist_id)]
                 artistname = artist.artistname
             except:
                 pass
             estimate = str(lot.lowestimateUSD)
-            if lot.highestimateUSD > 0.00:
+            if lot.highestimateUSD is not None and lot.highestimateUSD > 0.00:
                 estimate += " - " + str(lot.highestimateUSD)
             d = {'title' : artwork.artworkname, 'artist' : artistname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artwork.artist_id}
             l = otherworks[rctr]
@@ -365,26 +396,40 @@ def details(request):
         except:
             pass
     if relatedworks[0].__len__() == 0:
-        relatedqset = Artwork.objects.filter(artist_id=artistobj.id).order_by() # Getting artworks by the same artist, in any auction.
+        relatedqset = Artwork.objects.filter(artist_id=artistobj.id) # Getting artworks by the same artist, in any auction.
         numlots = chunksize * rows
         if relatedqset.__len__() < numlots:
             numlots = relatedqset.__len__()
         rctr = 0
+        awidslist = []
+        artistsidlist = []
+        for aw in relatedqset[0:numlots]:
+            awidslist.append(aw.id)
+            artistsidlist.append(aw.artist_id)
+        rel_lotsdict = {}
+        rel_artistsdict = {}
+        rel_artistnamedict = {}
+        rel_lotqset = Lot.objects.filter(artwork_id__in=awidslist)
+        for rel_lot in rel_lotqset:
+            rel_lotsdict[str(rel_lot.artwork_id)] = rel_lot
+        rel_artistsqset = Artist.objects.filter(id__in=artistsidlist)
+        for relartist in rel_artistsqset:
+            rel_artistsdict[str(relartist.id)] = relartist
+            rel_artistnamedict[relartist.artistname.lower()] = relartist
         for aw in relatedqset[0:numlots]:
             rel_lotobj = None
             rel_estimate = ""
-            rel_lotqset = Lot.objects.filter(artwork_id=aw.id)
-            if rel_lotqset.__len__() > 0:
-                rel_lotobj = rel_lotqset[0]
+            rel_lotobj = rel_lotsdict[str(aw.id)]
+            if rel_lotobj is not None:
                 rel_estimate = str(rel_lotobj.lowestimateUSD)
-                if rel_lotobj.highestimateUSD > 0.00:
+                if rel_lotobj.highestimateUSD is not None and rel_lotobj.highestimateUSD > 0.00:
                     rel_estimate += " - " + str(rel_lotobj.highestimateUSD)
             else:
                 continue
             rel_artistname = ""
             rel_artist = None
             try:
-                rel_artist = Artist.objects.get(id=aw.artist_id)
+                rel_artist = rel_artistsdict[str(aw.artist_id)]
                 rel_artistname = rel_artist.artistname
             except:
                 pass
@@ -402,7 +447,8 @@ def details(request):
             else: # This should never be executed. Bad omen... bad things will happen if this is executed.
                 l2 = []
                 try:
-                    rel_artist = Artist.objects.get(artistname__iexact=rel_artistname)
+                    rel_artist = rel_artistnamedict[rel_artistname.lower()]
+                    #rel_artist = Artist.objects.get(artistname__iexact=rel_artistname)
                 except:
                     continue # If there is no corresponding artist object, we cannot continue
                 l2.append({'title' : aw.artworkname, 'nationality' : rel_artist.nationality, 'birth' : rel_artist.birthyear, 'death' : rel_artist.deathyear, 'image' : rel_lotobj.lotimage1, 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : rel_artist.id})
@@ -740,7 +786,7 @@ def showauction(request):
         artistname = artistobj.artistname
         lottitle = artwork.artworkname
         estimate = str(lotobj[16])
-        if lotobj[15] > 0.00:
+        if lotobj[15] is not None and lotobj[15] > 0.00:
             estimate += " - " + str(lotobj[15])
         soldprice = str(lotobj[18])
         # Check for favourites
