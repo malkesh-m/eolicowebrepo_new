@@ -20,6 +20,7 @@ import redis
 import pickle
 import urllib
 import MySQLdb
+import unicodedata, itertools
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session #, WebConfig, Carousel
@@ -36,6 +37,14 @@ from django.conf import settings
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
+
+def removecontrolcharacters(s):
+    all_chars = (chr(i) for i in range(sys.maxunicode))
+    categories = {'Cc'}
+    control_chars = ''.join(map(chr, itertools.chain(range(0x00,0x20), range(0x7f,0xa0))))
+    control_char_re = re.compile('[%s]' % re.escape(control_chars))
+    return control_char_re.sub('', s)
+
 
 
 #@cache_page(CACHE_TTL)
@@ -59,6 +68,8 @@ def index(request):
     filterpdb = []
     auctionhouses = {}
     uniquefilter = {}
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    cursor = dbconn.cursor()
     try:
         entitieslist = pickle.loads(redis_instance.get('pd_entitieslist'))
         filterpdb = pickle.loads(redis_instance.get('pd_filterpdb'))
@@ -71,9 +82,51 @@ def index(request):
         for auctionhouseobj in allauctionhousesqset:
             auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
             if auctionhouseobj.housename not in uniquefilter.keys():
-                filterpdb.append(auctionhouseobj.housename)
+                autocompleteauctionhousename = auctionhouseobj.housename
+                autocompleteauctionhousename = autocompleteauctionhousename.replace('"', "")
+                autocompleteauctionhousename = removecontrolcharacters(autocompleteauctionhousename)
+                filterpdb.append(autocompleteauctionhousename)
                 uniquefilter[auctionhouseobj.housename] = 1
         lotsqset = Lot.objects.order_by('-soldpriceUSD')[fstartctr:fendctr] # Need a restriction on the number of objects, otherwise it might crash the system.
+        artworkidslist = []
+        auctionidslist = []
+        artistidslist = []
+        for lotobj in lotsqset:
+            artworkidslist.append(str(lotobj.artwork_id))
+            auctionidslist.append(str(lotobj.auction_id))
+        artworkidsstr = "(" + ",".join(artworkidslist) + ")"
+        artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artwork_start_year_precision, faa_artwork_end_year_precision, faa_artist_ID, faa_artist2_ID, faa_artist3_ID, faa_artist4_ID, faa_artwork_size_details, faa_artwork_height, faa_artwork_width, faa_artwork_depth, faa_arwork_measurement_unit, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created, faa_artwork_record_updated from fineart_artworks where faa_artwork_ID in %s"%artworkidsstr
+        cursor.execute(artworksql)
+        allartworksqset = cursor.fetchall()
+        artworksdict = {}
+        for awrec in allartworksqset:
+            awid = str(awrec[0])
+            artworksdict[awid] = awrec
+            artistid = str(awrec[9])
+            artistidslist.append(artistid)
+        artistidsstr = "(" + ",".join(artistidslist) + ")"
+        auctionidsstr = "(" + ",".join(auctionidslist) + ")"
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_ID in %s order by faac_auction_start_date desc"%auctionidsstr
+        artistsql = "SELECT fa_artist_name, fa_artist_ID, fa_artist_name_prefix, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_description, fa_artist_aka, fa_artist_bio, fa_artist_genre, fa_artist_image, fa_artist_record_created from fineart_artists Where fa_artist_ID in %s"%artistidsstr
+        auctionsdict = {}
+        artistsdict = {}
+        ahidslist = []
+        cursor.execute(auctionsql)
+        auctionsqset = cursor.fetchall()
+        for auctionrec in auctionsqset:
+            aucid = str(auctionrec[0])
+            auctionsdict[aucid] = auctionrec
+            ahid = auctionrec[3]
+            ahidslist.append(ahid)
+        cursor.execute(artistsql)
+        artistsqset = cursor.fetchall()
+        for artistrec in artistsqset:
+            aid = str(artistrec[1])
+            artistsdict[aid] = artistrec
+        auctionhousesqset = AuctionHouse.objects.filter(id__in=ahidslist)
+        auctionhousesdict = {}
+        for auctionhouse in auctionhousesqset:
+            auctionhousesdict[str(auctionhouse.id)] = auctionhouse
         lotctr = 0
         for lotobj in lotsqset:
             lotimage = lotobj.lotimage1
@@ -83,9 +136,9 @@ def index(request):
                 continue
             artworkobj = None
             try:
-                artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
+                artworkobj = artworksdict[str(lotobj.artwork_id)]
                 if lotimage == "": # If there is no lot image, go for the artwork image, if any.
-                    lotimage = artworkobj.image1
+                    lotimage = artworkobj[25]
             except:
                 continue # If we can't find the corresponding artwork for this lot, then we skip it.
             if lotimage == "": # We will not show lots with no images.
@@ -93,24 +146,30 @@ def index(request):
             if lotctr > chunksize:
                 break
             lotctr += 1
-            lottitle = artworkobj.artworkname
+            lottitle = artworkobj[1]
             if lottitle not in uniquefilter.keys():
-                filterpdb.append(lottitle)
+                autocompletelotname = lottitle
+                autocompletelotname = autocompletelotname.replace('"', "")
+                autocompletelotname = removecontrolcharacters(autocompletelotname)
+                filterpdb.append(autocompletelotname)
                 uniquefilter[lottitle] = 1
             auctionname, aucid, auctionperiod, auctionhousename = "", "", "", ""
             try:
-                auctionobj = Auction.objects.get(id=lotobj.auction_id)
-                auctionname = auctionobj.auctionname
-                aucid = auctionobj.id
-                auctionperiod = auctionobj.auctionstartdate.strftime('%d %b, %Y')
-                if auctionobj.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 0001" and auctionobj.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 1":
-                    auctionperiod += " - " + auctionobj.auctionenddate.strftime('%d %b, %Y')
+                auctionobj = auctionsdict[str(lotobj.auction_id)]
+                auctionname = auctionobj[1]
+                aucid = auctionobj[0]
+                auctionperiod = auctionobj[5].strftime('%d %b, %Y')
+                if type(auctionobj[6]) is datetime.date and auctionobj[6].strftime('%d %b, %Y') != "01 Jan, 0001" and auctionobj[6].strftime('%d %b, %Y') != "01 Jan, 1":
+                    auctionperiod += " - " + auctionobj[6].strftime('%d %b, %Y')
                 if auctionname not in uniquefilter.keys():
-                    filterpdb.append(auctionname)
+                    autocompleteauctionname = auctionname
+                    autocompleteauctionname = autocompleteauctionname.replace('"', "")
+                    autocompleteauctionname = removecontrolcharacters(autocompleteauctionname)
+                    filterpdb.append(autocompleteauctionname)
                     uniquefilter[auctionname] = 1
-                ahid = auctionobj.auctionhouse_id
+                ahid = auctionobj[3]
                 try:
-                    auctionhouseobj = AuctionHouse.objects.get(id=ahid)
+                    auctionhouseobj = auctionhousesdict[str(ahid)]
                     auctionhousename = auctionhouseobj.housename
                 except:
                     pass
@@ -118,14 +177,17 @@ def index(request):
                 pass
             artistname = ""
             try:
-                artistobj = Artist.objects.get(id=artworkobj.artist_id)
-                artistname = artistobj.artistname
+                artistobj = artistsdict[str(artworkobj[9])]
+                artistname = artistobj[0]
                 if artistname not in uniquefilter.keys():
-                    filterpdb.append(artistname)
+                    autocompleteartistname = artistname
+                    autocompleteartistname = autocompleteartistname.replace('"', "")
+                    autocompleteartistname = removecontrolcharacters(autocompleteartistname)
+                    filterpdb.append(autocompleteartistname)
                     uniquefilter[artistname] = 1
             except:
                 pass
-            d = {'artworkname' : artworkobj.artworkname, 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : artworkobj.description, 'lid' : lotobj.id, 'awid' : artworkobj.id, 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj.artist_id, 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhousename}
+            d = {'artworkname' : artworkobj[1], 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj[13], 'medium' : artworkobj[18], 'description' : artworkobj[22], 'lid' : lotobj.id, 'awid' : artworkobj[0], 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj[9], 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhousename}
             entitieslist.append(d)
         allartistsqset = FeaturedArtist.objects.all()[:30000] 
         # We selected 30000 records as that is the optimum number for speed and content.
@@ -133,7 +195,10 @@ def index(request):
         for aobj in allartistsqset:
             artistname = aobj.artist_name
             if artistname not in uniquefilter.keys():
-                filterpdb.append(artistname)
+                autocompleteartistname = artistname
+                autocompleteartistname = autocompleteartistname.replace('"', "")
+                autocompleteartistname = removecontrolcharacters(autocompleteartistname)
+                filterpdb.append(autocompleteartistname)
                 uniquefilter[artistname] = 1
         try:
             redis_instance.set('pd_filterpdb', pickle.dumps(filterpdb))
@@ -141,6 +206,8 @@ def index(request):
             redis_instance.set('pd_auctionhouses', pickle.dumps(auctionhouses))
         except:
             pass
+    cursor.close()
+    dbconn.close()
     context['entities'] = entitieslist
     context['filterpdb'] = filterpdb
     context['auctionhouses'] = auctionhouses
@@ -185,38 +252,74 @@ def search(request):
     endsearchctr = int(page) * maxsearchresults + 1
     objectstartctr = maxperobjectsearchresults * int(page) - maxperobjectsearchresults
     objectendctr = maxperobjectsearchresults * int(page)
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="Artcurv-production")
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    idpattern = re.compile("\d+")
     cursor = dbconn.cursor()
     # Remember to close db connection at the end of the function...
     auctionhouseqset = AuctionHouse.objects.filter(housename__icontains=searchkey)
+    auctionhouseidslist = []
+    for auctionhouseobj in auctionhouseqset:
+        ah_id = str(auctionhouseobj.id)
+        auctionhouseidslist.append(ah_id)
+    auctionsdict = {}
+    auctionhouseidsstr = "(" + ",".join(auctionhouseidslist) + ")"
+    auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_house_ID in %s order by faac_auction_start_date desc"%auctionhouseidsstr
+    #print(auctionsql)
+    if re.search(idpattern, auctionhouseidsstr):
+        cursor.execute(auctionsql)
+        auctionsqset = cursor.fetchall()
+    else:
+        auctionsqset = []
+    for auctionrec in auctionsqset:
+        auchouseid = str(auctionrec[3])
+        if auchouseid in auctionsdict.keys():
+            auctionslist = auctionsdict[auchouseid]
+            auctionslist.append(auctionrec)
+            auctionsdict[auchouseid] = auctionslist
+        else:
+            auctionsdict[auchouseid] = [auctionrec,]
     achctr = 0
     for auctionhouseobj in auctionhouseqset:
-        auctionsqset = Auction.objects.filter(auctionhouse_id=auctionhouseobj.id)
+        auctionsqset = auctionsdict[str(auctionhouseobj.id)]
         auctionhousename = auctionhouseobj.housename
         ahid = auctionhouseobj.id
         for auctionobj in auctionsqset:
-            auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-            if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
-                auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-            d = {'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj.coverimage, 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount), 'obtype' : 'auction'}
+            auctionperiod = auctionobj[5].strftime("%d %b, %Y")
+            if type(auctionobj[6]) == datetime.date and auctionobj[6].strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj[6].strftime("%d %b, %Y") != "01 Jan, 1":
+                auctionperiod += " - " + auctionobj[6].strftime("%d %b, %Y")
+            d = {'auctionname' : auctionobj[1], 'aucid' : auctionobj[2], 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj[8], 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj[0], 'lotcount' : str(auctionobj[7]), 'obtype' : 'auction'}
             if achctr > maxperobjectsearchresults * int(page):
                 break
             achctr += 1
             allsearchresults.append(d)
     auctionsqset = Auction.objects.filter(auctionname__icontains=searchkey)[objectstartctr:objectendctr] #.order_by('priority')
     aucctr = 0
+    auctionhouseidslist = []
+    auctionhousedict = {}
+    for auctionobj in auctionsqset:
+        ah_id = str(auctionobj.auctionhouse_id)
+        auctionhouseidslist.append(ah_id)
+    auctionhouseidsstr = "(" + ",".join(auctionhouseidslist) + ")"
+    auctionhousesql = "select cah_auction_house_ID, cah_auction_house_name from core_auction_houses where cah_auction_house_ID in %s"%auctionhouseidsstr
+    if re.search(idpattern, auctionhouseidsstr):
+        cursor.execute(auctionhousesql)
+        ahqset = cursor.fetchall()
+    else:
+        ahqset = []
+    for ahrec in ahqset:
+        ah_id = str(ahrec[0])
+        ah_name = ahrec[1]
+        auctionhousedict[ah_id] = ah_name
     for auctionobj in auctionsqset:
         auctionhouseid = auctionobj.auctionhouse_id
-        ahobj = None
         auctionhousename, ahid = "", ""
         try:
-            ahobj = AuctionHouse.objects.get(id=auctionhouseid)
-            auctionhousename = ahobj.housename
-            ahid = ahobj.id
+            auctionhousename = auctionhousedict[str(auctionhouseid)]
+            ahid = auctionhouseid
         except:
             pass
         auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-        if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
+        if type(auctionobj.auctionenddate) == datetime.date and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
             auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
         d = {'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj.coverimage, 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount), 'obtype' : 'auction'}
         if aucctr > maxperobjectsearchresults * int(page):
@@ -233,15 +336,64 @@ def search(request):
     searchartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists where MATCH(fa_artist_name) AGAINST ('" + searchkey + "') limit " + str(maxperobjectsearchresults) + " OFFSET " + str(objectstartctr)
     cursor.execute(searchartistsql)
     matchedartists = cursor.fetchall()
+    artworkartistdict = {}
+    lotartworkdict = {}
+    artistidslist = []
+    artworkidslist = []
     for artist in matchedartists:
-        artistartworkqset = Artwork.objects.filter(artist_id=artist[0])
+        aid = str(artist[0])
+        artistidslist.append(aid)
+    artistidsstr = "(" + ",".join(artistidslist) + ")"
+    artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artist_ID in %s"%artistidsstr
+    #artworklotartistsql = "select artist_id, artist_name, artist_price_usd, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre, saledate, auctionid, lotstatus, medium, sizedetails, lotcategory, lotnum, artworkid, artworkname, highestimate, lowestimate, lotimage1, lotimage2, lotid from fa_artwork_lot_artist where artist_id in %s"%artistidsstr
+    if re.search(idpattern, artistidsstr):
+        cursor.execute(artworksql)
+        artworksqset = cursor.fetchall()
+    else:
+        artworksqset = []
+    for awrec in artworksqset:
+        artistid = str(awrec[7])
+        if artistid in artworkartistdict.keys():
+            awlist = artworkartistdict[artistid]
+            awlist.append(awrec)
+            artworkartistdict[artistid] = awlist
+        else:
+            artworkartistdict[artistid] = [awrec,]
+        awid = str(awrec[0])
+        artworkidslist.append(awid)
+    awidsstr = "(" + ",".join(artworkidslist) + ")"
+    lotsql = "select fal_lot_ID, fal_lot_no, fal_sub_lot_no, fal_artwork_ID, fal_auction_ID, fal_lot_sale_date, fal_lot_material, fal_lot_size_details, fal_lot_category, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price_USD, fal_lot_sale_price, fal_lot_condition, fal_lot_status, fal_lot_provenance, fal_lot_published, fal_lot_image1, fal_lot_image2 from fineart_lots where fal_artwork_ID in %s"%awidsstr
+    if re.search(idpattern, awidsstr):
+        cursor.execute(lotsql)
+        lotsqset = cursor.fetchall()
+    else:
+        lotsqset = []
+    for lotrec in lotsqset:
+        awidstr = str(lotrec[3])
+        if awidstr in lotartworkdict.keys():
+            lotlist = lotartworkdict[awidstr]
+            lotlist.append(lotrec)
+            lotartworkdict[awidstr] = lotlist
+        else:
+            lotartworkdict[awidstr] = [lotrec,]
+    for artist in matchedartists:
+        try:
+            artistartworkqset = artworkartistdict[str(artist[0])]
+        except:
+            artistartworkqset = []
         for artwork in artistartworkqset:
-            lotqset = Lot.objects.filter(artwork_id=artwork.id)
+            try:
+                lotqset = lotartworkdict[str(artwork[0])]
+            except:
+                lotqset = []
             for lot in lotqset:
-                soldprice = str(lot.soldpriceUSD)
+                soldprice = str(lot[13])
                 soldprice = soldprice.replace("$", "")
                 #print(artist[1] + " ########################")
-                d = {'artistname' : artist[1], 'lottitle' : artwork.artworkname, 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'aid' : artist[0], 'birthyear' : artist[3], 'deathyear' : artist[4], 'nationality' : artist[2], 'artistimage' : artist[5], 'coverimage' : lot.lotimage1, 'awid' : artwork.id, 'createdate' : artwork.creationstartdate, 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
+                szdet = lot[7]
+                if lot[7] is None:
+                    szdet = ""
+                d = {'artistname' : artist[1], 'lottitle' : artwork[1], 'medium' : lot[6], 'size' : szdet.encode('utf-8'), 'aid' : artist[0], 'birthyear' : artist[3], 'deathyear' : artist[4], 'nationality' : artist[2], 'artistimage' : artist[5], 'coverimage' : lot[19], 'awid' : artwork[0], 'createdate' : artwork[3], 'lid' : lot[0], 'obtype' : 'lot', 'aucid' : lot[4], 'soldprice' : soldprice}
                 allsearchresults.append(d)
                 artctr += 1
                 if artctr > maxperobjectsearchresults:
@@ -258,18 +410,58 @@ def search(request):
     #print(artworkqset.explain())
     awctr = 0
     quotaflag = 0
+    artistdict = {}
+    lotartworkdict = {}
+    artistidslist = []
+    artworkidslist = []
+    for artwork in matchedartworks:
+        artistid = str(artwork[3])
+        artistidslist.append(artistid)
+        artworkid = str(artwork[0])
+        artworkidslist.append(artworkid)
+    artistidsstr = "(" + ",".join(artistidslist) + ")"
+    artworkidsstr = "(" + ",".join(artworkidslist) + ")"
+    artistsql = "SELECT fa_artist_name, fa_artist_ID, fa_artist_name_prefix, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_description, fa_artist_aka, fa_artist_bio, fa_artist_genre, fa_artist_image, fa_artist_record_created from fineart_artists Where fa_artist_ID in %s"%artistidsstr
+    lotsql = "select fal_lot_ID, fal_lot_no, fal_sub_lot_no, fal_artwork_ID, fal_auction_ID, fal_lot_sale_date, fal_lot_material, fal_lot_size_details, fal_lot_category, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price_USD, fal_lot_sale_price, fal_lot_condition, fal_lot_status, fal_lot_provenance, fal_lot_published, fal_lot_image1, fal_lot_image2 from fineart_lots where fal_artwork_ID in %s"%artworkidsstr
+    if re.search(idpattern, artistidsstr):
+        cursor.execute(artistsql)
+        artistsqset = cursor.fetchall()
+    else:
+        artistsqset = []
+    for artistrec in artistsqset:
+        artistidstr = str(artistrec[1])
+        artistdict[artistidstr] = artistrec
+    if re.search(idpattern, artworkidsstr):
+        cursor.execute(lotsql)
+        lotsqset = cursor.fetchall()
+    else:
+        lotsqset = []
+    for lotrec in lotsqset:
+        artworkid = str(lotrec[3])
+        if artworkid in lotartworkdict.keys():
+            lotslist = lotartworkdict[artworkid]
+            lotslist.append(lotrec)
+            lotartworkdict[artworkid] = lotslist
+        else:
+            lotartworkdict[artworkid] = [lotrec,]
     for artwork in matchedartworks:
         artist = None
         try:
-            artist = Artist.objects.get(id=artwork[3])
+            artist = artistdict[str(artwork[3])]
         except:
             continue # Skip the artwork if we can't identify the artist.
-        lotqset = Lot.objects.filter(artwork_id=artwork[0])
+        try:
+            lotqset = lotartworkdict[str(artwork[0])]
+        except:
+            lotqset = []
         for lot in lotqset:
-            soldprice = str(lot.soldpriceUSD)
+            soldprice = str(lot[13])
             soldprice = soldprice.replace("$", "")
             #print(artist.artistname + " %%%%%%%%%%%%%%%%%%")
-            d = {'artistname' : artist.artistname, 'lottitle' : artwork[1], 'medium' : lot.medium, 'size' : lot.sizedetails.encode('utf-8'), 'aid' : artist.id, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'nationality' : artist.nationality, 'artistimage' : artist.artistimage, 'coverimage' : lot.lotimage1, 'awid' : artwork[0], 'createdate' : artwork[2], 'lid' : lot.id, 'obtype' : 'lot', 'aucid' : lot.auction_id, 'soldprice' : soldprice}
+            szdet = lot[7]
+            if lot[7] is None:
+                szdet = ""
+            d = {'artistname' : artist[0], 'lottitle' : artwork[1], 'medium' : lot[6], 'size' : szdet.encode('utf-8'), 'aid' : artist[1], 'birthyear' : artist[4], 'deathyear' : artist[5], 'nationality' : artist[3], 'artistimage' : artist[10], 'coverimage' : lot[19], 'awid' : artwork[0], 'createdate' : artwork[2], 'lid' : lot[0], 'obtype' : 'lot', 'aucid' : lot[4], 'soldprice' : soldprice}
             allsearchresults.append(d)
             awctr += 1
             if awctr > maxperobjectsearchresults:
@@ -282,7 +474,8 @@ def search(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
-    dbconn.close() # ... done! Closed db connection.
+    cursor.close()
+    dbconn.close()
     prevpage = int(page) - 1
     nextpage = int(page) + 1
     displayedprevpage1 = 0
@@ -375,7 +568,7 @@ def dofilter(request):
     sizelist = sizespec.split("|")
     entitieslist = []
     context = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="Artcurv-production")
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     l_entities = []
     if lottitle != "":
