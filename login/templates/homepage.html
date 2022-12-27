@@ -636,15 +636,14 @@ footer .under-footer a:hover {
 
     <!-- ***** Main Area Starts ***** -->
     <!-- ***** Explore Area Ends ***** -->
-	{% if follows.items|length > 0 %}
+    <!-- 	{% if follows.items|length > 0 %}
 	<section class="section" id="men">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>My Follows</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+			<hr>
                     </div>
                 </div>
             </div>
@@ -661,7 +660,7 @@ footer .under-footer a:hover {
 		                <a href="/artist/details/?aid={{adata.3}}" style="color:#000000;">
 					<h4>{{aname}}</h4>
 					<h6>{{adata.2}}</h6>
-					<!-- <a class="btn btn-slider" href="#">Follow</a> -->
+			
 				</a>
 				{% if adminuser == 1 %}
 				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{adata.3}}');">Edit</a></div>
@@ -670,7 +669,7 @@ footer .under-footer a:hover {
 		        </div>
 			{% endfor %}
 		    	</div>
-			<!--
+			
                         <div class="owl-men-item owl-carousel">
                             {% for gname, gdata in galleries.items %}
                             <div class="item">
@@ -687,7 +686,7 @@ footer .under-footer a:hover {
                             </div>
                             {% endfor %}
                         </div> 
-			-->
+			
 			<div class="container">
 			    <div class="row">
 			    	<div class="col-lg-12">
@@ -699,7 +698,7 @@ footer .under-footer a:hover {
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     {% endif %}
 
     {% if favourites.items|length > 0 %}

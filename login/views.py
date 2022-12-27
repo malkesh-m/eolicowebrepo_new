@@ -24,6 +24,7 @@ import simplejson as json
 import redis
 import pickle
 import urllib
+import MySQLdb
 
 #from gallery.models import Gallery, Event
 #from museum.models import Museum, MuseumEvent, MuseumPieces
@@ -72,85 +73,106 @@ def index(request):
         return HttpResponse("Invalid method of call")
     chunksize = 3
     context = {}
-    followsdict = {}
-    if request.user.is_authenticated:
-        followsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
-        for follow in followsqset:
-            objectname = follow.reference_model
-            objectid = follow.reference_model_id
-            if objectname == "fineart_artists":
-                artist = Artist.objects.get(id=objectid)
-                artistname = artist.artistname
-                aimg = artist.artistimage
-                anat = artist.nationality
-                aid = artist.id
-                about = artist.description
-                followsdict[artistname] = [about, aimg, anat, aid]
-            elif objectname == "fineart_artworks":
-                artwork = Artwork.objects.get(id=objectid)
-                artworkname = artwork.artworkname
-                artworkimg = artwork.image1
-                about = artwork.description
-                sizedetails = artwork.sizedetails
-                aid = artwork.id
-                followsdict[artworkname] = [about, artworkimg, sizedetails, aid]
-            elif objectname == "fineart_auction_calendar":
-                auction = Auction.objects.get(id=objectid)
-                auctionname = auction.auctionname
-                aucimg = auction.coverimage
-                aucstartdate = auction.auctionstartdate.strftime("%d %b, %Y")
-                aid = auction.id
-                auchouseid = auction.auctionhouse_id
-                auctionhouse = AuctionHouse.objects.get(id=auchouseid)
-                auchousename = auctionhouse.housename
-                followsdict[artworkname] = [auchousename, aucimg, aucstartdate, aid]
-    context['follows'] = followsdict
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    cursor = dbconn.cursor()
     favouritesdict = {}
     if request.user.is_authenticated:
         favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
+        favartistsdict = {}
+        favartistslist = []
+        favartworksdict = {}
+        favartworkslist = []
+        favauctionsdict = {}
+        favauctionslist = []
+        for fav in favsqset:
+            favtype = fav.reference_model
+            favmodelid = fav.reference_model_id
+            if favtype == "fineart_artists":
+                favartistslist.append(str(favmodelid))
+            elif favtype == "fineart_artworks":
+                favartworkslist.append(str(favmodelid))
+            elif favtype == "fineart_auction_calendar":
+                favauctionslist.append(str(favmodelid))
+        artistidsstr = "(" + ",".join(favartistslist) + ")"
+        if favartistslist.__len__() == 0:
+            artistidsstr = "()"
+        artworkidsstr = "(" + ",".join(favartworkslist) + ")"
+        if favartworkslist.__len__() == 0:
+            artworkidsstr = "()"
+        auctionidsstr = "(" + ",".join(favauctionslist) + ")"
+        if favauctionslist.__len__() == 0:
+            auctionidsstr = "()"
+        favartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_description, fa_artist_image from fineart_artists where fa_artist_ID in %s"%artistidsstr
+        favartworksql = "select artworkid, artworkname, sizedetails, lotimage1, medium, artist_id, artist_name from fa_artwork_lot_artist where artworkid in %s"%artworkidsstr
+        favauctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_start_date, faac_auction_end_date, faac_auction_house_ID, faac_auction_image from fineart_auction_calendar where faac_auction_ID in %s"%auctionidsstr
+        if artistidsstr != "()":
+            cursor.execute(favartistsql)
+            favartistsrecords = cursor.fetchall()
+        else:
+            favartistsrecords = []
+        if artworkidsstr != "()":
+            cursor.execute(favartworksql)
+            favartworksrecords = cursor.fetchall()
+        else:
+            favartworksrecords = []
+        if auctionidsstr != "()":
+            cursor.execute(favauctionsql)
+            favauctionsrecords = cursor.fetchall()
+        else:
+            favauctionsrecords = []
+        for favartistrec in favartistsrecords:
+            artistid = str(favartistrec[0])
+            favartistsdict[artistid] = favartistrec
+        for favartworkrec in favartworksrecords:
+            artworkid = str(favartworkrec[0])
+            favartworksdict[artworkid] = favartworkrec
+        for favauctionrec in favauctionsrecords:
+            auctionid = str(favauctionrec[0])
+            favauctionsdict[auctionid] = favauctionrec
         for fav in favsqset:
             favtype = fav.reference_model
             if favtype == "fineart_artists":
                 favmodelid = fav.reference_model_id
                 try:
-                    artist = Artist.objects.get(id=favmodelid)
-                    artistname = artist.artistname
-                    aimg = artist.artistimage
-                    anat = artist.nationality
-                    aid = artist.id
-                    about = artist.description
+                    artist = favartistsdict[str(favmodelid)]
+                    artistname = artist[1]
+                    aimg = artist[4]
+                    anat = artist[2]
+                    aid = artist[0]
+                    about = artist[3]
                     favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
                 except:
                     pass
             elif favtype == "fineart_artworks":
                 favmodelid = fav.reference_model_id
                 try:
-                    artwork = Artwork.objects.get(id=favmodelid)
-                    artworkname = artwork.artworkname
-                    artist_id = artwork.artist_id
-                    artworkimg = artwork.image1
-                    size = artwork.sizedetails
-                    medium = artwork.medium
-                    awid = artwork.id
-                    artist = Artist.objects.get(id=artist_id)
-                    artistname = artist.artistname
+                    artwork = favartworksdict[str(favmodelid)]
+                    artworkname = artwork[1]
+                    artist_id = artwork[5]
+                    artworkimg = artwork[3]
+                    size = artwork[2]
+                    medium = artwork[4]
+                    awid = artwork[0]
+                    artistname = artwork[6]
+                    #artist = Artist.objects.get(id=artist_id)
+                    #artistname = artist.artistname
                     favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
                 except:
                     pass
             elif favtype == "fineart_auction_calendar":
                 favmodelid = fav.reference_model_id
                 try:
-                    auction = Auction.objects.get(id=favmodelid)
-                    auctionname = auction.auctionname
-                    period = auction.auctionstartdate.strftime("%d %b, %Y")
-                    aucenddate = auction.auctionenddate
+                    auction = favauctionsdict[str(favmodelid)]
+                    auctionname = auction[1]
+                    period = auction[2].strftime("%d %b, %Y")
+                    aucenddate = auction[3]
                     if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                         period = period + " - " + str(aucenddate)
-                    auchouseid = auction.auctionhouse_id
+                    auchouseid = auction[4]
                     auchouseobj = AuctionHouse.objects.get(id=auchouseid)
                     housename = auchouseobj.housename
-                    aucid = auction.id
-                    aucimg = auction.coverimage
+                    aucid = auction[0]
+                    aucimg = auction[5]
                     favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
                 except:
                     pass
@@ -317,6 +339,8 @@ def index(request):
         except:
             pass
     context['auctionhouses'] = auctionhouses
+    cursor.close()
+    dbconn.close()
     """
     carouselentries = getcarouselinfo()
     context['carousel'] = carouselentries
