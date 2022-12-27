@@ -329,11 +329,6 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
-#@cache_page(CACHE_TTL)
-def showlogin(request):
-    return HttpResponse("")
-
-
 def signup(request):
     if request.method == 'POST':
         context = {}
@@ -350,9 +345,12 @@ def signup(request):
             return HttpResponse(json.dumps({'error' : 'Email entered is not valid'}))
         if raw_password != password2:
             return HttpResponse(json.dumps({'error' : 'Passwords do not match'}))
-        newuser = djUser.objects.create_user(username=username, email=email, password=raw_password)
-        user = authenticate(username=username, password=raw_password)
-        login(request, user)
+        try:
+            newuser = djUser.objects.create_user(username=username, email=email, password=raw_password)
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+        except:
+            return HttpResponse(json.dumps({'error' : sys.exc_info()[1].__str__()})) 
         return HttpResponse(json.dumps({'error' : ''})) # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
     else:
         context = {}
@@ -369,7 +367,7 @@ def dologin(request):
         if user is not None:
             login(request, user)
         else:
-            return HttpResponse(0)
+            return HttpResponse(None)
         return HttpResponseRedirect("/login/index/") # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
     else:
         return HttpResponse("Invalid request method")
