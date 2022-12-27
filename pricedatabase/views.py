@@ -23,7 +23,7 @@ import MySQLdb
 import unicodedata, itertools
 
 #from gallery.models import Gallery, Event
-from login.models import User, Session #, WebConfig, Carousel
+from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
 #from login.views import getcarouselinfo
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
