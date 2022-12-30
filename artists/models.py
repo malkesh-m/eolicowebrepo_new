@@ -62,7 +62,6 @@ class LotArtist(models.Model):
     artworkname = models.TextField()
     highestimate = models.DecimalField(max_digits=15, decimal_places=2, default=None)
     lowestimate = models.DecimalField(max_digits=15, decimal_places=2, default=None)
-    artworkname = models.TextField()
     lotimage1 = models.TextField(default='')
     lotimage2 = models.TextField(default='')
     #last_edited = models.DateTimeField(auto_now=True)
