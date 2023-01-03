@@ -83,11 +83,13 @@ def index(request):
         #print(auctionhouseidslist)
         auctionhouseidsstr = "(" + ",".join(auctionhouseidslist) + ")"
         auctionhouseauctionsdict = {}
-        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_house_ID in %s order by faac_auction_start_date desc"%(auctionhouseidsstr)
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_house_ID in %s order by faac_auction_start_date desc limit 100"%(auctionhouseidsstr)
+        #print(auctionsql)
         cursor.execute(auctionsql)
         auctionsqset = cursor.fetchall()
         for auction in auctionsqset:
             auctionhouseid = auction[3]
+            #print(auctionhouseid)
             if str(auctionhouseid) in auctionhouseauctionsdict.keys():
                 auctionslist = auctionhouseauctionsdict[str(auctionhouseid)]
                 if auctionslist.__len__() < maxauctionsperhouse: # We won't keep more than 'maxauctionsperhouse' records per house.

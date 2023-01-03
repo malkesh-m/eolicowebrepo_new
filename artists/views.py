@@ -92,6 +92,7 @@ def index(request):
         artistsqset = cursor.fetchall()
         """
         featuredartistsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A ORDER BY A.totalsoldprice DESC LIMIT %s"%endctr
+        #print(featuredartistsql)
         cursor.execute(featuredartistsql)
         artistsqset = cursor.fetchall()
         #artistsqset = FeaturedArtist.objects.all().order_by('-totalsoldprice')[0:endctr]
@@ -446,9 +447,9 @@ def details(request):
         """
         #lotartistsql = "SELECT artist_id, artist_name, artist_price_usd, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre, saledate, auctionid, lotstatus, medium, sizedetails, lotcategory, lotnum, artworkid, artworkname, highestimate, lowestimate, lotimage1, id FROM fa_artwork_lot_artist Where artist_id=%s order by last_edited desc limit %s offset %s"%(aid, maxartworkstoconsider, artworkstartctr)
         lotartistsql = "SELECT artist_id, artist_name, artist_price_usd, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre, saledate, auctionid, lotstatus, medium, sizedetails, lotcategory, lotnum, artworkid, artworkname, highestimate, lowestimate, lotimage1, id FROM fa_artwork_lot_artist Where artist_id=%s limit %s offset %s"%(aid, maxartworkstoconsider, artworkstartctr)
+        #print("2. %s"%lotartistsql)
         cursor.execute(lotartistsql)
         lotartistqset = cursor.fetchall()
-        #print("2. %s"%lotartistsql)
         #lotartistqset = LotArtist.objects.filter(artist_id=aid)[artworkstartctr:artworkendctr]
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
@@ -462,8 +463,12 @@ def details(request):
             artworkauctionidslist.append(lotartist[13])
         artworkidsstr = "(" + ",".join(artworkidslist) + ")"
         artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artist_ID, faa_artwork_size_details, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created from fineart_artworks where faa_artwork_ID in %s"%artworkidsstr
-        cursor.execute(artworksql)
-        artworksqset = cursor.fetchall()
+        #print(artworksql)
+        try:
+            cursor.execute(artworksql)
+            artworksqset = cursor.fetchall()
+        except:
+            artworksqset = []
         artworkartistdict = {}
         artworkauctiondict = {}
         for artworkrow in artworksqset:

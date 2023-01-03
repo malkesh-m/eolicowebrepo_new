@@ -89,7 +89,8 @@ def index(request):
     dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     if allauctions.__len__() == 0:
-        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar order by faac_auction_start_date desc"
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar order by faac_auction_start_date desc limit 100"
+        #print("auctionsql: %s"%auctionsql)
         cursor.execute(auctionsql)
         auctionsqset = cursor.fetchall()
         try:
@@ -108,6 +109,7 @@ def index(request):
                 if featuredauctions.keys().__len__() > maxupcomingauctions:
                     break
                 auctionname = auction[1]
+                #print(auctionname)
                 salecode = auction[2]
                 autocompleteauctionname = auctionname
                 autocompleteauctionname = autocompleteauctionname.replace('"', "")
@@ -600,14 +602,17 @@ def moreauctions(request):
     dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     if allauctions.__len__() == 0: # We didn't get any data from redis cache...
-        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar order by faac_auction_start_date desc"
+        limitval = 100 #(rowendctr - rowstartctr)
+        offsetval = rowstartctr
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar order by faac_auction_start_date desc limit %s offset %s"%(limitval, offsetval)
+        #print(auctionsql)
         cursor.execute(auctionsql)
         auctionsqset = cursor.fetchall()
         #auctionsqset = Auction.objects.all().order_by('-auctionstartdate')
         aucctr = 0
         rctr = 0
         allauctions['row0'] = []
-        for auction in auctionsqset[rowstartctr:]:
+        for auction in auctionsqset:
             auctionname = auction[1]
             filterauctions.append(auctionname)
             if int(atype) == 1 and type(auction[5]) == datetime.date and auction[5] > curdate: # This is an upcoming auction, but we want past auctions only.
