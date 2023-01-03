@@ -91,7 +91,7 @@ def index(request):
         cursor.execute(getview_sql)
         artistsqset = cursor.fetchall()
         """
-        featuredartistsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A ORDER BY A.totalsoldprice DESC LIMIT %s"%endctr
+        featuredartistsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A ORDER BY A.totalsoldprice DESC LIMIT %s OFFSET %s"%(endctr, startctr)
         #print(featuredartistsql)
         cursor.execute(featuredartistsql)
         artistsqset = cursor.fetchall()
@@ -174,6 +174,7 @@ def index(request):
                 bdstring = "Born " + bdstring
             d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
             artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
+            #print(artworksql)
             cursor.execute(artworksql)
             artworkqset = cursor.fetchall()
             if artworkqset.__len__() == 0:
@@ -259,7 +260,6 @@ def index(request):
                 else:
                     bdstring = "Born " + bdstring
                 d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
-                #artworkqset1 = Artwork.objects.filter(artist_id=artistid)
                 artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
                 #print(artworksql1)
                 cursor.execute(artworksql1)
@@ -393,7 +393,6 @@ def details(request):
         cursor.execute(artistsql)
         artistobj = list(cursor.fetchone())
         #print("1. %s"%artistsql)
-        #artistobj = Artist.objects.get(id=aid)
     except:
         context['error'] = "Artist with the given identifier (%s) doesn't exist"%aid
         template = loader.get_template('artist_details.html')
@@ -450,7 +449,6 @@ def details(request):
         #print("2. %s"%lotartistsql)
         cursor.execute(lotartistsql)
         lotartistqset = cursor.fetchall()
-        #lotartistqset = LotArtist.objects.filter(artist_id=aid)[artworkstartctr:artworkendctr]
         date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
         totaldelta = 0.00
         curdatetime = datetime.datetime.now()
@@ -478,6 +476,28 @@ def details(request):
         for auc in auctionsqset:
             aucidstr = str(auc.id)
             artworkauctiondict[aucidstr] = auc
+        auchousedict = {}
+        uniqueauchouseidlist = []
+        for lotartist in lotartistqset:
+            try:
+                auctionobj = artworkauctiondict[str(lotartist[13])]
+            except:
+                continue
+            auctionhouseid = auctionobj.auctionhouse_id
+            if str(auctionhouseid) not in auchousedict.keys():
+                uniqueauchouseidlist.append(str(auctionhouseid))
+                auchousedict[str(auctionhouseid)] = ""
+        auchouseidstr = "(" + ",".join(uniqueauchouseidlist) + ")"
+        if uniqueauchouseidlist.__len__() > 0:
+            ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID in %s"%auchouseidstr
+            cursor.execute(ahsql)
+            auchouseqset = cursor.fetchall()
+        else:
+            auchouseqset = []
+        for auchouserecord in auchouseqset:
+            auctionhouseid = auchouserecord[1]
+            auchousename = auchouserecord[0]
+            auchousedict[str(auctionhouseid)] = auchousename
         for lotartist in lotartistqset:
             if upcomingflag == 1 and pastauctionsflag == 1:
                 break
@@ -504,17 +524,8 @@ def details(request):
             auctionname = auctionobj.auctionname
             curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
             if auctionstartdate > curdate: # This is an upcoming auction
-                auchouseobj = None
                 try:
-                    #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
-                    ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
-                    cursor.execute(ahsql)
-                    ahqset = cursor.fetchall()
-                    #print("3. %s"%ahsql)
-                    if ahqset.__len__() == 0:
-                        continue
-                    ahrow = ahqset[0]
-                    auchousename = ahrow[0]
+                    auchousename = auchousedict[str(auctionobj.auctionhouse_id)]
                 except:
                     auchousename = ""
                 auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
@@ -536,18 +547,8 @@ def details(request):
                 aucenddate = auctionobj.auctionenddate
                 if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                     auctionperiod += " - " + str(aucenddate)
-                auchouseobj = None
                 try:
-                    ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID=%s"%auctionobj.auctionhouse_id
-                    cursor.execute(ahsql)
-                    ahqset = cursor.fetchall()
-                    #print("5. %s"%ahsql)
-                    if ahqset.__len__() == 0:
-                        continue
-                    ahrow = ahqset[0]
-                    auchousename = ahrow[0]
-                    #auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
-                    #auchousename = auchouseobj.housename
+                    auchousename = auchousedict[str(auctionobj.auctionhouse_id)]
                 except:
                     auchousename = ""
                 try:
@@ -1060,7 +1061,7 @@ def showartwork(request):
     return HttpResponse(template.render(context, request))
 
 
-
+@csrf_exempt
 def textfilter(request):
     if request.method != 'POST':
         return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
@@ -1131,7 +1132,7 @@ def textfilter(request):
     return HttpResponse(json.dumps(context))
 
 
-@csrf_protect
+@csrf_exempt
 def morefilter(request):
     if request.method != 'POST':
         return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
@@ -1196,14 +1197,37 @@ def morefilter(request):
     context['aid'] = aid
     artworksbyartistqset = Artwork.objects.filter(artist_id=aid)[startctr:endctr]
     #print(artworksbyartistqset.__len__())
+    lotartworkdict = {}
+    artworkidslist = []
+    lotauctiondict = {}
+    auctionidslist = []
+    for artwork in artworksbyartistqset:
+        if str(artwork.id) not in lotartworkdict.keys():
+            lotartworkdict[str(artwork.id)] = []
+            artworkidslist.append(artwork.id)
+    lotqset = Lot.objects.filter(artwork_id__in=artworkidslist)
+    for lotobj in lotqset:
+        if str(lotobj.auction_id) not in lotauctiondict.keys():
+            lotauctiondict[str(lotobj.auction_id)] = ""
+            auctionidslist.append(lotobj.auction_id)
+        if str(lotobj.artwork_id) in lotartworkdict.keys():
+            awlist = lotartworkdict[str(lotobj.artwork_id)]
+        else:
+            awlist = []
+        awlist.append(lotobj)
+        lotartworkdict[str(lotobj.artwork_id)] = awlist
+    auctionqset = Auction.objects.filter(id__in=auctionidslist)
+    for auctionobj in auctionqset:
+        lotauctiondict[str(auctionobj.id)] = auctionobj
     for artwork in artworksbyartistqset:
         if maxsearchresults < pastartworks.__len__():
             break
-        lotqset = Lot.objects.filter(artwork_id=artwork.id)
+        lotqset = lotartworkdict[str(artwork.id)]
         #print(artwork.artworkname)
         for lotobj in lotqset:
             try:
-                auctionobj = Auction.objects.get(id=lotobj.auction_id)
+                auctionobj = lotauctiondict[str(lotobj.auction_id)]
+                #auctionobj = Auction.objects.get(id=lotobj.auction_id)
             except:
                 continue
             if searchkey != "" and (searchkey.lower() in artwork.artworkname.lower() or searchkey.lower() in artwork.description.lower() or searchkey.lower() in auctionobj.auctionname.lower()):
@@ -1244,6 +1268,7 @@ def morefilter(request):
                         break # We have matched at least one of the selected mediums. So this artwork is included in list. Go to next artwork.
                 auctionhouseobj = None
                 try:
+                    print(auctionobj.auctionhouse_id)
                     auctionhouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
                     for auctionhousename in auctionhouselist:
                         if auctionhousename in auctionhouseobj.housename.lower():

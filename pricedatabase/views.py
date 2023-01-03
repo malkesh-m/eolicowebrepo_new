@@ -56,12 +56,15 @@ def index(request):
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
     chunksize = 20
-    maxlotstoconsider = 2500 # These would be the 2500 top high priced lots. For this page we won't consider lots beyond the top 2500.
+    maxlotstoconsider = 500 # These would be the 2500 top high priced lots. For this page we won't consider lots beyond the top 2500.
     rows = 6
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
     fstartctr = int(page) * maxlotstoconsider - maxlotstoconsider
     fendctr = int(page) * maxlotstoconsider
+    maxauctionhouses = 60
+    ahstartctr = int(page) * maxauctionhouses - maxauctionhouses
+    ahendctr = int(page) * maxauctionhouses
     context = {}
     date2weeksago = datetime.datetime.now() - datetime.timedelta(days=settings.PDB_LATESTPERIOD)
     entitieslist = []
@@ -78,7 +81,7 @@ def index(request):
         entitieslist = []
         filterpdb = []
     if entitieslist.__len__() == 0:
-        allauctionhousesqset = AuctionHouse.objects.all()
+        allauctionhousesqset = AuctionHouse.objects.order_by('-edited')[ahstartctr:ahendctr]
         for auctionhouseobj in allauctionhousesqset:
             auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
             if auctionhouseobj.housename not in uniquefilter.keys():
@@ -94,8 +97,10 @@ def index(request):
         for lotobj in lotsqset:
             artworkidslist.append(str(lotobj.artwork_id))
             auctionidslist.append(str(lotobj.auction_id))
+            #print(lotobj.artwork_id)
         artworkidsstr = "(" + ",".join(artworkidslist) + ")"
         artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_requires_review, faa_artwork_start_year, faa_artwork_end_year, faa_artwork_start_year_identifier, faa_artwork_end_year_identifier, faa_artwork_start_year_precision, faa_artwork_end_year_precision, faa_artist_ID, faa_artist2_ID, faa_artist3_ID, faa_artist4_ID, faa_artwork_size_details, faa_artwork_height, faa_artwork_width, faa_artwork_depth, faa_arwork_measurement_unit, faa_artwork_material, faa_artwork_edition, faa_artwork_category, faa_artwork_markings, faa_artwork_description, faa_artwork_literature, faa_artwork_exhibition, faa_artwork_image1, faa_artwork_record_created, faa_artwork_record_updated from fineart_artworks where faa_artwork_ID in %s"%artworkidsstr
+        #print(artworksql)
         cursor.execute(artworksql)
         allartworksqset = cursor.fetchall()
         artworksdict = {}

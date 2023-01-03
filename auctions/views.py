@@ -612,6 +612,15 @@ def moreauctions(request):
         aucctr = 0
         rctr = 0
         allauctions['row0'] = []
+        auctionhouseidslist = []
+        for auction in auctionsqset:
+            auchouseid = auction[3]
+            auctionhouseidslist.append(auchouseid)
+        auchouseqset = AuctionHouse.objects.filter(id__in=auctionhouseidslist)
+        auchousedict = {}
+        for auchouseobj in auchouseqset:
+            auchouseid = str(auchouseobj.id)
+            auchousedict[auchouseid] = [auchouseobj.housename, auchouseobj.location]
         for auction in auctionsqset:
             auctionname = auction[1]
             filterauctions.append(auctionname)
@@ -633,9 +642,9 @@ def moreauctions(request):
             auctionhouse = None
             auctionhousename, ahid, location = "", auction[3], ""
             try:
-                auctionhouse = AuctionHouse.objects.get(id=auction[3])
-                auctionhousename = auctionhouse.housename
-                location = auctionhouse.location
+                auctionhouse = auchousedict[str(auction[3])]
+                auctionhousename = auctionhouse[0]
+                location = auctionhouse[1]
             except:
                 pass
             # Check for favourites
