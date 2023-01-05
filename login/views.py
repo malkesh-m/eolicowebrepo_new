@@ -264,15 +264,36 @@ def index(request):
     except:
         pass
     if upcomingauctions.keys().__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')
+        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')[:200] # Limiting to top 200 only.
         actr = 0
         srcPattern = re.compile("src=(.*)$")
         curdate = datetime.datetime.now()
         datenow = str(datetime.date(curdate.year, curdate.month,curdate.day))
+        aucidlist = []
+        auchouseidlist = []
         for auction in auctionsqset:
             if str(auction.auctionstartdate) < datenow: # Past auction - leave it.
                 continue
-            lotsqset = Lot.objects.filter(auction_id=auction.id)
+            aucidlist.append(auction.id)
+            auchouseidlist.append(auction.auctionhouse_id)
+        lotsqset = Lot.objects.filter(auction_id__in=aucidlist)
+        lotsbyauctiondict = {}
+        for lot in lotsqset:
+            aucid = lot.auction_id
+            if str(aucid) not in lotsbyauctiondict.keys():
+                lotsbyauctiondict[str(aucid)] = [lot,]
+            else:
+                lotslist = lotsbyauctiondict[str(aucid)]
+                lotslist.append(lot)
+                lotsbyauctiondict[str(aucid)] = lotslist
+        auchousedict = {}
+        auchouseqset = AuctionHouse.objects.filter(id__in=auchouseidlist)
+        for auchouse in auchouseqset:
+            auchousedict[str(auchouse.id)] = auchouse
+        for auction in auctionsqset:
+            if str(auction.auctionstartdate) < datenow: # Past auction - leave it.
+                continue
+            lotsqset = lotsbyauctiondict[str(auction.id)]
             if lotsqset.__len__() == 0:
                 continue
             imageloc = auction.coverimage
@@ -286,8 +307,10 @@ def index(request):
             auchouseobj = None
             auchousename, ahlocation = "", ""
             try:
-                auchouseobj = AuctionHouse.objects.get(id=auction.auctionhouse_id)
+                print(auction.auctionhouse_id)
+                auchouseobj = auchousedict[str(auction.auctionhouse_id)]
                 auchousename = auchouseobj.housename
+                print(auchousename)
                 ahlocation = auchouseobj.location
             except:
                 pass
@@ -321,11 +344,24 @@ def index(request):
     except:
         pass
     if auctionhouses.__len__() == 0:
-        auchousesqset = AuctionHouse.objects.all()
+        auchousesqset = AuctionHouse.objects.all()[:200] # Limiting to top 200 only.
         actr = 0
+        auchouseidlist = []
+        for auchouse in auchousesqset:
+            auchouseidlist.append(auchouse.id)
+        aucbyauchousedict = {}
+        aucqset = Auction.objects.filter(auctionhouse_id__in=auchouseidlist)
+        for auc in aucqset:
+            auchouseid = auc.auctionhouse_id
+            if str(auchouseid) not in aucbyauchousedict.keys():
+                aucbyauchousedict[str(auchouseid)] = [auc,]
+            else:
+                auclist = aucbyauchousedict[str(auchouseid)]
+                auclist.append(auc)
+                aucbyauchousedict[str(auchouseid)] = auclist
         for auchouse in auchousesqset:
             auchousename = auchouse.housename
-            auctionsqset = Auction.objects.filter(auctionhouse_id=auchouse.id)
+            auctionsqset = aucbyauchousedict[str(auchouse.id)]
             if auctionsqset.__len__() == 0:
                 continue
             #print(auctionsqset[0].coverimage)

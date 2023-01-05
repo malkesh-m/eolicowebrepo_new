@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.template.response import TemplateResponse
 from django.contrib.auth.models import User as djUser
 from django.core.mail import send_mail
+from django.template.loader import get_template
 
 import os, sys, datetime, re
 from django.core.mail import send_mail
@@ -64,11 +65,15 @@ def get_fav_info():
     return returndict
 
 
-def sendemail(username, emailaddr, datatype, datalist):
+def sendemail(username, emailaddr, datatype, datalist, auctionslist):
     subject = ""
     message = ""
     fromemail = settings.FROM_EMAIL_USER
     send_mail(subject, message, fromemail, [emailaddr,])
+    tmpl = loader.get_template('email_alert.html')
+    context = {}
+    
+    return HttpResponse(template.render(context, request))
 
 
 def send_email_alerts():
@@ -84,6 +89,8 @@ def send_email_alerts():
     upcoming_artworks_dict = {}
     upcoming_auctions_dict = {}
     artworkartists = []
+    artist_auction_dict = {}
+    artwork_auction_dict = {}
     dateafter2weeks = datetime.datetime.now() + datetime.timedelta(days=2*7)
     auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image from fineart_auction_calendar where faac_auction_ID in %s and faac_auction_start_date > now() and faac_auction_start_date < %s"%(auctionidslist, dateafter2weeks)
     cursor.execute(auctionsql)
@@ -114,6 +121,20 @@ def send_email_alerts():
             if artworkrecords.__len__() == 0:
                 continue
             artworkartists.append(str(artworkrecords[0][0]))
+            if str(artworkrecords[0][0]) not in artist_auction_dict.keys():
+                artist_auction_dict[str(artworkrecords[0][0])] = [aucid,]
+            else:
+                auclist = artist_auction_dict[str(artworkrecords[0][0])]
+                if aucid not in auclist:
+                    auclist.append(aucid)
+                artist_auction_dict[str(artworkrecords[0][0])] = auclist
+            if str(artworkid) not in artwork_auction_dict.keys():
+                artwork_auction_dict[str(artworkid)] = [aucid,]
+            else:
+                auclist = artwork_auction_dict[str(artworkid)]
+                if aucid not in auclist:
+                    auclist.append(aucid)
+                artwork_auction_dict[str(artworkid)] = auclist
     artworkartists_str = "(" + ",".join(artworkartists) + ")"
     artistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_description, fa_artist_bio, fa_artist_image from fineart_artists where fa_artist_ID in %s"%artworkartists_str
     cursor.execute(artistsql)
@@ -132,15 +153,29 @@ def send_email_alerts():
             if reftable == 'fineart_artists':
                 if refid in upcoming_artists_dict.keys():
                     artistinfo = upcoming_artists_dict[refid]
-                    sendemail(username, emailaddr, 'artist', artistinfo)
+                    try:
+                        aucidlist = artist_auction_dict[str(refid)]
+                        auctioninfolist = []
+                        for aucid in aucidlist:
+                            auctioninfo = upcoming_auctions_dict[str(aucid)]
+                            auctioninfolist.append(auctioninfo)
+                        sendemail(username, emailaddr, 'artist', artistinfo, auctioninfolist)
+                    except:
+                        pass
             elif reftable == 'fineart_artworks':
                 if refid in upcoming_artworks_dict.keys():
                     artworkinfo = upcoming_artworks_dict[refid]
-                    sendemail(username, emailaddr, 'artwork', artworkinfo)
+                    try:
+                        aucidlist = artwork_auction_dict[str(refid)]
+                        auctioninfolist = []
+                        for aucid in aucidlist:
+                            auctioninfo = upcoming_auctions_dict[str(aucid)]
+                            auctioninfolist.append(auctioninfo)
+                    sendemail(username, emailaddr, 'artwork', artworkinfo, auctioninfolist)
             elif reftable == 'fineart_auction_calendar':
                 if refid in upcoming_auctions_dict.keys():
                     auctioninfo = upcoming_auctions_dict[refid]
-                    sendemail(username, emailaddr, 'auction', auctioninfo)
+                    sendemail(username, emailaddr, 'auction', auctioninfo, [])
     print("Done sending email alerts.")
         
 

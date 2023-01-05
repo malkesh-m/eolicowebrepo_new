@@ -828,6 +828,7 @@ def showauction(request):
     return HttpResponse(template.render(context, request))
 
 
+@csrf_exempt
 def morefilter(request):
     if request.method != 'POST':
         return HttpResponse(json.dumps({'err' : "Invalid method of call"}))

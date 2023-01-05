@@ -94,6 +94,7 @@ def index(request):
         artworkidslist = []
         auctionidslist = []
         artistidslist = []
+        #print(lotsqset)
         for lotobj in lotsqset:
             artworkidslist.append(str(lotobj.artwork_id))
             auctionidslist.append(str(lotobj.auction_id))
@@ -495,7 +496,7 @@ def search(request):
     return HttpResponse(json.dumps(context))
 
 
-
+@csrf_exempt
 def dofilter(request):
     if request.method != 'POST':
         return HttpResponse('{ "error" : "Invalid request method"}')
