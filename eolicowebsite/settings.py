@@ -33,6 +33,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
+CSRF_COOKIE_HTTPONLY = False
+
 
 # Application definition
 SITE_ID = 1
@@ -110,7 +112,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'Artcurv-production', 
+        'NAME': 'staging', 
         'USER': 'websiteadmin',  
         'PASSWORD': 'AVNS_UHIULiqroqLJ4x2ivN_', 
         'HOST': 'art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com',  
@@ -190,5 +192,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PDB_ARTWORKSLIMIT = 500
 PDB_ARTISTSLIMIT = 200
 PDB_MAXSEARCHRESULT = 200
-PDB_LATESTPERIOD = 365
+PDB_LATESTPERIOD = 1000 # 365
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yourserver.com'
+EMAIL_PORT = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+FROM_EMAIL_USER = "artwork-messenger@artwork.com"
+
+
 

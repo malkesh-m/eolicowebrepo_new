@@ -536,7 +536,15 @@
                             </div>
                             <div class="sec-right">
                                 <h2>{{artistinfo.name}}</h2>
-                                <span>{{artistinfo.nationality}}, {{artistinfo.birthdate}}</span>
+				{% if artistinfo.nationality != '' and artistinfo.nationality != None %}
+                                <span>{{artistinfo.nationality}}, b. {{artistinfo.birthdate}}</span>
+				{% else %}
+				{% if artistinfo.birthdate != '' and artistinfo.birthdate != None %}
+				<span>b. {{artistinfo.birthdate}}</span>
+				{% else %}
+				<span>&nbsp;</span>
+				{% endif %}
+				{% endif %}
 				{% if adminuser == 1 %}
 				  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artistinfo.artistid}}');">Edit</a>
 			      	{% endif %}

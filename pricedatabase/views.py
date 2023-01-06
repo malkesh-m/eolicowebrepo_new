@@ -21,6 +21,7 @@ import pickle
 import urllib
 import MySQLdb
 import unicodedata, itertools
+import decimal
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
@@ -581,15 +582,40 @@ def dofilter(request):
         filterartworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_image1, faa_artist_ID from fineart_artworks where MATCH(faa_artwork_title) AGAINST ('" + lottitle + "') limit %s OFFSET %s"%(settings.PDB_ARTWORKSLIMIT, artworkstartctr)
         cursor.execute(filterartworksql)
         filterartworks = cursor.fetchall()
+        artworkidlist = []
+        artistidlist = []
+        for artwork in filterartworks:
+            artworkidlist.append(artwork[0])
+            artistidlist.append(artwork[3])
+        lotqset = Lot.objects.filter(artwork_id__in=artworkidlist)
+        lotbyartworkiddict = {}
+        auctionbyiddict = {}
+        aucidlist = []
+        for lot in lotqset:
+            lotbyartworkiddict[str(lot.artwork_id)] = [lot,] # Should contain only a single object
+            aucidlist.append(lot.auction_id)
+        artistbyiddict = {}
+        artistqset = Artist.objects.filter(id__in=artistidlist)
+        for artist in artistqset:
+            artistbyiddict[str(artist.id)] = artist
+        auctionqset = Auction.objects.filter(id__in=aucidlist)
+        auchousebyiddict = {}
+        auchouseidlist = []
+        for auction in auctionqset:
+            auctionbyiddict[str(auction.id)] = auction
+            auchouseidlist.append(auction.auctionhouse_id)
+        auchouseqset = AuctionHouse.objects.filter(id__in=auchouseidlist)
+        for auchouse in auchouseqset:
+            auchousebyiddict[str(auchouse.id)] = auchouse
         for artwork in filterartworks:
             artworkname = artwork[1]
             #print(artworkname + " #######################")
             awid = artwork[0]
-            lotqset = Lot.objects.filter(artwork_id=artwork[0])[0:1] # We need only one referenced lot.
+            lotqset = lotbyartworkiddict[str(artwork[0])] # We need only one referenced lot.
             artistobj = None
             lartistname, aid = "", ""
             try:
-                artistobj = Artist.objects.get(id=artwork[3])
+                artistobj = artistbyiddict[str(artwork[3])]
                 lartistname = artistobj.artistname
                 aid = artistobj.id
             except:
@@ -598,7 +624,10 @@ def dofilter(request):
             auctionname, aucid, auctionperiod, auctionhousename, ahid = "", "", "", "", ""
             if lotqset.__len__() > 0:
                 lmedium = lotqset[0].medium.lower()
-                lsize = lotqset[0].sizedetails.encode('utf-8')
+                if type(lotqset[0].sizedetails) == str:
+                    lsize = lotqset[0].sizedetails.encode('utf-8')
+                else:
+                    lsize = ""
                 lsaledate = lotqset[0].saledate.strftime("%d %b, %Y")
                 lsoldprice = lotqset[0].soldpriceUSD
                 lminestimate = lotqset[0].lowestimateUSD
@@ -618,13 +647,13 @@ def dofilter(request):
                     continue
                 auctionobj = None
                 try:
-                    auctionobj = Auction.objects.get(id=lotqset[0].auction_id)
+                    auctionobj = auctionbyiddict[str(lotqset[0].auction_id)]
                     auctionname = auctionobj.auctionname
                     aucid = auctionobj.id
                     auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
                     if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                         auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                    auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                    auchouseobj = auchousebyiddict[str(auctionobj.auctionhouse_id)]
                     auctionhousename = auchouseobj.housename
                     ahid = auchouseobj.id
                 except:
@@ -654,12 +683,16 @@ def dofilter(request):
                     break
             if ahctr > 0 and auctionhouseflag == -1:
                 auctionhouseflag = 0
-            if soldmin != "" and lsoldprice != "" and float(soldmin) < float(lsoldprice):
-                if soldmax != "" and float(soldmax) > float(lsoldprice):
+            if type(soldmin) == str:
+                soldmin = soldmin.strip()
+            if type(soldmax) == str:
+                soldmax = soldmax.strip()
+            if soldmin is not None and soldmin != "" and lsoldprice is not None and lsoldprice != "" and float(soldmin) < float(lsoldprice):
+                if soldmax is not None and soldmax != "" and float(soldmax) > float(lsoldprice):
                     soldpriceflag = 1
-                elif soldmax == "":
+                elif soldmax is None or soldmax == "":
                     soldpriceflag = 1
-            elif soldmin != "" and lsoldprice != "" and float(soldmin) > float(lsoldprice):
+            elif soldmin is not None and soldmin != "" and lsoldprice is not None and lsoldprice != "" and float(soldmin) > float(lsoldprice):
                 soldpriceflag = 0
             else:
                 pass
@@ -670,6 +703,7 @@ def dofilter(request):
                 if sz == "small":
                     for sp in sizeparts:
                         try:
+                            sp = sp.strip()
                             fsp = float(sp)
                             if fsp < 40: # Check if any of the dimensions is less than 40 cm.
                                 sizeflag = 1
@@ -681,6 +715,7 @@ def dofilter(request):
                 elif sz == "medium":
                     for sp in sizeparts:
                         try:
+                            sp = sp.strip()
                             fsp = float(sp)
                             if fsp > 40 and fsp < 100: # Check if any of the dimensions is between 40 and 100 cm.
                                 sizeflag = 1
@@ -692,6 +727,7 @@ def dofilter(request):
                 elif sz == "large":
                     for sp in sizeparts:
                         try:
+                            sp = sp.strip()
                             fsp = float(sp)
                             if fsp > 100: # Check if any of the dimensions is greater than 100 cm.
                                 sizeflag = 1
@@ -703,6 +739,10 @@ def dofilter(request):
                 else:
                     pass
             try:
+                if type(estimatemax) == str:
+                    estimatemax = estimatemax.strip()
+                if type(estimatemin) == str:
+                    estimatemin = estimatemin.strip()
                 if float(lminestimate) < float(estimatemin) and float(lmaxestimate) > float(estimatemax):
                     estimateflag = 1
                 else:
@@ -722,22 +762,65 @@ def dofilter(request):
             filterartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_image from fineart_artists limit %s offset %s"%(settings.PDB_ARTISTSLIMIT, artiststartctr)
             cursor.execute(filterartistsql)
             filterartists = cursor.fetchall()
+        artistidlist = []
+        artworkbyartistiddict = {}
+        artworkidlist = []
+        lotbyawiddict = {}
+        for artist in filterartists:
+            artistidlist.append(artist[0])
+        artworkqset = Artwork.objects.filter(artist_id__in=artistidlist).order_by('-edited')
+        for aw in artworkqset:
+            if str(aw.artist_id) not in artworkbyartistiddict.keys():
+                artworkbyartistiddict[str(aw.artist_id)] = [aw,]
+            else:
+                awlist = artworkbyartistiddict[str(aw.artist_id)]
+                awlist.append(aw)
+                artworkbyartistiddict[str(aw.artist_id)] = awlist
+            artworkidlist.append(aw.id)
+        lotsqset = Lot.objects.filter(artwork_id__in=artworkidlist)
+        aucidlist = []
+        aucbyiddict = {}
+        for lotobj in lotsqset:
+            if str(lotobj.artwork_id) not in lotbyawiddict.keys():
+                lotbyawiddict[str(lotobj.artwork_id)] = [lotobj,]
+            else:
+                lotslist = lotbyawiddict[str(lotobj.artwork_id)]
+                lotslist.append(lotobj)
+                lotbyawiddict[str(lotobj.artwork_id)] = lotslist
+            aucidlist.append(lotobj.auction_id)
+        auctionsqset = Auction.objects.filter(id__in=aucidlist)
+        auchouseidlist = []
+        auchousebyiddict = {}
+        for aucobj in auctionsqset:
+            aucbyiddict[str(aucobj.id)] = aucobj
+            auchouseidlist.append(aucobj.auctionhouse_id)
+        auchouseqset = AuctionHouse.objects.filter(id__in=auchouseidlist)
+        for auchouse in auchouseqset:
+            auchousebyiddict[str(auchouse.id)] = auchouse
         for artist in filterartists:
             aid = artist[0]
             if aid in settings.BLACKLISTED_ARTISTS:
                 continue
             artistnm = artist[1]
-            for artwork in Artwork.objects.filter(artist_id=artist[0]).order_by('-edited')[:maxartworkmatches].iterator():
+            #for artwork in Artwork.objects.filter(artist_id=artist[0]).order_by('-edited')[:maxartworkmatches].iterator():
+            try:
+                awqset = artworkbyartistiddict[str(artist[0])]
+            except:
+                awqset = []
+            for artwork in awqset[:maxartworkmatches]:
                 if artwork.image1 == "":
                     continue
                 awid = artwork.id
                 artworkname = artwork.artworkname
-                lotqset = Lot.objects.filter(artwork_id=artwork.id)
+                lotqset = lotbyawiddict[str(artwork.id)]
                 lmedium, lsize, lsaledate, lsoldprice, lminestimate, lmaxestimate, lcategory, lestimate, lid = "", "", "", "", "", "", "", "", ""
                 auctionname, aucid, auctionperiod, auctionhousename, ahid = "", "", "", "", ""
                 if lotqset.__len__() > 0:
                     lmedium = lotqset[0].medium.lower()
-                    lsize = lotqset[0].sizedetails.encode('utf-8')
+                    if type(lotqset[0].sizedetails) == str:
+                        lsize = lotqset[0].sizedetails.encode('utf-8')
+                    else:
+                        lsize = ""
                     lsaledate = lotqset[0].saledate.strftime("%d %b, %Y")
                     lsoldprice = lotqset[0].soldpriceUSD
                     lminestimate = lotqset[0].lowestimateUSD
@@ -749,13 +832,13 @@ def dofilter(request):
                     lid = lotqset[0].id
                     auctionobj = None
                     try:
-                        auctionobj = Auction.objects.get(id=lotqset[0].auction_id)
+                        auctionobj = aucbyiddict[str(lotqset[0].auction_id)]
                         auctionname = auctionobj.auctionname
                         aucid = auctionobj.id
                         auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
                         if auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
                             auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-                        auchouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+                        auchouseobj = auchousebyiddict[str(auctionobj.auctionhouse_id)]
                         auctionhousename = auchouseobj.housename
                         ahid = auchouseobj.id
                     except:
@@ -782,18 +865,35 @@ def dofilter(request):
                 if ahidlist.__len__() > 0 and auctionhouseflag == -1:
                     auctionhouseflag = 0
                 try:
-                    if float(entity['soldprice']) > float(soldmin) and float(entity['soldprice']) < float(soldmax):
+                    if entity['soldprice'] is None:
+                        entity['soldprice'] = 0.00
+                    if type(entity['soldprice']) == str:
+                        entity['soldprice'] = entity['soldprice'].strip()
+                        entity['soldprice'] = float(entity['soldprice'])
+                    if type(soldmin) == str:
+                        soldmin = soldmin.strip()
+                        if soldmin == "":
+                            soldmin = '0.00'
+                    if type(soldmax) == str:
+                        soldmax = soldmax.strip()
+                        if soldmax == "":
+                            soldmax = '0.00'
+                    if entity['soldprice'] > float(soldmin) and entity['soldprice'] < float(soldmax):
                         soldpriceflag = 1
                     else:
                         soldpriceflag = 0
                 except:
-                    print("ERROR: %s %s"%(sys.exc_info()[1].__str__(), entity['soldprice'])) # This should be logged - TODO
+                    print("ERROR: %s '%s'"%(sys.exc_info()[1].__str__(), entity['soldprice'])) # This should be logged - TODO
                 estimateparts = entity['estimate'].split(" - ")
                 lminestimate = estimateparts[0]
                 lmaxestimate = ""
                 if estimateparts.__len__() > 1:
                     lmaxestimate = estimateparts[1]
                 try:
+                    if type(lminestimate) == str:
+                        lminestimate = lminestimate.strip()
+                    if type(lmaxestimate) == str:
+                        lmaxestimate = lmaxestimate.strip()
                     if float(lminestimate) < float(estimatemin) and float(lmaxestimate) > float(estimatemax):
                         estimateflag = 1
                     else:

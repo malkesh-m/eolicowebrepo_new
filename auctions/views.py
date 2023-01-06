@@ -878,11 +878,31 @@ def morefilter(request):
         auctionobj = Auction.objects.get(id=aucid)
     except:
         return HttpResponse(json.dumps({'err' : "Could not find auction identified by the ID %s"%aucid}))
+    auctionhouseobj = None
+    auctionhousename = ""
+    try:
+        auctionhouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+        auctionhousename = auctionhouseobj.housename
+    except:
+        pass
     lotqset = Lot.objects.filter(auction_id=aucid)
+    artworkidslist = []
+    artistidslist = []
+    for lot in lotqset:
+        artworkidslist.append(lot.artwork_id)
+    artworksbyiddict = {}
+    artworksqset = Artwork.objects.filter(id__in=artworkidslist)
+    for artwork in artworksqset:
+        artworksbyiddict[str(artwork.id)] = artwork
+        artistidslist.append(artwork.artist_id)
+    artistsqset = Artist.objects.filter(id__in=artistidslist)
+    artistbyiddict = {}
+    for artist in artistsqset:
+        artistbyiddict[str(artist.id)] = artist
     for lot in lotqset:
         artwork = None
         try:
-            artwork = Artwork.objects.get(id=lot.artwork_id)
+            artwork = artworksbyiddict[str(lot.artwork_id)]
         except:
             continue # If we can't find the artwork associated with the lot in question, should we go ahead?
             # At this moment I think we shouldn't, since we won't be able to provide much info about the lot.
@@ -893,22 +913,15 @@ def morefilter(request):
             artistobj = None
             artistname, aid = "", ""
             try:
-                artistobj = Artist.objects.get(id=artwork.artist_id)
+                artistobj = artistbyiddict[str(artwork.artist_id)]
                 artistname = artistobj.artistname
                 aid = artistobj.id
             except:
                 pass
             aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-            aucenddate = auction.auctionenddate
+            aucenddate = auctionobj.auctionenddate
             if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
                 aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
-            auctionhouseobj = None
-            auctionhousename = ""
-            try:
-                auctionhouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
-                auctionhousename = auctionhouseobj.housename
-            except:
-                pass
             # Check for favourites
             if request.user.is_authenticated:
                 favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lot.artwork_id)

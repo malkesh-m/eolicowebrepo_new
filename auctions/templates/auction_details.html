@@ -473,7 +473,15 @@
                                                                     </div>
                                                                     <div class="sec-right">
                                                                         <h2>{{lotinfo.artist}}</h2>
+									{% if lotinfo.nationality != '' %}
                                                                         <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span>
+									{% else %}
+									{% if lotinfo.birth != '' %}
+									<span>b. {{lotinfo.birth}}</span>
+									{% else %}
+									<span>&nbsp;</span>
+									{% endif %}
+									{% endif %}
                                                                     </div>
                                                                 </div>
 								{% if adminuser == 1 %}
@@ -528,7 +536,15 @@
                                                                     </div>
                                                                     <div class="sec-right">
                                                                         <h2>{{lotinfo.artist}}</h2>
+									{% if lotinfo.nationality != '' %}
                                                                         <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span>
+									{% else %}
+									{% if lotinfo.birth != '' %}
+									<span>b. {{lotinfo.birth}}</span>
+									{% else %}
+									<span>&nbsp;</span>
+									{% endif %}
+									{% endif %}
                                                                     </div>
                                                                 </div>
 								{% if adminuser == 1 %}
@@ -540,11 +556,25 @@
                                                             </div>
 
                                                         </div>
-                                                        
+							<div class="tb pdt20">
+                                                            <h6>Provenance</h6>
+                                                        </div>
+                                                        <div class="tb pdt20">
+                                                            <!-- <span>2020</span> -->
+							{% if lotinfo.provenance != '' %}
+                                                            <p>
+                                                                {{lotinfo.provenance}}
+                                                            </p>
+							{% else %}
+							    <p>
+                                                                Not available
+                                                            </p>
+							{% endif %}
+                                                        </div>
                                                         <div class="tb pdt20">
                                                             <h6>Medium</h6>
                                                             <span>
-                                                                <a href="">{{lotinfo.medium}}</a>
+                                                                {{lotinfo.medium}}
                                                             </span>
                                                         </div>
 							<!-- 
@@ -559,15 +589,6 @@
                                                             <span>
                                                                 {{lotinfo.literature}}
                                                             </span>
-                                                        </div>
-                                                        <div class="tb pdt20">
-                                                            <h6>Provenance</h6>
-                                                        </div>
-                                                        <div class="tb pdt20">
-                                                            <!-- <span>2020</span> -->
-                                                            <p>
-                                                                {{lotinfo.provenance}}
-                                                            </p>
                                                         </div>
                                                         
                                                     </div>
@@ -591,7 +612,15 @@
                                     </div>
                                     <div class="sec-right">
                                         <h2>{{lotinfo.artist}}</h2>
+					{% if lotinfo.nationality != '' %}
                                         <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span>
+					{% else %}
+					{% if lotinfo.birth != '' %}
+					<span>b. {{lotinfo.birth}}</span>
+					{% else %}
+					<span>&nbsp;</span>
+					{% endif %}
+					{% endif %}
                                     </div>
                                 </div>
                                 <div class="follow">
@@ -605,8 +634,12 @@
 			    <h6>{{lotinfo.housename}}, {{lotinfo.location}}: {{lotinfo.auctionname}}</h6>
 			    <h6>{{lotinfo.auctionperiod}}</h6>
                             <p>
+				{% if lotinfo.medium != '' and lotinfo.medium != None %}
 				{{lotinfo.medium}}
+				{% endif %}
+				{% if lotinfo.size != '' and lotinfo.size != None %}
                                 {{lotinfo.size}}
+				{% endif %}
                             </p>
 
                             <!-- <p>182.9 × 121.9 cm</p>
