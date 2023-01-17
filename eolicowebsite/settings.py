@@ -94,7 +94,6 @@ TEMPLATE_DIRS = (
 
 WSGI_APPLICATION = 'eolicowebsite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 """
@@ -202,6 +201,8 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 FROM_EMAIL_USER = "artwork-messenger@artwork.com"
+
+IMG_URL_PREFIX = ""
 
 
 
