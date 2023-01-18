@@ -603,7 +603,7 @@ footer .under-footer a:hover {
 			{% for aname, adata in follows.items %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.3}}"><img src="/media/artists/{{adata.3}}/{{adata.1}}" alt=""></a>
+				<a href="/artist/details/?aid={{adata.3}}"><img src="{{adata.1}}" alt=""></a>
 		                <a href="/artist/details/?aid={{adata.3}}" style="color:#000000;">
 					<h4>{{aname}}</h4>
 					<h6>{{adata.2}}</h6>

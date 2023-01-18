@@ -106,9 +106,9 @@
 	    aid = context['aid'];
  	    pages = context['pages'];
 	    for(var i=0; i < searchartworks.length; i++){
-		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
+		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
 		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
-		gridhtml += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><img src='/media/artists/artworks/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' class='img-fluid' alt='" + searchartworks[i].artworkname + "'></a><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><h4>" + searchartworks[i].artworkname + "</h4></a><h4>in <a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "' style='color:#000000;'>" + searchartworks[i].auctionname + ": " + searchartworks[i].auctionperiod + "</a></h4><p>" + searchartworks[i].medium + ", " + searchartworks[i].size + "</p></div></div>";
+		gridhtml += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><img src='" + searchartworks[i].image + "' class='img-fluid' alt='" + searchartworks[i].artworkname + "'></a><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><h4>" + searchartworks[i].artworkname + "</h4></a><h4>in <a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "' style='color:#000000;'>" + searchartworks[i].auctionname + ": " + searchartworks[i].auctionperiod + "</a></h4><p>" + searchartworks[i].medium + ", " + searchartworks[i].size + "</p></div></div>";
 	    }
 	    paginationtext = "<br/><div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
 	    if(pages.prevpage >= 1){
@@ -221,9 +221,9 @@
 	    pages = context['pages'];
 	    aid = context['aid'];
 	    for(var i=0; i < searchartworks.length; i++){
-		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='/media/artists/artwork/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
+		auctext += "<div class='acc-auctions auction-pdb'><div class='card-header collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapseacutions1'><a class='card-title auc-det d-flex'><div class='auctions-img'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "'><img src='" + searchartworks[i].image + "' alt='' class='img-fluid' /></a></div><div class='auctions-name'><h4>" + searchartworks[i].artworkname + "</h4></div><div class='auction-price'><h4>US$" + searchartworks[i].soldprice + "</h4><p>Realized price</p></div></a></div>";
 		auctext += "<div id='collapseacutions1' class='collapse' data-parent='#accordion'><div class='card-body'><div class='card-body-inner'><ul><li><div class='auctions-img'><h6>Artwork Info</h6></div><div class='auctions-name'><p>Medium</p><p>" + searchartworks[i].medium + "</p></div><div class='date-auctions'><h6>Estimate (USD)</h6></div><div class='auction-price'>" + searchartworks[i].estimate + "</div></li><li><div class='auctions-img'><h6>Auction Sale</h6></div><div class='date-auctions'><h4>" + searchartworks[i].aucperiod + "</h4><p><a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "'>" + searchartworks[i].auctionname + "</a></p></div></li></ul></div></div></div></div>";
-		gridhtml += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><img src='/media/artists/artworks/" + searchartworks[i].aid + "/" + searchartworks[i].image + "' class='img-fluid' alt='" + searchartworks[i].artworkname + "'></a><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><h4>" + searchartworks[i].artworkname + "</h4></a><h4>in <a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "' style='color:#000000;'>" + searchartworks[i].auctionname + ": " + searchartworks[i].auctionperiod + "</a></h4><p>" + searchartworks[i].medium + ", " + searchartworks[i].size + "</p></div></div>";
+		gridhtml += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><img src='" + searchartworks[i].image + "' class='img-fluid' alt='" + searchartworks[i].artworkname + "'></a><a href='/artist/artworkdetails/?awid=" + searchartworks[i].awid + "' style='color:#000000;'><h4>" + searchartworks[i].artworkname + "</h4></a><h4>in <a href='/auction/showauction/?aucid=" + searchartworks[i].aucid + "' style='color:#000000;'>" + searchartworks[i].auctionname + ": " + searchartworks[i].auctionperiod + "</a></h4><p>" + searchartworks[i].medium + ", " + searchartworks[i].size + "</p></div></div>";
 	    }
 	    paginationtext = "<br/><div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
 	    if(pages.prevpage >= 1){
@@ -532,7 +532,7 @@
                     <div class="section-heading">
                         <div class="sec-content">
                             <div class="sec-left">
-                                <img src="/media/artists/{{artistinfo.artistid}}/{{artistinfo.image}}" alt="" class="img-fluid" />
+                                <img src="{{artistinfo.image}}" alt="" class="img-fluid" />
                             </div>
                             <div class="sec-right">
                                 <h2>{{artistinfo.name}}</h2>
@@ -632,7 +632,7 @@
                                         <div class="img-box">
                                             
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}">
-                                                    <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" class="img-fluid" alt="">
+                                                    <img src="{{artwork.image}}" class="img-fluid" alt="">
                                                 </a>
                                             
                                             <div class="slide-cap">
@@ -840,7 +840,7 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                                                     <div class="artist-category">
                                                         <div class="thumb">
-                                                            <a href="/auction/showauction/?aucid={{evdata.aucid}}"><img src="/media/auctions/{{evdata.aucid}}/{{evdata.eventimage}}" alt=""></a>
+                                                            <a href="/auction/showauction/?aucid={{evdata.aucid}}"><img src="{{evdata.eventimage}}" alt=""></a>
                                                         </div>
                                                         <div class="down-content">
                                                             <a href="/auction/showauction/?aucid={{evdata.aucid}}" style="color:#000000;">
@@ -871,7 +871,7 @@
                                             <div class="item">
                                                 <div class="thumb">
                                                     <a href="/artist/details/?aid={{artist.aid}}">
-                                                        <img src="/media/artists/artworks/{{artist.aid}}/{{artist.artworkimage}}" class="img-fluid" alt="">
+                                                        <img src="{{artist.artworkimage}}" class="img-fluid" alt="">
                                                     </a>
                                                 </div>
                                                 <div class="slide-cap">
@@ -1822,7 +1822,7 @@
 					    <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
 		                                <div class="img-box">
 		                                        <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
-		                                            <img src="/media/artists/artworks/{{artwork.aid}}/{{artwork.image}}" class="img-fluid" alt="{{artwork.artworkname}}">
+		                                            <img src="{{artwork.image}}" class="img-fluid" alt="{{artwork.artworkname}}">
 		                                        </a>
 		                                        <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
 		                                            <h4>{{artwork.artworkname}}</h4></a>
@@ -1895,7 +1895,7 @@
                                                                         <li>
 									    <div class="auctions-img">
 									        <a href="/media/artists/artwork/{{artwork.aid}}/{{artwork.image}}">
-		                                                            	    <img src="/media/artists/artwork/{{artwork.aid}}/{{artwork.image}}" alt="{{artwork.artworkname}}" class="img-fluid"/>
+		                                                            	    <img src="{{artwork.image}}" alt="{{artwork.artworkname}}" class="img-fluid"/>
 									    	</a>
 		                                                            </div>
                                                                             <div class="auctions-img">

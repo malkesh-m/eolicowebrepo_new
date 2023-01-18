@@ -604,7 +604,7 @@ footer .under-footer a:hover {
 		        <div class="column">
 		            <div class="img-box">
 				{% if favdata.0 == "artist" %}
-				<a href="/artist/details/?aid={{favdata.3}}"><img src="/media/artists/{{favdata.3}}/{{favdata.1}}" alt=""></a>
+				<a href="/artist/details/?aid={{favdata.3}}"><img src="{{favdata.1}}" alt=""></a>
 		                <a href="/artist/details/?aid={{favdata.3}}" style="color:#000000;">
 					<h4>{{favname}}</h4>
 					<h6>{{favdata.2}}</h6>
@@ -615,7 +615,7 @@ footer .under-footer a:hover {
 				{% endif %}
 				{% endif %}
 				{% if favdata.0 == "artwork" %}
-				<a href="/artist/artworkdetails/?awid={{favdata.5}}"><img src="/media/artists/artworks/{{favdata.6}}/{{favdata.1}}" alt=""></a>
+				<a href="/artist/artworkdetails/?awid={{favdata.5}}"><img src="{{favdata.1}}" alt=""></a>
 		                <a href="/artist/artworkdetails/?awid={{favdata.5}}" style="color:#000000;">
 					<h4>{{favname}}</h4>
 					<h6>{{favdata.4}}</h6>
@@ -626,7 +626,7 @@ footer .under-footer a:hover {
 				{% endif %}
 				{% endif %}
 				{% if favdata.0 == "auction" %}
-				<a href="/auction/showauction/?aucid={{favdata.3}}"><img src="/media/auctions/{{favdata.5}}/{{favdata.3}}/{{favdata.4}}" alt=""></a>
+				<a href="/auction/showauction/?aucid={{favdata.3}}"><img src="{{favdata.4}}" alt=""></a>
 		                <a href="/auction/showauction/?aucid={{favdata.3}}" style="color:#000000;">
 					<h4>{{favname}}</h4>
 					<h6>{{favdata.1}}</h6>

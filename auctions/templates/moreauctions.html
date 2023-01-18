@@ -232,7 +232,7 @@ https://templatemo.com/tm-571-hexashop
             for(var i=0; i < searchauctions.length; i++){
                 auctionobj = searchauctions[i];
 		searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
-                searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "'><img src='/media/auctions/" + auctionobj.ahid + "/" + auctionobj.aucid + "/" + auctionobj.coverimage + "'></a></div>";
+                searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "'><img src='" + auctionobj.coverimage + "'></a></div>";
 		searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "' style='color:#000000;'><h4>" + auctionobj.auctionname +"</h4>";
 		if (auctionobj.auctionperiod != ''){
 		    searchtext += "<h6>" + auctionobj.auctionperiod + "</h6>";
@@ -708,7 +708,7 @@ https://templatemo.com/tm-571-hexashop
                 <div class="column">
                     <div class="img-box">
                         <div class="thumb">
-                            <a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="/media/auctions/{{auctiondict.ahid}}/{{auctiondict.aucid}}/{{auctiondict.image}}" alt=""></a>
+                            <a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="{{auctiondict.image}}" alt=""></a>
                         </div>
                         <div class="down-content">
 				<a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">

@@ -401,28 +401,28 @@
 			{% if lotinfo.image1 != "" %}
                         <div class="item">
                             <div class="thumb">
-                                <img src="/media/artists/artworks/{{lotinfo.aid}}/{{lotinfo.image1}}" class="img-fluid" alt="">
+                                <img src="{{lotinfo.image1}}" class="img-fluid" alt="">
                             </div>
                         </div>
 			{% endif %}
 			{% if lotinfo.image2 != "" %}
                         <div class="item">
                             <div class="thumb">
-                                <img src="/media/artists/artworks/{{lotinfo.aid}}/{{lotinfo.image2}}" class="img-fluid" alt="">
+                                <img src="{{lotinfo.image2}}" class="img-fluid" alt="">
                             </div>
                         </div>
 			{% endif %}
 			{% if lotinfo.image3 != "" %}
                         <div class="item">
                             <div class="thumb">
-                                <img src="/media/artists/artworks/{{lotinfo.aid}}/{{lotinfo.image3}}" class="img-fluid" alt="">
+                                <img src="{{lotinfo.image3}}" class="img-fluid" alt="">
                             </div>
                         </div>
 			{% endif %}
 			{% if lotinfo.image4 != "" %}
                         <div class="item">
                             <div class="thumb">
-                                <img src="/media/artists/artworks/{{lotinfo.aid}}/{{lotinfo.image4}}" class="img-fluid" alt="">
+                                <img src="{{lotinfo.image4}}" class="img-fluid" alt="">
                             </div>
                         </div>
 			{% endif %}
@@ -469,7 +469,7 @@
                                                             <div class="sec-content">
                                                                 <div class="mrs">
                                                                     <div class="sec-left">
-                                                                        <img src="/media/artists/artworks/{{lotinfo.aid}}/{{lotinfo.image1}}" alt="" class="img-fluid">
+                                                                        <img src="{{lotinfo.image1}}" alt="" class="img-fluid">
                                                                     </div>
                                                                     <div class="sec-right">
                                                                         <h2>{{lotinfo.artist}}</h2>
@@ -532,7 +532,7 @@
                                                             <div class="sec-content">
                                                                 <div class="mrs">
                                                                     <div class="sec-left">
-                                                                        <img src="/media/artists/artworks/{{lotinfo.aid}}/{{lotinfo.image1}}" alt="" class="img-fluid">
+                                                                        <img src="{{lotinfo.image1}}" alt="" class="img-fluid">
                                                                     </div>
                                                                     <div class="sec-right">
                                                                         <h2>{{lotinfo.artist}}</h2>
@@ -608,7 +608,7 @@
                             <div class="sec-content">
                                 <div class="mrs">
                                     <div class="sec-left">
-                                        <img src="/media/artists/artworks/{{lotinfo.aid}}/{{lotinfo.image1}}" alt="" class="img-fluid">
+                                        <img src="{{lotinfo.image1}}" alt="" class="img-fluid">
                                     </div>
                                     <div class="sec-right">
                                         <h2>{{lotinfo.artist}}</h2>
@@ -671,7 +671,7 @@
 		    {% for wk in otherworks.0 %}
                     <div class="img-box">
 			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="/media/artists/artworks/{{wk.aid}}/{{wk.image}}" style="width:100%">
+                        <img src="{{wk.image}}" style="width:100%">
                         <h4>{{wk.title}}</h4>
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
@@ -687,7 +687,7 @@
                     {% for wk in otherworks.1 %}
                     <div class="img-box">
 			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="/media/artists/artworks/{{wk.aid}}/{{wk.image}}" style="width:100%">
+                        <img src="{{wk.image}}" style="width:100%">
                         <h4>{{wk.title}}</h4>
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
@@ -703,7 +703,7 @@
                     {% for wk in otherworks.2 %}
                     <div class="img-box">
 			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="/media/artists/artworks/{{wk.aid}}/{{wk.image}}" style="width:100%">
+                        <img src="{{wk.image}}" style="width:100%">
                         <h4>{{wk.title}}</h4>
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
@@ -719,7 +719,7 @@
                     {% for wk in otherworks.3 %}
                     <div class="img-box">
 			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="/media/artists/artworks/{{wk.aid}}/{{wk.image}}" style="width:100%">
+                        <img src="{{wk.image}}" style="width:100%">
                         <h4>{{wk.title}}</h4>
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
@@ -751,7 +751,7 @@
                     {% for wk in relatedworks.0 %}
                     <div class="img-box">
 			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="/media/artists/artworks/{{wk.aid}}/{{wk.image}}" style="width:100%">
+                        <img src="{{wk.image}}" style="width:100%">
                         <h4>{{wk.title}}</h4>
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
@@ -767,7 +767,7 @@
                     {% for wk in relatedworks.1 %}
                     <div class="img-box">
 			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="/media/artists/artworks/{{wk.aid}}/{{wk.image}}" style="width:100%">
+                        <img src="{{wk.image}}" style="width:100%">
                         <h4>{{wk.title}}</h4>
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
@@ -783,7 +783,7 @@
                     {% for wk in relatedworks.2 %}
                     <div class="img-box">
 			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="/media/artists/artworks/{{wk.aid}}/{{wk.image}}" style="width:100%">
+                        <img src="{{wk.image}}" style="width:100%">
                         <h4>{{wk.title}}</h4>
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
@@ -799,7 +799,7 @@
                     {% for wk in relatedworks.3 %}
                     <div class="img-box">
 			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="/media/artists/artworks/{{wk.aid}}/{{wk.image}}" style="width:100%">
+                        <img src="{{wk.image}}" style="width:100%">
                         <h4>{{wk.title}}</h4>
                         <h6>{{wk.medium}}</h6>
                         <p>{{wk.estimate}}</p>
@@ -831,7 +831,7 @@
                         <div class="mrs">
                             <div class="sec-left">
 				<a href='/artist/details/?aid={{infolist.0.aid}}'>
-                                <img src="/media/artists/artworks/{{infolist.0.aid}}/{{infolist.0.image}}" alt="" class="img-fluid">
+                                <img src="{{infolist.0.image}}" alt="" class="img-fluid">
 				</a>
                             </div>
                             <div class="sec-right">

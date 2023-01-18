@@ -202,7 +202,8 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 FROM_EMAIL_USER = "artwork-messenger@artwork.com"
 
-IMG_URL_PREFIX = ""
+IMG_URL_PREFIX = "https://f000.backblazeb2.com/file/fineart-images/"
+CAROUSEL_DAYS = 3000
 
 
 
