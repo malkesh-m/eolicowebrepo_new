@@ -29,7 +29,7 @@ import unicodedata, itertools
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
-#from login.views import getcarouselinfo
+from login.views import getcarouselinfo_new
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from artists.models import Artist, Artwork
@@ -144,7 +144,7 @@ def index(request):
                 favflag = 0
                 if favqset.__len__() > 0:
                     favflag = 1        
-                d = {'auctionname' : auctionname, 'image' : auction[8], 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
+                d = {'auctionname' : auctionname, 'image' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
                 featuredauctions[auctionname] = d
                 if featuredauctions.keys().__len__() > chunksize:
                     break
@@ -204,7 +204,7 @@ def index(request):
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
-            d = {'auctionname' : auctionname, 'image' : auction[8], 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
+            d = {'auctionname' : auctionname, 'image' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
             if allauctions.keys().__len__() > maxpastauctionsperrow * maxpastauctions:
                 break
             if aucctr % 4 == 0:
@@ -222,8 +222,8 @@ def index(request):
             pass
     cursor.close()
     dbconn.close()
-    #carouselentries = getcarouselinfo()
-    #context['carousel'] = carouselentries
+    carouselentries = getcarouselinfo_new()
+    context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -309,7 +309,7 @@ def details(request):
     artworkdesc = artworkdesc.replace("<strong>Description:</strong>", "")
     artworkdesc = artworkdesc.replace("<br>", "")
     artworkdesc = artworkdesc.replace("<strong>", "").replace("</strong>", "")
-    lotinfo = {'title' : artworkname, 'description' : artworkdesc, 'artist' : artistname, 'birth' : artistbirth, 'death' : artistdeath, 'nationality' : nationality, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'auctionname' : auctionname, 'estimate' : estimate, 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'provenance' : lotobj.provenance, 'literature' : literature, 'exhibitions' : exhibition, 'image1' : lotobj.lotimage1, 'image2' : lotobj.lotimage2, 'image3' : lotobj.lotimage3, 'image4' : lotobj.lotimage4, 'url' : lotobj.source, 'category' : lotobj.category, 'created' : createdate, 'lotid' : lotobj.id, 'aid' : artistid, 'lotno' : lotobj.lotid, 'auctionperiod' : auctionperiod, 'housename' : auctionhousename, 'location' : houselocation}
+    lotinfo = {'title' : artworkname, 'description' : artworkdesc, 'artist' : artistname, 'birth' : artistbirth, 'death' : artistdeath, 'nationality' : nationality, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'auctionname' : auctionname, 'estimate' : estimate, 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'provenance' : lotobj.provenance, 'literature' : literature, 'exhibitions' : exhibition, 'image1' : settings.IMG_URL_PREFIX + str(lotobj.lotimage1), 'image2' : settings.IMG_URL_PREFIX + str(lotobj.lotimage2), 'image3' : settings.IMG_URL_PREFIX + str(lotobj.lotimage3), 'image4' : settings.IMG_URL_PREFIX + str(lotobj.lotimage4), 'url' : lotobj.source, 'category' : lotobj.category, 'created' : createdate, 'lotid' : lotobj.id, 'aid' : artistid, 'lotno' : lotobj.lotid, 'auctionperiod' : auctionperiod, 'housename' : auctionhousename, 'location' : houselocation}
     context['lotinfo'] = lotinfo
     try:
         aboutartist = pickle.loads(redis_instance.get('ac_aboutartist_%s'%lotobj.auction.id))
@@ -324,7 +324,7 @@ def details(request):
                 artistobj = artistqset[0]
         aboutartist = {'artistname' : '', 'nationality' : '', 'birth' : '', 'death' : '', 'about' : '', 'image' : '', 'aid' : ''}
         if artistobj is not None:
-            aboutartist = {'artistname' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birth' : artistobj.birthyear, 'death' : artistobj.deathyear, 'about' : artistobj.description, 'image' : artistobj.artistimage, 'aid' : artistobj.id}
+            aboutartist = {'artistname' : artistobj.artistname, 'nationality' : artistobj.nationality, 'birth' : artistobj.birthyear, 'death' : artistobj.deathyear, 'about' : artistobj.description, 'image' : settings.IMG_URL_PREFIX + str(artistobj.artistimage), 'aid' : artistobj.id}
         context['aboutartist'] = aboutartist
         try:
             redis_instance.set('ac_aboutartist_%s'%lotobj.auction.id, pickle.dumps(aboutartist))
@@ -377,7 +377,7 @@ def details(request):
             estimate = str(lot.lowestimateUSD)
             if lot.highestimateUSD is not None and lot.highestimateUSD > 0.00:
                 estimate += " - " + str(lot.highestimateUSD)
-            d = {'title' : artwork.artworkname, 'artist' : artistname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artwork.artist_id}
+            d = {'title' : artwork.artworkname, 'artist' : artistname, 'image' : settings.IMG_URL_PREFIX + str(lot.lotimage1), 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artwork.artist_id}
             l = otherworks[rctr]
             l.append(d)
             otherworks[rctr] = l
@@ -386,11 +386,11 @@ def details(request):
                 rctr = 0
             if artistname in allartists.keys():
                 l = allartists[artistname]
-                l.append({'title' : artwork.artworkname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artist.id})
+                l.append({'title' : artwork.artworkname, 'image' : settings.IMG_URL_PREFIX + str(lot.lotimage1), 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artist.id})
                 allartists[artistname] = l
             else:
                 l = []
-                l.append({'title' : artwork.artworkname, 'image' : lot.lotimage1, 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artist.id})
+                l.append({'title' : artwork.artworkname, 'image' : settings.IMG_URL_PREFIX + str(lot.lotimage1), 'medium' : lot.medium, 'estimate' : estimate, 'lid' : lot.id, 'aid' : artist.id})
                 allartists[artistname] = l
         context['otherworks'] = otherworks
         try:
@@ -435,7 +435,7 @@ def details(request):
                 rel_artistname = rel_artist.artistname
             except:
                 pass
-            d = {'title' : aw.artworkname, 'artist' : rel_artistname, 'image' : rel_lotobj.lotimage1, 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : aw.artist_id}
+            d = {'title' : aw.artworkname, 'artist' : rel_artistname, 'image' : settings.IMG_URL_PREFIX + str(rel_lotobj.lotimage1), 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : aw.artist_id}
             l = relatedworks[rctr]
             l.append(d)
             relatedworks[rctr] = l
@@ -444,7 +444,7 @@ def details(request):
                 rctr = 0
             if rel_artistname != "" and rel_artistname in allartists.keys(): # This is the part that would be executed, not the else clause
                 l2 = allartists[rel_artistname]
-                l2.append({'title' : aw.artworkname, 'nationality' : rel_artist.nationality, 'birth' : rel_artist.birthyear, 'death' : rel_artist.deathyear, 'image' : rel_lotobj.lotimage1, 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : rel_artist.id})
+                l2.append({'title' : aw.artworkname, 'nationality' : rel_artist.nationality, 'birth' : rel_artist.birthyear, 'death' : rel_artist.deathyear, 'image' : settings.IMG_URL_PREFIX + str(rel_lotobj.lotimage1), 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : rel_artist.id})
                 allartists[rel_artistname] = l2
             else: # This should never be executed. Bad omen... bad things will happen if this is executed.
                 l2 = []
@@ -453,7 +453,7 @@ def details(request):
                     #rel_artist = Artist.objects.get(artistname__iexact=rel_artistname)
                 except:
                     continue # If there is no corresponding artist object, we cannot continue
-                l2.append({'title' : aw.artworkname, 'nationality' : rel_artist.nationality, 'birth' : rel_artist.birthyear, 'death' : rel_artist.deathyear, 'image' : rel_lotobj.lotimage1, 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : rel_artist.id})
+                l2.append({'title' : aw.artworkname, 'nationality' : rel_artist.nationality, 'birth' : rel_artist.birthyear, 'death' : rel_artist.deathyear, 'image' : settings.IMG_URL_PREFIX + str(rel_lotobj.lotimage1), 'medium' : rel_lotobj.medium, 'estimate' : rel_estimate, 'lid' : rel_lotobj.id, 'aid' : rel_artist.id})
                 allartists[rel_artistname] = l2
         context['relatedworks'] = relatedworks
         context['allartists'] = allartists
@@ -538,7 +538,7 @@ def search(request):
         lotcount = auctionobj[7]
         if not lotcount:
             lotcount = 0
-        d = {'auctionname' : auctionobj[1], 'auctionid' : auctionobj[2], 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj[8], 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj[0], 'lotcount' : str(lotcount)}
+        d = {'auctionname' : auctionobj[1], 'auctionid' : auctionobj[2], 'auctionhouse' : auctionhousename, 'coverimage' : settings.IMG_URL_PREFIX + str(auctionobj[8]), 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj[0], 'lotcount' : str(lotcount)}
         if aucctr > maxsearchresults:
             break
         aucctr += 1
@@ -655,7 +655,7 @@ def moreauctions(request):
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
-            d = {'auctionname' : auctionname, 'image' : auction[8], 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'salecode' : auction[2], 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
+            d = {'auctionname' : auctionname, 'image' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'salecode' : auction[2], 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag}
             if allauctions.keys().__len__() > maxauctions * chunksize:
                 break
             if aucctr % 4 == 0:
@@ -676,8 +676,8 @@ def moreauctions(request):
     #context['allartists'] = allartists
     context['allauctions'] = allauctions
     context['filterauctions'] = filterauctions
-    #carouselentries = getcarouselinfo()
-    #context['carousel'] = carouselentries
+    carouselentries = getcarouselinfo_new()
+    context['carousel'] = carouselentries
     context['atype'] = atype
     prevpage = int(page) - 1
     nextpage = int(page) + 1
@@ -740,7 +740,7 @@ def showauction(request):
     auctioninfo['auctionname'] = auctionobj.auctionname
     auctioninfo['auctionperiod'] = auctionperiod
     auctioninfo['auctionid'] = auctionobj.auctionid
-    auctioninfo['coverimage'] = auctionobj.coverimage
+    auctioninfo['coverimage'] = settings.IMG_URL_PREFIX + str(auctionobj.coverimage)
     lotcount = auctionobj.lotcount
     if not lotcount:
         lotcount = 0
@@ -811,7 +811,7 @@ def showauction(request):
         favflag = 0
         if favqset.__len__() > 0:
             favflag = 1   
-        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj[6], 'size' : lotobj[7], 'image' : lotobj[24], 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj[0], 'aid' : artistobj.id, 'lotno' : lotobj[1], 'category' : lotobj[12], 'soldprice' : soldprice, 'awid' : lotobj[3], 'favourite' : favflag}
+        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj[6], 'size' : lotobj[7], 'image' : settings.IMG_URL_PREFIX + str(lotobj[24]), 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj[0], 'aid' : artistobj.id, 'lotno' : lotobj[1], 'category' : lotobj[12], 'soldprice' : soldprice, 'awid' : lotobj[3], 'favourite' : favflag}
         if artistname not in allartists.keys():
             allartists[artistname] = artistobj.id
         alllots.append(d)
@@ -930,7 +930,7 @@ def morefilter(request):
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1   
-            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id, 'lotno' : lot.lotid, 'category' : lot.category, 'auctionhouse' : auctionhousename, 'favourite' : favflag}
+            d = {'artworkname' : artwork.artworkname, 'artistname' : artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'aucperiod' : aucperiod, 'aid' : aid, 'image' : settings.IMG_URL_PREFIX + str(artwork.image1), 'soldprice' : lot.soldpriceUSD, 'estimate' : estimate, 'lid' : lot.id, 'lotno' : lot.lotid, 'category' : lot.category, 'auctionhouse' : auctionhousename, 'favourite' : favflag}
             for medium in mediumlist:
                 if medium in artwork.medium.lower():
                     if artwork.artworkname not in uniquelots.keys():

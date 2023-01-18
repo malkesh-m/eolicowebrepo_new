@@ -70,7 +70,7 @@ def getcarouselinfo():
 def getcarouselinfo_new():
     entrieslist = []
     entriescount = int(os.environ.get('WEBSITE_CAROUSEL_ENTRIES_COUNT', '5')) # Default value: 5
-    print("############## " + str(entriescount) + " ########################")
+    #print("############## " + str(entriescount) + " ########################")
     try:
         entrieslist = pickle.loads(redis_instance.get('com_carouselentries'))
     except:
@@ -79,7 +79,7 @@ def getcarouselinfo_new():
         dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
         cursor = dbconn.cursor()
         # Find the 'entriescount' number of artworks sold in last 1 month ordered by decreasing values of 'fal_lot_low_estimate_USD'.
-        carouselsql = "select lot.fal_artwork_ID, artwork.faa_artwork_title, artwork.faa_artist_ID, lot.fal_auction_ID, lot.fal_lot_high_estimate_USD, lot.fal_lot_low_estimate_USD, lot.fal_lot_sale_price_USD, lot.fal_lot_material, lot.fal_lot_size_details, lot.fal_lot_provenance, lot.fal_lot_image1, lot.fal_lot_sale_date from fineart_lots lot, fineart_artworks artwork where lot.fal_artwork_ID = artwork.faa_artwork_ID and lot.fal_lot_sale_date > DATE_ADD(NOW(), INTERVAL -30 DAY) order by lot.fal_lot_low_estimate_USD desc limit %s"%(entriescount)
+        carouselsql = "select lot.fal_artwork_ID, artwork.faa_artwork_title, artwork.faa_artist_ID, lot.fal_auction_ID, lot.fal_lot_high_estimate_USD, lot.fal_lot_low_estimate_USD, lot.fal_lot_sale_price_USD, lot.fal_lot_material, lot.fal_lot_size_details, lot.fal_lot_provenance, lot.fal_lot_image1, lot.fal_lot_sale_date from fineart_lots lot, fineart_artworks artwork where lot.fal_artwork_ID = artwork.faa_artwork_ID and lot.fal_lot_image1 <> '' and lot.fal_lot_sale_date > DATE_ADD(NOW(), INTERVAL -%s DAY) order by lot.fal_lot_low_estimate_USD desc limit %s"%(settings.CAROUSEL_DAYS, entriescount)
         cursor.execute(carouselsql)
         carouselrecords = cursor.fetchall()
         for rec in carouselrecords:
@@ -94,7 +94,7 @@ def getcarouselinfo_new():
             size = str(rec[8])
             prov = str(rec[9])
             artimg = str(rec[10])
-            imagewebpath = settings.IMG_URL_PREFIX + "/" + artimg
+            imagewebpath = settings.IMG_URL_PREFIX + str(artimg)
             saledate = rec[11]
             d = {'artworkid' : awid, 'artworkname' : awtitle, 'artistid' : artistid, 'auctionid' : aucid, 'highestimate' : highestimate, 'lowestimate' : lowestimate, 'soldprice' : soldprice, 'medium' : medium, 'sizedetails' : size, 'provenance' : prov, 'artworkimage' : imagewebpath, 'saledate' : saledate}
             entrieslist.append(d)
@@ -176,7 +176,7 @@ def index(request):
                 try:
                     artist = favartistsdict[str(favmodelid)]
                     artistname = artist[1]
-                    aimg = artist[4]
+                    aimg = settings.IMG_URL_PREFIX + str(artist[4])
                     anat = artist[2]
                     aid = artist[0]
                     about = artist[3]
@@ -189,7 +189,7 @@ def index(request):
                     artwork = favartworksdict[str(favmodelid)]
                     artworkname = artwork[1]
                     artist_id = artwork[5]
-                    artworkimg = artwork[3]
+                    artworkimg = settings.IMG_URL_PREFIX + str(artwork[3])
                     size = artwork[2]
                     medium = artwork[4]
                     awid = artwork[0]
@@ -212,7 +212,7 @@ def index(request):
                     auchouseobj = AuctionHouse.objects.get(id=auchouseid)
                     housename = auchouseobj.housename
                     aucid = auction[0]
-                    aucimg = auction[5]
+                    aucimg = settings.IMG_URL_PREFIX + str(auction[5])
                     favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
                 except:
                     pass
@@ -231,7 +231,7 @@ def index(request):
             aname = a.artist_name
             about = a.description
             aurl = ""
-            aimg = a.artistimage
+            aimg = settings.IMG_URL_PREFIX + str(a.artistimage)
             anat = a.nationality
             aid = a.artist_id
             # Check for follows and favourites
@@ -336,13 +336,13 @@ def index(request):
             lotsqset = lotsbyauctiondict[str(auction.id)]
             if lotsqset.__len__() == 0:
                 continue
-            imageloc = auction.coverimage
+            imageloc = settings.IMG_URL_PREFIX + str(auction.coverimage)
             lotobj = lotsqset[0]
-            if imageloc == "":
-                imageloc = lotobj.lotimage1
+            if imageloc == settings.IMG_URL_PREFIX:
+                imageloc = settings.IMG_URL_PREFIX + str(lotobj.lotimage1)
                 spc = re.search(srcPattern, imageloc)
                 if spc:
-                    imageloc = spc.groups()[0]
+                    imageloc = settings.IMG_URL_PREFIX + str(spc.groups()[0])
                     imageloc = imageloc.replace("%3A", ":").replace("%2F", "/")
             auchouseobj = None
             auchousename, ahlocation = "", ""
@@ -405,7 +405,7 @@ def index(request):
             if auctionsqset.__len__() == 0:
                 continue
             #print(auctionsqset[0].coverimage)
-            d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : '', 'coverimage' : auctionsqset[0].coverimage, 'ahid' : auchouse.id}
+            d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : '', 'coverimage' : settings.IMG_URL_PREFIX + str(auctionsqset[0].coverimage), 'ahid' : auchouse.id}
             auctionhouses.append(d)
             actr += 1
             if actr >= chunksize:
@@ -417,10 +417,8 @@ def index(request):
     context['auctionhouses'] = auctionhouses
     cursor.close()
     dbconn.close()
-    """
-    carouselentries = getcarouselinfo()
+    carouselentries = getcarouselinfo_new()
     context['carousel'] = carouselentries
-    """
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -653,7 +651,7 @@ def morefollows(request):
     for follow in followqset:
         artist = follow.artist
         artistname = artist.artistname
-        aimg = artist.artistimage
+        aimg = settings.IMG_URL_PREFIX + str(artist.artistimage)
         anat = artist.nationality
         aid = artist.id
         about = artist.description
@@ -699,7 +697,7 @@ def morefavourites(request):
             try:
                 artist = Artist.objects.get(id=favmodelid)
                 artistname = artist.artistname
-                aimg = artist.artistimage
+                aimg = settings.IMG_URL_PREFIX + str(artist.artistimage)
                 anat = artist.nationality
                 aid = artist.id
                 about = artist.description
@@ -712,7 +710,7 @@ def morefavourites(request):
                 artwork = Artwork.objects.get(id=favmodelid)
                 artworkname = artwork.artworkname
                 artist_id = artwork.artist_id
-                artworkimg = artwork.image1
+                artworkimg = settings.IMG_URL_PREFIX + str(artwork.image1)
                 size = artwork.sizedetails
                 medium = artwork.medium
                 awid = artwork.id
@@ -734,7 +732,7 @@ def morefavourites(request):
                 auchouseobj = AuctionHouse.objects.get(id=auchouseid)
                 housename = auchouseobj.housename
                 aucid = auction.id
-                aucimg = auction.coverimage
+                aucimg = settings.IMG_URL_PREFIX + str(auction.coverimage)
                 favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
             except:
                 pass

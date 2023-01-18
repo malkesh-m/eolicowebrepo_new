@@ -22,7 +22,7 @@ import MySQLdb
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
-#from login.views import getcarouselinfo
+from login.views import getcarouselinfo_new
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
@@ -108,7 +108,7 @@ def index(request):
                 continue
             coverimage = ""
             if auctionsqset.__len__() > 0:
-                coverimage = auctionsqset[0][8]
+                coverimage = settings.IMG_URL_PREFIX + str(auctionsqset[0][8])
             d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'image' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
             auctionslist = []
             for auction in auctionsqset:
@@ -118,7 +118,7 @@ def index(request):
                     aucenddate = auction[6]
                     if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                         auctionperiod += " - " + str(aucenddate)
-                d1 = {'auctionname' : auction[1], 'coverimage' : auction[8], 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id}
+                d1 = {'auctionname' : auction[1], 'coverimage' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id}
                 auctionslist.append(d1)
                 uniqueauctions[str(auction[0])] = auction[1]
             d['auctionslist'] = auctionslist
@@ -139,7 +139,7 @@ def index(request):
                 continue
             coverimage = ""
             if auctionsqset.__len__() > 0:
-                coverimage = auctionsqset[0][8]
+                coverimage = settings.IMG_URL_PREFIX + str(auctionsqset[0][8])
             d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'image' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
             auctionslist = []
             for auction in auctionsqset:
@@ -153,7 +153,7 @@ def index(request):
                     if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                         auctionperiod += " - " + str(aucenddate)
                 #print(auction[2])
-                d1 = {'auctionname' : auction[1], 'coverimage' : auction[8], 'auctionurl' : auction[4], 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id, 'housename' : auctionhouse.housename, 'salecode' : auction[2]}
+                d1 = {'auctionname' : auction[1], 'coverimage' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionurl' : auction[4], 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id, 'housename' : auctionhouse.housename, 'salecode' : auction[2]}
                 auctionslist.append(d1)
                 uniqueauctions[str(auction[0])] = auction[1]
             d['auctionslist'] = auctionslist
@@ -203,7 +203,7 @@ def index(request):
                 currentmngshows[auctionhousename] = l
             else:
                 l = []
-                d = {'auctionname' : auction[1], 'coverimage' : auction[8], 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id, 'salecode' : auction[2]}
+                d = {'auctionname' : auction[1], 'coverimage' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionurl' : auctionhouse.houseurl, 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : auctionhouse.id, 'salecode' : auction[2]}
                 l.append(d)
                 currentmngshows[auctionhousename] = l
         context['currentmngshows'] = currentmngshows
@@ -215,8 +215,8 @@ def index(request):
         context['currentmngshows'] = currentmngshows
     cursor.close()
     dbconn.close()
-    #carouselentries = getcarouselinfo()
-    #context['carousel'] = carouselentries
+    carouselentries = getcarouselinfo_new()
+    context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -254,7 +254,7 @@ def details(request):
         auctionsqset = Auction.objects.filter(auctionhouse_id__iexact=auctionobj.auctionhouse_id).order_by('-auctionstartdate')
         auctionhouse = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
         auchousename = auctionhouse.housename
-        auctioninfo = {'auctionname' : auctionobj.auctionname, 'auctionhouse' : auchousename, 'auctionlocation' : auctionhouse.location, 'auctionurl' : auctionobj.auctionurl, 'coverimage' : auctionobj.coverimage, 'auctiondate' : auctionobj.auctionstartdate, 'auctionid' : auctionobj.auctionid, 'aucid' : auctionobj.id}
+        auctioninfo = {'auctionname' : auctionobj.auctionname, 'auctionhouse' : auchousename, 'auctionlocation' : auctionhouse.location, 'auctionurl' : auctionobj.auctionurl, 'coverimage' : settings.IMG_URL_PREFIX + str(auctionobj.coverimage), 'auctiondate' : auctionobj.auctionstartdate, 'auctionid' : auctionobj.auctionid, 'aucid' : auctionobj.id}
         try:
             redis_instance.set('ah_auctioninfo_%s'%auctionobj.id, pickle.dumps(auctioninfo))
         except:
@@ -281,7 +281,7 @@ def details(request):
             lotartistqset = LotArtist.objects.filter(artist_id=artworkobj.artist_id)
             lotartistobj = lotartistqset[0]
             artistname = lotartistobj.artist_name
-            d = {'title' : artworkname, 'description' : artworkdesc, 'artistname' : str(artistname), 'loturl' : lotobj.source, 'lotimage' : lotobj.lotimage1, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'estimate' : str(lotobj.lowestimateUSD) + " - " + str(lotobj.highestimateUSD), 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'nationality' : lotartistobj.nationality, 'lid' : lotobj.id}
+            d = {'title' : artworkname, 'description' : artworkdesc, 'artistname' : str(artistname), 'loturl' : lotobj.source, 'lotimage' : settings.IMG_URL_PREFIX + str(lotobj.lotimage1), 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'estimate' : str(lotobj.lowestimateUSD) + " - " + str(lotobj.highestimateUSD), 'soldprice' : str(lotobj.soldpriceUSD), 'currency' : "USD", 'nationality' : lotartistobj.nationality, 'lid' : lotobj.id}
             if lctr < chunksize:
                 overviewlots.append(d)
             else:
@@ -294,7 +294,7 @@ def details(request):
             pass
         for auction in auctionsqset:
             auctionhouseobj = AuctionHouse.objects.get(id=auction.auctionhouse_id)
-            d = {'auctionname' : auction.auctionname, 'auctionhouse' : auctionhouseobj.housename, 'auctionlocation' : auctionhouseobj.location, 'description' : '', 'auctionurl' : '', 'lotsurl' : '', 'coverimage' : auction.coverimage, 'auctionid' : auction.auctionid, 'aucid' : auction.id, 'auctiondate' : auctionobj.auctionstartdate}
+            d = {'auctionname' : auction.auctionname, 'auctionhouse' : auctionhouseobj.housename, 'auctionlocation' : auctionhouseobj.location, 'description' : '', 'auctionurl' : '', 'lotsurl' : '', 'coverimage' : settings.IMG_URL_PREFIX + str(auction.coverimage), 'auctionid' : auction.auctionid, 'aucid' : auction.id, 'auctiondate' : auctionobj.auctionstartdate}
             # Get 'chunksize' number of lots for this auction
             lotsqset = Lot.objects.filter(auction_id=auction.id)#.order_by() # Ordered by priority
             lots = []
@@ -308,12 +308,12 @@ def details(request):
                 lotartistqset = LotArtist.objects.filter(artist_id=artworkobj.artist_id)
                 lotartistobj = lotartistqset[0]
                 artistname = lotartistobj.artist_name
-                ld = {'title' : artworkname, 'description' : artworkdesc, 'artistname' : artistname, 'loturl' : '', 'lotimage' : lotobj.lotimage1, 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'estimate' : str(lotobj.lowestimateUSD) + " - " + str(lotobj.highestimateUSD), 'soldprice' : lotobj.soldpriceUSD, 'currency' : "USD", 'nationality' : lotartistobj.nationality, 'lid' : lotobj.id}
+                ld = {'title' : artworkname, 'description' : artworkdesc, 'artistname' : artistname, 'loturl' : '', 'lotimage' : settings.IMG_URL_PREFIX + str(lotobj.lotimage1), 'medium' : lotobj.medium, 'size' : lotobj.sizedetails, 'estimate' : str(lotobj.lowestimateUSD) + " - " + str(lotobj.highestimateUSD), 'soldprice' : lotobj.soldpriceUSD, 'currency' : "USD", 'nationality' : lotartistobj.nationality, 'lid' : lotobj.id}
                 lots.append(ld)
                 if artistname not in relatedartists.keys():
                     artistqset = Artist.objects.filter(artistname__iexact=artistname)
                     if artistqset.__len__() > 0:
-                        relatedartists[artistname] = [ artistqset[0].id, artworkname, lotobj.lotimage1 ]
+                        relatedartists[artistname] = [ artistqset[0].id, artworkname, settings.IMG_URL_PREFIX + str(lotobj.lotimage1) ]
             d['lots'] = lots
             auctionslist.append(d)
         try:
@@ -381,9 +381,9 @@ def search(request):
                 if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                     auctionperiod += " - " + str(aucenddate)
             if coverimage == "":
-                coverimage = auction.coverimage
+                coverimage = settings.IMG_URL_PREFIX + str(auction.coverimage)
                 d['coverimage'] = coverimage
-            d1 = {'auctionname' : auction.auctionname, 'coverimage' : auction.coverimage, 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
+            d1 = {'auctionname' : auction.auctionname, 'coverimage' : settings.IMG_URL_PREFIX + str(auction.coverimage), 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
             auctionslist.append(d1)
         d['auctionslist'] = auctionslist
         auctionhousematches.append(d)

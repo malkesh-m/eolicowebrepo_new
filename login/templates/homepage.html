@@ -555,80 +555,27 @@ footer .under-footer a:hover {
 
    	<!-- Carousel -->
     <section class="testimonials">
-	<div class="container">
+     <div class="container">
       <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
-            {% if d.datatype == "gallery" %}
             <div class="item">
               <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
+                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
                 <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
+			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
+			<h5>{{d.artworkname}}</h5>
+			<p>{{d.medium}}</p>
 			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
-			{% endif %}
 		</div>
               </div>
             </div>
-	    {% endif %}
-	    {% if d.datatype == "gevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "museum" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "mevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
 	    {% endfor %}
           </div>
         </div>
       </div>
-      </div>
+     </div>
     </section>
     <!-- END OF Carousels -->
 
@@ -636,70 +583,7 @@ footer .under-footer a:hover {
 
     <!-- ***** Main Area Starts ***** -->
     <!-- ***** Explore Area Ends ***** -->
-    <!-- 	{% if follows.items|length > 0 %}
-	<section class="section" id="men">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>My Follows</h2>
-			<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aname, adata in follows.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.3}}"><img src="/media/artists/{{adata.3}}/{{adata.1}}" alt=""></a>
-		                <a href="/artist/details/?aid={{adata.3}}" style="color:#000000;">
-					<h4>{{aname}}</h4>
-					<h6>{{adata.2}}</h6>
-			
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{adata.3}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-			
-                        <div class="owl-men-item owl-carousel">
-                            {% for gname, gdata in galleries.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/gallery/details/?gid={{gdata.3}}">
-										<h4>{{gname}}</h4>
-										<span>{{gdata.0}}</span>
-										<a class="btn btn-slider" href="#">Follow</a>
-									</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div> 
-			
-			<div class="container">
-			    <div class="row">
-			    	<div class="col-lg-12">
-				    <a class="btn btn-slider" href="/login/morefollows/">View More</a>
-			    	</div>
-			    </div>
-			</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    {% endif %} -->
+    
 
     {% if favourites.items|length > 0 %}
     <section class="section" id="men">
@@ -723,7 +607,7 @@ footer .under-footer a:hover {
 		        <div class="column">
 		            <div class="img-box">
 				{% if favdata.0 == "artist" %}
-				<a href="/artist/details/?aid={{favdata.3}}"><img src="/media/artists/{{favdata.3}}/{{favdata.1}}" alt=""></a>
+				<a href="/artist/details/?aid={{favdata.3}}"><img src="{{favdata.1}}" alt=""></a>
 		                <a href="/artist/details/?aid={{favdata.3}}" style="color:#000000;">
 					<h4>{{favname}}</h4>
 					<h6>{{favdata.2}}</h6>
@@ -734,7 +618,7 @@ footer .under-footer a:hover {
 				{% endif %}
 				{% endif %}
 				{% if favdata.0 == "artwork" %}
-				<a href="/artist/artworkdetails/?awid={{favdata.5}}"><img src="/media/artists/artworks/{{favdata.6}}/{{favdata.1}}" alt=""></a>
+				<a href="/artist/artworkdetails/?awid={{favdata.5}}"><img src="{{favdata.1}}" alt=""></a>
 		                <a href="/artist/artworkdetails/?awid={{favdata.5}}" style="color:#000000;">
 					<h4>{{favname}}</h4>
 					<h6>{{favdata.4}}</h6>
@@ -745,7 +629,7 @@ footer .under-footer a:hover {
 				{% endif %}
 				{% endif %}
 				{% if favdata.0 == "auction" %}
-				<a href="/auction/showauction/?aucid={{favdata.3}}"><img src="/media/auctions/{{favdata.5}}/{{favdata.3}}/{{favdata.4}}" alt=""></a>
+				<a href="/auction/showauction/?aucid={{favdata.3}}"><img src="{{favdata.4}}" alt=""></a>
 		                <a href="/auction/showauction/?aucid={{favdata.3}}" style="color:#000000;">
 					<h4>{{favname}}</h4>
 					<h6>{{favdata.1}}</h6>
@@ -895,7 +779,7 @@ footer .under-footer a:hover {
 			{% for aname, adata in artists.items %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.4}}"><img src="/media/artists/{{adata.4}}/{{adata.2}}" alt=""></a>
+				<a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
 		                <a href="/artist/details/?aid={{adata.4}}" style="color:#000000;">
 					<h4>{{aname}}</h4>
 					<h6>{{adata.3}}</h6>
@@ -979,7 +863,7 @@ footer .under-footer a:hover {
                             {% for aucdata in auctionhouses %}
                             <div class="item">
                                 <div class="thumb">
-                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="/media/auctions/{{aucdata.ahid}}/{{aucdata.aucid}}/{{aucdata.coverimage}}" alt=""></a>
+                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
 					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}" style="color:#000000;">
@@ -1020,7 +904,7 @@ footer .under-footer a:hover {
 			{% for aucname, aucdata in upcomingauctions.items %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="/media/auctions/{{aucdata.ahid}}/{{aucdata.aucid}}/{{aucdata.coverimage}}" alt=""></a>
+				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
 		                <a href="/auction/details/?lid={{aucdata.lid}}" style="color:#000000;">
 					<h4>{{aucname}}</h4>
 					<h6>{{aucdata.description}}</h6>

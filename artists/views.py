@@ -29,7 +29,7 @@ import urllib
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session, Favourite #, WebConfig, Carousel, Follow
-#from login.views import getcarouselinfo
+from login.views import getcarouselinfo_new
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
 from auctions.models import Auction, Lot
@@ -118,7 +118,7 @@ def index(request):
             description = artist[6]
             aka = artist[7]
             bio = artist[8]
-            artistimage = artist[9]
+            artistimage = settings.IMG_URL_PREFIX + str(artist[9])
             genre = artist[10]
             if artistname not in uniqartists.keys():
                 uniqartists[artistname] = [artistid, artistname, float(price), prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre]
@@ -145,7 +145,7 @@ def index(request):
             description = artist[7]
             aka = artist[8]
             bio = artist[9]
-            artistimage = artist[10]
+            artistimage = settings.IMG_URL_PREFIX + str(artist[10])
             genre = artist[11]
             if nationality == "na":
                 nationality = ""
@@ -185,7 +185,7 @@ def index(request):
                 d['atype'] = "0" # Artists with no related artwork
             else:
                 d['artworkname'] = artworkqset[0][1]
-                d['artworkimage'] = artworkqset[0][3]
+                d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkqset[0][3])
                 d['artworkdate'] = artworkqset[0][2]
                 d['awid'] = artworkqset[0][0]
                 d['atype'] = "1" # Artists with available related artwork
@@ -232,7 +232,7 @@ def index(request):
                 description = artist[7]
                 aka = artist[8]
                 bio = artist[9]
-                artistimage = artist[10]
+                artistimage = settings.IMG_URL_PREFIX + str(artist[10])
                 genre = artist[11]
                 if nationality == "na":
                     nationality = ""
@@ -272,7 +272,7 @@ def index(request):
                 artworkobj = artworkqset1[0]
                 if artworkobj[1].title() not in uniqueartworks.keys():
                     d['artworkname'] = artworkobj[1].title()
-                    d['artworkimage'] = artworkobj[3]
+                    d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkobj[3])
                     d['artworkdate'] = artworkobj[2]
                     d['awid'] = artworkobj[0]
                     d['artworkmedium'] = artworkobj[4]
@@ -286,7 +286,7 @@ def index(request):
                         if artworkobj2[1].title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
                             if artworkobj2[3] == "":
                                 continue
-                            d['artworkimage'] = artworkobj2[3]
+                            d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkobj2[3])
                             d['artworkdate'] = artworkobj2[2]
                             d['awid'] = artworkobj2[0]
                             d['artworkmedium'] = artworkobj2[4]
@@ -356,8 +356,8 @@ def index(request):
         except:
             pass
     context['filterartists'] = filterartists
-    #carouselentries = getcarouselinfo()
-    #context['carousel'] = carouselentries
+    carouselentries = getcarouselinfo_new()
+    context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -534,7 +534,7 @@ def details(request):
                     auctionperiod += " - " + str(aucenddate)
                 try:
                     artwork = artworkartistdict[str(lotartist[19])]
-                    d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
+                    d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : settings.IMG_URL_PREFIX + str(lotartist[23]), 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : settings.IMG_URL_PREFIX + str(auctionobj.coverimage), 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : str(aucenddate), 'auchousename' : auchousename, 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
                 except:
                     print("Could not find artwork identified by Id %s"%str(lotartist[19]))
                     continue
@@ -553,7 +553,7 @@ def details(request):
                     auchousename = ""
                 try:
                     artwork = artworkartistdict[str(lotartist[19])]
-                    d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : auctionobj.coverimage, 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist[2]), 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
+                    d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : settings.IMG_URL_PREFIX + str(lotartist[23]), 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid, 'auctionname' : auctionname, 'aucid' : auctionobj.id, 'auctionimage' : settings.IMG_URL_PREFIX + str(auctionobj.coverimage), 'auctionstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'auctionenddate' : auctionobj.auctionenddate, 'auchousename' : auchousename, 'soldprice' : str(lotartist[2]), 'estimate' : str(lotartist[22]) + " - " + str(lotartist[21]), 'auctionperiod' : auctionperiod}
                 except:
                     print("Could not find artwork identified by Id %s"%str(lotartist[19]))
                     continue
@@ -566,7 +566,7 @@ def details(request):
             artwork = None
             try:
                 artwork = artworkartistdict[str(lotartist[19])]
-                d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : lotartist[23], 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid}
+                d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : settings.IMG_URL_PREFIX + str(lotartist[23]), 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid}
                 if artwork.artworkname not in uniqueartworks.keys():
                     allartworks.append(d)
                     uniqueartworks[artwork.artworkname] = artwork.id
@@ -624,7 +624,7 @@ def details(request):
     if artistobj[8].__len__() < shortlen:
         shortlen = artistobj[8].__len__()
     shortabout = artistobj[8][:shortlen] + "..."
-    artistinfo = {'name' : prefix + artistobj[0], 'nationality' : artistobj[3], 'birthdate' : artistobj[4], 'deathdate' : artistobj[5], 'profileurl' : '', 'desctiption' : artistobj[6], 'image' : artistobj[10], 'gender' : '', 'about' : artistobj[8], 'artistid' : artistobj[1], 'shortabout' : shortabout}
+    artistinfo = {'name' : prefix + artistobj[0], 'nationality' : artistobj[3], 'birthdate' : artistobj[4], 'deathdate' : artistobj[5], 'profileurl' : '', 'desctiption' : artistobj[6], 'image' : settings.IMG_URL_PREFIX + str(artistobj[10]), 'gender' : '', 'about' : artistobj[8], 'artistid' : artistobj[1], 'shortabout' : shortabout}
     context['allartworks'] = allartworks
     context['allartworks1'] = allartworks1
     context['allartworks2'] = allartworks2
@@ -685,12 +685,12 @@ def details(request):
             aliveperiod = "b. " + str(artist.birthyear)
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
-            d = {'artistname' : artist.artist_name, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj[6], 'profileurl' : '', 'image' : artist.artistimage, 'aid' : str(artist.artist_id), 'aliveperiod' : aliveperiod}
+            d = {'artistname' : artist.artist_name, 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.bio, 'desctiption' : artistobj[6], 'profileurl' : '', 'image' : settings.IMG_URL_PREFIX + str(artist.artistimage), 'aid' : str(artist.artist_id), 'aliveperiod' : aliveperiod}
             artworkqset2 = artistartworkdict[str(artist.artist_id)]
             if artworkqset2.__len__() == 0:
                 continue
             d['artworkname'] = artworkqset2[0][1]
-            d['artworkimage'] = artworkqset2[0][3]
+            d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkqset2[0][3])
             d['artworkdate'] = artworkqset2[0][2]
             d['artworkdescription'] = artworkqset2[0][4]
             d['awid'] = artworkqset2[0][0]
@@ -708,7 +708,7 @@ def details(request):
             eventperiod = auctionsqset[0].auctionstartdate.strftime("%d %b, %Y")
             if type(auctionsqset[0].auctionenddate) != str and auctionsqset[0].auctionenddate.strftime("%d %b, %Y") != '01 Jan, 0001' and auctionsqset[0].auctionenddate.strftime("%d %b, %Y") != '01 Jan, 1':
                 eventperiod = eventperiod + " - " + auctionsqset[0].auctionenddate.strftime("%d %b, %Y")
-            eventimage = auctionsqset[0].coverimage
+            eventimage = settings.IMG_URL_PREFIX + str(auctionsqset[0].coverimage)
             eventlocation = ''
             aucid = auctionsqset[0].id
             l = artistevents.keys()
@@ -815,7 +815,7 @@ def search(request):
                     bdstring = bdstring + " - " + str(artist.deathyear)
                 else:
                     bdstring = "Born " + bdstring
-                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : artist.artistimage, 'aid' : str(artist.id), 'bdstring' : bdstring}
+                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : settings.IMG_URL_PREFIX + str(artist.artistimage), 'aid' : str(artist.id), 'bdstring' : bdstring}
                 try:
                     artworkqset = artistartworksdict[str(artist.id)]
                 except:
@@ -829,7 +829,7 @@ def search(request):
                     d['atype'] = "0" # Artists with no related artwork
                 else:
                     d['artworkname'] = artworkqset[0].artworkname
-                    d['artworkimage'] = artworkqset[0].image1
+                    d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkqset[0].image1)
                     d['artworkdate'] = artworkqset[0].creationenddate
                     d['awid'] = artworkqset[0].id
                     d['atype'] = "1" # Artists with available related artwork
@@ -934,7 +934,7 @@ def showartwork(request):
     if description.__len__() < 30:
         shortlen = description.__len__()
     shortdescription = description[:shortlen] + "..."
-    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : description, 'awid' : artworkobj.id, 'aid' : artistobj.id, 'shortdescription' : shortdescription, 'artworkimage' : artworkobj.image1}
+    context['artworkinfo'] = {'artworkname' : artworkobj.artworkname, 'artistname' : artistname, 'creationdate' : artworkobj.creationstartdate, 'size' : artworkobj.sizedetails, 'medium' : artworkobj.medium, 'description' : description, 'awid' : artworkobj.id, 'aid' : artistobj.id, 'shortdescription' : shortdescription, 'artworkimage' : settings.IMG_URL_PREFIX + str(artworkobj.image1)}
     allartworks = []
     allartworks1 = []
     allartworks2 = []
@@ -986,7 +986,7 @@ def showartwork(request):
             favflag = 0
             if favqset.__len__() > 0:
                 favflag = 1         
-            d = {'artworkname' : artwork.artworkname, 'creationdate' : creationdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : artwork.image1, 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : artwork.artist_id, 'favourite' : favflag}
+            d = {'artworkname' : artwork.artworkname, 'creationdate' : creationdate, 'size' : artwork.sizedetails, 'medium' : artwork.medium, 'description' : artwork.description, 'image' : settings.IMG_URL_PREFIX + str(artwork.image1), 'provenance' : '', 'literature' : artwork.literature, 'exhibitions' : artwork.exhibitions, 'href' : '', 'estimate' : '', 'awid' : artwork.id, 'aid' : artwork.artist_id, 'favourite' : favflag}
             if artwork.artworkname not in uniqueartworks.keys():
                 allartworks.append(d)
                 uniqueartworks[artwork.artworkname] = artwork.id
@@ -1013,7 +1013,7 @@ def showartwork(request):
                 aucenddate = auctionobj.auctionenddate
                 if str(aucenddate) != '0000-00-00' and str(aucenddate) != '01 Jan, 1':
                     eventperiod = eventperiod + " - " + str(aucenddate)
-                d2 = {'eventname' : auctionobj.auctionname, 'eventimage' : auctionobj.coverimage, 'eventperiod' : eventperiod, 'aucid' : auctionobj.id}
+                d2 = {'eventname' : auctionobj.auctionname, 'eventimage' : settings.IMG_URL_PREFIX + str(auctionobj.coverimage), 'eventperiod' : eventperiod, 'aucid' : auctionobj.id}
                 allevents.append(d2)
             if allartworks.__len__() >= maxartworkstoshow:
                 break
@@ -1050,7 +1050,7 @@ def showartwork(request):
             aliveperiod = "b. " + str(artist.birthyear)
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
-            d = {'artistname' : artist.artistname, 'about' : artist.description, 'nationality' : artist.nationality, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'squareimage' : artist.artistimage, 'aid' : artist.id, 'aliveperiod' : aliveperiod}
+            d = {'artistname' : artist.artistname, 'about' : artist.description, 'nationality' : artist.nationality, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'squareimage' : settings.IMG_URL_PREFIX + str(artist.artistimage), 'aid' : artist.id, 'aliveperiod' : aliveperiod}
             relatedartists.append(d)
     context['relatedartists'] = relatedartists
     if request.user.is_authenticated and request.user.is_staff:
@@ -1109,9 +1109,9 @@ def textfilter(request):
                     aucenddate = auctionobj.auctionenddate
                     if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                         aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : settings.IMG_URL_PREFIX + str(artwork.image1), 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate, 'auctionperiod' : ''}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'aid' : aid, 'image' : settings.IMG_URL_PREFIX + str(artwork.image1), 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate, 'auctionperiod' : ''}
                 pastartworks.append(d)
     context['pastartworks'] = pastartworks
     if request.user.is_authenticated and request.user.is_staff:
@@ -1239,9 +1239,9 @@ def morefilter(request):
                     aucenddate = auctionobj.auctionenddate
                     if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                         aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : settings.IMG_URL_PREFIX + str(artwork.image1), 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'auctionperiod' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'auctionperiod' : '', 'aid' : aid, 'image' : settings.IMG_URL_PREFIX + str(artwork.image1), 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 if maxsearchresults < pastartworks.__len__():
                     break
                 if artwork.artworkname not in uniqueartworks.keys():
@@ -1257,9 +1257,9 @@ def morefilter(request):
                     aucenddate = auctionobj.auctionenddate
                     if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
                         aucperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.id, 'aucstartdate' : auctionobj.auctionstartdate.strftime("%d %b, %Y"), 'aucenddate' : str(aucenddate), 'auctionperiod' : aucperiod, 'aid' : aid, 'image' : settings.IMG_URL_PREFIX + str(artwork.image1), 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 else:
-                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'auctionperiod' : '', 'aid' : aid, 'image' : artwork.image1, 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
+                    d = {'artworkname' : artwork.artworkname, 'artistname' : artistobj.artistname, 'medium' : artwork.medium, 'size' : artwork.sizedetails, 'startdate' : artwork.creationstartdate, 'awid' : artwork.id, 'description' : artwork.description, 'auctionname' : '', 'aucid' : '', 'aucstartdate' : '', 'aucenddate' : '', 'auctionperiod' : '', 'aid' : aid, 'image' : settings.IMG_URL_PREFIX + str(artwork.image1), 'soldprice' : lotobj.soldpriceUSD, 'estimate' : estimate}
                 for medium in mediumlist:
                     if medium in artwork.medium.lower():
                         if maxsearchresults > pastartworks.__len__() and artwork.artworkname not in uniqueartworks.keys():

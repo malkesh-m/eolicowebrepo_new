@@ -147,7 +147,7 @@
 		sectiontext += "<div class='row align-items-end'>";
 		for(var j=0; j < auctionhouse.auctionslist.length; j++){
 		  auction = auctionhouse.auctionslist[j];
-		  sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='/media/auctions/" + auction.ahid + "/" + auction.aucid + "/" + auction.coverimage + "' style='width:100%'>";
+		  sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='" + auction.coverimage + "' style='width:100%'>";
 		  sectiontext += "<h4>" + auction.auctionname + "</h4>";
 		  sectiontext += "<h6 style='padding-left:10px;'>" + auction.auctionperiod + "</h6>";
 		  sectiontext += "<h6>" + auction.location + "</h6>";
@@ -421,90 +421,29 @@
     <!-- ***** Header Area End ***** -->
     <!-- ***** Main Banner Area Start ***** -->
     
-	   	<!-- Carousel -->
+   	<!-- Carousel -->
     <section class="testimonials">
-	<div class="container">
+     <div class="container">
       <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
-            {% if d.datatype == "gallery" %}
             <div class="item">
               <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
+                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
                 <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
+			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
+			<h5>{{d.artworkname}}</h5>
+			<p>{{d.medium}}</p>
 			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
-			{% endif %}
 		</div>
               </div>
             </div>
-	    {% endif %}
-	    {% if d.datatype == "gevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "museum" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "mevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
 	    {% endfor %}
           </div>
         </div>
-
-	<div class="owl-controls">
-        <div class="owl-nav">
-            <div class="owl-prev"></div>
-            <div class="owl-next"></div>
-        </div>
-    	</div>
-
       </div>
-      </div>
+     </div>
     </section>
     <!-- END OF Carousels -->
     <section class="section gal-section" id="">
@@ -571,7 +510,7 @@
 			{% for auction in show.auctionslist %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="/media/auctions/{{auction.ahid}}/{{auction.aucid}}/{{auction.coverimage}}" alt="" /></a>
+				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.coverimage}}" alt="" /></a>
 		                <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
 				    <h4>{{auction.housename}}, {{auction.location}}</h4>
 		                    <h6>Sale Code: {{auction.salecode}}</h6>
@@ -655,7 +594,7 @@
                 <div class="column">
                     <div class="img-box">
 			<a href='/auction/showauction/?aucid={{auction.aucid}}' style="color:#000000;">
-                        <img src="/media/auctions/{{auction.ahid}}/{{auction.aucid}}/{{auction.coverimage}}" style="width:100%">
+                        <img src="{{auction.coverimage}}" style="width:100%">
                         <h4>{{auctionhousename}}, {{auction.location}}</h4>
                         <h6 style="padding-left:10px;">Sale Code: {{auction.salecode}}</h6>
                         <h4>{{auction.auctionname}}</h4>

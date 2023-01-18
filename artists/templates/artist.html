@@ -163,7 +163,7 @@
 		    searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artworkimage + "'></a></div>";
 		}
 		else{
-		    searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='/media/artists/artworks/" + artistobj.aid + "/" + artistobj.artistimage + "'></a></div>";
+		    searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artistimage + "'></a></div>";
 		}
 		searchtext += "<div class='down-content'><a href='/artist/details/?aid=" + artistobj.aid + "' style='color:#000000;'><h4>" + artistobj.artistname +"</h4>";
 		if (artistobj.birthdate == ''){
@@ -563,90 +563,29 @@
             </div>
         </div>
     </section>-->
-         	<!-- Carousel -->
+   	<!-- Carousel -->
     <section class="testimonials">
-	<div class="container">
+     <div class="container">
       <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
-            {% if d.datatype == "gallery" %}
             <div class="item">
               <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
+                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
                 <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
+			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
+			<h5>{{d.artworkname}}</h5>
+			<p>{{d.medium}}</p>
 			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editgallery({{d.data_id}});">Edit</a>
-			{% endif %}
 		</div>
               </div>
             </div>
-	    {% endif %}
-	    {% if d.datatype == "gevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editgevent({{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "museum" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmuseum({{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "mevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmevent({{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
 	    {% endfor %}
           </div>
         </div>
-	
-	<div class="owl-controls">
-        <div class="owl-nav">
-            <div class="owl-prev"></div>
-            <div class="owl-next"></div>
-        </div>
-    	</div>
-
       </div>
-      </div>
+     </div>
     </section>
     <!-- END OF Carousels -->
       <!------ Featured Artist ------->
@@ -732,10 +671,10 @@
                       <div class="artist-category">
 			  {% if artistobj.atype == '1' %}
                           <div class="img-box">
-                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="/media/artists/artworks/{{artistobj.aid}}/{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
 			  {% else %}
 			  <div class="img-box">
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="/media/artists/{{artistobj.aid}}/{{artistobj.artistimage}}" alt=""></a>
+                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
 			  {% endif %}
                           
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
@@ -804,7 +743,7 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category align-items-end">
                           <div class="img-box">
-                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="/media/artists/artworks/{{artistobj.aid}}/{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
 				<!-- 
@@ -870,7 +809,7 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category align-items-end">
                           <div class="img-box">
-                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="/media/artists/artworks/{{artistobj.aid}}/{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
 				<!-- 
@@ -936,7 +875,7 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category align-items-end">
                           <div class="img-box">
-                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="/media/artists/artworks/{{artistobj.aid}}/{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
 				<!--
@@ -1002,7 +941,7 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category align-items-end">
                          <div class="img-box">
-                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="/media/artists/artworks/{{artistobj.aid}}/{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
 				<!--
@@ -1068,7 +1007,7 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category align-items-end">
                           <div class="img-box">
-                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="/media/artists/artworks/{{artistobj.aid}}/{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
 				<!--
@@ -1133,7 +1072,7 @@
                   <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                       <div class="artist-category align-items-end">
                           <div class="img-box">
-                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="/media/artists/artworks/{{artistobj.aid}}/{{artistobj.artworkimage}}" alt=""></a>
+                              <a href="/artist/artworkdetails/?awid={{artistobj.awid}}"><img src="{{artistobj.artworkimage}}" alt=""></a>
                               <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
                                   <h4>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
 				<!--

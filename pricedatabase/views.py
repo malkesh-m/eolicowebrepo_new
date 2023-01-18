@@ -25,7 +25,7 @@ import decimal
 
 #from gallery.models import Gallery, Event
 from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
-#from login.views import getcarouselinfo
+from login.views import getcarouselinfo_new
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
@@ -136,7 +136,7 @@ def index(request):
             auctionhousesdict[str(auctionhouse.id)] = auctionhouse
         lotctr = 0
         for lotobj in lotsqset:
-            lotimage = lotobj.lotimage1
+            lotimage = settings.IMG_URL_PREFIX + str(lotobj.lotimage1)
             saledate = lotobj.saledate
             saledt = datetime.datetime.combine(saledate, datetime.time(0, 0))
             if saledt < date2weeksago:
@@ -144,11 +144,11 @@ def index(request):
             artworkobj = None
             try:
                 artworkobj = artworksdict[str(lotobj.artwork_id)]
-                if lotimage == "": # If there is no lot image, go for the artwork image, if any.
-                    lotimage = artworkobj[25]
+                if lotimage == settings.IMG_URL_PREFIX: # If there is no lot image, go for the artwork image, if any.
+                    lotimage = settings.IMG_URL_PREFIX + str(artworkobj[25])
             except:
                 continue # If we can't find the corresponding artwork for this lot, then we skip it.
-            if lotimage == "": # We will not show lots with no images.
+            if lotimage == settings.IMG_URL_PREFIX: # We will not show lots with no images.
                 continue
             if lotctr > chunksize:
                 break
@@ -194,7 +194,7 @@ def index(request):
                     uniquefilter[artistname] = 1
             except:
                 pass
-            d = {'artworkname' : artworkobj[1], 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj[13], 'medium' : artworkobj[18], 'description' : artworkobj[22], 'lid' : lotobj.id, 'awid' : artworkobj[0], 'lotimage' : lotobj.lotimage1, 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj[9], 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhousename}
+            d = {'artworkname' : artworkobj[1], 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj[13], 'medium' : artworkobj[18], 'description' : artworkobj[22], 'lid' : lotobj.id, 'awid' : artworkobj[0], 'lotimage' : settings.IMG_URL_PREFIX + str(lotobj.lotimage1), 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj[9], 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhousename}
             entitieslist.append(d)
         allartistsqset = FeaturedArtist.objects.all()[:30000] 
         # We selected 30000 records as that is the optimum number for speed and content.
@@ -218,8 +218,8 @@ def index(request):
     context['entities'] = entitieslist
     context['filterpdb'] = filterpdb
     context['auctionhouses'] = auctionhouses
-    #carouselentries = getcarouselinfo()
-    #context['carousel'] = carouselentries
+    carouselentries = getcarouselinfo_new()
+    context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -294,7 +294,7 @@ def search(request):
             auctionperiod = auctionobj[5].strftime("%d %b, %Y")
             if type(auctionobj[6]) == datetime.date and auctionobj[6].strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj[6].strftime("%d %b, %Y") != "01 Jan, 1":
                 auctionperiod += " - " + auctionobj[6].strftime("%d %b, %Y")
-            d = {'auctionname' : auctionobj[1], 'aucid' : auctionobj[2], 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj[8], 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj[0], 'lotcount' : str(auctionobj[7]), 'obtype' : 'auction'}
+            d = {'auctionname' : auctionobj[1], 'aucid' : auctionobj[2], 'auctionhouse' : auctionhousename, 'coverimage' : settings.IMG_URL_PREFIX + str(auctionobj[8]), 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj[0], 'lotcount' : str(auctionobj[7]), 'obtype' : 'auction'}
             if achctr > maxperobjectsearchresults * int(page):
                 break
             achctr += 1
@@ -328,7 +328,7 @@ def search(request):
         auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
         if type(auctionobj.auctionenddate) == datetime.date and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 0001" and auctionobj.auctionenddate.strftime("%d %b, %Y") != "01 Jan, 1":
             auctionperiod += " - " + auctionobj.auctionenddate.strftime("%d %b, %Y")
-        d = {'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : auctionobj.coverimage, 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount), 'obtype' : 'auction'}
+        d = {'auctionname' : auctionobj.auctionname, 'aucid' : auctionobj.auctionid, 'auctionhouse' : auctionhousename, 'coverimage' : settings.IMG_URL_PREFIX + str(auctionobj.coverimage), 'ahid' : ahid, 'auctionperiod' : auctionperiod, 'aucid' : auctionobj.id, 'lotcount' : str(auctionobj.lotcount), 'obtype' : 'auction'}
         if aucctr > maxperobjectsearchresults * int(page):
             break
         aucctr += 1
@@ -400,7 +400,7 @@ def search(request):
                 szdet = lot[7]
                 if lot[7] is None:
                     szdet = ""
-                d = {'artistname' : artist[1], 'lottitle' : artwork[1], 'medium' : lot[6], 'size' : szdet.encode('utf-8'), 'aid' : artist[0], 'birthyear' : artist[3], 'deathyear' : artist[4], 'nationality' : artist[2], 'artistimage' : artist[5], 'coverimage' : lot[19], 'awid' : artwork[0], 'createdate' : artwork[3], 'lid' : lot[0], 'obtype' : 'lot', 'aucid' : lot[4], 'soldprice' : soldprice}
+                d = {'artistname' : artist[1], 'lottitle' : artwork[1], 'medium' : lot[6], 'size' : szdet.encode('utf-8'), 'aid' : artist[0], 'birthyear' : artist[3], 'deathyear' : artist[4], 'nationality' : artist[2], 'artistimage' : settings.IMG_URL_PREFIX + str(artist[5]), 'coverimage' : settings.IMG_URL_PREFIX + str(lot[19]), 'awid' : artwork[0], 'createdate' : artwork[3], 'lid' : lot[0], 'obtype' : 'lot', 'aucid' : lot[4], 'soldprice' : soldprice}
                 allsearchresults.append(d)
                 artctr += 1
                 if artctr > maxperobjectsearchresults:
@@ -468,7 +468,7 @@ def search(request):
             szdet = lot[7]
             if lot[7] is None:
                 szdet = ""
-            d = {'artistname' : artist[0], 'lottitle' : artwork[1], 'medium' : lot[6], 'size' : szdet.encode('utf-8'), 'aid' : artist[1], 'birthyear' : artist[4], 'deathyear' : artist[5], 'nationality' : artist[3], 'artistimage' : artist[10], 'coverimage' : lot[19], 'awid' : artwork[0], 'createdate' : artwork[2], 'lid' : lot[0], 'obtype' : 'lot', 'aucid' : lot[4], 'soldprice' : soldprice}
+            d = {'artistname' : artist[0], 'lottitle' : artwork[1], 'medium' : lot[6], 'size' : szdet.encode('utf-8'), 'aid' : artist[1], 'birthyear' : artist[4], 'deathyear' : artist[5], 'nationality' : artist[3], 'artistimage' : settings.IMG_URL_PREFIX + str(artist[10]), 'coverimage' : settings.IMG_URL_PREFIX + str(lot[19]), 'awid' : artwork[0], 'createdate' : artwork[2], 'lid' : lot[0], 'obtype' : 'lot', 'aucid' : lot[4], 'soldprice' : soldprice}
             allsearchresults.append(d)
             awctr += 1
             if awctr > maxperobjectsearchresults:
@@ -640,9 +640,9 @@ def dofilter(request):
                 lh = lotqset[0].height
                 lw = lotqset[0].width
                 ld = lotqset[0].depth
-                limage = lotqset[0].lotimage1
+                limage = settings.IMG_URL_PREFIX + str(lotqset[0].lotimage1)
                 if limage == "":
-                    limage = artwork[2]
+                    limage = settings.IMG_URL_PREFIX + str(artwork[2])
                 if limage == "": # If we still don't have an image, just skip it.
                     continue
                 auctionobj = None
@@ -843,7 +843,7 @@ def dofilter(request):
                         ahid = auchouseobj.id
                     except:
                         pass
-                d = {'lottitle' : artworkname, 'artistname' : artistnm, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : artwork.image1}
+                d = {'lottitle' : artworkname, 'artistname' : artistnm, 'aid' : aid, 'awid' : awid, 'medium' : lmedium, 'size' : lsize, 'saledate' : lsaledate, 'soldprice' : lsoldprice, 'estimate' : lestimate, 'lid' : lid, 'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'aucid' : aucid, 'auctionhouse' : auctionhousename, 'ahid' : ahid, 'obtype' : 'lot', 'coverimage' : settings.IMG_URL_PREFIX + str(artwork.image1)}
                 entitieslist.append(d)
         l_entities = []
         if entitieslist.__len__() > 0:
