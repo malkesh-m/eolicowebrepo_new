@@ -89,7 +89,7 @@ def index(request):
     dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     if allauctions.__len__() == 0:
-        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar order by faac_auction_start_date desc limit 100"
+        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_lot_count > 0 or faac_auction_image != NULL order by faac_auction_start_date desc limit 100"
         #print("auctionsql: %s"%auctionsql)
         cursor.execute(auctionsql)
         auctionsqset = cursor.fetchall()
@@ -121,9 +121,18 @@ def index(request):
                     break
                 aucctr += 1
                 auctionurl = auction[4]
-                #auctionlots = Lot.objects.filter(auction_id=auction[0])
-                #if auctionlots.__len__() == 0:
-                #    continue
+                if auction[8] == "" or auction[8] is None:
+                    maxlowestimatelotsql = "select fal_lot_low_estimate_USD, fal_lot_image1 from fineart_lots where fal_auction_ID=%s and fal_lot_image1 != NULL and fal_lot_image1 != '' order by fal_lot_low_estimate_USD desc"%auction[0]
+                    try:
+                        cursor.execute(maxlowestimatelotsql)
+                        lotrecs = cursor.fetchall()
+                        # TODO: Might need to remove the conditional statement below.
+                        if lotrecs.__len__() == 0:
+                            continue
+                        lotimg = lotrecs[0][1]
+                        auction[8] = lotimg
+                    except:
+                        continue # TODO: Might need to change this statement to 'pass'.
                 auctionperiod = auction[5].strftime("%d %b, %Y")
                 aucenddate = auction[6]
                 if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
@@ -179,9 +188,18 @@ def index(request):
             filterauctions.append(autocompleteauctionname)
             auction_id = auction[0]
             salecode = auction[2]
-            #auctionlots = Lot.objects.filter(auction_id=auction[0])
-            #if auctionlots.__len__() == 0:
-            #    continue
+            if auction[8] == "" or auction[8] is None:
+                maxlowestimatelotsql = "select fal_lot_low_estimate_USD, fal_lot_image1 from fineart_lots where fal_auction_ID=%s and fal_lot_image1 != NULL and fal_lot_image1 != '' order by fal_lot_low_estimate_USD desc"%auction_id
+                try:
+                    cursor.execute(maxlowestimatelotsql)
+                    lotrecs = cursor.fetchall()
+                    # TODO: Might need to remove the conditional statement below.
+                    if lotrecs.__len__() == 0:
+                        continue
+                    lotimg = lotrecs[0][1]
+                    auction[8] = lotimg
+                except:
+                    continue # TODO: Might need to change this statement to 'pass'.
             if auctionname not in allauctions.keys():
                 allauctions[auctionname] = []
             auctionperiod = auction[5].strftime("%d %b, %Y")

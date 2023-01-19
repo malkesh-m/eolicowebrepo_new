@@ -204,7 +204,8 @@ FROM_EMAIL_USER = "artwork-messenger@artwork.com"
 
 IMG_URL_PREFIX = "https://f000.backblazeb2.com/file/fineart-images/"
 CAROUSEL_DAYS = 3000
-YEARS_FOR_STATS = 6
+YEARS_FOR_STATS = 6 # production value 2
+YEARS_FOR_FEATURED_ARTIST = 6 # production value 1
 
 
 

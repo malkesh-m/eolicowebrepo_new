@@ -91,13 +91,14 @@ def index(request):
         cursor.execute(getview_sql)
         artistsqset = cursor.fetchall()
         """
-        featuredartistsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A ORDER BY A.totalsoldprice DESC LIMIT %s OFFSET %s"%(endctr, startctr)
+        date1yearago = datetime.datetime.now() - datetime.timedelta(days=settings.YEARS_FOR_FEATURED_ARTIST*365)
+        featuredartistsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id, A.saledate FROM fa_featured_artists A where A.saledate > '%s' ORDER BY A.totalsoldprice DESC LIMIT %s OFFSET %s"%(date1yearago, endctr, startctr)
         #print(featuredartistsql)
         cursor.execute(featuredartistsql)
         artistsqset = cursor.fetchall()
         #artistsqset = FeaturedArtist.objects.all().order_by('-totalsoldprice')[0:endctr]
         if page != -1:
-            artistnamestartswithsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A WHERE A.artist_name LIKE '" + str(pageno) + "%' or A.artist_name LIKE '" + str(pageno).upper() + "%'" # TODO: Add condition based on saledate (in the past 12 months only)
+            artistnamestartswithsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A WHERE A.artist_name LIKE '" + str(pageno) + "%' or A.artist_name LIKE '" + str(pageno).upper() + "%' order by A.saledate desc" # TODO: Add condition based on saledate (in the past 12 months only)
             cursor.execute(artistnamestartswithsql)
             artistsqset = cursor.fetchall()
             #artistsqset = FeaturedArtist.objects.filter(artist_name__istartswith=str(pageno)).order_by('-totalsoldprice')[0:endctr]
@@ -636,7 +637,10 @@ def details(request):
     if artistobj[8].__len__() < shortlen:
         shortlen = artistobj[8].__len__()
     shortabout = artistobj[8][:shortlen] + "..."
-    artistinfo = {'name' : prefix + artistobj[0], 'nationality' : artistobj[3], 'birthdate' : artistobj[4], 'deathdate' : artistobj[5], 'profileurl' : '', 'desctiption' : artistobj[6], 'image' : settings.IMG_URL_PREFIX + str(artistobj[10]), 'gender' : '', 'about' : artistobj[8], 'artistid' : artistobj[1], 'shortabout' : shortabout}
+    aimg = settings.IMG_URL_PREFIX + str(artistobj[10])
+    if artistobj[10] is None or artistobj[10] == "":
+        aimg = "/static/images/default_artist.jpg"
+    artistinfo = {'name' : prefix + artistobj[0], 'nationality' : artistobj[3], 'birthdate' : artistobj[4], 'deathdate' : artistobj[5], 'profileurl' : '', 'desctiption' : artistobj[6], 'image' : aimg, 'gender' : '', 'about' : artistobj[8], 'artistid' : artistobj[1], 'shortabout' : shortabout}
     context['allartworks'] = allartworks
     context['allartworks1'] = allartworks1
     context['allartworks2'] = allartworks2

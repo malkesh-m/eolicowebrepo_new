@@ -231,7 +231,10 @@ def index(request):
             aname = a.artist_name
             about = a.description
             aurl = ""
-            aimg = settings.IMG_URL_PREFIX + str(a.artistimage)
+            if a.artistimage is None or a.artistimage == "":
+                aimg = "/static/images/default_artist.jpg"
+            else:
+                aimg = settings.IMG_URL_PREFIX + str(a.artistimage)
             anat = a.nationality
             aid = a.artist_id
             # Check for follows and favourites
@@ -316,9 +319,11 @@ def index(request):
                 continue
             aucidlist.append(auction.id)
             auchouseidlist.append(auction.auctionhouse_id)
-        lotsqset = Lot.objects.filter(auction_id__in=aucidlist)
+        lotsqset = Lot.objects.filter(auction_id__in=aucidlist).order_by('-lowestimateUSD')
         lotsbyauctiondict = {}
         for lot in lotsqset:
+            if lot.lotimage1 == '' or lot.lotimage1 is None:
+                continue
             aucid = lot.auction_id
             if str(aucid) not in lotsbyauctiondict.keys():
                 lotsbyauctiondict[str(aucid)] = [lot,]
@@ -336,7 +341,10 @@ def index(request):
             lotsqset = lotsbyauctiondict[str(auction.id)]
             if lotsqset.__len__() == 0:
                 continue
-            imageloc = settings.IMG_URL_PREFIX + str(auction.coverimage)
+            if auction.coverimage is None or auction.coverimage == "":
+                imageloc = settings.IMG_URL_PREFIX + str(lotsqset[0].lotimage1)
+            else:
+                imageloc = settings.IMG_URL_PREFIX + str(auction.coverimage)
             lotobj = lotsqset[0]
             if imageloc == settings.IMG_URL_PREFIX:
                 imageloc = settings.IMG_URL_PREFIX + str(lotobj.lotimage1)
@@ -347,10 +355,10 @@ def index(request):
             auchouseobj = None
             auchousename, ahlocation = "", ""
             try:
-                print(auction.auctionhouse_id)
+                #print(auction.auctionhouse_id)
                 auchouseobj = auchousedict[str(auction.auctionhouse_id)]
                 auchousename = auchouseobj.housename
-                print(auchousename)
+                #print(auchousename)
                 ahlocation = auchouseobj.location
             except:
                 pass
