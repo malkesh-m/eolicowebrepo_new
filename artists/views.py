@@ -97,7 +97,7 @@ def index(request):
         artistsqset = cursor.fetchall()
         #artistsqset = FeaturedArtist.objects.all().order_by('-totalsoldprice')[0:endctr]
         if page != -1:
-            artistnamestartswithsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A WHERE A.artist_name LIKE '" + str(pageno) + "%' or A.artist_name LIKE '" + str(pageno).upper() + "%'"
+            artistnamestartswithsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A WHERE A.artist_name LIKE '" + str(pageno) + "%' or A.artist_name LIKE '" + str(pageno).upper() + "%'" # TODO: Add condition based on saledate (in the past 12 months only)
             cursor.execute(artistnamestartswithsql)
             artistsqset = cursor.fetchall()
             #artistsqset = FeaturedArtist.objects.filter(artist_name__istartswith=str(pageno)).order_by('-totalsoldprice')[0:endctr]
@@ -119,6 +119,8 @@ def index(request):
             aka = artist[7]
             bio = artist[8]
             artistimage = settings.IMG_URL_PREFIX + str(artist[9])
+            if artist[9] is None or artist[9] == "":
+                artistimage = "/static/images/default_artist.jpg"
             genre = artist[10]
             if artistname not in uniqartists.keys():
                 uniqartists[artistname] = [artistid, artistname, float(price), prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre]
@@ -145,7 +147,7 @@ def index(request):
             description = artist[7]
             aka = artist[8]
             bio = artist[9]
-            artistimage = settings.IMG_URL_PREFIX + str(artist[10])
+            artistimage = str(artist[10])
             genre = artist[11]
             if nationality == "na":
                 nationality = ""
@@ -232,7 +234,7 @@ def index(request):
                 description = artist[7]
                 aka = artist[8]
                 bio = artist[9]
-                artistimage = settings.IMG_URL_PREFIX + str(artist[10])
+                artistimage = str(artist[10])
                 genre = artist[11]
                 if nationality == "na":
                     nationality = ""
@@ -449,7 +451,7 @@ def details(request):
         #print("2. %s"%lotartistsql)
         cursor.execute(lotartistsql)
         lotartistqset = cursor.fetchall()
-        date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
+        date2yearsago = datetime.datetime.now() - datetime.timedelta(days=settings.YEARS_FOR_STATS*365)
         totaldelta = 0.00
         curdatetime = datetime.datetime.now()
         upcomingflag = 0
@@ -505,9 +507,19 @@ def details(request):
             saledate = datetime.datetime.combine(lotartist[12], datetime.time(0, 0))
             if saledate and saledate > date2yearsago:
                 totallotssold += 1
-                soldlotsprice += float(lotartist[2])
-                midestimate = (float(lotartist[21]) + float(lotartist[22]))/2.0
-                if lotartist[2] > 0.00:
+                if lotartist[2] is not None:
+                    soldlotsprice += float(lotartist[2])
+                else:
+                    soldlotsprice += 0.00
+                if lotartist[21] is not None and lotartist[22] is not None:
+                    midestimate = (float(lotartist[21]) + float(lotartist[22]))/2.0
+                elif lotartist[21] is not None and lotartist[22] is None:
+                    midestimate = (float(lotartist[21]) + 0.00)/2.0
+                elif lotartist[21] is None and lotartist[22] is not None:
+                    midestimate = (0.00 + float(lotartist[22]))/2.0
+                else:
+                    midestimate = 0.00
+                if lotartist[2] is not None and lotartist[2] > 0.00:
                     delta = (float(lotartist[2]) - float(midestimate))/float(lotartist[2])
                     totaldelta += delta
                 totalartworks += 1
@@ -567,9 +579,9 @@ def details(request):
             try:
                 artwork = artworkartistdict[str(lotartist[19])]
                 d = {'artworkname' : lotartist[20], 'creationdate' : artwork[3], 'size' : lotartist[16], 'medium' : lotartist[15], 'description' : artwork[13], 'image' : settings.IMG_URL_PREFIX + str(lotartist[23]), 'provenance' : '', 'literature' : artwork[14], 'exhibitions' : artwork[15], 'href' : '', 'estimate' : '', 'awid' : artwork[0], 'aid' : aid}
-                if artwork.artworkname not in uniqueartworks.keys():
+                if artwork[1] not in uniqueartworks.keys():
                     allartworks.append(d)
-                    uniqueartworks[artwork.artworkname] = artwork.id
+                    uniqueartworks[artwork[1]] = artwork[0]
                     if actr == 0:
                         allartworks1.append(d)
                     elif actr == 1:
@@ -582,7 +594,7 @@ def details(request):
                         continue
                     actr += 1
             except:
-                pass
+                print("Error in artist/details/: %s"%sys.exc_info()[1].__str__())
     yearlylotssold = int(float(totallotssold)/2.0)
     sellthrurate = "NA"
     if totalartworks != 0:
@@ -815,7 +827,11 @@ def search(request):
                     bdstring = bdstring + " - " + str(artist.deathyear)
                 else:
                     bdstring = "Born " + bdstring
-                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : settings.IMG_URL_PREFIX + str(artist.artistimage), 'aid' : str(artist.id), 'bdstring' : bdstring}
+                if artist.artistimage is None or artist.artistimage == "":
+                    artist.artistimage = "/static/images/default_artist.jpg"
+                else:
+                    artist.artistimage = settings.IMG_URL_PREFIX + artist.artistimage
+                d = {'artistname' : artist.artistname.title(), 'nationality' : artist.nationality, 'birthdate' : str(artist.birthyear), 'deathdate' : str(artist.deathyear), 'about' : artist.description, 'profileurl' : '', 'artistimage' : str(artist.artistimage), 'aid' : str(artist.id), 'bdstring' : bdstring}
                 try:
                     artworkqset = artistartworksdict[str(artist.id)]
                 except:
@@ -1050,7 +1066,11 @@ def showartwork(request):
             aliveperiod = "b. " + str(artist.birthyear)
             if str(artist.deathyear) != "":
                 aliveperiod = str(artist.birthyear) + " - " + str(artist.deathyear)
-            d = {'artistname' : artist.artistname, 'about' : artist.description, 'nationality' : artist.nationality, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'squareimage' : settings.IMG_URL_PREFIX + str(artist.artistimage), 'aid' : artist.id, 'aliveperiod' : aliveperiod}
+            if artist.artistimage is None or artist.artistimage == "":
+                artist.artistimage = "/static/images/default_artist.jpg"
+            else:
+                artist.artistimage = settings.IMG_URL_PREFIX + str(artist.artistimage)
+            d = {'artistname' : artist.artistname, 'about' : artist.description, 'nationality' : artist.nationality, 'birthyear' : artist.birthyear, 'deathyear' : artist.deathyear, 'squareimage' : str(artist.artistimage), 'aid' : artist.id, 'aliveperiod' : aliveperiod}
             relatedartists.append(d)
     context['relatedartists'] = relatedartists
     if request.user.is_authenticated and request.user.is_staff:

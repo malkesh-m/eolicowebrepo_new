@@ -24,30 +24,31 @@
     <link rel="stylesheet" href="/static/css/newcarousel.css">
 
 	<style>
-		#Top-owl-carousel{
-			margin-top:5%;
-		}
 		.slide-cap{
 			position: absolute;
-			top: 28%;
+			top: 5%;
 			left: 13%;
 			width: 28%;
 		}
 		.rit-cap{
 			position: absolute;
-			top: 28%;
+			top: 5%;
 			right: 15%;
 			width: 30%;
 		}
 		#Top-owl-carousel p{
-			margin-top:20px;
+			margin-top:5px;
+		}
+		<!-- Adding scaling factor -->
+		.item {
+		  transform: scale(.6);
 		}
 		.btn-slider{
 			border:1px solid #333;
 			border-radius:0px;
-			margin-top:20px;
+			margin-top:5px;
 			margin-bottom:10px;
-			padding: 5px 22px;
+			padding: 5px 5px;
 			letter-spacing:2px;
 		}
 		.btn-slider:hover{
@@ -554,7 +555,7 @@ footer .under-footer a:hover {
 <!-- ------------------------------------------------------------------------------------------  -->
 
    	<!-- Carousel -->
-    <section class="testimonials">
+    <section class="testimonials" style='display:block;padding-top:100px;margin-top:20;'>
      <div class="container">
       <div class="row">
         <div class="col-sm-12">
@@ -562,7 +563,7 @@ footer .under-footer a:hover {
 	    {% for d in carousel %}
             <div class="item">
               <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
+                <img class="img-responsive" src="{{d.artworkimage}}" alt="">
                 <div class="item-details">
 			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
 			<h5>{{d.artworkname}}</h5>
@@ -1051,7 +1052,7 @@ $('#customers-testimonials').owlCarousel( {
 		loop: true,
 		center: true,
 		items: 3,
-		margin: 30,
+		margin: 5,
 		autoplay: true,
 		dots:true,
     		nav:true,
