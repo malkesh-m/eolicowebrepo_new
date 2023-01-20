@@ -42,6 +42,9 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
+htmlpattern01 = re.compile("\<[^\>]+\>", re.DOTALL)
+htmlpattern02 = re.compile("\&lt;[^\&gt;]+\&gt;", re.DOTALL)
+
 
 #@cache_page(CACHE_TTL)
 def index(request):
@@ -373,6 +376,7 @@ def index(request):
 
 #@cache_page(CACHE_TTL)
 def details(request):
+    global htmlpattern01, htmlpattern02
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     aid = None
@@ -636,11 +640,17 @@ def details(request):
         artistobj[8] = ""
     if artistobj[8].__len__() < shortlen:
         shortlen = artistobj[8].__len__()
-    shortabout = artistobj[8][:shortlen] + "..."
     aimg = settings.IMG_URL_PREFIX + str(artistobj[10])
+    artistdesc = str(artistobj[6])
+    artistdesc = htmlpattern01.sub("", artistdesc)
+    artistdesc = htmlpattern02.sub("", artistdesc)
+    artistabout = str(artistobj[8])
+    artistabout = htmlpattern01.sub("", artistabout)
+    artistabout = htmlpattern02.sub("", artistabout)
+    shortabout = artistabout[:shortlen] + "..."
     if artistobj[10] is None or artistobj[10] == "":
         aimg = "/static/images/default_artist.jpg"
-    artistinfo = {'name' : prefix + artistobj[0], 'nationality' : artistobj[3], 'birthdate' : artistobj[4], 'deathdate' : artistobj[5], 'profileurl' : '', 'desctiption' : artistobj[6], 'image' : aimg, 'gender' : '', 'about' : artistobj[8], 'artistid' : artistobj[1], 'shortabout' : shortabout}
+    artistinfo = {'name' : prefix + artistobj[0], 'nationality' : artistobj[3], 'birthdate' : artistobj[4], 'deathdate' : artistobj[5], 'profileurl' : '', 'desctiption' : artistdesc, 'image' : aimg, 'gender' : '', 'about' : artistabout, 'artistid' : artistobj[1], 'shortabout' : shortabout}
     context['allartworks'] = allartworks
     context['allartworks1'] = allartworks1
     context['allartworks2'] = allartworks2
@@ -657,7 +667,7 @@ def details(request):
         artistevents = pickle.loads(redis_instance.get('at_artistevents_%s'%artistobj[1]))
     except:
         pass
-    print("HERE..........")
+    #print("HERE..........")
     if relatedartists.__len__() == 0:
         try:
             if artistobj[9] is not None:
@@ -741,6 +751,11 @@ def details(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user.is_authenticated:
+        context['favourite_link'] = "%s"%aid
+    else:
+        context['favourite_link'] = ""
+    #context['favourite_link'] = "%s"%aid
     prevpage = int(page) - 1
     nextpage = int(page) + 1
     displayedprevpage1 = 0
@@ -1163,7 +1178,7 @@ def morefilter(request):
     searchkey = ""
     aid = None
     page = 1
-    medium, size, sizeunit, period, auctionhouse = "", "", "", "", ""
+    medium, size, sizeunit, period, auctionhouse, lotstatus = "", "", "", "", "", ""
     requestbody = str(request.body)
     bodycomponents = requestbody.split("&")
     requestdict = {}
@@ -1196,9 +1211,11 @@ def morefilter(request):
         if 'pageno' in requestdict.keys():
             page = requestdict['pageno']
             page = page.replace("'", "")
+        if 'lotstatus' in requestdict.keys():
+            lotstatus = requestdict['lotstatus']
     if not page or page == "":
         page = 1
-    mediumlist, periodlist, auctionhouselist, sizelist = [], [], [], []
+    mediumlist, periodlist, auctionhouselist, sizelist, lotstatuslist = [], [], [], [], []
     if not aid:
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing artist ID"}))
     #print(medium)
@@ -1206,6 +1223,7 @@ def morefilter(request):
     periodlist = period.split("|")
     auctionhouselist = auctionhouse.split("|")
     sizelist = size.split("|")
+    lotstatuslist = lotstatus.split("|")
     context = {}
     pastartworks = []
     uniqueartworks = {}
@@ -1229,7 +1247,7 @@ def morefilter(request):
         if str(artwork.id) not in lotartworkdict.keys():
             lotartworkdict[str(artwork.id)] = []
             artworkidslist.append(artwork.id)
-    lotqset = Lot.objects.filter(artwork_id__in=artworkidslist)
+    lotqset = Lot.objects.filter(artwork_id__in=artworkidslist, status__in=lotstatuslist)
     for lotobj in lotqset:
         if str(lotobj.auction_id) not in lotauctiondict.keys():
             lotauctiondict[str(lotobj.auction_id)] = ""

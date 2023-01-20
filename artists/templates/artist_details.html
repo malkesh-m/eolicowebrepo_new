@@ -156,15 +156,24 @@
 	sizepattern = /size/i;
 	sizeunitpattern = /sizeunit/i;
 	auchousepattern = /auchouse/i;
+        soldpattern = /soldorunsold/i;
 	mediumparam = "&medium=";
 	periodparam = "&period=";
 	sizeparam = "&size=";
 	sizeunitparam = "&sizeunit=";
 	auchouseparam = "&auchouse=";
+        lotstatusparam = "&lotstatus=";
 	for(var i=0; i < allformelements.length; i++){
 	    elemname = allformelements[i].name;
 	    elemid = allformelements[i].id;
 	    elemvalue = allformelements[i].value;
+            if(soldpattern.test(elemid)){
+		lotstatuselement = document.getElementById(elemid);
+                if(lotstatuselement.checked == true){
+                    lotstatusparam += lotstatuselement.value + "|";
+                    //alert(lotstatusparam);
+                }
+            }
 	    if(mediumpattern.test(elemid)){
 		mediumelement = document.getElementById(elemid);
 		if(mediumelement.checked == true){
@@ -275,6 +284,30 @@
 	  listdiv.style.display = "";
 	  griddiv.style.display = "none";
 	}
+    }
+
+    function addtofavourites(aid){
+        csrf = document.frmotherfilter.csrfmiddlewaretoken.value;
+        var xmlhttp;
+	if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	}
+	else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	// Register the handler
+        postdata = "entitytype=artist&entityid=" + aid.toString() + "div_id=followartist&csrfmiddlewaretoken=" + csrf;
+	xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    followdiv = document.getElementById('followartist');
+            followdiv.innerHTML = "<a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick='javascript:unfollow(" + aid.toString() + ", \"followartist\");' class='btn btn-primary'>Unfollow</a>";
+	  }
+	};
+        postdata = encodeURI(postdata);
+	//alert(postdata);
+	xmlhttp.open("POST", "/artist/favourite/", true);
+	xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+	xmlhttp.send(postdata);
     }
     </script>
     
@@ -531,11 +564,15 @@
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <div class="section-heading">
                         <div class="sec-content">
-                            <div class="sec-left">
+                            <!-- <div class="sec-left">
                                 <img src="{{artistinfo.image}}" alt="" class="img-fluid" />
-                            </div>
+                            </div> -->
                             <div class="sec-right">
-                                <h2>{{artistinfo.name}}</h2>
+				{% if favourite_link != "" %}
+                                <div class='row' style='font-style:bold;'><h2>{{artistinfo.name}}</h2>&nbsp;&nbsp;<div id='followartist'><a href='#/' onclick='javascript:addtofavourites({{favourite_link}})' class='btn btn-primary'>Follow</a></div></div>
+                                {% else %}
+                                <h2>{{artistinfo.name}}</h2><div id="followartist">&nbsp;</div>
+                                {% endif %}
 				{% if artistinfo.nationality != '' and artistinfo.nationality != None %}
                                 <span>{{artistinfo.nationality}}, b. {{artistinfo.birthdate}}</span>
 				{% else %}
@@ -545,6 +582,7 @@
 				<span>&nbsp;</span>
 				{% endif %}
 				{% endif %}
+				<br/><img src="{{artistinfo.image}}" alt="" class="img-fluid" style='width:250px;height:250px;'/>
 				{% if adminuser == 1 %}
 				  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artistinfo.artistid}}');">Edit</a>
 			      	{% endif %}
@@ -702,20 +740,7 @@
                                             </div>
                                         </div>
                                     </div> -->
-                                    <div class="sell-work mrt-90 mrb-90">
-                                        <div class="work-bg">
-                                            <div class="row d-flex">
-                                                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
-                                                    <div class="sell-work-content">
-                                                        <h6>ARTSY CONSIGNMENTS</h6>
-                                                        <h4>Sell Works from Your Collection</h4>
-                                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                                                        <a href="" class="btn btn-slider">Submit now</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     <!-- <div class="row">
                                         <div class="col-lg-12">
                                             <div class="section-heading section-heading-2 pdb-50">
@@ -1592,7 +1617,7 @@
                                                     <div class="card mb-0">
                                                         <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
                                                             <a class="card-title">
-                                                                Medium
+                                                                Category
                                                             </a>
                                                         </div>
                                                         <div id="collapseThree" class="collapse show" data-parent="#accordion">
@@ -1627,6 +1652,35 @@
                                                                         <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" onchange="javascript:filterresults(this);">Textile arts
                                                                     </label>
                                                                 </div>
+                                                            </div>
+                                                        </div>
+							<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                            <a class="card-title">
+                                                                Lot Status
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse3_5" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold1">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold1" name="soldorunsold1" value="yet to be sold" onclick="javascript:filterresults(this);">Yet to be Sold
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold2">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold2" name="soldorunsold2" value="sold" onclick="javascript:filterresults(this);">Sold
+                                                                </label>
+                                                            </div>
+							    <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold3">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold3" name="soldorunsold3" value="bought-in" onclick="javascript:filterresults(this);">Bought In
+                                                                </label>
+                                                            </div>
+							    <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold4">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold4" name="soldorunsold4" value="withdrawn" onclick="javascript:filterresults(this);">Withdrawn
+                                                                </label>
+                                                            </div>
                                                             </div>
                                                         </div>
                                                         <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
