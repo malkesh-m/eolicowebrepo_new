@@ -1310,7 +1310,7 @@ def morefilter(request):
                         break # We have matched at least one of the selected mediums. So this artwork is included in list. Go to next artwork.
                 auctionhouseobj = None
                 try:
-                    print(auctionobj.auctionhouse_id)
+                    #print(auctionobj.auctionhouse_id)
                     auctionhouseobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
                     for auctionhousename in auctionhouselist:
                         if auctionhousename in auctionhouseobj.housename.lower():

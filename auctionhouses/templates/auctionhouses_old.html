@@ -136,8 +136,8 @@
 	    auctionhousematches = contextdict['auctionhousematches'];
 	    adminuser = contextdict['adminuser'];
             pages = contextdict['pages'];
-            search_section = document.getElementById('featuredshowsdiv');
-	    featured_div = document.getElementById('contextheader');
+            search_section = document.getElementById('searchsection');
+	    featured_div = document.getElementById('featuredshowsdiv');
 	    featured_div.innerHTML = "";
 	    search_section.innerHTML = "";
 	    sectiontext = "<div class='container'><div class='row'><div class='section-heading section-heading-2 mrb-50'><h2>Search Results for '" + searchkey + "'</h2></div></div>";
@@ -424,7 +424,7 @@
    	<!-- Carousel -->
     <section class="testimonials">
      <div class="container">
-      <!-- <div class="row">
+      <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
@@ -442,23 +442,21 @@
 	    {% endfor %}
           </div>
         </div>
-      </div> -->
+      </div>
      </div>
     </section>
     <!-- END OF Carousels -->
     <section class="section gal-section" id="">
-	<div class="container" style='width:1000px;'>
-	    <div class="row" style='display:flex;'>
-                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
-                      <div class="section-heading section-heading-2 input-group">
+      	<div class="container">
+	    <div class="row">
+                  <div class="col-lg-12">
+                      <div class="section-heading section-heading-2">
                           <!-- <h2>Emerging Art</h2> -->
-			<span style='font-weight:bold;font-size:larger;'>Search over 100 Auction Houses</span>
                           <span>
 			      <form autocomplete="off" name='frmsearchauctionhouses' id='frmsearchauctionhouses' method='POST' action="">
 				  {% csrf_token %}
 				  <div class="autocomplete">
-				    <div class="row" style='width:1000px;'><input type="search" class='form-control' name='auctionhousesearch' id='auctionhousesearch' maxLength="200" placeholder="Enter Auction House Name" style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchauctionhouse();'><i class="fa fa-search"></i></button>&nbsp;&nbsp;<span id="loader"></span></div>
-				    
+				    <span class="input-group"><input type="search" class='form-control' name='auctionhousesearch' id='auctionhousesearch' maxLength="200" placeholder="Search auctions houses" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchauctionhouse();'><i class="fa fa-search"></i></button></span>
 				  </div>
 			      </form>
                               <!-- <a href="">View All</a> -->
@@ -467,18 +465,18 @@
                   </div>
               </div>
 	</div>
-      	
       </section>
     <!-- ***** Main Banner Area End ***** -->
     <section class="oth-works mrt-90">
         <div class="container">
-            <div class="row" id='contextheader'>
+            <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading section-heading-2 mrb-50">
-                        <h2>Featured Auction Houses</h2>
+                        <h2>Featured Shows</h2>
                     </div>
                 </div>
             </div>
+	    
             <!-- <div class="row">
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <a href="">
@@ -506,14 +504,18 @@
                 </div>
             </div> -->
             
-	
+
 		<div class="row align-items-end" id='featuredshowsdiv'>
-			{% for auchouse in auctionhouses %}
+			{% for show in featuredshows %}
+			{% for auction in show.auctionslist %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/auctionhouse/details/?ahid={{auchouse.ahid}}"><img src="{{auchouse.coverimage}}" alt="" /></a>
-		                <a href="/auctionhouse/details/?ahid={{auchouse.ahid}}" style="color:#000000;">
-				    <h4>{{auchouse.housename}}, {{auchouse.location}}</h4>
+				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.coverimage}}" alt="" /></a>
+		                <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+				    <h4>{{auction.housename}}, {{auction.location}}</h4>
+		                    <h6>Sale Code: {{auction.salecode}}</h6>
+				    <h4>{{auction.auctionname}}</h4>
+		                    <h6>{{auction.auctionperiod}}</h6>
 		                </a>
 				{% if adminuser == 1 %}
 				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
@@ -521,12 +523,429 @@
 		            </div>
 		        </div>
 			{% endfor %}
+			{% endfor %}        
 		</div>
 
 
-	    
+	    <!-- 
+            <div class="row featured-cat2 mrt-90">
+                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                    <a href="">
+                        <img src="/static/images/g1.jpg" alt="" />
+                    </a>
+                    <div class="fea-show">
+                        <a href="">
+                            <h3>Meakin + Parsons</h3>
+                            <h4>Bridget Riley | Prints 1962 -2020</h4>
+                            <p>Oxford, Mar 25–Apr 29</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                    <a href="">
+                        <img src="/static/images/g1.jpg" alt="" />
+                    </a>
+                    <div class="fea-show">
+                        <a href="">
+                            <h3>Meakin + Parsons</h3>
+                            <h4>Bridget Riley | Prints 1962 -2020</h4>
+                            <p>Oxford, Mar 25–Apr 29</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                    <a href="">
+                        <img src="/static/images/g1.jpg" alt="" />
+                    </a>
+                    <div class="fea-show">
+                        <a href="">
+                            <h3>Meakin + Parsons</h3>
+                            <h4>Bridget Riley | Prints 1962 -2020</h4>
+                            <p>Oxford, Mar 25–Apr 29</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+	    -->
         </div>
     </section>
+
+    <section class="oth-works mrt-90" id='searchsection'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2 mrb-50">
+                        <h2>Other Shows of Interest</h2>
+                    </div>
+                    <!-- <div class="sub-head">
+                        <h4>Prithvi Fine Art and Cultural Centre</h4>
+                        <h5>Cosmic Kiss</h5>
+                        <p>Mar 31 – Apr 6</p>
+                    </div> -->
+                </div>
+            </div>
+	    {% for auctionhousename, auctionslist in currentmngshows.items %}
+	    <div class="sub-head">
+                        <h4>{{auctionhousename}}</h4>
+                        
+            </div>
+            <div class="row align-items-end">
+		{% for auction in auctionslist %}
+                <div class="column">
+                    <div class="img-box">
+			<a href='/auction/showauction/?aucid={{auction.aucid}}' style="color:#000000;">
+                        <img src="{{auction.coverimage}}" style="width:100%">
+                        <h4>{{auctionhousename}}, {{auction.location}}</h4>
+                        <h6 style="padding-left:10px;">Sale Code: {{auction.salecode}}</h6>
+                        <h4>{{auction.auctionname}}</h4>
+			<h6 style="padding-left:10px;">{{auction.auctionperiod}}</h6>
+			</a>
+			{% if adminuser == 1 %}
+			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
+		        {% endif %}
+                    </div>
+                </div>
+		{% endfor %}
+                
+            </div>
+	    {% endfor %}
+        </div>
+    </section>
+    <!-- 
+    <section class="oth-works mrt-90">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="sub-head">
+                        <h4>Ruttkowski;68</h4>
+                        <h5>Carolin Eidner 'The House that Jack Burnt's</h5>
+                        <p>Mar 12 – Apr 6, Paris</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/underwater.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section class="oth-works mrt-90 mrb-90">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="sub-head">
+                        <h4>The Liminal</h4>
+                        <h5>Lorenzo Sandoval: LAS FORMAS QUE SOSTIENEN EL DISCURSO</h5>
+                        <p>Feb 10 – Apr 6, Valencia</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/rocks.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/underwater.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/ocean.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/rocks.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/underwater.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="oth-works mrt-90">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="sub-head">
+                        <h4>uJung Art Center</h4>
+                        <h5>Jeon Juhee Solo Exhibition</h5>
+                        <p>Mar 23 – Apr 6, Seoul</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/underwater.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section class="oth-works mrt-90 mrb-90">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="sub-head">
+                        <h4>Proyecto H</h4>
+                        <h5>Play of Pleats</h5>
+                        <p>Feb 9 – Apr 6, Ciudad de México</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/rocks.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/falls2.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/paris.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/nature.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/mist.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/paris.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/underwater.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/ocean.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/mountainskies.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/rocks.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/underwater.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/rocks.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/falls2.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/paris.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/nature.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/mist.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/paris.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/underwater.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/ocean.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/wedding.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/mountainskies.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/rocks.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                    <div class="img-box">
+                        <img src="https://www.w3schools.com//w3images/underwater.jpg" style="width:100%">
+                        <h4>Name of Image</h4>
+                        <h6>Some text and more</h6>
+                        <p>Some text and some more more text</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    -->
     <section class="download-app">
         <div class="container max-container">
             <div class="row">
@@ -583,8 +1002,8 @@
                     <h4>Useful Links</h4>
                     <ul>
                         <li><a href="/about/">About Us</a></li>
-                        <!-- <li><a href="/gallery/index/">Galleries</a></li>
-                        <li><a href="/museum/index/">Museums</a></li> -->
+                        <li><a href="/gallery/index/">Galleries</a></li>
+                        <li><a href="/museum/index/">Museums</a></li>
                         <li><a href="/contactus/">Contact Us</a></li>
                     </ul>
                 </div>

@@ -54,6 +54,70 @@ def index(request):
     context = {}
     auctionhouses = [] # Auctions in various auction houses section.
     filterauctionhouses = []
+    uniqueauctions = {}
+    featuredauctionhousenames = ['sotheby', 'christie', 'bonhams', 'rago', 'vanham', 'dorotheum', 'matsart']
+    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    cursor = dbconn.cursor()
+    try:
+        filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
+        auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))
+    except:
+        filterauctionhouses = []
+        auctionhouses = []
+    if auctionhouses.__len__() == 0:
+        auctionhousesqset = AuctionHouse.objects.all()
+        if auctionhousesqset.__len__() <= fstartctr:
+            fstartctr = 0
+        for auctionhouse in auctionhousesqset:
+            filterauctionhouses.append(auctionhouse.housename)
+            auchousepass = False
+            for featuredauctionhouse in featuredauctionhousenames:
+                auchousepattern = re.compile(featuredauctionhouse, re.IGNORECASE)
+                if re.search(auchousepattern, auctionhouse.housename):
+                    auchousepass = True
+                    break
+            if auchousepass == False: # Auction houses that are not in our featuredauctionhousenames would be skipped.
+                continue
+            coverimage = ""
+            d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'image' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
+            auctionhouses.append(d)
+        context['auctionhouses'] = auctionhouses
+        context['filterauctionhouses'] = filterauctionhouses
+        try:
+            redis_instance.set('ah_auctionhouses', pickle.dumps(auctionhouses))
+            redis_instance.set('ah_filterauctionhouses', pickle.dumps(filterauctionhouses))
+        except:
+            pass
+    cursor.close()
+    dbconn.close()
+    #carouselentries = getcarouselinfo_new()
+    #context['carousel'] = carouselentries
+    if request.user.is_authenticated and request.user.is_staff:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    template = loader.get_template('auctionhouses.html')
+    return HttpResponse(template.render(context, request))
+
+
+
+#@cache_page(CACHE_TTL)
+def index_old(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    page = "1"
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            page = str(request.GET['page'])
+    chunksize = 4
+    rows = 6
+    rowstartctr = int(page) * rows - rows
+    rowendctr = int(page) * rows
+    fstartctr = int(page) * chunksize - chunksize
+    fendctr = int(page) * chunksize
+    context = {}
+    auctionhouses = [] # Auctions in various auction houses section.
+    filterauctionhouses = []
     maxauctionsperhouse = 4
     maxfeaturedauctionsperhouse = 4
     maxfeaturedshows = 8
@@ -227,6 +291,106 @@ def index(request):
 
 #@cache_page(CACHE_TTL)
 def details(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    ahid = -1
+    if request.method == 'GET':
+        if 'ahid' in request.GET.keys():
+            ahid = str(request.GET['ahid'])
+    if not ahid:
+        return HttpResponse("Invalid Request: Request is missing auction house Id")
+    page = 1
+    if request.method == 'GET' and 'page' in request.GET.keys():
+        try:
+            page = int(request.GET['page'])
+        except:
+            pass
+    upcomingchunk = 4
+    pastchunk = 24
+    upcomingstartctr = upcomingchunk * page - upcomingchunk
+    paststartctr = pastchunk * page - pastchunk
+    commonstartctr = upcomingstartctr + paststartctr
+    currentdate = datetime.datetime.now()
+    context = {}
+    auctionsqset = []
+    try:
+        auctionsqset = Auction.objects.filter(auctionhouse_id=int(ahid)).order_by('-auctionstartdate')[commonstartctr:commonstartctr+200] # We expect to retrieve the necessary auctions from this 200 records.
+    except:
+        print("Request Failed while retrieving auctions for the selected auction house: %s"%sys.exc_info()[1].__str__())
+        return HttpResponse("Request Failed while retrieving auctions for the selected auction house: %s"%sys.exc_info()[1].__str__())
+    auchouseobj = None
+    try:
+        auchouseobj = AuctionHouse.objects.get(id=int(ahid))
+    except:
+        print("Failed to retrieve auctionhouse object: %s"%sys.exc_info()[1].__str__())
+        return HttpResponse("Request Failed: %s"%sys.exc_info()[1].__str__())
+    context['auctionhousename'] = auchouseobj.housename
+    context['auctionhouselocation'] = auchouseobj.location
+    context['auctionhousecountry'] = auchouseobj.location
+    context['ahid'] = ahid
+    upcomingauctions = []
+    pastauctions = []
+    aucctr = 0
+    for auction in auctionsqset:
+        auctiondate = auction.auctionstartdate
+        auctiondate = datetime.datetime(auctiondate.year, auctiondate.month, auctiondate.day)
+        d = {'auctionname' : auction.auctionname, 'aucid' : auction.id, 'salecode' : auction.auctionid, 'auchouseid' : auction.auctionhouse_id, 'auctionhousename' : auchouseobj.housename, 'lotcount' : auction.lotcount, 'auctionimage' : settings.IMG_URL_PREFIX + str(auction.coverimage), 'aucperiod' : ''}
+        if auction.coverimage is None or auction.coverimage == "":
+            lotsqset = Lot.objects.filter(auction_id=auction.id)
+            if lotsqset.__len__() < 1:
+                aucctr += 1
+                continue
+            maxlowestimate = lotsqset[0].lowestimateUSD
+            lotobj_maxlowestimate = lotsqset[0]
+            for lot in lotsqset:
+                if lot.lowestimateUSD > maxlowestimate:
+                    maxlowestimate = lot.lowestimateUSD
+                    lotobj_maxlowestimate = lot
+                else:
+                    pass
+            d['auctionimage'] = settings.IMG_URL_PREFIX + str(lotobj_maxlowestimate.lotimage1)
+        aucperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+        aucenddate = auction.auctionenddate
+        if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+            aucperiod = auction.auctionstartdate.strftime("%d %b, %Y") + " - " + str(aucenddate)
+        d['aucperiod'] = aucperiod
+        if auctiondate > currentdate:
+            if upcomingauctions.__len__() <= upcomingchunk and aucctr >= upcomingstartctr:
+                upcomingauctions.append(d)
+        else:
+            if pastauctions.__len__() <= pastchunk and aucctr >= paststartctr:
+                pastauctions.append(d)
+        aucctr += 1
+    context['upcomingauctions'] = upcomingauctions
+    print(pastauctions)
+    context['pastauctions'] = pastauctions
+    if request.user.is_authenticated and request.user.is_staff:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    #if request.user.is_authenticated:
+    #    context['favourite_link'] = "%s"%aid
+    #else:
+    #    context['favourite_link'] = ""
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    #cursor.close()
+    #dbconn.close()
+    template = loader.get_template('auctionhouse_details.html')
+    return HttpResponse(template.render(context, request))
+
+
+#@cache_page(CACHE_TTL)
+def details_old(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     aucid = None

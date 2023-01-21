@@ -335,16 +335,14 @@
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
 						<div class="gal-logo-box">
-							<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="">
+							<a href="/auctionhouse/details/?ahid={{ahid}}" class="">
 								<img src="{{auctioninfo.coverimage}}">
-								<h2>{{auctioninfo.auctionhouse}}</h2>
+								<h2>{{auctionhousename}}</h2>
 							 </a>
-							<p>{{auctioninfo.auctionlocation}}</p>
-							<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider">View</a>
+							<p>{{auctionhouselocation}}, {{auctionhousecountry}}</p>
+							
 						</div>
-						{% if adminuser == 1 %}
-						    <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
-						{% endif %}
+						
                     </div>
                 </div>
             </div>
@@ -355,20 +353,20 @@
         <div class="tabbable">
           <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="true">Overview</a>
+              <a class="nav-link active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="true">Upcoming Auctions</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="false">Auctions</a>
             </li>
             
             <li class="nav-item">
               <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false" >Lots</a>
-            </li>
-            <!-- <li class="nav-item">
+            </li> 
+            <li class="nav-item">
               <a class="nav-link" id="Articles-tab" data-toggle="tab" href="#Articles" role="tab" aria-controls="Articles" aria-selected="false">Articles</a>
             </li> -->
             <li class="nav-item">
-              <a class="nav-link" id="Contact-tab" data-toggle="tab" href="#Contact" role="tab" aria-controls="Contact" aria-selected="false">Contact</a>
+              <a class="nav-link" id="Contact-tab" data-toggle="tab" href="#Contact" role="tab" aria-controls="Contact" aria-selected="false">Past Auctions</a>
             </li>
           </ul>
         </div>
@@ -383,20 +381,16 @@
 				<div class="row gl-ov-row">
 					<div class="col-md-7">
 						<!-- <h6>Past Show</h6> -->
-						<h2>{{auctioninfo.auctionhouse}}: {{auctioninfo.auctionname}}</h2>
-						<h4>{{auctioninfo.auctiondate}}</h4>
-						<h6>Hosted by {{auctioninfo.auctionhouse}}</h6>
+						<h2></h2>
+						<h4></h4>
+						<h6></h6>
 						<!-- <p></p> -->
-						<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider" >Read More</a>
-						{% if adminuser == 1 %}
-						    <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
-						{% endif %}
 					</div>
 					<div class="col-md-5">
 						<img src="{{auctioninfo.coverimage}}" class="img-fluid"/>
 					</div>
 				</div>
-				<div class="row gal-tab-row">
+				<!-- <div class="row gal-tab-row">
 					<div class="col-lg-12 gl-abt">
 						<div class="section-heading text-center">
 							<h3>About</h3>
@@ -405,141 +399,40 @@
 							<p><a href="{{auctioninfo.auctionurl}}" target="_bnalk" style="color:#000000;">{{auctioninfo.auctionname}}</a></p>
 						</div>
 					</div>
-				</div>
+				</div> -->
 
 
 				<div class="row gal-tab-row pst-ev">
-				<div class="col-lg-12">
-					   <div class="section-heading text-center">
-							<h3>Select Lots</h3>
-							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-					   </div>
+				    <h5 class="card-title">Upcoming Auctions</h5>
 				</div>
-				</div>
-				
+				{% if upcomingauctions|length == 0 %}
+				<div class="row align-items-end" style='text-align:center;justify:center;'><h6>There are no upcoming auctions for this auction house </h6></div>
+				{% else %}
 				<div class="row align-items-end">
-				{% for lot in overviewlots %}
-				  <div class="column">
+				{% for auction in upcomingauctions %}
+				  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
 					<div class="img-box">
-					<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.lotimage}}" alt=""></a>
-					<a href="/auction/details/?lid={{lot.lid}}" style="color:#000000;">
-					<h4>{{lot.title}}</h4>
-					<h6>{{lot.artistname}}</h6>
-					<h6>{{lot.medium}}</h6>
+					<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
+					<a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+					<h4>{{auction.auctionname}}</h4>
+					<h6>{{auction.auctionhousename}}</h6>
+					<h6>{{auction.aucperiod}}</h6>
 					</a>
-					{% if adminuser == 1 %}
-					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
-					{% endif %}
 					</div>
 				  </div>
 				{% endfor %}  
 				</div>
+				{% endif %}
 				<br>
 				<div class="row articl-row">
-					<div class="col-md-12">
-						<div class="section-heading text-center">
-							<!-- <h3>Articles</h3>
-							<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-							<hr> -->
-					   	</div>
-					</div>
-					<div class="col-lg-12">
-					 <div class="men-item-carousel">
-                        <!-- <div class="owl-men-item owl-carousel">
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="#"><img src="/static/images/men-01.jpg" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="#">
-										<h4>Cathy Tabbakh: Hello!</h4>
-										<span>Court Tree Collective</span>
-										<span>Feb 8 to May 15</span>
-									</a>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="#"><img src="/static/images/men-02.jpg" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<h4>Béchir Boussandel</h4>
-									<span>Taymour Grahne Projects</span>
-									<span>Feb 11 to Apr 15</span>
-								</div>
-                            </div>
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="#"><img src="/static/images/men-03.jpg" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<h4>Cathy Tabbakh: Hello!</h4>
-									<span>Court Tree Collective</span>
-									<span>Feb 8 to May 15</span>
-								</div>
-                            </div>
-                            <div class="item">
-                                <div class="thumb">
-                                    <img src="/static/images/men-04.jpg" alt="">
-                                </div>
-                                <div class="down-content">
-                                    <h4>Finding Balance</h4>
-                                    <span>Kristin Hjellegjerde Gallery</span>
-									<span>Feb 10 to Mar 15</span>
-                                </div>
-                            </div>
-                        </div> -->
-                    </div>
-				   </div>
+					
 				</div>
 			</div>
         </div>
         <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
           <div class="container">
-			<div class="row gl-ov-row">
-				<div class="col-md-7">
-					<h2>{{auctioninfo.auctionname}}</h2>
-					<h4>{{auctioninfo.auctiondate}}</h4>
-					<h6>{{auctioninfo.auctionlocation}}</h6>
-					<p>{{auctioninfo.description}}</p>
-					<a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider" >Read More</a>
-					{% if adminuser == 1 %}
-					    <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
-					{% endif %}
-				</div>
-				<div class="col-md-5">
-					<img src="{{auctioninfo.coverimage}}" class="img-fluid"/>
-				</div>
-			</div>
-			<div class="row gal-tab-row pst-ev">
-				<div class="col-lg-12">
-					   <div class="section-heading text-center">
-							<h3>Other Auctions</h3>
-							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-					   </div>
-				   </div>
-			</div>
-			<div class="row align-items-end">
-				{% for auction in auctionslist %}
-				  <div class="column">
-					<div class="img-box">
-					<a href="/auctionhouse/details/?aucid={{auction.aucid}}"><img src="{{auction.coverimage}}" alt="" class="img-fluid"></a>
-					<a href="/auctionhouse/details/?aucid={{auction.aucid}}" style="color:#000000;">
-					<h4>{{auction.auctionname}}</h4>
-					<h6>{{auction.auctionlocation}}</h6>
-					<h6>{{auction.auctiondate}}</h6>
-					<p>{{auction.description}}</p>
-					</a>
-					{% if adminuser == 1 %}
-					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
-					{% endif %}
-					</div>
-				  </div>
-				{% endfor %}  
-			</div>
-		  </div>
+			
+	  </div>
         </div>
         
         <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
@@ -742,35 +635,7 @@
 			</div> -->
 			</div>
 
-			<div id="main">
-				<!-- <div class="work-top-pnl">
-					<button class="openbtn" onclick="openNav()"> Filter</button>
-					<div class="dropdown">Sort By:
-						<select>
-							<option value="1">Defult</option>
-							<option value="2">Defult</option>
-						</select>
-					  </div>
-				  </div> -->
-			  <div class="row align-items-end">
-			{% for lot in alllots %}
-			  <div class="column">
-				<div class="img-box">
-				<a href='/auction/details/?lid={{lot.lid}}' style="color:#000000;">
-				<img src="{{lot.lotimage}}" style="width:100%">
-				<h4>{{lot.title}}</h4>
-				<h6>{{lot.artistname}}</h6>
-				<p>{{lot.description}}</p>
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
-				{% endif %}
-				</div>
-			  </div>
-			{% endfor %}
-			  
-			  </div>
-			</div>
+			
         </div>
         <!-- <div class="tab-pane fade" id="Articles" role="tabpanel" aria-labelledby="Articles-tab">
 			<div class="row">
@@ -858,22 +723,32 @@
 				</div>
         </div> -->
         <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
-          <h5 class="card-title">Sixth Tab header</h5>
-          <p class="card-text">Proin ornare purus vitae magna viverra suscipit. Etiam rutrum lorem cursus libero scelerisque lacinia. Praesent bibendum risus id aliquam finibus. Donec sed orci sodales, viverra dolor a, dignissim mi. Pellentesque nec lectus enim. Suspendisse eu ligula ac tortor mollis lobortis. Nulla a laoreet neque, sit amet luctus dolor. Nam facilisis at odio ac commodo. Nullam vehicula blandit dui, vel suscipit orci.</p>
+          <h5 class="card-title">Past Auctions</h5>
+		{% if pastauctions|length == 0 %}
+				<div class="row align-items-end" style='text-align:center;justify:center;'><h6>There are no past auctions for this auction house </h6></div>
+		{% else %}
+          	<div class="row align-items-end">
+			{% for auction in pastauctions %}
+			<div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                            <div class="img-box">
+				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
+                            	<a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+                                <h4>{{auction.auctionname}}</h4>
+                                <h6>{{auction.auctionhousename}}</h6>
+				<h6>{{auction.aucperiod}}</h6>
+			    </a>
+                            </div>
+                        </div>
+			{% endfor %}
+		</div>
+		{% endif %}
         </div>
       </div>
-		</div>
-		</div>
+      </div>
+     </div>
 	</section>
 
-      <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
+      
 
     <!-- ***** Footer Start ***** -->
     <footer>
