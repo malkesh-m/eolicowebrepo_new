@@ -508,7 +508,7 @@ https://templatemo.com/tm-571-hexashop
    	<!-- Carousel -->
     <section class="testimonials">
      <div class="container">
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
@@ -526,21 +526,21 @@ https://templatemo.com/tm-571-hexashop
 	    {% endfor %}
           </div>
         </div>
-      </div>
+      </div> -->
      </div>
     </section>
     <!-- END OF Carousels -->
-    <section class="section gal-section" id="">
-      	<div class="container">
-	    <div class="row">
-                  <div class="col-lg-12">
+    <section class="section gal-section" id="searchauctionsection" style='width:1200px;'>
+      	<div class="container" style='width:1000px;'>
+	    <div class="row" style='display:flex;'>
+                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
                       <div class="section-heading section-heading-2">
                           <!-- <h2>Emerging Art</h2> -->
                           <span>
 			      <form autocomplete="off" name='frmsearchauctions' id='frmsearchauctions' method='POST' action="">
 				  {% csrf_token %}
 				  <div class="autocomplete">
-				    <span class="input-group"><input type="search" class='form-control' name='auctionsearch' id='auctionsearch' maxLength="200" placeholder="Search auctions" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchauction();'><i class="fa fa-search"></i></button></span>
+				    <div class="row" style='width:1000px;'><input type="search" class='form-control' name='auctionsearch' id='auctionsearch' maxLength="200" placeholder="Enter Auction Name" style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchauction();'><i class="fa fa-search"></i></button>&nbsp;&nbsp;<span id="loader"></span></div>
 				  </div>
 			      </form>
                               <!-- <a href="">View All</a> -->
@@ -633,10 +633,10 @@ https://templatemo.com/tm-571-hexashop
         </div>
     	</section>
     	
-	<div class="container">
+	<div class="container" style='text-align:center;'>
 	    <div class="row">
 	    	<div class="col-lg-12">
-		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=0">View More</a>
+		    <a class="btn btn-primary" href="/auction/moreauctions/?atype=0">View More</a>
 	    	</div>
 	    </div>
 	</div>
@@ -721,10 +721,10 @@ https://templatemo.com/tm-571-hexashop
 	<br/>
 	{% endfor %}
     
-	<div class="container">
+	<div class="container" style='text-align:center;'>
 	    <div class="row">
 	    	<div class="col-lg-12">
-		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=1">View More</a>
+		    <a class="btn btn-primary" href="/auction/moreauctions/?atype=1">View More</a>
 	    	</div>
 	    </div>
 	</div>

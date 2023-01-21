@@ -547,7 +547,20 @@ def search(request):
             if coverimage == "":
                 coverimage = settings.IMG_URL_PREFIX + str(auction.coverimage)
                 d['coverimage'] = coverimage
-            d1 = {'auctionname' : auction.auctionname, 'coverimage' : settings.IMG_URL_PREFIX + str(auction.coverimage), 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
+            if auction.coverimage is None or auction.coverimage == "":
+                lotsqset = Lot.objects.filter(auction_id=auction.id)
+                if lotsqset.__len__() < 1:
+                    continue
+                maxlowestimate = lotsqset[0].lowestimateUSD
+                lotobj_maxlowestimate = lotsqset[0]
+                for lot in lotsqset:
+                    if lot.lowestimateUSD > maxlowestimate:
+                        maxlowestimate = lot.lowestimateUSD
+                        lotobj_maxlowestimate = lot
+                    else:
+                        pass
+                d['coverimage'] = settings.IMG_URL_PREFIX + str(lotobj_maxlowestimate.lotimage1)
+            d1 = {'auctionname' : auction.auctionname, 'coverimage' : d['coverimage'], 'auctionurl' : '', 'location' : auctionhouse.location, 'auctionperiod' : auctionperiod, 'aucid' : auction.id, 'ahid' : auctionhouse.id}
             auctionslist.append(d1)
         d['auctionslist'] = auctionslist
         auctionhousematches.append(d)
