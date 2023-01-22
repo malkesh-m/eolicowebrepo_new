@@ -586,113 +586,100 @@ https://templatemo.com/tm-571-hexashop
 	-->
 	
 	<!-- Begining of new auctions gallery -->
-
+	<div id="upcomingauctions">
 	
 	<section class="oth-works mrt-90">
-        <div class="container" id="upcomingauctions">
-
-	<div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <div class="tabbable-responsive tabbable-responsive-new">
-                        <div class="tabbable">
-                            <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Upcoming Auctions</a>
-                                </li>
-                                <!-- <li class="nav-item">
-                                    <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Past Auctions</a>
-                                </li> -->
-
-                                <li class="nav-item">
-                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Past Auctions</a>
-                                </li>
-                            </ul>
-                        </div>
+        <div class="container">
+            <div class="row align-items-end">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Upcoming Auctions</h2>
+						<hr>
                     </div>
                 </div>
             </div>
-
-	
-	<div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <div class="cate-tabs-content mrt-90">
-                        <div class="card-body">
-                            <div class="tab-content">
-                                <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
-				    
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="section-heading section-heading-2 pdb-50">
-                                                <h2>Upcoming Auctions</h2>
-                                            </div>
-                                        </div>
-                                    </div>
-	
-				    <div id="noteble-works" class="owl-carousel owl-theme owl-d">
-					{% for auctionname, auctiondict in featuredauctions.items %}
-					<div class="column">
-					    <div class="img-box">
-						<a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="{{auctiondict.image}}" alt=""></a>
-						<a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">
-							<h4>{{auctiondict.auctionhouse}}, {{auctiondict.location}}</h4>
-							<h6>Sale Code: {{auctiondict.salecode}}</h6>
-							<h4>{{auctionname}}</h4>
-							<h6>{{auctiondict.auctionperiod}}</h6>
-							{% if not user.is_authenticated %}
-							<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-							{% else %}
-							{% if auctiondict.favourite == 0 %}
-							<div id='favourite_auc1_{{forloop.counter}}'>
-							<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{auctiondict.aucid}}, 'favourite_auc1_{{forloop.counter}}');">Add to Favourites</a></h6>
-							</div>
-							{% else %}
-							<div id='favourite_auc1_{{forloop.counter}}'>
-							<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-							</div>
-							{% endif %}
-							{% endif %}
-							<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
-						</a>
-					    </div>
-					</div>
-					{% endfor %}
-				    </div>
-				<div class="container-fluid">
-				    <div class="row">
-				    	<div class="col-xs-12 center-block text-center">
-					    <a class="btn btn-primary" href="/auction/moreauctions/?atype=0">View More</a>
-				    	</div>
-				    </div>
+            <div class="row align-items-end">
+		{% for auctionname, auctiondict in featuredauctions.items %}
+                <div class="column">
+                    <div class="img-box">
+			<a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="{{auctiondict.image}}" alt=""></a>
+                        <a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">
+				<h4>{{auctiondict.auctionhouse}}, {{auctiondict.location}}</h4>
+				<h6>Sale Code: {{auctiondict.salecode}}</h6>
+				<h4>{{auctionname}}</h4>
+				<h6>{{auctiondict.auctionperiod}}</h6>
+				{% if not user.is_authenticated %}
+				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+			        {% else %}
+				{% if auctiondict.favourite == 0 %}
+				<div id='favourite_auc1_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{auctiondict.aucid}}, 'favourite_auc1_{{forloop.counter}}');">Add to Favourites</a></h6>
 				</div>
-	
+				{% else %}
+				<div id='favourite_auc1_{{forloop.counter}}'>
+				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+				</div>
+				{% endif %}
+			        {% endif %}
+				<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
+			</a>
+			{% if adminuser == 1 %}
+			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+			{% endif %}
+                    </div>
+                </div>
+		{% endfor %}
+            </div>
+        </div>
+    	</section>
+    	
+	<div class="container" style='text-align:center;'>
+	    <div class="row">
+	    	<div class="col-lg-12">
+		    <a class="btn btn-primary" href="/auction/moreauctions/?atype=0">View More</a>
+	    	</div>
+	    </div>
+	</div>
+	</section>
 	</div>
 	<!-- End of new auctions gallery -->
-	<div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
-	<div id="pastauctions" class="col-sm-12 col-md-8 col-lg-9 col-xl-9" style="display:" >
-	
+	<div id="pastauctions">
+	<section class="section gal-section">
+	<div class="container">
             <div class="row align-items-end">
                 <div class="col-lg-12">
-                    <div class="section-heading section-heading-2 pdb-50">
+                    <div class="section-heading text-center">
                         <h2>Past Auctions</h2>
 			<hr>
                     </div>
                 </div>
             </div>
-
+        </div>
 	
-        
+        <!-- <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2 mrb-50">
+                        <h2>{{auctionname}}</h2>
+			<span>
+                            {{lotslist.0.auctionperiod}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div> -->
 	{% for row, auctionlist in allauctions.items %}
-
+        <div class="container">
             <div class="row align-items-end">
-                {% for auctiondict in auctionlist %}
-                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
-                        <div class="artist-category align-items-end">
-			    
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+			    {% for auctiondict in auctionlist %}
                             <div class="img-box">
                                 <div class="thumb">
                                     <a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="{{auctiondict.image}}" alt=""></a>
                                 </div>
-                                
+                                <div class="down-content">
 					<a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">
 						<h4>{{auctiondict.auctionhouse}}, {{auctiondict.location}}</h4>
 						<h6>Sale Code: {{auctiondict.salecode}}</h6>
@@ -713,9 +700,9 @@ https://templatemo.com/tm-571-hexashop
 						{% endif %}
 						<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
 					</a>
-                                
+                                </div>
                             </div>
-			    
+			    {% endfor %}
 			    <!--<div class="item">
                                 <div class="thumb">
                                     <a href="/auction/showauction/?aucid={{lotslist.0.aucid}}"><img src="/static/images/showmore.png" alt=""></a>
@@ -728,17 +715,18 @@ https://templatemo.com/tm-571-hexashop
                             </div> -->
                         </div>
                     </div>
-		    {% endfor %}
                 </div>
-		{% endfor %}
-	        <div class="row">
-	    	    <div class="col-lg-12">
-		        <a class="btn btn-primary" href="/auction/moreauctions/?atype=1">View More</a>
-	    	    </div>
-	        </div>
             </div>
         </div>
-	    
+	<br/>
+	{% endfor %}
+    
+	<div class="container" style='text-align:center;'>
+	    <div class="row">
+	    	<div class="col-lg-12">
+		    <a class="btn btn-primary" href="/auction/moreauctions/?atype=1">View More</a>
+	    	</div>
+	    </div>
 	</div>
 
 	<!-- <div class="auction-pagination">
