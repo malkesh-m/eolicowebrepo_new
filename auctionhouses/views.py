@@ -45,7 +45,7 @@ def index(request):
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
-    chunksize = 4
+    chunksize = 100
     rows = 12
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
@@ -67,14 +67,13 @@ def index(request):
         auctionhousesqset = AuctionHouse.objects.all()
         if auctionhousesqset.__len__() <= fstartctr:
             fstartctr = 0
-        auctionhousepatterns = [re.compile("sotheby\'s\,", re.IGNORECASE|re.DOTALL), re.compile("artcurial", re.IGNORECASE|re.DOTALL), re.compile("china\-?guardian", re.IGNORECASE|re.DOTALL), re.compile("christies\,", re.IGNORECASE|re.DOTALL), re.compile("bonhams\,", re.IGNORECASE|re.DOTALL), re.compile("doyle\,", re.IGNORECASE|re.DOTALL), re.compile("phillips\,", re.IGNORECASE|re.DOTALL), re.compile("dorotheum\,", re.IGNORECASE|re.DOTALL), re.compile("polyauction", re.IGNORECASE|re.DOTALL), re.compile("tajan\,", re.IGNORECASE|re.DOTALL)]
+        auctionhousepatterns = [re.compile("sotheby\'s\,", re.IGNORECASE|re.DOTALL), re.compile("artcurial", re.IGNORECASE|re.DOTALL), re.compile("china\-?guardian", re.IGNORECASE|re.DOTALL), re.compile("christies\,", re.IGNORECASE|re.DOTALL), re.compile("bonhams\,", re.IGNORECASE|re.DOTALL), re.compile("doyle", re.IGNORECASE|re.DOTALL), re.compile("phillips", re.IGNORECASE|re.DOTALL), re.compile("dorotheum", re.IGNORECASE|re.DOTALL), re.compile("polyauction", re.IGNORECASE|re.DOTALL), re.compile("tajan\,", re.IGNORECASE|re.DOTALL)]
         showcounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for auctionhouse in auctionhousesqset:
             filterauctionhouses.append(auctionhouse.housename)
             auchousepass = False
             patternindex = 0
             for auchousepattern in auctionhousepatterns:
-                #auchousepattern = re.compile(featuredauctionhouse, re.IGNORECASE)
                 if re.search(auchousepattern, auctionhouse.housename):
                     auchousepass = True
                     break
