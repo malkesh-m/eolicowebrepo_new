@@ -511,7 +511,7 @@
 			{% for auchouse in auctionhouses %}
 		        <div class="column">
 		            <div class="img-box">
-				<a href="/auctionhouse/details/?ahid={{auchouse.ahid}}"><img src="{{auchouse.coverimage}}" alt="" /></a>
+				<a href="/auctionhouse/details/?ahid={{auchouse.ahid}}"><img src="{{auchouse.coverimage}}" alt="" style='width:100px;height:100px;display:flex;'/></a>
 		                <a href="/auctionhouse/details/?ahid={{auchouse.ahid}}" style="color:#000000;">
 				    <h4>{{auchouse.housename}}, {{auchouse.location}}</h4>
 		                </a>

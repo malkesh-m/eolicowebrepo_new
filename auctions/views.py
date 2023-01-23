@@ -240,8 +240,8 @@ def index(request):
             pass
     cursor.close()
     dbconn.close()
-    carouselentries = getcarouselinfo_new()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo_new()
+    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:

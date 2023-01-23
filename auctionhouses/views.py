@@ -46,7 +46,7 @@ def index(request):
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
     chunksize = 4
-    rows = 6
+    rows = 12
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
     fstartctr = int(page) * chunksize - chunksize
@@ -55,7 +55,6 @@ def index(request):
     auctionhouses = [] # Auctions in various auction houses section.
     filterauctionhouses = []
     uniqueauctions = {}
-    featuredauctionhousenames = ['sotheby', 'christie', 'bonhams', 'rago', 'vanham', 'dorotheum', 'matsart']
     dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     try:
@@ -68,18 +67,47 @@ def index(request):
         auctionhousesqset = AuctionHouse.objects.all()
         if auctionhousesqset.__len__() <= fstartctr:
             fstartctr = 0
+        auctionhousepatterns = [re.compile("sotheby\'s\,", re.IGNORECASE|re.DOTALL), re.compile("artcurial", re.IGNORECASE|re.DOTALL), re.compile("china\-?guardian", re.IGNORECASE|re.DOTALL), re.compile("christies\,", re.IGNORECASE|re.DOTALL), re.compile("bonhams\,", re.IGNORECASE|re.DOTALL), re.compile("doyle\,", re.IGNORECASE|re.DOTALL), re.compile("phillips\,", re.IGNORECASE|re.DOTALL), re.compile("dorotheum\,", re.IGNORECASE|re.DOTALL), re.compile("polyauction", re.IGNORECASE|re.DOTALL), re.compile("tajan\,", re.IGNORECASE|re.DOTALL)]
+        showcounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for auctionhouse in auctionhousesqset:
             filterauctionhouses.append(auctionhouse.housename)
             auchousepass = False
-            for featuredauctionhouse in featuredauctionhousenames:
-                auchousepattern = re.compile(featuredauctionhouse, re.IGNORECASE)
+            patternindex = 0
+            for auchousepattern in auctionhousepatterns:
+                #auchousepattern = re.compile(featuredauctionhouse, re.IGNORECASE)
                 if re.search(auchousepattern, auctionhouse.housename):
                     auchousepass = True
                     break
-            if auchousepass == False: # Auction houses that are not in our featuredauctionhousenames would be skipped.
+                patternindex += 1
+            if auchousepass == False: # Auction houses that are not in our featured auctionhousenames would be skipped.
                 continue
+            if showcounts[patternindex] > 3: # We show a maximum of 4 branches of an auction house.
+                continue
+            showcounts[patternindex] += 1
             coverimage = ""
-            d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'image' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
+            if patternindex == 0:
+                coverimage = "/static/images/auctionhouses/Sotheby-logo.jpg"
+            elif patternindex == 1:
+                coverimage = "/static/images/auctionhouses/Artcurial-logo.png"
+            elif patternindex == 2:
+                coverimage = "/static/images/auctionhouses/ChinaGuardian-logo.jpg"
+            elif patternindex == 3:
+                coverimage = "/static/images/auctionhouses/Christies-logo.png"
+            elif patternindex == 4:
+                coverimage = "/static/images/auctionhouses/Bonhams-logo.png"
+            elif patternindex == 5:
+                coverimage = "/static/images/auctionhouses/doyle-logo.jpg"
+            elif patternindex == 6:
+                coverimage = "/static/images/auctionhouses/Phillips-logo.png"
+            elif patternindex == 7:
+                coverimage = "/static/images/auctionhouses/Dorotheum-logo.png"
+            elif patternindex == 8:
+                coverimage = "/static/images/auctionhouses/PolyInternational-logo.png"
+            elif patternindex == 9:
+                coverimage = "/static/images/auctionhouses/Tajan-logo.png"
+            else:
+                coverimage = "/static/images/auctionhouses/"
+            d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'coverimage' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
             auctionhouses.append(d)
         context['auctionhouses'] = auctionhouses
         context['filterauctionhouses'] = filterauctionhouses

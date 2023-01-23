@@ -362,8 +362,8 @@ def index(request):
         except:
             pass
     context['filterartists'] = filterartists
-    carouselentries = getcarouselinfo_new()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo_new()
+    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:

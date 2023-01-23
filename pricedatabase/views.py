@@ -218,8 +218,8 @@ def index(request):
     context['entities'] = entitieslist
     context['filterpdb'] = filterpdb
     context['auctionhouses'] = auctionhouses
-    carouselentries = getcarouselinfo_new()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo_new()
+    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:

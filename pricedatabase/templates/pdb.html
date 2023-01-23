@@ -597,7 +597,7 @@ https://templatemo.com/tm-571-hexashop
    	<!-- Carousel -->
     <section class="testimonials">
      <div class="container">
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
@@ -615,23 +615,23 @@ https://templatemo.com/tm-571-hexashop
 	    {% endfor %}
           </div>
         </div>
-      </div>
+      </div> -->
      </div>
     </section>
     <!-- END OF Carousels -->
-    <section class="section gal-section" id="">
-      	<div class="container">
-	    <div class="row">
-                  <div class="col-lg-12">
+    <section class="section gal-section" id="searchsitesection" style='width:1000px;'>
+      	<div class="container" style='width:1000px;'>
+	    <div class="row" style='display:flex;'>
+                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
                       <div class="section-heading section-heading-2">
                           <!-- <h2>Emerging Art</h2> -->
                           <span>
 			      <form autocomplete="off" name='frmsearchpdb' id='frmsearchpdb' method='POST' action="">
 				  {% csrf_token %}
 				  <div class="autocomplete">
-				    <span class="input-group"><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openNav()">Advanced Search</a></span>
+				    <div class="row" style='width:800px;'><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openNav()">Advanced Search</a></div>
 				    <br/>
-				    <span class="input-group">Search 10 Million plus Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses around the world.</span>
+				    <div class="row" style='width:1000px;text-align:center;'>Search 10 Million plus Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses around the world.</div>
 				  </div>
 			      </form>
                               <!-- <a href="">View All</a> -->
@@ -640,17 +640,35 @@ https://templatemo.com/tm-571-hexashop
                   </div>
               </div>
 	</div>
-	<div class="container">
-	    <div class="row">
-                  <div class="col-lg-12">
+	<div class="container" style='width:1000px;'>
+	    <div class="row" style='text-align:center;display:flex;'>
+                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
                       <div class="section-heading section-heading-2">
-			<span class="input-group">Space for content on why you should subscribe to ADS database</span>
+			<span class='input-group' style='900px;'>
+			<div class="row" style='width:900px;'>Space for content on why you should subscribe to ADS database</div>
+			</span>
+		      </div>
+		  </div>
+	    </div>
+	</div>
+
+        <div class="container" style='width:1000px;'>
+	    <div class="row" style='text-align:center;display:flex;'>
+                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
+                      <div class="section-heading section-heading-2">
+			<span class='input-group' style='900px;'>
+			<div class="row" style='width:900px;display:none;' id='advsearch'> Search Form Here...</div>
+			</span>
 		      </div>
 		  </div>
 	    </div>
 	</div>
     </section>
     <!-- ***** Main Banner Area End ***** -->
+
+	
+
+
 	<section class="section gal-section" id="">
         <div class="container">
             <div class="row align-items-end">
@@ -662,36 +680,7 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-	<!-- <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-					
-					<div class="row">
-					  <select name="byartists" placeholder="Select" class="form-control" id='byartists' onChange="javascript:dofilter('byartists');">
-						<option value="1">All Artists</option>
-						{% for artist, lotlist in allartists.items %}
-						<option value="{{artist}}">{{artist}}</option>
-						{% endfor %}
-					  </select>
-					</div>
-				</div>
-                <div class="col-md-4">
-					
-					<div class="row">
-					  <select name="byauctions" placeholder="Select" class="form-control" id='byauctions' onChange="javascript:dofilter('byauctions');">
-						<option value="1">All Auctions</option>
-						{% for auctionname, lotslist in allauctions.items %}
-						<option value="{{auctionname}}">{{auctionname}}</option>
-						{% endfor %}
-					  </select>
-					</div>
-				</div>
-                		<div class="col-md-4">
-					
-				</div>
-			</div>
-		</div>
-	-->
+	
 	
 	<!-- Begining of new auctions gallery -->
 	<div>
