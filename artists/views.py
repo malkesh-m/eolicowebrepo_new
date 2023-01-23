@@ -1438,7 +1438,7 @@ def showstats(request):
     totallotssold = 0
     totalartworks = 0
     soldlotsprice = 0.00
-    date2yearsago = datetime.datetime.now() - datetime.timedelta(days=2*365)
+    date2yearsago = datetime.datetime.now() - datetime.timedelta(days=settings.YEARS_FOR_STATS*365)
     totaldelta = 0.00
     curdatetime = datetime.datetime.now()
     lotartistqset = LotArtist.objects.filter(artist_id=aid)
