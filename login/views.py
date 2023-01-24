@@ -764,5 +764,181 @@ def morefavourites(request):
     return HttpResponse(template.render(context, request))
 
 
+@login_required(login_url="/login/show/")
+def dashboard(request):
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'err' : 'Invalid method of call',})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
+    userobj = request.user
+    sessionkey = request.session.session_key
+    page = 1
+    if 'page' in request.GET.keys():
+        try:
+            page = int(request.GET['page'])
+        except:
+            pass
+    chunksize = 10 # per page we will show 10 artists and artworks that the user has added as favourites.
+    startctr = page * chunksize - chunksize
+    endctr = page * chunksize
+    favourite_artworks = []
+    favourite_artists = []
+    favourite_auctions = []
+    artistsidlist = []
+    artworksidlist = []
+    auctionsidlist = []
+    context = {}
+    totalfavouriteartists = 0
+    favouriteartistscurweek = 0
+    totalfavouriteartworks = 0
+    favouriteartworkscurweek = 0
+    totalfavouriteauctions = 0
+    favouriteauctionscurweek = 0
+    curdate = datetime.datetime.now()
+    datelastweek = curdate - datetime.timedelta(days=7)
+    allfavouritesqset = Favourite.objects.filter(user=userobj).order_by("-updated")
+    for fav in allfavouritesqset:
+        favtype = fav.reference_model
+        if favtype == "fineart_artists":
+            favmodelid = fav.reference_model_id
+            artistsidlist.append(favmodelid)
+            totalfavouriteartists += 1
+            if fav.created > datelastweek:
+                favouriteartistscurweek += 1
+        elif favtype == "fineart_artworks":
+            favmodelid = fav.reference_model_id
+            artworksidlist.append(favmodelid)
+            totalfavouriteartworks += 1
+            if fav.created > datelastweek:
+                favouriteartworkscurweek += 1
+        elif favtype == "fineart_auction_calendar":
+            favmodelid = fav.reference_model_id
+            auctionsidlist.append(favmodelid)
+            totalfavouriteauctions += 1
+            if fav.created > datelastweek:
+                favouriteauctionscurweek += 1
+    favartistsqset = Artist.objects.filter(id__in=artistsidlist)
+    favartworksqset = Artwork.objects.filter(id__in=artworksidlist)
+    favauctionsqset = Auction.objects.filter(id__in=auctionsidlist)
+    for favartist in favartistsqset:
+        favartistid = favartist.id
+        # Get all artworks by this artist
+        lotartistqset = LotArtist.objects.filter(artist_id=favartistid)
+        artistartworkcount = list(lotartistqset).__len__()
+        curdate = datetime.datetime.now()
+        datenow = str(datetime.date(curdate.year, curdate.month,curdate.day))
+        date12monthsago = datenow - datetime.timedelta(days=365)
+        artworksoldlast12months = 0
+        artworksoldtotal = 0
+        totalsoldusd = 0.00
+        totalsoldusdlast12months = 0.00
+        for lotartist in lotartistqset:
+            if lotartist.saledate > date12monthsago:
+                artworksoldlast12months += 1
+                try:
+                    totalsoldusdlast12months += float(lotartist.artist_price_usd)
+                except:
+                    pass
+            if lotartist.lotstatus == "sold":
+                artworksoldtotal += 1
+                try:
+                    totalsoldusd += float(lotartist.artist_price_usd)
+                except:
+                    pass
+            artistname = lotartist.artist_name
+        d = {'totalartworks' : artistartworkcount, 'artistname' : artistname, 'artistid' : favartistid, 'totalartworkssold' : artworksoldtotal, 'artworkssoldlast12months' : artworksoldlast12months, 'sellingrate' : float(artworksoldtotal/artistartworkcount), 'avgsaleprice' : float(totalsoldusd/artworksoldtotal), 'avgsalepricelast12months' : float(totalsoldusdlast12months/artworksoldlast12months)}
+        favourite_artists.append(d)
+    for favartwork in favartworksqset:
+        artworkname = favartwork.artworkname
+        artworkid = favartwork.id
+        medium = favartwork.medium
+        sizedetails = favartwork.sizedetails
+        artworkimage = ""
+        if favartwork.image1 is not None:
+            artworkimage = settings.IMG_URL_PREFIX + str(favartwork.image1)
+        lotqset = LotArtist.objects.filter(artworkid=artworkid)
+        lowestimateusd, highestimateusd, soldpriceusd = 0.00, 0.00, 0.00
+        artistname = ""
+        if list(lotqset).__len__() > 0:
+            try:
+                lowestimateusd = float(lotqset[0].lowestimate)
+            except:
+                pass
+            try:
+                highestimateusd = float(lotqset[0].highestimate)
+            except:
+                pass
+            try:
+                soldpriceusd = float(lotqset[0].artist_price_usd)
+            except:
+                pass
+            artistname = lotqset[0].artist_name
+        d = {'artworkname' : artworkname, 'artistname' : artistname, 'artworkid' : artworkid, 'medium' : medium, 'size' : sizedetails, 'lowestimate' : lowestimateusd, 'highestimate' : highestimateusd, 'soldprice' : soldpriceusd, 'artworkimage' : artworkimage}
+        favourite_artworks.append(d)
+    for favauction in favauctionsqset:
+        auctionname = favauction.auctionname
+        auctionperiod = favauction.auctionstartdate.strftime('%d %b, %Y')
+        if type(favauction.auctionenddate) is datetime.date and favauction.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 0001" and favauction.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 1":
+            auctionperiod += " - " + favauction.auctionenddate.strftime('%d %b, %Y')
+        lotcount = favauction.lotcount
+        coverimage = favauction.coverimage
+        auchouseobj = AuctionHouse.objects.get(id=favauction.auctionhouse_id)
+        auctionhousename = auchouseobj.housename
+        d = {'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'lotcount' : lotcount, 'auctionhousename' : auctionhousename, 'auctionid' : favauction.id}
+        favourite_auctions.append(d)
+    context['favourite_artists'] = favourite_artists
+    context['favourite_artworks'] = favourite_artworks
+    context['favourite_auctions'] = favourite_auctions
+    context['totalfavouriteartists'] = totalfavouriteartists
+    context['favouriteartistscurweek'] = favouriteartistscurweek
+    context['totalfavouriteartworks'] = totalfavouriteartworks
+    context['favouriteartworkscurweek'] = favouriteartworkscurweek
+    context['totalfavouriteauctions'] = totalfavouriteauctions
+    context['favouriteauctionscurweek'] = favouriteauctionscurweek
+    template = loader.get_template('dashboard.html')
+    return HttpResponse(template.render(context, request))
+    
 
 
+"""
+try:
+                artist = Artist.objects.get(id=favmodelid)
+                artistname = artist.artistname
+                aimg = settings.IMG_URL_PREFIX + str(artist.artistimage)
+                anat = artist.nationality
+                aid = artist.id
+                about = artist.description
+                favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
+            except:
+                pass
+
+try:
+                artwork = Artwork.objects.get(id=favmodelid)
+                artworkname = artwork.artworkname
+                artist_id = artwork.artist_id
+                artworkimg = settings.IMG_URL_PREFIX + str(artwork.image1)
+                size = artwork.sizedetails
+                medium = artwork.medium
+                awid = artwork.id
+                artist = Artist.objects.get(id=artist_id)
+                artistname = artist.artistname
+                favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
+            except:
+                pass
+
+try:
+                auction = Auction.objects.get(id=favmodelid)
+                auctionname = auction.auctionname
+                period = auction.auctionstartdate.strftime("%d %b, %Y")
+                aucenddate = auction.auctionenddate
+                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+                    period = period + " - " + str(aucenddate)
+                auchouseid = auction.auctionhouse_id
+                auchouseobj = AuctionHouse.objects.get(id=auchouseid)
+                housename = auchouseobj.housename
+                aucid = auction.id
+                aucimg = settings.IMG_URL_PREFIX + str(auction.coverimage)
+                favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
+            except:
+                pass
+"""
