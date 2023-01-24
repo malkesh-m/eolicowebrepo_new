@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
 
-    <title>ArtBidder Home</title>
+    <title>ArtBidder Plans</title>
 
 
     <!-- Additional CSS Files -->
@@ -22,146 +22,7 @@
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
     <link rel="stylesheet" href="/static/css/newcarousel.css">
-
-	<style>
-		.slide-cap{
-			position: absolute;
-			top: 5%;
-			left: 13%;
-			width: 28%;
-		}
-		.rit-cap{
-			position: absolute;
-			top: 5%;
-			right: 15%;
-			width: 30%;
-		}
-		#Top-owl-carousel p{
-			margin-top:5px;
-		}
-		<!-- Adding scaling factor -->
-		.item {
-		  transform: scale(.6);
-		}
-		.btn-slider{
-			border:1px solid #333;
-			border-radius:0px;
-			margin-top:5px;
-			margin-bottom:10px;
-			padding: 5px 5px;
-			letter-spacing:2px;
-		}
-		.btn-slider:hover{
-			background: #f1f0ef;
-		}
-		#Top-owl-carousel .owl-nav{
-			text-align: center;
-			margin-top: 15px;
-		}
-		#Top-owl-carousel .owl-nav .owl-prev{
-			margin-right:10px;
-		}
-		#Top-owl-carousel .owl-nav .owl-next{
-			margin-left:10px;
-		}
-		#Top-owl-carousel .owl-nav .owl-prev:focus,
-		#Top-owl-carousel .owl-nav .owl-next:focus{
-			outline:none;
-		}
-		
-		.wrapper {
-			 margin: 10vh;
-		}
- .card {
-	 border: none;
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-	 overflow: hidden;
-	 border-radius: 20px;
-	 min-height: 450px;
-	 box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
-}
- @media (max-width: 768px) {
-	 .card {
-		 min-height: 350px;
-	}
-}
- @media (max-width: 420px) {
-	 .card {
-		 min-height: 300px;
-	}
-}
- .card.card-has-bg {
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background-size: 120%;
-	 background-repeat: no-repeat;
-	 background-position: center center;
-}
- .card.card-has-bg:before {
-	 content: '';
-	 position: absolute;
-	 top: 0;
-	 right: 0;
-	 bottom: 0;
-	 left: 0;
-	 background: inherit;
-	 -webkit-filter: grayscale(1);
-	 -moz-filter: grayscale(100%);
-	 -ms-filter: grayscale(100%);
-	 -o-filter: grayscale(100%);
-	 filter: grayscale(100%);
-}
- .card.card-has-bg:hover {
-	 //transform: scale(0.98);
-	 box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
-	 background-size: 120%;
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card.card-has-bg:hover .card-img-overlay {
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background: #234f6d;
-	 background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%, rgba(4, 69, 114, 1) 100%);
-}
- .card .card-footer {
-	 background: none;
-	 border-top: none;
-}
- .card .card-footer .media img {
-	 border: solid 3px rgba(234, 95, 0, 0.3);
-}
- .card .card-meta {
-	 color: orange;
-}
- .card .card-body {
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card:hover {
-	 cursor: pointer;
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card:hover .card-body {
-	 //margin-top: 30px;
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card .card-img-overlay {
-	 transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background: #c2a476;
-	 background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
-}
-.wrapper .section-heading{
-	margin-bottom: 60px;
-}
-.btn-box{
-	margin-top: 30px;
-	}
-
-footer .under-footer a {
-    color: #717171;
-}
-footer .under-footer a:hover {
-    color: #c2a476;
-}
- 
-	</style>
+    <link rel="stylesheet" href="/static/css/autocomplete.css">
 
     <style>
 	.owl-prev, .owl-next {
@@ -178,7 +39,17 @@ footer .under-footer a:hover {
     .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
  
     </style>
+    <style>
+    #frmsearchauctions input[type=search]{width:430px !important;}
+    </style>
 
+<!--
+
+TemplateMo 571 Hexashop
+
+https://templatemo.com/tm-571-hexashop
+
+-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
@@ -238,62 +109,20 @@ footer .under-footer a:hover {
     }
     </style>
 
+    <style>
+    td div:nth-of-type(odd) {
+      background: #e0e0e0;
+    }
+    td div:nth-of-type(even) {
+      background: #FFFFFF;
+    }
+    </style>
+
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
+    <script src="/static/js/autocomplete.js"></script>
 
-    <script>
-    function showstats(aid, statsdivid){
-	  statsdiv = document.getElementById(statsdivid);
-	  var xmlhttp;
-	  if (window.XMLHttpRequest){
-	    xmlhttp=new XMLHttpRequest();
-	  }
-	  else{
-	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  // Register the handler
-	  xmlhttp.onreadystatechange = function(){
-	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    context = JSON.parse(xmlhttp.responseText);
-	    divid = context['div_id'];
-	    aid = context['aid'];
-	    err = context['err'];
-	    statsdiv = document.getElementById(divid);
-            if(err == "nologin"){
-		htmlcontent = context['stats'];
-		statsdiv.innerHTML = htmlcontent;
-	    }
-	    else if(err == "noaid"){
-		htmlcontent = context['stats'];
-		statsdiv.innerHTML = htmlcontent;
-	    }
-	    else if(err == "nodiv"){
-		htmlcontent = context['stats'];
-		statsdiv.innerHTML = htmlcontent;
-	    }
-	    else if(err == "noartist"){
-		htmlcontent = context['stats'];
-		statsdiv.innerHTML = htmlcontent;
-	    }
-	    else if(err == ""){
-	        htmlcontent = context['stats'] + "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:hidestats(" + aid + ", '" + divid + "');\">Hide Stats</a></h6>";
-	        statsdiv.innerHTML = htmlcontent;
-	    }
-	  }
-	  };
-	  xmlhttp.open("GET", "/artist/showstats/?aid=" + aid + "&div_id=" + statsdivid); // Need to keep track of the div id values. 
-	  // Javascript runs separate threads for each call, so data is shared. So, javascript will not be able to keep track of data
-	  // returned and the corresponding div it should be placed in.
-	  xmlhttp.send();
-          statsdiv.innerHTML = "<img src='/static/images/loading.gif' style='height:20px;width:20px;'>";
-	}
-
-	function hidestats(aid, statsdivid){
-	  statsdivelement = document.getElementById(statsdivid);
-	  statsdivelement.innerHTML = "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:showstats(" + aid + ", '" + statsdivid + "');\">Show Stats</a></h6>";
-	}
-    </script>
-
+    
     </head>
     
     <body>
@@ -496,21 +325,19 @@ footer .under-footer a:hover {
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
                         <a href="/login/index/" class="logo">
-                            <!-- <img src="/static/images/logo1.png"> -->
-			    ARTBIDDER
+                            <img src="/static/images/logo1.png">
                         </a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                         <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-			 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
-			 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-			 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-			 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-			 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
-                         <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
-
-			 {% if not user.is_authenticated %}
+                            <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+			    <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
+			    <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/price/plans/" class="active">Plans</a></li>
+			{% if not user.is_authenticated %}
 			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
 			{% else %}
 			    <li><a href="/login/logout/">Logout</a></li>
@@ -544,28 +371,17 @@ footer .under-footer a:hover {
     <!-- ***** Header Area End ***** -->
 
     <!-- ***** Main Banner Area Start ***** -->
-    <!--
-	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
-		<div class="item"><img src="/static/images/slider-bg-1.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Aliquam tincidunt dolor</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
-		<div class="item"><img src="/static/images/slider-bg-2.jpg" class="img-fluid" alt=""><div class="rit-cap"><h2>Phasellus placerat</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
-		<div class="item"><img src="/static/images/slider-bg-3.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Maecenas molestie</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
-		
-	</div>
-    -->
-
-
-<!-- ------------------------------------------------------------------------------------------  -->
-
+    
    	<!-- Carousel -->
-    <section class="testimonials" style='display:block;padding-top:100px;margin-top:20;'>
+    <section class="testimonials">
      <div class="container">
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
             <div class="item">
               <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.artworkimage}}" alt="">
+                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
                 <div class="item-details">
 			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
 			<h5>{{d.artworkname}}</h5>
@@ -577,385 +393,178 @@ footer .under-footer a:hover {
 	    {% endfor %}
           </div>
         </div>
-      </div>
+      </div> -->
      </div>
     </section>
     <!-- END OF Carousels -->
-
+    <section class="section gal-section" id="searchsitesection" style='width:1400px;'>
+      	
+	<div class="container">
+	    <div class="row">
+                  <div class="col-lg-12 text-center">
+                      <div class="section-heading text-justify">
+			<h2>ARTBIDER</h2>
+		      </div>
+		  </div>
+	    </div>
+	
+	    <div class="row align-items-end">
+                  <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      Artbider is one of the fastest emerging online service of the auction market for fine art, antiques and collectibles. Artbider offers access to more than 10 millions auctioned records, dating back to 1970. Our team of fine art specialists, art historians and worlds best art data analyst working hard to compile the most up-to-date and precise Art Market information.
+		  </div>
+	    </div>
+	</div>
+    </section>
     <!-- ***** Main Banner Area End ***** -->
 
-    <!-- ***** Main Area Starts ***** -->
-    <!-- ***** Explore Area Ends ***** -->
-    
 
-    {% if favourites.items|length > 0 %}
-    <section class="section" id="men">
+	<section class="section gal-section" id="" style='width:1400px;'>
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>My Favourites</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                <div class="col-lg-12 text-center">
+                    <div class="section-heading text-justify" id='sectionheaderdiv'>
+                        <h2>ArtBidder Offers</h2>
+			<hr>
                     </div>
                 </div>
+            </div>
+            <div class="row align-items-end" id="offers">
+                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      <label style='font-weight:bold;font-size:larger;'>Price Database - </label> Artbider offers a keyword-search to our comprehensive price database of over 10 million auctioned records with classified details – Title, Categories, Medium, Artwork Dates etc. You can access more than 500,000 artists records, with images, bio’s and art genre. Artbider covers more than 1000 top auction houses globally.
+		</div>
+            </div>
+	    <br/>
+	    <div class="row align-items-end" id="offers">
+                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      <label style='font-weight:bold;font-size:larger;'>Market Alerts - </label> We send daily alerts of your favourite artists on their upcoming artworks and events.
+You will not be missing any of your favourite Auctions and Events now.
+		</div>
+            </div>
+	    <br/>
+	    <div class="row align-items-end" id="offers">
+                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      <label style='font-weight:bold;font-size:larger;'>Latest Art Market Updates - </label> Artbider keeps you ahead with the latest art market updates – Upcoming Auctions, News and Events.
+		</div>
+            </div>
+            <br/>
+	    <div class="row align-items-end" id="offers">
+                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      <label style='font-weight:bold;font-size:larger;'>Collection Management - </label> Add and save your favourite artworks and artists to your collection. Artbider allows you to build and manage your own collection of your favourite Artworks, Artists and Auctions.
+		</div>
+            </div>
+            <br/>
+	    <div class="row align-items-end" id="offers">
+                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      <label style='font-weight:bold;font-size:larger;'>Artist Insights - </label> Get the insights of your favourite artist annual performance – total lots sold, average sold price, selling rate and more to make better and precise decisions.
+		</div>
             </div>
         </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for favname, favdata in favourites.items %}
-		        <div class="column">
-		            <div class="img-box">
-				{% if favdata.0 == "artist" %}
-				<a href="/artist/details/?aid={{favdata.3}}"><img src="{{favdata.1}}" alt=""></a>
-		                <a href="/artist/details/?aid={{favdata.3}}" style="color:#000000;">
-					<h4>{{favname}}</h4>
-					<h6>{{favdata.2}}</h6>
-					<!-- <h6>{{favdata.4}}</h6> -->
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editmuseum('{{favdata.3}}');">Edit</a></div>
-				{% endif %}
-				{% endif %}
-				{% if favdata.0 == "artwork" %}
-				<a href="/artist/artworkdetails/?awid={{favdata.5}}"><img src="{{favdata.1}}" alt=""></a>
-		                <a href="/artist/artworkdetails/?awid={{favdata.5}}" style="color:#000000;">
-					<h4>{{favname}}</h4>
-					<h6>{{favdata.4}}</h6>
-					<h6>{{favdata.3}}</h6>
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{favdata.3}}');">Edit</a></div>
-				{% endif %}
-				{% endif %}
-				{% if favdata.0 == "auction" %}
-				<a href="/auction/showauction/?aucid={{favdata.3}}"><img src="{{favdata.4}}" alt=""></a>
-		                <a href="/auction/showauction/?aucid={{favdata.3}}" style="color:#000000;">
-					<h4>{{favname}}</h4>
-					<h6>{{favdata.1}}</h6>
-					<h6>{{favdata.2}}</h6>
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{favdata.3}}');">Edit</a></div>
-				{% endif %}
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-			<!--
-                        <div class="owl-men-item owl-carousel">
-                            {% for ename, edata in events.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/gallery/eventdetails/?gevid={{edata.3}}"><img src="{{edata.4}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/gallery/eventdetails/?gevid={{edata.3}}">
-										<h4>{{ename}}</h4>
-										<span>{{edata.1}}</span>
-										<span>{{edata.2}}</span>
-									</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-			-->
-			<div class="container">
-			    <div class="row">
-			    	<div class="col-lg-12">
-				    <a class="btn btn-slider" href="/login/morefavourites/">View More</a>
-			    	</div>
-			    </div>
-			</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    {% endif %}
-    <!-- ***** Men Area Ends ***** -->
-	<!-- ***** Explore Area Starts ***** -->
-    <!-- <section class="section wrapper" id="explore">
-        <div class="container">
-			<div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Market News</h2>
-                        <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-						<hr>
-                    </div>
-                </div>
-            </div>
-		   <div class="row">
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-03.jpg');">
-					<img class="card-img d-none" src="/static/images/men-03.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art Market</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">This New Code of Conduct for Collectors Aims to Encourage More Ethical Art Buying</a></h4>
-						  <small><i class="far fa-clock"></i> October 15, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Harley Wong</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-01.jpg');">
-					<img class="card-img d-none" src="/static/images/men-01.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">An-My Lê’s Ghostly Photographs Capture the Complex Consequences of War</a></h4>
-						  <small><i class="far fa-clock"></i> October 25, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Leah Gallant</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-			  
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-03.jpg');">
-					<img class="card-img d-none" src="/static/images/men-03.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art Market</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">This New Code of Conduct for Collectors Aims to Encourage More Ethical Art Buying</a></h4>
-						  <small><i class="far fa-clock"></i> October 15, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Harley Wong</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-		   </div>
-		</div>
-		<div class="btn-box text-center">
-			<a class="btn btn-slider" href="#">Explore</a>
-		</div>
-    </section> -->
+
 	
-    <section class="section" id="women">
+	<!-- Begining of new auctions gallery -->
+	<div>
+	<section class="oth-works mrt-90">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Trending Artists</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                <div class="col-lg-12 text-center">
+                    <div class="section-heading text-justify" id='sectionheaderdiv'>
+                        <h2>Pocket Friendly Subscription Plans</h2>
+			<hr>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aname, adata in artists.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
-		                <a href="/artist/details/?aid={{adata.4}}" style="color:#000000;">
-					<h4>{{aname}}</h4>
-					<h6>{{adata.3}}</h6>
-
-				</a>
-				{% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			        {% else %}
-				<div id='statsview_2_{{forloop.counter}}'>
-				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{adata.4}}, 'statsview_2_{{forloop.counter}}');">Show Stats</a></h6>
-				</div>
-				{% if adata.5 == 0 %}
-				<div id='follow_2_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{adata.4}}, 'follow_2_{{forloop.counter}}');">Follow</a></h6>
-				</div>
-				{% else %}
-				<div id='follow_2_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{adata.4}}, 'follow_2_{{forloop.counter}}');">Following</a></h6>
-				</div>
-				{% endif %}
-				{% if adata.6 == 0 %}
-				<div id='favourite_2_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{adata.4}}, 'favourite_2_{{forloop.counter}}');">Add to Favourites</a></h6>
-				</div>
-				{% else %}
-				<div id='favourite_2_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			      {% endif %}
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{adata.4}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-
-			<!--
-                        <div class="owl-men-item owl-carousel">
-                            {% for aname, adata in artists.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/artist/details/?aid={{adata.4}}">
-										<h4>{{aname}}</h4>
-										<span>{{adata.3}}</span>
-
-									</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                            
-                        </div>
-			-->
-                    </div>
-                </div>
+            <div class="row align-items-end" id="offers">
+                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      <ul class="entry-content"><li>Artbider offers you the most cost effective subscription plans amongst the other art databases.</li> </ul>
+		</div>
             </div>
+	    <br/>
+	    <div class="row align-items-end" id="offers">
+                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      <ul class="entry-content"><li>Special pricing plans starting from $99 (anual) for Art Institutions and Art Organizations.</li> </ul>
+		</div>
+            </div>
+	    <br/>
+	    <div class="row align-items-end" id="offers">
+                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                      <ul class="entry-content"><li><b>Special Launch Offer</b> – First 50 users will get 50% Off on our annual subscription, Use code FIRST50 (limited period offer)</li> </ul>
+		</div>
+            </div>
+	    <br/>
         </div>
+      </div>
+
+      <div class="container">
+      <div class="row">
+      
+	<table id="newtable" class="table table-bordered table-striped fixedtable">
+	    <thead>
+		<th><label style='font-weight:bold;font-size:larger;padding-left:10px;padding-right:10px;'>Basic</label></th>
+		<th><label style='font-weight:bold;font-size:larger;padding-left:10px;padding-right:10px;'>Premium</label></th>
+	    </thead>
+	    <tbody>
+		<tr>
+		    <td>                
+		        <ul class="entry-content"><li>&#9642; Unlimited Searches</li><li>&#9642; Artwork Details & Images</li><li>&#9642; Auction Results</li><li>&#9642; Upcoming Auctions</li></ul>                           
+		    </td>
+		    <td>
+			<ul class="entry-content"><li>&#9642; Unlimited Searches</li><li>&#9642; Artwork Details & Images</li><li>&#9642; Auction Results</li><li>&#9642; Upcoming Auctions</li><li>&#9642; Market Alerts</li><li>&#9642; Artist Insights</li><li>&#9642; Collection Management</li></ul>
+		    </td>
+		</tr>
+
+		<tr>
+		    <td>                
+		        <div>One day pass - $5.00</div>                        
+		    </td>
+		    <td>
+			<div>One day pass - $9.00</div>
+		    </td>
+		</tr>
+
+		<tr>
+		    <td>                
+		        <div>Monthly Subscription - $20.00</div>                       
+		    </td>
+		    <td>
+			<div>Monthly Subscription - $29.00</div>
+		    </td>
+		</tr>
+
+		<tr>
+		    <td>                
+		        <div>Annual Subscription - <strike>$240.00</strike> &nbsp;&nbsp;$149.00 (save 38%)</div>            
+		    </td>
+		    <td>
+			<div>Annual Subscription - <strike>$348.00</strike> &nbsp;&nbsp;$199.00 (save 43%)</div>
+		    </td>
+		</tr>
+	    </tbody>    
+	</table> 
+      
+      </div>
+      </div>
     </section>
-
-    <section class="section" id="men">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Auction Houses</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-                        <div class="owl-men-item owl-carousel">
-                            {% for aucdata in auctionhouses %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}" style="color:#000000;">
-						<h4>{{aucdata.housename}}</h4>
-						<h6>{{aucdata.location}}</h6>
-						<h6>{{aucdata.description}}</h6>
-					</a>
-					{% if adminuser == 1 %}
-					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauctionhouse('{{aucdata.aucid}}');">Edit</a></div>
-					{% endif %}
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    	
+	<!-- <div class="container">
+	    <div class="row">
+	    	<div class="col-lg-12">
+		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=0">View More</a>
+	    	</div>
+	    </div>
+	</div> -->
+	
+	<!-- End of new auctions gallery -->
+	
+	<!-- <div class="container">
+	    <div class="row">
+	    	<div class="col-lg-12">
+		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=1">View More</a>
+	    	</div>
+	    </div>
+	</div> -->
     </section>
+    </div>
 
-    <section class="section" id="men">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-                        <h2>Upcoming Auctions</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aucname, aucdata in upcomingauctions.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-		                <a href="/auction/details/?lid={{aucdata.lid}}" style="color:#000000;">
-					<h4>{{aucname}}</h4>
-					<h6>{{aucdata.description}}</h6>
-				</a>
-				{% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			        {% else %}
-				{% if aucdata.favourite == 0 %}
-				<div id='favourite_auc_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{aucdata.aucid}}, 'favourite_auc_{{forloop.counter}}');">Add to Favourites</a></h6>
-				</div>
-				{% else %}
-				<div id='favourite_auc_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			        {% endif %}
-				<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{aucdata.aucid}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		        
-		    	</div>
-			<!--
-                        <div class="owl-men-item owl-carousel">
-                            {% for aucname, aucdata in upcomingauctions.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-					<a href="/auction/details/?lid={{aucdata.lid}}">
-						<h4>{{aucname}}</h4>
-						<span>{{aucdata.description}}</span>
-					</a>
-					<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <div id="adminScreen">
 	  <a href="#" class="cancel">×</a>
@@ -965,7 +574,7 @@ footer .under-footer a:hover {
       </div>
       <div id="cover" >
       </div>
-
+    
     <!-- ***** Footer Start ***** -->
     <footer>
         <div class="container">
@@ -1011,7 +620,7 @@ footer .under-footer a:hover {
                 </div>
                 <div class="col-lg-12">
                     <div class="under-footer">
-                        <p>Copyright © 2022. All Rights Reserved.
+                        <p>Copyright © 2022. All Rights Reserved.</p>
                        
                         <ul>
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
@@ -1043,18 +652,37 @@ footer .under-footer a:hover {
     <script src="/static/js/slick.js"></script> 
     <script src="/static/js/lightbox.js"></script> 
     <script src="/static/js/isotope.js"></script> 
+    <script src="/static/js/jquery.dropdown.min.js"></script> 
     
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
+
+    <script>
+    function openNav() {
+  	document.getElementById("mySidebar").style.width = "350px";
+  	//document.getElementById("main").style.marginLeft = "250px";
+    }
+
+    function closeNav() {
+  	document.getElementById("mySidebar").style.width = "0";
+  	document.getElementById("main").style.marginLeft= "0";
+    }
+    </script>
 	
 	<script>
+	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+	$('.demo').dropdown({
+		limitCount: 1,
+		input:'<input type="text" maxLength="20" placeholder="Search">'
+	});
+
 jQuery(document).ready(function($) {
 "use strict";
 $('#customers-testimonials').owlCarousel( {
 		loop: true,
 		center: true,
 		items: 3,
-		margin: 5,
+		margin: 30,
 		autoplay: true,
 		dots:true,
     		nav:true,
@@ -1074,7 +702,6 @@ $('#customers-testimonials').owlCarousel( {
 		}
 	});
 });
-
 	</script>
     <script>
 		

@@ -41,16 +41,12 @@ redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS
 def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    page = "1"
+    page = ""
     if request.method == 'GET':
         if 'page' in request.GET.keys():
             page = str(request.GET['page'])
     chunksize = 100
     rows = 12
-    rowstartctr = int(page) * rows - rows
-    rowendctr = int(page) * rows
-    fstartctr = int(page) * chunksize - chunksize
-    fendctr = int(page) * chunksize
     context = {}
     auctionhouses = [] # Auctions in various auction houses section.
     filterauctionhouses = []
@@ -65,12 +61,16 @@ def index(request):
         auctionhouses = []
     if auctionhouses.__len__() == 0:
         auctionhousesqset = AuctionHouse.objects.all()
-        if auctionhousesqset.__len__() <= fstartctr:
-            fstartctr = 0
-        auctionhousepatterns = [re.compile("sotheby\'s\,", re.IGNORECASE|re.DOTALL), re.compile("artcurial", re.IGNORECASE|re.DOTALL), re.compile("china\-?guardian", re.IGNORECASE|re.DOTALL), re.compile("christies\,", re.IGNORECASE|re.DOTALL), re.compile("bonhams\,", re.IGNORECASE|re.DOTALL), re.compile("doyle", re.IGNORECASE|re.DOTALL), re.compile("phillips", re.IGNORECASE|re.DOTALL), re.compile("dorotheum", re.IGNORECASE|re.DOTALL), re.compile("polyauction", re.IGNORECASE|re.DOTALL), re.compile("tajan\,", re.IGNORECASE|re.DOTALL)]
+        uniqauctionhouses = {}
+        auctionhousepatterns = [re.compile("sotheby\'?s\,", re.IGNORECASE|re.DOTALL), re.compile("artcurial", re.IGNORECASE|re.DOTALL), re.compile("china\s+guardian", re.IGNORECASE|re.DOTALL), re.compile("christie\'?s", re.IGNORECASE|re.DOTALL), re.compile("bonham\'?s", re.IGNORECASE|re.DOTALL), re.compile("doyle", re.IGNORECASE|re.DOTALL), re.compile("phillips", re.IGNORECASE|re.DOTALL), re.compile("dorotheum", re.IGNORECASE|re.DOTALL), re.compile("poly\s+international", re.IGNORECASE|re.DOTALL), re.compile("tajan", re.IGNORECASE|re.DOTALL)]
         showcounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for auctionhouse in auctionhousesqset:
-            filterauctionhouses.append(auctionhouse.housename)
+            if auctionhouse.housename not in uniqauctionhouses.keys():
+                filterauctionhouses.append(auctionhouse.housename)
+                uniqauctionhouses[auctionhouse.housename] = 1
+            if page != "":
+                if not auctionhouse.housename.startswith(page) and not auctionhouse.housename.startswith(page.upper()):
+                    continue
             auchousepass = False
             patternindex = 0
             for auchousepattern in auctionhousepatterns:
@@ -78,9 +78,11 @@ def index(request):
                     auchousepass = True
                     break
                 patternindex += 1
+            #print(auctionhouse.housename)
+            #print(patternindex)
             if auchousepass == False: # Auction houses that are not in our featured auctionhousenames would be skipped.
                 continue
-            if showcounts[patternindex] > 3: # We show a maximum of 4 branches of an auction house.
+            if showcounts[patternindex] > 0: # We show a maximum of 1 branches of an auction house.
                 continue
             showcounts[patternindex] += 1
             coverimage = ""
@@ -389,7 +391,7 @@ def details(request):
                 pastauctions.append(d)
         aucctr += 1
     context['upcomingauctions'] = upcomingauctions
-    print(pastauctions)
+    #print(pastauctions)
     context['pastauctions'] = pastauctions
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1

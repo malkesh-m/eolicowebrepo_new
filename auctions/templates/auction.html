@@ -469,6 +469,7 @@ https://templatemo.com/tm-571-hexashop
 			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 			    <li class="scroll-to-section"><a href="/auction/index/" class="active">Auctions</a></li>
 			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
 
 			    {% if not user.is_authenticated %}
 				<li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
@@ -588,7 +589,7 @@ https://templatemo.com/tm-571-hexashop
 	<!-- Begining of new auctions gallery -->
 
 	
-	<section class="oth-works mrt-90">
+	<section class="category-tabs mrt-90">
         <div class="container" id="upcomingauctions">
 
 	<div class="row">
@@ -668,6 +669,288 @@ https://templatemo.com/tm-571-hexashop
 	</div>
 	<!-- End of new auctions gallery -->
 	<div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
+
+	<div class="row mrb-90">
+                                        <div class="col-sm-12">
+                                            <div class="auc-re">
+                                                <h3></h3>
+                                            </div>
+                                            <div class="work-top-pnl auction-filer-search">
+                                                <span><!-- <select class="form-control" name='selview' id='selview' onchange="javascript:changeview();"><option value='grid'>Grid View</option><option value='list'>List View</option></select> --></span>
+                                                <div class="fixed-sidbr-header">
+
+                                                    <!-- <button class="openbtn Show" onclick="openNav()"> Filter</button> -->
+                                                </div>
+                                                <div class="auction-search">
+                                                    <form method="POST" name='frmtextfilter' id='frmtextfilter' action=''>
+							{% csrf_token %}
+                                                        <input type="text" value="" name="txtfilter" id="txtfilter" placeholder="Search by artwork title, series, or description" />
+                                                        <button type="button" value="" name="btntextfilter" onclick="javascript:filterbytext();"><i class="fa fa-search" aria-hidden="true"></i></button><span id='searchstatus'></span>
+							<input type='hidden' name='aid' value='{{artistinfo.artistid}}'>
+							<input type='hidden' name='pageno' value='1'>
+                                                    </form>
+                                                </div>
+                                                <!-- <div class="dropdown">
+                                                    Sort By:
+                                                    <select>
+                                                        <option value="">Sale Date (Most recent)</option>
+                                                        <option value="">Estimate</option>
+                                                        <option value="">Sale price</option>
+                                                    </select>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                            <div class="sidebar-left">
+                                                <form method="POST" name='frmotherfilter' id='frmotherfilter' action=''>
+						{% csrf_token %}
+                                                <div id="accordion" class="accordion">
+                                                    <div class="card mb-0">
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                            <a class="card-title">
+                                                                Category
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseThree" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Design-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal" onchange="javascript:filterresults(this);">Work on Paper
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Sculpture-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood" onchange="javascript:filterresults(this);">Sculpture
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Painting-two">
+                                                                        <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas" onchange="javascript:filterresults(this);">Painting
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Installation">
+                                                                        <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation" onchange="javascript:filterresults(this);">Installation
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="photography">
+                                                                        <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid" onchange="javascript:filterresults(this);">Photography
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="texttile-arts">
+                                                                        <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" onchange="javascript:filterresults(this);">Textile arts
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+							<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                            <a class="card-title">
+                                                                Lot Status
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse3_5" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold1">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold1" name="soldorunsold1" value="yet to be sold" onclick="javascript:filterresults(this);">Yet to be Sold
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold2">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold2" name="soldorunsold2" value="sold" onclick="javascript:filterresults(this);">Sold
+                                                                </label>
+                                                            </div>
+							    <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold3">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold3" name="soldorunsold3" value="bought-in" onclick="javascript:filterresults(this);">Bought In
+                                                                </label>
+                                                            </div>
+							    <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold4">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold4" name="soldorunsold4" value="withdrawn" onclick="javascript:filterresults(this);">Withdrawn
+                                                                </label>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                            <a class="card-title">
+                                                                Size
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse4" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <p class="dimension">This is based on the artwork’s average dimension.</p>
+                                                                <div class="size-cm-in">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="cm-auction">
+                                                                            <input type="radio" class="form-check-input" id="sizeunit1" name="dimension" value="cm" checked onclick="javascript:filterresults(this);">cm
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="in-auction">
+                                                                            <input type="radio" class="form-check-input" id="sizeunit2" name="dimension" value="in" onclick="javascript:filterresults(this);">in
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="SmallSize-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="size1" name="sizevalue" value="small" onchange="javascript:filterresults(this);">Small (under 40cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Medium-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="size2" name="sizevalue" value="medium" onchange="javascript:filterresults(this);">Medium (40 – 100cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Large-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="size3" name="sizevalue" value="large" onchange="javascript:filterresults(this);">Large (over 100cm)
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseyear">
+                                                            <a class="card-title">
+                                                                Year Created
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseyear" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+								  <label class="form-check-label" for="Period1">
+									<input type="checkbox" class="form-check-input" id="period1" name="option1" value="202" onchange="javascript:filterresults(this);">2020s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period2">
+									<input type="checkbox" class="form-check-input" id="period2" name="option1" value="201" onchange="javascript:filterresults(this);">2010s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period3">
+									<input type="checkbox" class="form-check-input" id="period3" name="option1" value="200" onchange="javascript:filterresults(this);">2000s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period4">
+									<input type="checkbox" class="form-check-input" id="period4" name="option1" value="199" onchange="javascript:filterresults(this);">1990s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period5">
+									<input type="checkbox" class="form-check-input" id="period5" name="option1" value="198" onchange="javascript:filterresults(this);">1980s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period6">
+									<input type="checkbox" class="form-check-input" id="period6" name="option1" value="197" onchange="javascript:filterresults(this);">1970s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period7">
+									<input type="checkbox" class="form-check-input" id="period7" name="option1" value="196" onchange="javascript:filterresults(this);">1960s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period8">
+									<input type="checkbox" class="form-check-input" id="period8" name="option1" value="early20" onchange="javascript:filterresults(this);">Early 20th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period9">
+									<input type="checkbox" class="form-check-input" id="period9" name="option1" value="late19" onchange="javascript:filterresults(this);">Late 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period10">
+									<input type="checkbox" class="form-check-input" id="period10" name="option1" value="mid19" onchange="javascript:filterresults(this);">Mid 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period11">
+									<input type="checkbox" class="form-check-input" id="period11" name="option1" value="early19" onchange="javascript:filterresults(this);">Early 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period12">
+									<input type="checkbox" class="form-check-input" id="period12" name="option1" value="18" onchange="javascript:filterresults(this);">18th Century and Earlier
+								  </label>
+								</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse55">
+                                                            <a class="card-title">
+                                                                Auction House
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse55" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse1">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse1" name="option1" value="sotheby" onchange="javascript:filterresults(this);">Sotheby's
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse2">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse2" name="option1" value="christie" onchange="javascript:filterresults(this);">Christie's
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse2">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse2" name="option1" value="phillips" onchange="javascript:filterresults(this);">Phillips
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse4">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse4" name="option1" value="bonham" onchange="javascript:filterresults(this);">Bonhams
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse5">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse5" name="option1" value="rago" onchange="javascript:filterresults(this);">Rago Arts
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse6">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse6" name="option1" value="dorotheum" onchange="javascript:filterresults(this);">Dorotheum
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse7">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse7" name="option1" value="tajan" onchange="javascript:filterresults(this);">Tajan
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse8">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse8" name="option1" value="vanham" onchange="javascript:filterresults(this);">Van-ham
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse9">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse9" name="option1" value="artcurial" onchange="javascript:filterresults(this);">Artcurial
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse10">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse10" name="option1" value="wright" onchange="javascript:filterresults(this);">Wright
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse11">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse11" name="option1" value="other" onchange="javascript:filterresults(this);">Others
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+						</form>
+                                            </div>
+                                        </div>
+					
+
 	<div id="pastauctions" class="col-sm-12 col-md-8 col-lg-9 col-xl-9" style="display:" >
 	
             <div class="row align-items-end">

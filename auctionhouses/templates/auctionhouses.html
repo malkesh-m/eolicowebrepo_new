@@ -122,6 +122,7 @@
     <script>
 	function searchauctionhouse(page=1){
 	  searchkey = document.getElementById('auctionhousesearch').value;
+          loaderspan = document.getElementById('loader');
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -140,24 +141,31 @@
 	    featured_div = document.getElementById('contextheader');
 	    featured_div.innerHTML = "";
 	    search_section.innerHTML = "";
+            loaderspan.innerHTML = "";
+            loaderspan.style.display = "none";
 	    sectiontext = "<div class='container'><div class='row'><div class='section-heading section-heading-2 mrb-50'><h2>Search Results for '" + searchkey + "'</h2></div></div>";
 	    for(var i=0; i < auctionhousematches.length; i++){
 		auctionhouse = auctionhousematches[i];
-		sectiontext += "<div class='sub-head'><h4>" + auctionhouse.housename + ", " + auctionhouse.location + "</h4></div>";
+		sectiontext += "<div class='sub-head'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label></div>";
 		sectiontext += "<div class='row align-items-end'>";
-		for(var j=0; j < auctionhouse.auctionslist.length; j++){
-		  auction = auctionhouse.auctionslist[j];
-		  sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='" + auction.coverimage + "' style='width:100%'>";
-		  sectiontext += "<h4>" + auction.auctionname + "</h4>";
-		  sectiontext += "<h6 style='padding-left:10px;'>" + auction.auctionperiod + "</h6>";
-		  sectiontext += "<h6>" + auction.location + "</h6>";
-		  sectiontext += "</a>";
-		  if(adminuser == 1){
-		    sectiontext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick='javascript:t_editauction(\"{{auction.aucid}}\");'>Edit</a></div>";
+                if(auctionhouse.auctionslist.length == 0){
+                    sectiontext += "<div class='column' style='padding-left:5px;'>No auctions found for this auction house / branch</div>";
+                }
+                else{
+		  for(var j=0; j < auctionhouse.auctionslist.length; j++){
+		    auction = auctionhouse.auctionslist[j];
+		    sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='" + auction.coverimage + "' style='width:100%'>";
+		    sectiontext += "<h4>" + auction.auctionname + "</h4>";
+		    sectiontext += "<h6 style='padding-left:10px;'>" + auction.auctionperiod + "</h6>";
+		    sectiontext += "<h6>" + auction.location + "</h6>";
+		    sectiontext += "</a>";
+		    if(adminuser == 1){
+		      sectiontext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick='javascript:t_editauction(\"{{auction.aucid}}\");'>Edit</a></div>";
+		    }
+		    sectiontext += "</div></div>";
 		  }
-		  sectiontext += "</div></div>";
-		}
-		sectiontext += "</div>";
+                }
+		sectiontext += "</div><hr>";
 	    }
 	    paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
 	    if(pages.prevpage >= 1){
@@ -172,9 +180,11 @@
 	    }
 	    paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
 	    sectiontext += paginationcontent + "</div>";
-	    search_section.innerHTML = sectiontext
+	    search_section.innerHTML = sectiontext;
 	  }
 	  };
+          loaderspan.style.display = "";
+          loaderspan.innerHTML = "&nbsp;&nbsp;<img src='/static/images/loading.gif' style='padding-left:8px;'>"
 	  xmlhttp.open("GET", "/auctionhouse/search/?q=" + searchkey + "&page=" + page);
 	  xmlhttp.send();
 	}
@@ -389,6 +399,7 @@
 			    <li class="scroll-to-section"><a href="/auctionhouse/index/" class="active">Auction Houses</a></li>
 			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
 			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
 			    {% if not user.is_authenticated %}
 				<li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
 			    {% else %}
@@ -513,7 +524,8 @@
 		            <div class="img-box">
 				<a href="/auctionhouse/details/?ahid={{auchouse.ahid}}"><img src="{{auchouse.coverimage}}" alt="" style='width:100px;height:100px;display:flex;'/></a>
 		                <a href="/auctionhouse/details/?ahid={{auchouse.ahid}}" style="color:#000000;">
-				    <h4>{{auchouse.housename}}, {{auchouse.location}}</h4>
+				    <!-- <h4>{{auchouse.housename}} , {{auchouse.location}}</h4> -->
+				    <h4>{{auchouse.housename}} </h4>
 		                </a>
 				{% if adminuser == 1 %}
 				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
@@ -527,6 +539,50 @@
 	    
         </div>
     </section>
+    <section class="featured-artist">
+          <div class="container">
+              <div class="row d-flex">
+                  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <div class="section-heading" id='pageheader'>
+                          <h2>Auction Houses Directory</h2>
+                          
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                      <ul class="text-end">
+                          <li><a href="/auctionhouse/index/?page=a">a</a></li>
+                          <li><a href="/auctionhouse/index/?page=b">b</a></li>
+                          <li><a href="/auctionhouse/index/?page=c">c</a></li>
+                          <li><a href="/auctionhouse/index/?page=d">d</a></li>
+                          <li><a href="/auctionhouse/index/?page=e">e</a></li>
+                          <li><a href="/auctionhouse/index/?page=f">f</a></li>
+                          <li><a href="/auctionhouse/index/?page=g">g</a></li>
+                          <li><a href="/auctionhouse/index/?page=h">h</a></li>
+                          <li><a href="/auctionhouse/index/?page=i">i</a></li>
+                          <li><a href="/auctionhouse/index/?page=j">j</a></li>
+                          <li><a href="/auctionhouse/index/?page=k">k</a></li>
+                          <li><a href="/auctionhouse/index/?page=l">l</a></li>
+                          <li><a href="/auctionhouse/index/?page=m">m</a></li>
+                          <li><a href="/auctionhouse/index/?page=n">n</a></li>
+                          <li><a href="/auctionhouse/index/?page=o">o</a></li>
+                          <li><a href="/auctionhouse/index/?page=p">p</a></li>
+                          <li><a href="/auctionhouse/index/?page=q">q</a></li>
+                          <li><a href="/auctionhouse/index/?page=r">r</a></li>
+                          <li><a href="/auctionhouse/index/?page=s">s</a></li>
+                          <li><a href="/auctionhouse/index/?page=t">t</a></li>
+                          <li><a href="/auctionhouse/index/?page=u">u</a></li>
+                          <li><a href="/auctionhouse/index/?page=v">v</a></li>
+                          <li><a href="/auctionhouse/index/?page=w">w</a></li>
+                          <li><a href="/auctionhouse/index/?page=x">x</a></li>
+                          <li><a href="/auctionhouse/index/?page=y">y</a></li>
+                          <li><a href="/auctionhouse/index/?page=z">z</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </section>
+
+    <br/><br/>
     <section class="download-app">
         <div class="container max-container">
             <div class="row">

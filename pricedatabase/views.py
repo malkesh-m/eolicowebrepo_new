@@ -68,20 +68,20 @@ def index(request):
     ahendctr = int(page) * maxauctionhouses
     context = {}
     date2weeksago = datetime.datetime.now() - datetime.timedelta(days=settings.PDB_LATESTPERIOD)
-    entitieslist = []
+    #entitieslist = []
     filterpdb = []
     auctionhouses = {}
     uniquefilter = {}
     dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
     cursor = dbconn.cursor()
     try:
-        entitieslist = pickle.loads(redis_instance.get('pd_entitieslist'))
+        #entitieslist = pickle.loads(redis_instance.get('pd_entitieslist'))
         filterpdb = pickle.loads(redis_instance.get('pd_filterpdb'))
         auctionhouses = pickle.loads(redis_instance.get('pd_auctionhouses'))
     except:
-        entitieslist = []
+        #entitieslist = []
         filterpdb = []
-    if entitieslist.__len__() == 0:
+    if filterpdb.__len__() == 0:
         allauctionhousesqset = AuctionHouse.objects.order_by('-edited')[ahstartctr:ahendctr]
         for auctionhouseobj in allauctionhousesqset:
             auctionhouses[auctionhouseobj.housename] = auctionhouseobj.id
@@ -195,7 +195,7 @@ def index(request):
             except:
                 pass
             d = {'artworkname' : artworkobj[1], 'saledate' : lotobj.saledate.strftime('%d %b, %Y'), 'soldprice' : lotobj.soldpriceUSD, 'size' : artworkobj[13], 'medium' : artworkobj[18], 'description' : artworkobj[22], 'lid' : lotobj.id, 'awid' : artworkobj[0], 'lotimage' : settings.IMG_URL_PREFIX + str(lotobj.lotimage1), 'auctionname' : auctionname, 'aucid' : aucid, 'auctionperiod' : auctionperiod, 'aid' : artworkobj[9], 'artistname' : artistname, 'soldprice' : lotobj.soldpriceUSD, 'auctionhouse' : auctionhousename}
-            entitieslist.append(d)
+            #entitieslist.append(d)
         allartistsqset = FeaturedArtist.objects.all()[:30000] 
         # We selected 30000 records as that is the optimum number for speed and content.
         # Also, these are the best selling artists, so most searches would be based on them.
@@ -209,15 +209,16 @@ def index(request):
                 uniquefilter[artistname] = 1
         try:
             redis_instance.set('pd_filterpdb', pickle.dumps(filterpdb))
-            redis_instance.set('pd_entitieslist', pickle.dumps(entitieslist))
+            #redis_instance.set('pd_entitieslist', pickle.dumps(entitieslist))
             redis_instance.set('pd_auctionhouses', pickle.dumps(auctionhouses))
         except:
             pass
     cursor.close()
     dbconn.close()
-    context['entities'] = entitieslist
+    #context['entities'] = entitieslist
     context['filterpdb'] = filterpdb
     context['auctionhouses'] = auctionhouses
+    context['artwork_year_list'] = []
     #carouselentries = getcarouselinfo_new()
     #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
@@ -501,7 +502,7 @@ def search(request):
 def dofilter(request):
     if request.method != 'POST':
         return HttpResponse('{ "error" : "Invalid request method"}')
-    artistname, lottitle, medium, auctionhouseids, sizespec, sizeunit, saleoutcomes, soldmin, soldmax, estimatemin, estimatemax = "", "", "", "", "", "", "", "", "", "", ""
+    artistname, lottitle, medium, auctionhouseids, saletitle, auclocation, salecode, salestartdate, saleenddate, artworkstartperiod, artworkendperiod = "", "", "", "", "", "", "", "", "", "", ""
     page = "1"
     requestbody = str(request.body)
     bodycomponents = requestbody.split("&")
@@ -524,26 +525,24 @@ def dofilter(request):
     if 'medium' in requestdict.keys():
         medium = requestdict['medium'].lower()
         medium = endbarPattern.sub("", medium)
-    if 'auctionhouse' in requestdict.keys():
-        auctionhouseids = requestdict['auctionhouse'].strip()
+    if 'auctionhouses' in requestdict.keys():
+        auctionhouseids = requestdict['auctionhouses'].strip()
         auctionhouseids = endbarPattern.sub("", auctionhouseids)
         auctionhouseids = onlyspacesPattern.sub("", auctionhouseids)
-    if 'sizeunit' in requestdict.keys():
-        sizeunit = requestdict['sizeunit']
-    if 'size' in requestdict.keys():
-        sizespec = requestdict['size']
-        sizespec = endbarPattern.sub("", sizespec)
-    if 'saleoutcome' in requestdict.keys():
-        saleoutcomes = requestdict['saleoutcome']
-        saleoutcomes = endbarPattern.sub("", saleoutcomes)
-    if 'soldmin' in requestdict.keys():
-        soldmin = requestdict['soldmin'].strip()
-    if 'soldmax' in requestdict.keys():
-        soldmax = requestdict['soldmax'].strip()
-    if 'estimatemin' in requestdict.keys():
-        estimatemin = requestdict['estimatemin'].strip()
-    if 'estimatemax' in requestdict.keys():
-        estimatemax = requestdict['estimatemax'].strip()
+    if 'saletitle' in requestdict.keys():
+        saletitle = requestdict['saletitle']
+    if 'salecode' in requestdict.keys():
+        salecode = requestdict['salecode']
+    if 'auclocation' in requestdict.keys():
+        auclocation = requestdict['auclocation']
+    if 'salestartdate' in requestdict.keys():
+        salestartdate = requestdict['salestartdate'].strip()
+    if 'saleenddate' in requestdict.keys():
+        saleenddate = requestdict['saleenddate'].strip()
+    if 'artwork_start' in requestdict.keys():
+        artworkstartperiod = requestdict['artwork_start'].strip()
+    if 'artwork_end' in requestdict.keys():
+        artworkendperiod = requestdict['artwork_end'].strip()
     try:
         page = int(page)
     except:
@@ -571,8 +570,6 @@ def dofilter(request):
         if m == "":
             mediumlist.pop(mctr)
         mctr += 1
-    solist = saleoutcomes.split("|")
-    sizelist = sizespec.split("|")
     entitieslist = []
     context = {}
     dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
@@ -926,6 +923,15 @@ def dofilter(request):
     firstpage = 1
     context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     return HttpResponse(json.dumps(context))
+
+
+def showplans(request):
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'err' : 'Invalid method of call'}))
+    context = {}
+    template = loader.get_template('plans.html')
+    return HttpResponse(template.render(context, request))
+
 
 
 

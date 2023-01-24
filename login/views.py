@@ -425,8 +425,8 @@ def index(request):
     context['auctionhouses'] = auctionhouses
     cursor.close()
     dbconn.close()
-    carouselentries = getcarouselinfo_new()
-    context['carousel'] = carouselentries
+    #carouselentries = getcarouselinfo_new()
+    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -762,9 +762,6 @@ def morefavourites(request):
         context['adminuser'] = 0
     template = loader.get_template('morefavourites.html')
     return HttpResponse(template.render(context, request))
-
-
-
 
 
 

@@ -59,61 +59,61 @@ https://templatemo.com/tm-571-hexashop
     <script type='text/javascript'>
 	
 	function filterresults(page=1){
+          waitdivtag = document.getElementById('waitdiv');
+          waitdivtag.style.display = "";
+          waitdivtag.innerHTML = "<img src='/static/images/loading.gif'><div style='padding-left:7px;'>Please wait while we process your search query. Depending on the parameters you have specified, it might take a little while...</div>";
 	  csrf = document.frmpricefilter.csrfmiddlewaretoken.value;
 	  //alert(csrf);
 	  artistname = document.frmpricefilter.txtartistname.value;
 	  title = document.frmpricefilter.txttitle.value;
-	  auctionhousepattern = /auctionhouse/i;
+	  auctionhouses = document.frmpricefilter.sel_auctionhouses.options;
+          selectedauctionhouses = "";
+          for(var i=0; i < auctionhouses.length; i++){
+              if(auctionhouses[i].selected == true){
+                  selectedauctionhouses += auctionhouses[i].value + "|";
+              }
+          }
+          if(selectedauctionhouses.length > 0){
+              selectedauctionhouses = selectedauctionhouses.substr(0, selectedauctionhouses.length - 1); // Remove the last '|' character.
+          }
 	  mediumpattern = /medium/i;
-	  sizepattern = /size/i;
-	  sizeunitpattern = /sizeunit/i;
-	  saleoutcomepattern = /saleoutcome/i;
+	  artwork_start_period = document.frmpricefilter.sel_artwork_start.options[document.frmpricefilter.sel_artwork_start.options.selectedIndex].value;
+          artwork_end_period = document.frmpricefilter.sel_artwork_end.options[document.frmpricefilter.sel_artwork_end.options.selectedIndex].value;
+	  saletitle = document.frmpricefilter.txtsaletitle.value;
+	  auctionlocation = document.frmpricefilter.txtauctionlocation.value;
+          salecode = document.frmpricefilter.txtsalecode.value;
+          salestartdate = document.frmpricefilter.dtauctionstartdate.value;
+          saleenddate = document.frmpricefilter.dtauctionenddate.value;
 	  allformelements = document.frmpricefilter.elements;
-	  auctionhouseparam = "&auctionhouse=";
-	  mediumparam = "&medium=";
-	  sizeparam = "&size=";
-	  sizeunitparam = "&sizeunit=";
-	  saleoutcomeparam = "&saleoutcome=";
+	  auctionhouseparam = "&auctionhouses=" + encodeURI(selectedauctionhouses);
+	  mediumparam = "&category=";
+	  artistparam = "&artistname=" + encodeURI(artistname);
+	  lottitleparam = "&lottitle=" + encodeURI(title);
+	  saletitleparam = "&saletitle=" + encodeURI(saletitle);
+          auctionlocationparam = "&auclocation=" + encodeURI(auctionlocation);
+          salecodeparam = "&salecode=" + salecode;
+          salestartparam = "&salestartdate=" + encodeURI(salestartdate);
+          saleendparam = "&saleenddate=" + encodeURI(saleenddate);
 	  for(var i=0; i < allformelements.length; i++){
 	    elemname = allformelements[i].name;
 	    elemid = allformelements[i].id;
 	    elemvalue = allformelements[i].value;
-	    if(auctionhousepattern.test(elemid)){
-		ahelement = document.getElementById(elemid);
-		if(ahelement.checked == true){
-		    auctionhouseparam += elemvalue + "|";
-		}
-	    }
 	    if(mediumpattern.test(elemid)){
 		mediumelement = document.getElementById(elemid);
 		if(mediumelement.checked == true){
-		    mediumparam += elemvalue + "|";
+		    mediumparam += encodeURI(elemvalue + "|");
 		}
 	    }
-	    if(sizeunitpattern.test(elemid)){
-		sizeunitelement = document.getElementById(elemid);
-		if(sizeunitelement.checked == true){
-		    sizeunitparam += elemvalue;
-		}
-	    }
-	    if(sizepattern.test(elemid)){
-		sizeelement = document.getElementById(elemid);
-		if(sizeelement.checked == true){
-		    sizeparam += elemvalue + "|";
-		}
-	    }
+	    /*
 	    if(saleoutcomepattern.test(elemid)){
 		soelement = document.getElementById(elemid);
 		if(soelement.checked == true){
 		    saleoutcomeparam += elemvalue + "|";
 		}
-	    }
+	    } */
 	  }
-	  soldminval = document.frmpricefilter.soldmin.value;
-	  soldmaxval = document.frmpricefilter.soldmax.value;
-	  estimateminval = document.frmpricefilter.estimatemin.value;
-	  estimatemaxval = document.frmpricefilter.estimatemax.value;
-	  postdata = "csrfmiddlewaretoken=" + csrf + auctionhouseparam + mediumparam + sizeunitparam + sizeparam + saleoutcomeparam + "&artistname=" + artistname + "&lottitle=" + title + "&soldmin=" + soldminval + "&soldmax=" + soldmaxval + "&estimatemin=" + estimateminval + "&estimatemax=" + estimatemaxval + "&page=" + page;
+	  postdata = "csrfmiddlewaretoken=" + csrf + auctionhouseparam + mediumparam + auctionlocationparam + saletitleparam + salecodeparam + artistparam + lottitleparam + salestartparam + saleendparam + "&artwork_start=" + encodeURI(artwork_start_period) + "&artwork_end=" + encodeURI(artwork_end_period) + "&page=" + page;
+          alert(postdata);
 	  var xmlhttp;
 	  if (window.XMLHttpRequest){
 	    xmlhttp=new XMLHttpRequest();
@@ -121,7 +121,6 @@ https://templatemo.com/tm-571-hexashop
 	  else{
 	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	  }
-	  loadingspan = document.getElementById('loadingspan');
 	  // Register the handler
 	  xmlhttp.onreadystatechange = function(){
 	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
@@ -130,7 +129,8 @@ https://templatemo.com/tm-571-hexashop
 	    secheaderdiv.innerHTML = "<h2>Advanced Search Results</h2><hr>";
 	    latestlotsdiv = document.getElementById('latestlots');
 	    latestlotsdiv.innerHTML = "";
-	    loadingspan.innerHTML = "";
+	    waitdivtag.innerHTML = "";
+            waitdivtag.style.display = "none";
 	    searchtext = "";
 	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
             searchresults = context['allsearchresults'];
@@ -187,7 +187,6 @@ https://templatemo.com/tm-571-hexashop
 	    latestlotsdiv.innerHTML = searchtext;
 	  }
 	  };
-	  loadingspan.innerHTML = "<img src='/static/images/loading.gif'><div>Please wait. Depending on the parameters you have selected, this might take some time...</div>";
 	  xmlhttp.open("POST", "/price/filter/");
 	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
 	  xmlhttp.send(postdata);
@@ -344,6 +343,17 @@ https://templatemo.com/tm-571-hexashop
 	  xmlhttp.open("GET", "/price/search/?q=" + searchkey + "&page=" + pageno);
 	  xmlhttp.send();
 	}
+
+
+        function openadvancedsearch(){
+	    advsearchdiv = document.getElementById('advsearch');
+            if(advsearchdiv.style.display == 'none'){
+		advsearchdiv.style.display = '';
+	    }
+	    else{
+		advsearchdiv.style.display = 'none';
+	    }
+        }
     </script>
 
     </head>
@@ -559,6 +569,7 @@ https://templatemo.com/tm-571-hexashop
 			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
 			    <li class="scroll-to-section"><a href="/price/database/" class="active">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
 			{% if not user.is_authenticated %}
 			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
 			{% else %}
@@ -629,7 +640,8 @@ https://templatemo.com/tm-571-hexashop
 			      <form autocomplete="off" name='frmsearchpdb' id='frmsearchpdb' method='POST' action="">
 				  {% csrf_token %}
 				  <div class="autocomplete">
-				    <div class="row" style='width:800px;'><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openNav()">Advanced Search</a></div>
+				    <!-- <div class="row" style='width:800px;'><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openNav()">Advanced Search</a></div> -->
+				    <div class="row" style='width:800px;'><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openadvancedsearch();">Advanced Search</a></div>
 				    <br/>
 				    <div class="row" style='width:1000px;text-align:center;'>Search 10 Million plus Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses around the world.</div>
 				  </div>
@@ -657,7 +669,67 @@ https://templatemo.com/tm-571-hexashop
                   <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
                       <div class="section-heading section-heading-2">
 			<span class='input-group' style='900px;'>
-			<div class="row" style='width:900px;display:none;' id='advsearch'> Search Form Here...</div>
+			<div class="row" style='width:900px;display:none;' id='advsearch'> 
+			<form method="POST" name='frmpricefilter' id='frmpricefilter' action=''>
+			{% csrf_token %}
+			<span><label style='text-align:center;font-size:larger;'>Advanced Search Form </label></span><br/>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Artist's Name:</label><div class='form-group align-items-center'><input type="text" class="form-control" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name" style='padding-left:10px;height:28px;'></div></div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Artwork Title:</label><div class='form-group align-items-center'><input type="text" class="form-control" id="txttitle" name="txttitle" value="" placeholder="Filter by title" style='padding-left:10px;height:28px;'></div></div>
+			<div class='row d-flex align-items-center'><label style='text-align:center;font-size:larger;'>Category:</label></div>
+			<div class="form-check">
+                            <label class="form-check-label" for="Design-tow" style='text-align:right;padding-right:10px;'>
+                                <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal" style='text-align:right;padding-right:10px;'>Work on Paper
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="Sculpture-tow" style='text-align:left;padding-right:10px;'>
+                                <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood" style='text-align:right;padding-right:10px;'>Sculpture
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="Painting-two" style='text-align:left;padding-right:10px;'>
+                                <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas" style='text-align:right;padding-right:10px;'>Painting
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="Installation" style='text-align:left;padding-right:10px;'>
+                                <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation" style='text-align:right;padding-right:10px;'>Installation
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="photography" style='text-align:right;padding-right:10px;'>
+                                <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid" style='text-align:right;padding-right:10px;'>Photography
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="texttile-arts" style='text-align:right;padding-right:10px;'>
+                                <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" style='text-align:right;padding-right:10px;'>Textile arts
+                            </label>
+                        </div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Artwork Start:</label><div class='form-group'><select name='sel_artwork_start' id='sel_artwork_start' style='padding-left:10px;height:28px;' class='form-control'>
+			{% for syr in artwork_year_list %}
+			{{syr}}
+			{%endfor %}</select></div></div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Artwork End:</label><div class='form-group'><select name='sel_artwork_end' id='sel_artwork_end' style='padding-left:10px;height:28px;' class='form-control'>
+			{% for syr in artwork_year_list %}
+			{{syr}}
+			{%endfor %}</select></div></div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Auction House:</label><div class='form-group' style='padding-left:10px;'>
+			<select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' style='height:84px;padding-left:10px;' size=3 multiple>
+			{% for auctionhouse, ahid in auctionhouses.items %}
+			  <option value='{{ahid}}'>{{auctionhouse}}</option>
+			{% endfor %}
+			</select>
+			</div></div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Auction Location:</label><div class='form-group'><input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" value="" placeholder="Auction location" style='padding-left:10px;height:28px;'></div></div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Sale Title:</label><div class='form-group'><input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" value="" placeholder="Sale title" style='padding-left:10px;height:28px;'></div></div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Sale Start Date:</label><div class='form-group'><input type="date" class="form-date-input" id="dtauctionstartdate" name="dtauctionstartdate" value="" placeholder="" style='padding-left:10px;height:28px;'></div></div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Sale End Date:</label><div class='form-group'><input type="date" class="form-date-input" id="dtauctionenddate" name="dtauctionenddate" value="" placeholder="" style='padding-left:10px;height:28px;'></div></div>
+			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Sale Code:</label><div class='form-group'><input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value="" placeholder="Sale code" style='padding-left:10px;height:28px;'></div></div>
+			<div class='row'>&nbsp;&nbsp;</div>
+                        <div class='row d-flex align-items-center'><div class='form-group'><input type="button" class="btn btn-primary" id="btnsearch" name="btnsearch" value="Search" aria-expanded="true" onclick="javascript:filterresults();"><span id='loadingspan'></span>&nbsp;&nbsp;<input type='reset' name='rstbtn' id='rstbtn' value='Clear' class='btn btn-secondary'></div><div id='waitdiv' style='display:none;'></div></div>
+			</div>
+			</form>
 			</span>
 		      </div>
 		  </div>
@@ -724,7 +796,7 @@ https://templatemo.com/tm-571-hexashop
       <div class="tab-content">
 	<div class="tab-pane fade" id="AdvancedSearch" role="tabpanel" aria-labelledby="AdvancedSearch-tab">
           <div id="mySidebar" class="sidebar">
-			<div class="fixed-sidbr-header">
+			<!-- <div class="fixed-sidbr-header">
 				<h5>Filter</h5>
 				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
 			</div>
@@ -849,7 +921,7 @@ https://templatemo.com/tm-571-hexashop
                                                         </div>
 						</div>
 					</div>
-					<!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
 						<a class="card-title">
 						  Medium
 						</a>
@@ -872,7 +944,7 @@ https://templatemo.com/tm-571-hexashop
 							  </label>
 							</div>
 						</div>
-					</div> -->
+					</div>
 					<div class="card-header collapsed" data-toggle="collapse" href="#collapse6">
 						<a class="card-title">
 						  Sale Outcome
@@ -944,7 +1016,7 @@ https://templatemo.com/tm-571-hexashop
 					    </label>
 					</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 			
 		</form>

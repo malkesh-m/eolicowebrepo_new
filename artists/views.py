@@ -330,7 +330,12 @@ def index(request):
         pass
     if filterartists.__len__() == 0:
         allartistsqset = FeaturedArtist.objects.all()[0:20000]
+        uniqueartistnames = {}
         for artist in allartistsqset:
+            if artist.artist_name not in uniqueartistnames.keys():
+                uniqueartistnames[artist.artist_name] = 1
+            else:
+                continue
             if artist.nationality != "" and artist.nationality is not None:
                 nationality = artist.nationality
             else:
@@ -1447,8 +1452,14 @@ def showstats(request):
         saledate = datetime.datetime.combine(lotartist.saledate, datetime.time(0, 0))
         if saledate and saledate > date2yearsago:
             totallotssold += 1
-            soldlotsprice += float(lotartist.artist_price_usd)
-            midestimate = (float(lotartist.highestimate) + float(lotartist.lowestimate))/2.0
+            if lotartist.artist_price_usd is not None:
+                soldlotsprice += float(lotartist.artist_price_usd)
+            if lotartist.highestimate is not None and lotartist.lowestimate is not None:
+                midestimate = (float(lotartist.highestimate) + float(lotartist.lowestimate))/2.0
+            elif lotartist.highestimate is not None:
+                midestimate = float(lotartist.highestimate)
+            elif lotartist.lowestimate is not None:
+                midestimate = float(lotartist.lowestimate)
             if lotartist.artist_price_usd > 0.00:
                 delta = (float(lotartist.artist_price_usd) - float(midestimate))/float(lotartist.artist_price_usd)
                 totaldelta += delta

@@ -524,6 +524,7 @@
 			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
 			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
 			    {% if not user.is_authenticated %}
 			        <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
 			    {% else %}
@@ -1582,7 +1583,7 @@
                                     <div class="row mrb-90">
                                         <div class="col-sm-12">
                                             <div class="auc-re">
-                                                <h3>Auction Results</h3>
+                                                <h3></h3>
                                             </div>
                                             <div class="work-top-pnl auction-filer-search">
                                                 <span><select class="form-control" name='selview' id='selview' onchange="javascript:changeview();"><option value='grid'>Grid View</option><option value='list'>List View</option></select></span>
@@ -1863,7 +1864,7 @@
 					<div class="row">
 		                            <div class="col-lg-12">
 		                                <div class="section-heading section-heading-2 pdb-50">
-		                                    <h2>Works in Past Auctions</h2>
+		                                    <h2>Results</h2>
 		                                    <span>
 		                                            <!-- <a href="">View All</a> -->
 		                                    </span>
