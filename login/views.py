@@ -32,6 +32,7 @@ from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist
+from eolicowebsite.utils import connecttoDB, disconnectDB
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -882,7 +883,7 @@ def dashboard(request):
             auctionperiod += " - " + favauction.auctionenddate.strftime('%d %b, %Y')
         lotcount = favauction.lotcount
         coverimage = favauction.coverimage
-        auchouseobj = AuctionHouse.objects.get(id=favauction.auctionhouse_id)
+        auchouseobj = AuctionHouse.objects.get(id=favauction.auctionhouse_id) # This is a relatively smaller table, so querying it while iterating favourite auctions shouldn't take much time.
         auctionhousename = auchouseobj.housename
         d = {'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'lotcount' : lotcount, 'auctionhousename' : auctionhousename, 'auctionid' : favauction.id}
         favourite_auctions.append(d)
@@ -900,45 +901,4 @@ def dashboard(request):
     
 
 
-"""
-try:
-                artist = Artist.objects.get(id=favmodelid)
-                artistname = artist.artistname
-                aimg = settings.IMG_URL_PREFIX + str(artist.artistimage)
-                anat = artist.nationality
-                aid = artist.id
-                about = artist.description
-                favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
-            except:
-                pass
 
-try:
-                artwork = Artwork.objects.get(id=favmodelid)
-                artworkname = artwork.artworkname
-                artist_id = artwork.artist_id
-                artworkimg = settings.IMG_URL_PREFIX + str(artwork.image1)
-                size = artwork.sizedetails
-                medium = artwork.medium
-                awid = artwork.id
-                artist = Artist.objects.get(id=artist_id)
-                artistname = artist.artistname
-                favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
-            except:
-                pass
-
-try:
-                auction = Auction.objects.get(id=favmodelid)
-                auctionname = auction.auctionname
-                period = auction.auctionstartdate.strftime("%d %b, %Y")
-                aucenddate = auction.auctionenddate
-                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
-                    period = period + " - " + str(aucenddate)
-                auchouseid = auction.auctionhouse_id
-                auchouseobj = AuctionHouse.objects.get(id=auchouseid)
-                housename = auchouseobj.housename
-                aucid = auction.id
-                aucimg = settings.IMG_URL_PREFIX + str(auction.coverimage)
-                favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
-            except:
-                pass
-"""

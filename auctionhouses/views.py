@@ -27,6 +27,7 @@ from login.views import getcarouselinfo_new
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, LotArtist
+from eolicowebsite.utils import connecttoDB, disconnectDB
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page

@@ -33,6 +33,7 @@ from login.views import getcarouselinfo_new
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
 from auctions.models import Auction, Lot
+from eolicowebsite.utils import connecttoDB, disconnectDB
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -515,6 +516,7 @@ def details(request):
                 break
             #for lotobj in lotqset:
             saledate = datetime.datetime.combine(lotartist[12], datetime.time(0, 0))
+            """
             if saledate and saledate > date2yearsago:
                 totallotssold += 1
                 if lotartist[2] is not None:
@@ -537,6 +539,7 @@ def details(request):
                 pass # If saledate is prior to date2yearsago, skip it.
             elif not saledate:
                 totalartworks += 1
+            """
             auctionobj = None
             try:
                 auctionobj = artworkauctiondict[str(lotartist[13])]
@@ -605,6 +608,20 @@ def details(request):
                     actr += 1
             except:
                 print("Error in artist/details/: %s"%sys.exc_info()[1].__str__())
+    statssql = "select years_lot_sale, sell_through_rate, avg_sale_price_usd, mean_price_usd from fact_artist_ytd_lot_sale_info where artist_id=%s"%aid
+    cursor.execute(statssql)
+    statsrecs = cursor.fetchall()
+    if statsrecs.__len__() > 0:
+        yearlylotssold = statsrecs[0][0]
+        sellthrurate = statsrecs[0][1]
+        avgsaleprice = statsrecs[0][2]
+        salepriceoverestimate = statsrecs[0][3]
+    else:
+        yearlylotssold = ""
+        sellthrurate = ""
+        avgsaleprice = ""
+        salepriceoverestimate = ""
+    """
     yearlylotssold = int(float(totallotssold)/2.0)
     sellthrurate = "NA"
     if totalartworks != 0:
@@ -618,6 +635,7 @@ def details(request):
     if totallotssold != 0:
         salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
         salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
+    """
     try:
         redis_instance.set('at_allartworks_%s'%artistobj[1], pickle.dumps(allartworks))
         redis_instance.set('at_allartworks1_%s'%artistobj[1], pickle.dumps(allartworks1))
@@ -1430,6 +1448,8 @@ def showstats(request):
         context = {'stats' : loginlink, 'aid' : aid, 'div_id' : divid, 'err' : 'nologin'}
         return HttpResponse(json.dumps(context))
     artistobj = None
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     try:
         artistobj = Artist.objects.get(id=aid)
     except:
@@ -1446,6 +1466,7 @@ def showstats(request):
     date2yearsago = datetime.datetime.now() - datetime.timedelta(days=settings.YEARS_FOR_STATS*365)
     totaldelta = 0.00
     curdatetime = datetime.datetime.now()
+    """
     lotartistqset = LotArtist.objects.filter(artist_id=aid)
     for lotartist in lotartistqset:
         artworkid = lotartist.artworkid
@@ -1481,7 +1502,22 @@ def showstats(request):
     if totallotssold != 0:
         salepriceoverestimate = (float(totaldelta)/float(totallotssold)) * 100.00
         salepriceoverestimate = '{:.2f}'.format(salepriceoverestimate)
+    """
+    statssql = "select years_lot_sale, sell_through_rate, avg_sale_price_usd, mean_price_usd from fact_artist_ytd_lot_sale_info where artist_id=%s"%aid
+    cursor.execute(statssql)
+    statsrecs = cursor.fetchall()
+    if statsrecs.__len__() > 0:
+        yearlylotssold = statsrecs[0][0]
+        sellthrurate = statsrecs[0][1]
+        avgsaleprice = statsrecs[0][2]
+        salepriceoverestimate = statsrecs[0][3]
+    else:
+        yearlylotssold = ""
+        sellthrurate = ""
+        avgsaleprice = ""
+        salepriceoverestimate = ""
     statinfo = "<h6>Yearly Lots Sold: %s</h6><h6>Sell Through Rate: %s&percnt;</h6><h6>Avg. Sale Price (US$): %s</h6><h6>Price Over Estimate: %s&percnt;</h6>"%(yearlylotssold, sellthrurate, avgsaleprice, salepriceoverestimate)
+    disconnectDB(dbconn, cursor)
     context = {'stats' : statinfo, 'aid' : aid, 'div_id' : divid, 'err' : ''}
     return HttpResponse(json.dumps(context))
     
