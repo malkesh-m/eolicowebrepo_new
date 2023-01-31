@@ -673,62 +673,57 @@ https://templatemo.com/tm-571-hexashop
 			<div class="row" style='width:900px;display:none;' id='advsearch'> 
 			<form method="POST" name='frmpricefilter' id='frmpricefilter' action=''>
 			{% csrf_token %}
-			<span><label style='text-align:center;font-size:larger;'>Advanced Search Form </label></span><br/>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Artist's Name:</label><div class='form-group align-items-center'><input type="text" class="form-control" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name" style='padding-left:10px;height:28px;'></div></div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Artwork Title:</label><div class='form-group align-items-center'><input type="text" class="form-control" id="txttitle" name="txttitle" value="" placeholder="Filter by title" style='padding-left:10px;height:28px;'></div></div>
-			<div class='row d-flex align-items-center'><label style='text-align:center;font-size:larger;'>Category:</label></div>
-			<div class="form-check">
-                            <label class="form-check-label" for="Design-tow" style='text-align:right;padding-right:10px;'>
-                                <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal" style='text-align:right;padding-right:10px;'>Work on Paper
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label" for="Sculpture-tow" style='text-align:left;padding-right:10px;'>
-                                <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood" style='text-align:right;padding-right:10px;'>Sculpture
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label" for="Painting-two" style='text-align:left;padding-right:10px;'>
-                                <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas" style='text-align:right;padding-right:10px;'>Painting
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label" for="Installation" style='text-align:left;padding-right:10px;'>
-                                <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation" style='text-align:right;padding-right:10px;'>Installation
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label" for="photography" style='text-align:right;padding-right:10px;'>
-                                <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid" style='text-align:right;padding-right:10px;'>Photography
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label" for="texttile-arts" style='text-align:right;padding-right:10px;'>
-                                <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" style='text-align:right;padding-right:10px;'>Textile arts
-                            </label>
-                        </div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Artwork Start:</label><div class='form-group'><select name='sel_artwork_start' id='sel_artwork_start' style='padding-left:10px;height:28px;' class='form-control'>
-			{% for syr in artwork_year_list %}
-			{{syr}}
-			{%endfor %}</select></div></div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Artwork End:</label><div class='form-group'><select name='sel_artwork_end' id='sel_artwork_end' style='padding-left:10px;height:28px;' class='form-control'>
-			{% for syr in artwork_year_list %}
-			{{syr}}
-			{%endfor %}</select></div></div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Auction House:</label><div class='form-group' style='padding-left:10px;'>
-			<select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' style='height:84px;padding-left:10px;' size=3 multiple>
+			<span><label style='text-align:center;font-size:larger;'>Advanced Search Form </label></span><br/><hr style='width:400px;text-align:center;'><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;'>Artist's Name:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Artwork Title:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txttitle" name="txttitle" value="" placeholder="Filter by title" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
+			<div class='row flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Category:</label></div><div class='col-lg align-items-left'>
+			<div class="row form-check">
+                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right flex-nowrap'><label class="form-check-label flex-nowrap" for="Design-tow" style='text-align:right;padding-right:10px;padding-left:10px;font-size:small;'>Work on Paper
+                            </label></div>
+                        </div><br/>
+                        <div class="row form-check">
+                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right flex-nowrap'><label class="form-check-label  flex-nowrap" for="Sculpture-tow" style='text-align:left;padding-right:10px;padding-left:10px;font-size:small;'>Sculpture
+                            </label></div>
+                        </div><br/>
+                        <div class="row form-check">
+                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right'><label class="form-check-label  flex-nowrap" for="Painting-two" style='text-align:left;padding-right:10px;padding-left:10px;font-size:small;'>Painting
+                            </label></div>
+                        </div><br/>
+                        <div class="row form-check">
+                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right'><label class="form-check-label  flex-nowrap" for="Installation" style='text-align:left;padding-right:10px;padding-left:10px;font-size:small;'>Installation
+                            </label></div>
+                        </div><br/>
+                        <div class="row form-check">
+                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right'><label class="form-check-label  flex-nowrap" for="photography" style='text-align:right;padding-right:10px;padding-left:10px;font-size:small;'>Photography
+                            </label></div>
+                        </div><br/>
+                        <div class="row form-check">
+                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right'><label class="form-check-label  flex-nowrap" for="texttile-arts" style='text-align:right;padding-right:10px;padding-left:10px;font-size:small;'>Textile arts
+                            </label></div>
+                        </div><br/>
+			</div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Artwork Start:</label></div><div class='col-lg align-items-left'><select name='sel_artwork_start' id='sel_artwork_start' style='padding-left:10px;height:28px;width:350px;font-size:small;' class='form-control'>
+			{% for syk, syr in artwork_year_list.items %}
+			<option value="{{syk}}">{{syr}}</option>
+			{%endfor %}</select></div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Artwork End:</label></div><div class='col-lg align-items-left'><select name='sel_artwork_end' id='sel_artwork_end' style='padding-left:10px;height:28px;width:350px;font-size:small;' class='form-control'>
+			{% for syk, syr in artwork_year_list.items %}
+			<option value="{{syk}}">{{syr}}</option>
+			{%endfor %}</select></div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Auction House:</label></div><div class='col-lg align-items-left'>
+			<select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' style='height:84px;padding-left:10px;width:350px;font-size:small;' size=3 multiple>
 			{% for auctionhouse, ahid in auctionhouses.items %}
 			  <option value='{{ahid}}'>{{auctionhouse}}</option>
 			{% endfor %}
 			</select>
-			</div></div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Auction Location:</label><div class='form-group'><input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" value="" placeholder="Auction location" style='padding-left:10px;height:28px;'></div></div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Sale Title:</label><div class='form-group'><input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" value="" placeholder="Sale title" style='padding-left:10px;height:28px;'></div></div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Sale Start Date:</label><div class='form-group'><input type="date" class="form-date-input" id="dtauctionstartdate" name="dtauctionstartdate" value="" placeholder="" style='padding-left:10px;height:28px;'></div></div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Sale End Date:</label><div class='form-group'><input type="date" class="form-date-input" id="dtauctionenddate" name="dtauctionenddate" value="" placeholder="" style='padding-left:10px;height:28px;'></div></div>
-			<div class='row d-flex align-items-center'><label style='padding-right:10px;'>Sale Code:</label><div class='form-group'><input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value="" placeholder="Sale code" style='padding-left:10px;height:28px;'></div></div>
+			</div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Auction Location:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" value="" placeholder="Auction location" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Sale Title:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" value="" placeholder="Sale title" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Sale Start Date:</label></div><div class='col-lg align-items-left'><input type="date" class="form-date-input" id="dtauctionstartdate" name="dtauctionstartdate" value="" placeholder="" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Sale End Date:</label></div><div class='col-lg align-items-left'><input type="date" class="form-date-input" id="dtauctionenddate" name="dtauctionenddate" value="" placeholder="" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
+			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Sale Code:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value="" placeholder="Sale code" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
 			<div class='row'>&nbsp;&nbsp;</div>
-                        <div class='row d-flex align-items-center'><div class='form-group'><input type="button" class="btn btn-primary" id="btnsearch" name="btnsearch" value="Search" aria-expanded="true" onclick="javascript:filterresults();"><span id='loadingspan'></span>&nbsp;&nbsp;<input type='reset' name='rstbtn' id='rstbtn' value='Clear' class='btn btn-secondary'></div><div id='waitdiv' style='display:none;'></div></div>
+                        <div class='row  flex-nowrap'><div class='col-lg align-items-left'>&nbsp;</div><div class='col-lg align-items-right text-nowrap'><input type="button" class="btn btn-primary" id="btnsearch" name="btnsearch" value="Search" aria-expanded="true" onclick="javascript:filterresults();" style='width:175px;'><span id='loadingspan'></span>&nbsp;&nbsp;<input type='reset' name='rstbtn' id='rstbtn' value='Clear' class='btn btn-secondary' style='width:175px;'></div><div id='waitdiv' style='display:none;'></div></div><br/>
 			</div>
 			</form>
 			</span>

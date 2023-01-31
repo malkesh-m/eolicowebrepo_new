@@ -219,7 +219,7 @@ def index(request):
     #context['entities'] = entitieslist
     context['filterpdb'] = filterpdb
     context['auctionhouses'] = auctionhouses
-    context['artwork_year_list'] = []
+    context['artwork_year_list'] = {'pre-15th-century' : 'Pre-15th Century', '15th-century' : '15th Century', '16th-century' : '16th Century', '17th-century' : '17th Century', '18th-century' : '18th Century', '19th-century' : '19th Century', 'early-20th-century' : 'Early 20th Century', 'mid-20th-century' : 'Mid 20th Century', 'late-20th-century' : 'Late 20th Century', 'contemporary' : 'Contemporary'}
     #carouselentries = getcarouselinfo_new()
     #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
