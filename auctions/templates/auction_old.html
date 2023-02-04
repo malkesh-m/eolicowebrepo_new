@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <title>ArtBidder Auctions</title>
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    <link rel="stylesheet" href="/static/css/owl-carousel.css">
+    <link rel="stylesheet" href="/static/css/lightbox.css">
+    <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
+
+    <link rel="stylesheet" href="/static/css/newcarousel.css">
+    <link rel="stylesheet" href="/static/css/autocomplete.css">
+
+    <style>
+	.owl-prev, .owl-next {
+        width: 15px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        display: block !important;
+        border:0px solid black;
+    }
+    .owl-prev { left: -20px; }
+    .owl-next { right: -20px; }
+    .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
+ 
+    </style>
+    <style>
+    #frmsearchauctions input[type=search]{width:430px !important;}
+    </style>
+
+<!--
+
+TemplateMo 571 Hexashop
+
+https://templatemo.com/tm-571-hexashop
+
+-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <script type='text/javascript'>
+	
+	function dofilter(selectid){
+	  //alert("hi");
+	  const artistsdict = {
+	    {% for artist, lotslist in allartists.items %}
+		"{{artist}}" : Array(
+		  {% for lot in lotslist %}
+			Array( "{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}" ),
+		  {% endfor %}
+		),
+	    {% endfor %}
+	  };
+          const auctionsdict = {
+	    {% for auction, lotslist in allauctions.items %}
+		"{{auction}}" : Array(
+		  {% for lot in lotslist %}
+			Array( "{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}", "{{lot.artist}}" ),
+		  {% endfor %}
+		),
+	    {% endfor %}
+	  };
+	  sectiontag = document.getElementById("auctions");
+	  selecttag = document.getElementById(selectid);
+	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
+	  //alert(selectedoption);
+          html = "";
+ 	  if(selectid == "byartists"){
+	    for(artst in artistsdict){
+		lotslist = artistsdict[artst];
+		starter = 0;
+		for(var i=0; i < lotslist.length; i++){
+		  if(selectedoption != "1"){
+		  if(artst.toLowerCase() == selectedoption.toLowerCase()){
+		    if(starter == 0){
+            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></a></div></div>";        
+		  }
+		}// if selectedoption != 1
+		else{
+		    if(starter == 0){
+            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";  
+		}
+		} // for lotslist loop ends
+		html += "</div></div></div></div></div></section>";
+	    } 
+	  }
+	  if(selectid == "byauctions"){
+	    for(auction in auctionsdict){
+		//if(auction.toLowerCase() == selectedoption.toLowerCase()){
+		  lotslist = auctionsdict[auction];
+		  starter = 0;
+		for(var i=0; i < lotslist.length; i++){
+		  if(selectedoption != "1"){
+		  if(auction.toLowerCase() == selectedoption.toLowerCase()){
+		    if(starter == 0){
+            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";        
+		  }
+		} // if selectedoption != 1
+		else{
+		    if(starter == 0){
+            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+		        starter = 1;
+		    }
+		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";       
+		}
+		}  // for lotslist ends
+		html += "</div></div></div></div></div></section>";
+		//}
+	    }
+	  }
+	  sectiontag.innerHTML = html;
+	}
+    </script>
+
+    <style type="text/css">
+    .button
+    {
+      width: 150px;
+      padding: 10px;
+      background-color: #FF8C00;
+      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
+      font-weight:bold;
+      text-decoration:none;
+    }
+    #cover{
+      position:fixed;
+      top:0;
+      left:0;
+      background:rgba(0,0,0,0.6);
+      z-index:5;
+      width:100%;
+      height:100%;
+      display:none;
+    }
+    #adminScreen
+    {
+      height:680px;
+      width:640px;
+      margin:0 auto;
+      position:relative;
+      z-index:10;
+      display:none;
+      background: url(login.png) no-repeat;
+      border:5px solid #cccccc;
+      border-radius:10px;
+    }
+    #adminScreen:target, #adminScreen:target + #cover{
+      display:block;
+      opacity:2;
+    }
+    .cancel
+    {
+      display:block;
+      position:absolute;
+      top:3px;
+      right:2px;
+      background:rgb(245,245,245);
+      color:black;
+      height:30px;
+      width:35px;
+      font-size:30px;
+      text-decoration:none;
+      text-align:center;
+      font-weight:bold;
+    }
+    </style>
+
+    <script src="/static/js/editfromfront.js"></script>
+    <script src="/static/js/autocomplete.js"></script>
+    <script src="/static/js/eolicoauth.js"></script>
+
+    <script>
+	auctions = [
+		{% for auctionname in filterauctions %}
+		    "{{auctionname}}",
+		{% endfor %}
+	]; // Should get populated during page load.
+	
+    </script> 
+    <script>
+	function searchauction(){
+	  var xmlhttp;
+	  if (window.XMLHttpRequest){
+	    xmlhttp=new XMLHttpRequest();
+	  }
+	  else{
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  // Register the handler
+	  xmlhttp.onreadystatechange = function(){
+	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+	    context = JSON.parse(xmlhttp.responseText);
+	    featureddiv = document.getElementById('upcomingauctions');
+	    featureddiv.innerHTML = "";
+	    searchtext = "";
+	    pastauctionsdiv = document.getElementById('pastauctions');
+	    pastauctionsdiv.innerHTML = "";
+	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+            searchauctions = context['allauctions'];
+    	    adminuser = context['adminuser'];
+            for(var i=0; i < searchauctions.length; i++){
+                auctionobj = searchauctions[i];
+		searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+                searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "'><img src='" + auctionobj.coverimage + "'></a></div>";
+		searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "' style='color:#000000;'><h4>" + auctionobj.auctionname +"</h4>";
+		if (auctionobj.auctionperiod != ''){
+		    searchtext += "<h6>" + auctionobj.auctionperiod + "</h6>";
+		}
+		searchtext += "<h6>" + auctionobj.auctionhouse + "</h6>";
+		searchtext += "<h6>Number of lots: " + auctionobj.lotcount + "</h6>";
+		searchtext += "</a></div>";
+		if(adminuser == 1){
+		    searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + auctionobj.aucid + "');\">Edit</a></div>";
+		}
+		searchtext += "</div></div>";
+	    }
+	    searchtext += "</div></div>";
+	    featureddiv.innerHTML = searchtext;
+	    //featureddiv.innerHTML = featureddiv.innerHTML.replace("<div class=\"row align-items-end\"></div></div>", "<div class=\"row align-items-end\">");
+	    //alert(featureddiv.innerHTML);
+	  }
+	  };
+	  searchkey = document.getElementById('auctionsearch').value;
+	  xmlhttp.open("GET", "/auction/search/?q=" + searchkey);
+	  xmlhttp.send();
+	}
+    </script>
+
+    </head>
+    
+    <body onload="javascript:autocomplete(document.getElementById('auctionsearch'), auctions);">
+
+    <!-- Sign up Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Sign up to see full auction records — for free</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
+			    <label style="color:red;" id="errormsg"></label>
+			    {% csrf_token %}
+                            <div class="form-group">
+                                <label for="name">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="emailid">Email</label>
+                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
+                            </div>
+                            <div class="form-group">
+                                <label for="password1">Password</label>
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                <p>Password must be at least 8 characters.</p>
+                            </div>
+			    <div class="form-group">
+                                <label for="password2">Confirm Password</label>
+                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="form-group">
+                                <div class="check-input">
+                                    <span>
+                                        <input type="checkbox" name="agree" id="agree" value="" />
+                                    </span>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from ArtBidder.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
+                            </div>
+			    <!--
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+			    -->
+                            <div class="form-group text-center">
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign up Modal -->
+
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Login</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
+			    <label style="color:red;" id="errormsg"></label>
+			    {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                            </div>
+                            <div class="form-group">
+                                <label for="password">password</label>
+                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <!-- <div class="form-group">
+                                <div class="check-input">
+                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
+                                </div>
+                            </div> -->
+                            <div class="form-group">
+                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
+                            </div>
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign in Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Reset your password</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign in Modal -->
+    
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>  
+    <!-- ***** Preloader End ***** -->
+    
+    
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="/login/index/" class="logo">
+                            <img src="/static/images/logo1.png">
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+			    <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
+                            <li class="scroll-to-section"><a href="/login/dashboard/">Dashboard</a></li>
+			    <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+			    <li class="scroll-to-section"><a href="/auction/index/" class="active">Auctions</a></li>
+			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
+
+			    {% if not user.is_authenticated %}
+				<li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+		 	    {% else %}
+				<li><a href="/login/logout/">Logout</a></li>
+			    {% endif %}
+
+			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
+				
+			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
+
+                            <!--<li class="submenu">
+                                <a href="javascript:;">Pages</a>
+                                <ul>
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="products.html">Products</a></li>
+                                    <li><a href="single-product.html">Single Product</a></li>
+                                    <li><a href="contact.html">Contact Us</a></li>
+                                </ul>
+                            </li>-->
+                            
+                            
+                        </ul>        
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+    <!-- ***** Main Banner Area Start ***** -->
+    
+   	<!-- Carousel -->
+    <section class="testimonials">
+     <div class="container">
+      <!-- <div class="row">
+        <div class="col-sm-12">
+          <div id="customers-testimonials" class="owl-carousel owl-theme">
+	    {% for d in carousel %}
+            <div class="item">
+              <div class="shadow-effect">
+                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
+                <div class="item-details">
+			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
+			<h5>{{d.artworkname}}</h5>
+			<p>{{d.medium}}</p>
+			</a>
+		</div>
+              </div>
+            </div>
+	    {% endfor %}
+          </div>
+        </div>
+      </div> -->
+     </div>
+    </section>
+    <!-- END OF Carousels -->
+    <section class="section gal-section" id="searchauctionsection" style='width:1200px;'>
+      	<div class="container" style='width:1000px;'>
+	    <div class="row" style='display:flex;'>
+                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
+                      <div class="section-heading section-heading-2">
+                          <!-- <h2>Emerging Art</h2> -->
+                          <span>
+			      <form autocomplete="off" name='frmsearchauctions' id='frmsearchauctions' method='POST' action="">
+				  {% csrf_token %}
+				  <div class="autocomplete">
+				    <div class="row" style='width:1000px;'><input type="search" class='form-control' name='auctionsearch' id='auctionsearch' maxLength="600" placeholder="Search Auctions" style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchauction();'><i class="fa fa-search"></i></button>&nbsp;&nbsp;<span id="loader"></span></div>
+				  </div>
+			      </form>
+                              <!-- <a href="">View All</a> -->
+                          </span>
+                      </div>
+                  </div>
+              </div>
+	</div>
+    </section>
+    <!-- ***** Main Banner Area End ***** -->
+	<section class="section gal-section" id="">
+        <div class="container">
+	</div>
+	<!-- <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+					
+					<div class="row">
+					  <select name="byartists" placeholder="Select" class="form-control" id='byartists' onChange="javascript:dofilter('byartists');">
+						<option value="1">All Artists</option>
+						{% for artist, lotlist in allartists.items %}
+						<option value="{{artist}}">{{artist}}</option>
+						{% endfor %}
+					  </select>
+					</div>
+				</div>
+                <div class="col-md-4">
+					
+					<div class="row">
+					  <select name="byauctions" placeholder="Select" class="form-control" id='byauctions' onChange="javascript:dofilter('byauctions');">
+						<option value="1">All Auctions</option>
+						{% for auctionname, lotslist in allauctions.items %}
+						<option value="{{auctionname}}">{{auctionname}}</option>
+						{% endfor %}
+					  </select>
+					</div>
+				</div>
+                		<div class="col-md-4">
+					
+				</div>
+			</div>
+		</div>
+	-->
+	
+	<!-- Begining of new auctions gallery -->
+
+	
+	<section class="category-tabs mrt-90">
+        <div class="container" id="upcomingauctions">
+
+	<div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="tabbable-responsive tabbable-responsive-new">
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Upcoming Auctions</a>
+                                </li>
+                                <!-- <li class="nav-item">
+                                    <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Past Auctions</a>
+                                </li> -->
+
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Past Auctions</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+	
+	<div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="cate-tabs-content mrt-90">
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
+				    
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="section-heading section-heading-2 pdb-50">
+                                                <h2>Upcoming Auctions</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+	
+				    <div id="noteble-works" class="owl-carousel owl-theme owl-d">
+					{% for auctionname, auctiondict in featuredauctions.items %}
+					<div class="column">
+					    <div class="img-box">
+						<a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="{{auctiondict.image}}" alt=""></a>
+						<a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">
+							<h4>{{auctiondict.auctionhouse}}, {{auctiondict.location}}</h4>
+							<h6>Sale Code: {{auctiondict.salecode}}</h6>
+							<h4>{{auctionname}}</h4>
+							<h6>{{auctiondict.auctionperiod}}</h6>
+							{% if not user.is_authenticated %}
+							<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+							{% else %}
+							{% if auctiondict.favourite == 0 %}
+							<div id='favourite_auc1_{{forloop.counter}}'>
+							<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{auctiondict.aucid}}, 'favourite_auc1_{{forloop.counter}}');">Add to Favourites</a></h6>
+							</div>
+							{% else %}
+							<div id='favourite_auc1_{{forloop.counter}}'>
+							<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+							</div>
+							{% endif %}
+							{% endif %}
+							<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
+						</a>
+					    </div>
+					</div>
+					{% endfor %}
+				    </div>
+				<div class="container-fluid">
+				    <div class="row">
+				    	<div class="col-xs-12 center-block text-center">
+					    <a class="btn btn-primary" href="/auction/moreauctions/?atype=0">View More</a>
+				    	</div>
+				    </div>
+				</div>
+	
+	</div>
+	<!-- End of new auctions gallery -->
+	<div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
+
+	<div class="row mrb-90">
+                                        <div class="col-sm-12">
+                                            <div class="auc-re">
+                                                <h3></h3>
+                                            </div>
+                                            <div class="work-top-pnl auction-filer-search">
+                                                <span><!-- <select class="form-control" name='selview' id='selview' onchange="javascript:changeview();"><option value='grid'>Grid View</option><option value='list'>List View</option></select> --></span>
+                                                <div class="fixed-sidbr-header">
+
+                                                    <!-- <button class="openbtn Show" onclick="openNav()"> Filter</button> -->
+                                                </div>
+                                                <div class="auction-search">
+                                                    <form method="POST" name='frmtextfilter' id='frmtextfilter' action=''>
+							{% csrf_token %}
+                                                        <input type="text" value="" name="txtfilter" id="txtfilter" placeholder="Search by artwork title, series, or description" />
+                                                        <button type="button" value="" name="btntextfilter" onclick="javascript:filterbytext();"><i class="fa fa-search" aria-hidden="true"></i></button><span id='searchstatus'></span>
+							<input type='hidden' name='aid' value='{{artistinfo.artistid}}'>
+							<input type='hidden' name='pageno' value='1'>
+                                                    </form>
+                                                </div>
+                                                <!-- <div class="dropdown">
+                                                    Sort By:
+                                                    <select>
+                                                        <option value="">Sale Date (Most recent)</option>
+                                                        <option value="">Estimate</option>
+                                                        <option value="">Sale price</option>
+                                                    </select>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                            <div class="sidebar-left">
+                                                <form method="POST" name='frmotherfilter' id='frmotherfilter' action=''>
+						{% csrf_token %}
+                                                <div id="accordion" class="accordion">
+                                                    <div class="card mb-0">
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                            <a class="card-title">
+                                                                Category
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseThree" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Design-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal" onchange="javascript:filterresults(this);">Work on Paper
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Sculpture-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood" onchange="javascript:filterresults(this);">Sculpture
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Painting-two">
+                                                                        <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas" onchange="javascript:filterresults(this);">Painting
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Installation">
+                                                                        <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation" onchange="javascript:filterresults(this);">Installation
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="photography">
+                                                                        <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid" onchange="javascript:filterresults(this);">Photography
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="texttile-arts">
+                                                                        <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" onchange="javascript:filterresults(this);">Textile arts
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+							<div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                            <a class="card-title">
+                                                                Lot Status
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse3_5" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold1">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold1" name="soldorunsold1" value="yet to be sold" onclick="javascript:filterresults(this);">Yet to be Sold
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold2">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold2" name="soldorunsold2" value="sold" onclick="javascript:filterresults(this);">Sold
+                                                                </label>
+                                                            </div>
+							    <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold3">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold3" name="soldorunsold3" value="bought-in" onclick="javascript:filterresults(this);">Bought In
+                                                                </label>
+                                                            </div>
+							    <div class="form-check">
+                                                                <label class="form-check-label" for="soldorunsold4">
+                                                                    <input type="checkbox" class="form-check-input" id="soldorunsold4" name="soldorunsold4" value="withdrawn" onclick="javascript:filterresults(this);">Withdrawn
+                                                                </label>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                            <a class="card-title">
+                                                                Size
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse4" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <p class="dimension">This is based on the artwork’s average dimension.</p>
+                                                                <div class="size-cm-in">
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="cm-auction">
+                                                                            <input type="radio" class="form-check-input" id="sizeunit1" name="dimension" value="cm" checked onclick="javascript:filterresults(this);">cm
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <label class="form-check-label" for="in-auction">
+                                                                            <input type="radio" class="form-check-input" id="sizeunit2" name="dimension" value="in" onclick="javascript:filterresults(this);">in
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="SmallSize-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="size1" name="sizevalue" value="small" onchange="javascript:filterresults(this);">Small (under 40cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Medium-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="size2" name="sizevalue" value="medium" onchange="javascript:filterresults(this);">Medium (40 – 100cm)
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="Large-tow">
+                                                                        <input type="checkbox" class="form-check-input" id="size3" name="sizevalue" value="large" onchange="javascript:filterresults(this);">Large (over 100cm)
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapseyear">
+                                                            <a class="card-title">
+                                                                Year Created
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseyear" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+								  <label class="form-check-label" for="Period1">
+									<input type="checkbox" class="form-check-input" id="period1" name="option1" value="202" onchange="javascript:filterresults(this);">2020s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period2">
+									<input type="checkbox" class="form-check-input" id="period2" name="option1" value="201" onchange="javascript:filterresults(this);">2010s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period3">
+									<input type="checkbox" class="form-check-input" id="period3" name="option1" value="200" onchange="javascript:filterresults(this);">2000s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period4">
+									<input type="checkbox" class="form-check-input" id="period4" name="option1" value="199" onchange="javascript:filterresults(this);">1990s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period5">
+									<input type="checkbox" class="form-check-input" id="period5" name="option1" value="198" onchange="javascript:filterresults(this);">1980s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period6">
+									<input type="checkbox" class="form-check-input" id="period6" name="option1" value="197" onchange="javascript:filterresults(this);">1970s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period7">
+									<input type="checkbox" class="form-check-input" id="period7" name="option1" value="196" onchange="javascript:filterresults(this);">1960s
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period8">
+									<input type="checkbox" class="form-check-input" id="period8" name="option1" value="early20" onchange="javascript:filterresults(this);">Early 20th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period9">
+									<input type="checkbox" class="form-check-input" id="period9" name="option1" value="late19" onchange="javascript:filterresults(this);">Late 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period10">
+									<input type="checkbox" class="form-check-input" id="period10" name="option1" value="mid19" onchange="javascript:filterresults(this);">Mid 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period11">
+									<input type="checkbox" class="form-check-input" id="period11" name="option1" value="early19" onchange="javascript:filterresults(this);">Early 19th Century
+								  </label>
+								</div>
+								<div class="form-check">
+								  <label class="form-check-label" for="Period12">
+									<input type="checkbox" class="form-check-input" id="period12" name="option1" value="18" onchange="javascript:filterresults(this);">18th Century and Earlier
+								  </label>
+								</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-header" data-toggle="collapse" data-parent="#accordion" href="#collapse55">
+                                                            <a class="card-title">
+                                                                Auction House
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapse55" class="collapse show" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse1">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse1" name="option1" value="sotheby" onchange="javascript:filterresults(this);">Sotheby's
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse2">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse2" name="option1" value="christie" onchange="javascript:filterresults(this);">Christie's
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse2">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse2" name="option1" value="phillips" onchange="javascript:filterresults(this);">Phillips
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse4">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse4" name="option1" value="bonham" onchange="javascript:filterresults(this);">Bonhams
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse5">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse5" name="option1" value="rago" onchange="javascript:filterresults(this);">Rago Arts
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse6">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse6" name="option1" value="dorotheum" onchange="javascript:filterresults(this);">Dorotheum
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse7">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse7" name="option1" value="tajan" onchange="javascript:filterresults(this);">Tajan
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse8">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse8" name="option1" value="vanham" onchange="javascript:filterresults(this);">Van-ham
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse9">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse9" name="option1" value="artcurial" onchange="javascript:filterresults(this);">Artcurial
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse10">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse10" name="option1" value="wright" onchange="javascript:filterresults(this);">Wright
+                                                                    </label>
+                                                                </div>
+								<div class="form-check">
+                                                                    <label class="form-check-label" for="auchouse11">
+                                                                        <input type="checkbox" class="form-check-input" id="auchouse11" name="option1" value="other" onchange="javascript:filterresults(this);">Others
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+						</form>
+                                            </div>
+                                        </div>
+					
+
+	<div id="pastauctions" class="col-sm-12 col-md-8 col-lg-9 col-xl-9" style="display:" >
+	
+            <div class="row align-items-end">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2 pdb-50">
+                        <h2>Past Auctions</h2>
+			<hr>
+                    </div>
+                </div>
+            </div>
+
+	
+        
+	{% for row, auctionlist in allauctions.items %}
+
+            <div class="row align-items-end">
+                {% for auctiondict in auctionlist %}
+                  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                        <div class="artist-category align-items-end">
+			    
+                            <div class="img-box">
+                                <div class="thumb">
+                                    <a href="/auction/showauction/?aucid={{auctiondict.aucid}}"><img src="{{auctiondict.image}}" alt=""></a>
+                                </div>
+                                
+					<a href="/auction/showauction/?aucid={{auctiondict.aucid}}" style="color:#000000;">
+						<h4>{{auctiondict.auctionhouse}}, {{auctiondict.location}}</h4>
+						<h6>Sale Code: {{auctiondict.salecode}}</h6>
+						<h4>{{auctiondict.auctionname}}</h4>
+						<h6>{{auctiondict.auctionperiod}}</h6>
+						{% if not user.is_authenticated %}
+						<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+						{% else %}
+						{% if auctiondict.favourite == 0 %}
+						<div id='favourite_auc2{{forloop.parentloop.counter}}_{{forloop.counter}}'>
+						<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('auction', {{auctiondict.aucid}}, 'favourite_auc2{{forloop.parentloop.counter}}_{{forloop.counter}}');">Add to Favourites</a></h6>
+						</div>
+						{% else %}
+						<div id='favourite_auc2{{forloop.parentloop.counter}}_{{forloop.counter}}'>
+						<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+						</div>
+						{% endif %}
+						{% endif %}
+						<a class="btn btn-slider" href="/auction/showauction/?aucid={{auctiondict.aucid}}">View Lots</a>
+					</a>
+                                
+                            </div>
+			    
+			    <!--<div class="item">
+                                <div class="thumb">
+                                    <a href="/auction/showauction/?aucid={{lotslist.0.aucid}}"><img src="/static/images/showmore.png" alt=""></a>
+                                </div>
+                                <div class="down-content">
+				    <a href="/auction/showauction/?aucid={{lotslist.0.aucid}}">
+					<h4>Show More Lots</h4>
+				    </a>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+		    {% endfor %}
+                </div>
+		{% endfor %}
+	        <div class="row">
+	    	    <div class="col-lg-12">
+		        <a class="btn btn-primary" href="/auction/moreauctions/?atype=1">View More</a>
+	    	    </div>
+	        </div>
+            </div>
+        </div>
+	    
+	</div>
+
+	<!-- <div class="auction-pagination">
+		<nav aria-label="Page navigation example">
+		    <ul class="pagination">
+		        <li class="page-item">
+		            {% if pages.prevpage >= 1 %}
+		            <a class="page-link" href="/auction/index/?page={{pages.prevpage}}" aria-label="Previous">
+		                <span aria-hidden="true">Previous</span>
+		                <span class="sr-only">Previous</span>
+		            </a>
+			    {% endif %}
+		        </li>
+			{% if pages.displayedprevpage2 > 0 %}
+			<li class="page-item"><a class="page-link" href="/auction/index/?page={{pages.displayedprevpage2}}">{{pages.displayedprevpage2}}</a></li>
+			{% endif %}
+			{% if pages.displayedprevpage1 > 0 %}
+			<li class="page-item"><a class="page-link" href="/auction/index/?page={{pages.displayedprevpage1}}">{{pages.displayedprevpage1}}</a></li>
+			{% endif %}
+			<li class="page-item"><a class="page-link" href="#">{{pages.currentpage}}</a></li>
+			<li class="page-item"><a class="page-link" href="/auction/index/?page={{pages.nextpage}}">{{pages.nextpage}}</a></li>
+		        <li class="page-item"><a class="page-link" href="/auction/index/?page={{pages.displayednextpage1}}">{{pages.displayednextpage1}}</a></li>
+		        <li class="page-item"><a class="page-link" href="/auction/index/?page={{pages.displayednextpage2}}">{{pages.displayednextpage2}}</a></li>
+		        <li class="page-item">
+		            <a class="page-link" href="/auction/index/?page={{pages.nextpage}}" aria-label="Next">
+		                <span aria-hidden="true">Next</span>
+		                <span class="sr-only">Next</span>
+		            </a>
+		        </li>
+		    </ul>
+		</nav>
+	</div> -->
+
+    </section>
+    </div>
+
+
+    <div id="adminScreen">
+	  <a href="#" class="cancel">×</a>
+	  <form name='frmedit' id='frmedit'>
+	    {% csrf_token %}
+          </form>
+      </div>
+      <div id="cover" >
+      </div>
+    
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="first-item">
+                        <div class="logo">
+                            <img src="/static/images/logo-white.png" alt="">
+                        </div>
+                        <ul>
+                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
+                            <li><a href="#">demo@company.com</a></li>
+                            <li><a href="#">010-020-0340</a></li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="col-lg-3">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
+                        <li><a href="/login/index/">Home</a></li>
+                        <li><a href="/auction/index/">Current Auctions</a></li>
+                        <li><a href="/artist/index/">Trending Artists</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li><a href="/about/">About Us</a></li>
+                        <li><a href="/gallery/index/">Galleries</a></li>
+                        <li><a href="/museum/index/">Museums</a></li>
+                        <li><a href="/contactus/">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="/faq/">FAQ's</a></li>
+                        <li><a href="/termsofuse/">Terms of Use</a></li>
+                        <li><a href="/privacy/">Privacy Policy</a></li>
+                        <li><a href="/security/">Security</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
+                       
+                        <ul>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+
+    <!-- jQuery -->
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!-- Plugins -->
+    <script src="/static/js/owl-carousel.js"></script>
+    <script src="/static/js/accordions.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <script src="/static/js/scrollreveal.min.js"></script>
+    <script src="/static/js/waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/imgfix.min.js"></script> 
+    <script src="/static/js/slick.js"></script> 
+    <script src="/static/js/lightbox.js"></script> 
+    <script src="/static/js/isotope.js"></script> 
+    <script src="/static/js/jquery.dropdown.min.js"></script> 
+    
+    <!-- Global Init -->
+    <script src="/static/js/custom.js"></script>
+	
+	<script>
+	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+	$('.demo').dropdown({
+		limitCount: 1,
+		input:'<input type="text" maxLength="20" placeholder="Search">'
+	});
+
+jQuery(document).ready(function($) {
+"use strict";
+$('#customers-testimonials').owlCarousel( {
+		loop: true,
+		center: true,
+		items: 3,
+		margin: 30,
+		autoplay: true,
+		dots:true,
+    		nav:true,
+		autoplayTimeout: 8500,
+		smartSpeed: 450,
+  		navText: ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
+		responsive: {
+			0: {
+				items: 1
+			},
+			768: {
+				items: 2
+			},
+			1170: {
+				items: 3
+			}
+		}
+	});
+});
+	</script>
+    <script>
+		
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function(){
+            selectedClass = $(this).attr("data-rel");
+            $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("."+selectedClass).fadeOut();
+            setTimeout(function() {
+              $("."+selectedClass).fadeIn();
+              $("#portfolio").fadeTo(50, 1);
+            }, 500);
+                
+            });
+        });
+
+    </script>
+
+  </body>
+</html>

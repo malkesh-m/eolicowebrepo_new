@@ -73,8 +73,9 @@ def index(request):
     filterpdb = []
     auctionhouses = {}
     uniquefilter = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn = connlist[0]
+    cursor = connlist[1]
     try:
         #entitieslist = pickle.loads(redis_instance.get('pd_entitieslist'))
         filterpdb = pickle.loads(redis_instance.get('pd_filterpdb'))
@@ -261,9 +262,10 @@ def search(request):
     endsearchctr = int(page) * maxsearchresults + 1
     objectstartctr = maxperobjectsearchresults * int(page) - maxperobjectsearchresults
     objectendctr = maxperobjectsearchresults * int(page)
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
+    connlist = connecttoDB()
+    dbconn = connlist[0]
+    cursor = connlist[1]
     idpattern = re.compile("\d+")
-    cursor = dbconn.cursor()
     # Remember to close db connection at the end of the function...
     auctionhouseqset = AuctionHouse.objects.filter(housename__icontains=searchkey)
     auctionhouseidslist = []
@@ -573,8 +575,9 @@ def dofilter(request):
         mctr += 1
     entitieslist = []
     context = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn = connlist[0]
+    cursor = connlist[1]
     l_entities = []
     if lottitle != "":
         filterartworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_image1, faa_artist_ID from fineart_artworks where MATCH(faa_artwork_title) AGAINST ('" + lottitle + "') limit %s OFFSET %s"%(settings.PDB_ARTWORKSLIMIT, artworkstartctr)

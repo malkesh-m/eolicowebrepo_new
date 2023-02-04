@@ -52,8 +52,8 @@ def index(request):
     auctionhouses = [] # Auctions in various auction houses section.
     filterauctionhouses = []
     uniqueauctions = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     try:
         filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
         auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))
@@ -155,8 +155,8 @@ def index_old(request):
     featuredshows = [] # Featured shows section, will show 5 top priority auctions only.
     currentmngshows = {} # Current museum and gallery shows section - keys are auction houses, values are list of priority auctions in each house. Will need association of auctions to galleries and museums, which is to be implemented later.
     uniqueauctions = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     try:
         filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
         auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))

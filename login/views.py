@@ -77,8 +77,9 @@ def getcarouselinfo_new():
     except:
         pass
     if entrieslist.__len__() == 0:
-        dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-        cursor = dbconn.cursor()
+        connlist = connecttoDB()
+        dbconn = connlist[0]
+        cursor = connlist[1]
         # Find the 'entriescount' number of artworks sold in last 1 month ordered by decreasing values of 'fal_lot_low_estimate_USD'.
         carouselsql = "select lot.fal_artwork_ID, artwork.faa_artwork_title, artwork.faa_artist_ID, lot.fal_auction_ID, lot.fal_lot_high_estimate_USD, lot.fal_lot_low_estimate_USD, lot.fal_lot_sale_price_USD, lot.fal_lot_material, lot.fal_lot_size_details, lot.fal_lot_provenance, lot.fal_lot_image1, lot.fal_lot_sale_date from fineart_lots lot, fineart_artworks artwork where lot.fal_artwork_ID = artwork.faa_artwork_ID and lot.fal_lot_image1 <> '' and lot.fal_lot_sale_date > DATE_ADD(NOW(), INTERVAL -%s DAY) order by lot.fal_lot_low_estimate_USD desc limit %s"%(settings.CAROUSEL_DAYS, entriescount)
         cursor.execute(carouselsql)
@@ -114,8 +115,9 @@ def index(request):
         return HttpResponse("Invalid method of call")
     chunksize = 3
     context = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn = connlist[0]
+    cursor = connlist[1]
     favouritesdict = {}
     if request.user.is_authenticated:
         favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")

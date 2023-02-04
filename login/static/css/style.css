@@ -73,7 +73,8 @@ header, nav, section, article, aside, footer, hgroup {
 }
 
 html, body {
-  font-family: 'Poppins', sans-serif;
+  /*font-family: 'Poppins', sans-serif;*/
+  font-family: 'Times New Roman', serif!important;
   font-weight: 400;
   background-color: #fff;
   font-size: 16px;
@@ -2578,6 +2579,7 @@ footer .under-footer a:hover {
     margin: 24px 5px;
     padding: 2px;
 }
+
 .img-box h4, .img-box h6, .img-box p{
 	padding:0 10px;
 }
@@ -3103,3 +3105,25 @@ justify-content: space-between;
 .tb span a{color:#aaa;}
 .tb span:first-child{width:100px;display: inline-table;}
 .tb a{color:#aaa;text-decoration:underline !important;}
+
+
+/*updated css by chatur*/
+.img-box .thumb{
+  height: 220px;
+}
+.img-box .thumb img{
+  max-height: -webkit-fill-available;
+  width: auto;
+}
+.artist-category {
+  max-height: -webkit-fill-available;
+}
+.artist-category .img-box .auction_title{
+    height: 55px;
+}
+.artist-category .img-box .auction_desc{
+    height: 110px;
+}
+.header-area .navbar{
+  min-height: 80px;
+}

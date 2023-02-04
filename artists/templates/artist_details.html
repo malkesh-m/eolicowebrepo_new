@@ -510,16 +510,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <nav class="main-nav">
-                        <!-- ***** Logo Start ***** -->
+                    <!-- <nav class="main-nav">
                         <a href="/login/index/" class="logo">
                             <img src="/static/images/logo1.png">
                         </a>
-                        <!-- ***** Logo End ***** -->
-                        <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-			    <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
                             <li class="scroll-to-section"><a href="/login/dashboard/">Dashboard</a></li>
 			    <li class="scroll-to-section"><a href="/artist/index/" class="active">Artists</a></li>
 			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
@@ -532,27 +527,50 @@
 			        <li><a href="/login/logout/">Logout</a></li>
 			    {% endif %}
 
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
-				
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
-
-                            <!--<li class="submenu">
-                                <a href="javascript:;">Pages</a>
-                                <ul>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="products.html">Products</a></li>
-                                    <li><a href="single-product.html">Single Product</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
-                                </ul>
-                            </li>-->
-
 
                         </ul>
-                        <!--<a class='menu-trigger'>
-                            <span>Menu</span>
-                        </a> -->
-                        <!-- ***** Menu End ***** -->
-                    </nav>
+                        
+                    </nav> -->
+		    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav" >
+                      <a class="navbar-brand" href="/login/dashboard/">
+                        <!-- <img src="static/images/logo1.png"> -->
+                        ARTBIDDER
+                     </a>
+                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
+                          aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon"></span>
+                      </button>
+                      <div class="collapse navbar-collapse" id="myNavbarToggler10">
+                          <ul class="navbar-nav mx-auto">
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button>
+                              </li>
+                          </ul>
+                          <ul class="navbar-nav sm-icons mr-0">
+                              {% if not user.is_authenticated %}
+                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li>
+                              {% else %}
+                              <li class="nav-item">
+                                 <button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login" onclick='javascript:logout();'>Log Out</button></li>
+                              {% endif %}
+                          </ul>
+                      </div>
+                  </nav>
                 </div>
             </div>
         </div>
@@ -670,11 +688,11 @@
                                     <div id="noteble-works" class="owl-carousel owl-theme owl-d">
 					{% for artwork in lotsinupcomingauctions %}
                                         <div class="img-box">
-                                            
+                                            <div class='thumb text-center'>
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}">
                                                     <img src="{{artwork.image}}" class="img-fluid" alt="">
                                                 </a>
-                                            
+                                            </div>
                                             <div class="slide-cap">
                                                 <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
                                                     <h4>{{artwork.artworkname}}</h4></a>
@@ -864,9 +882,9 @@
                                             </div>
                                             <div class="row">
 						{% for evname, evdata in artistevents.items %}
-                                                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
                                                     <div class="artist-category">
-                                                        <div class="thumb">
+                                                        <div class="thumb text-center">
                                                             <a href="/auction/showauction/?aucid={{evdata.aucid}}"><img src="{{evdata.eventimage}}" alt=""></a>
                                                         </div>
                                                         <div class="down-content">
@@ -896,7 +914,7 @@
                                         <div id="related-artist" class="owl-carousel owl-theme owl-d">
 					    {% for artist in relatedartists %}
                                             <div class="item">
-                                                <div class="thumb">
+                                                <div class="thumb text-center">
                                                     <a href="/artist/details/?aid={{artist.aid}}">
                                                         <img src="{{artist.artworkimage}}" class="img-fluid" alt="">
                                                     </a>
@@ -1873,13 +1891,16 @@
 		                            </div>
 		                        </div>
 					
-		                        <div class="row align-items-end">
+		                        <div class="row">
 					{% for artwork in lotsinpastauctions %}
-					    <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+					    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+						<div class="artist-category">
 		                                <div class="img-box">
+						    <div class='thumb text-center'>
 		                                        <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
 		                                            <img src="{{artwork.image}}" class="img-fluid" alt="{{artwork.artworkname}}">
 		                                        </a>
+						    </div>
 		                                        <a href="/artist/artworkdetails/?awid={{artwork.awid}}" style="color:#000000;">
 		                                            <h4>{{artwork.artworkname}}</h4></a>
 							    <h4>in 
@@ -1889,7 +1910,7 @@
 							{% if adminuser == 1 %}
 							  <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
 						      	{% endif %}
-
+						    </div>
 		                                </div>
 					    </div>
 					{% endfor %}

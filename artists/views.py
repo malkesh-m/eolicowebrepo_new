@@ -60,16 +60,16 @@ def index(request):
         page = pagemap[pageno]
     except:
         page = -1
-    chunksize = 4
+    chunksize = 3
     rows = 4
-    featuredsize = 4
+    featuredsize = 3
     rowstartctr = int(abs(page)) * rows - rows
     rowendctr = int(abs(page)) * rows
     startctr = (chunksize * rows) * (int(abs(page)) -1) + featuredsize
     endctr = (chunksize * rows) * int(abs(page)) + featuredsize
     maxartworkstoconsider = 100
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     context = {}
     featuredartists = []
     uniqartistsnames = []
@@ -399,8 +399,8 @@ def details(request):
     maxrelatedartist = 8
     artistobj = None
     context = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     try:
         artistsql = "SELECT fa_artist_name, fa_artist_ID, fa_artist_name_prefix, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year, fa_artist_description, fa_artist_aka, fa_artist_bio, fa_artist_genre, fa_artist_image, fa_artist_record_created from fineart_artists Where fa_artist_ID=%s"%aid
         cursor.execute(artistsql)

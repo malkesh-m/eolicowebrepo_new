@@ -66,7 +66,7 @@ def index(request):
     featuredsize = 4
     maxpastauctions = 10
     maxupcomingauctions = 4
-    maxpastauctionsperrow = 4
+    maxpastauctionsperrow = 3
     rowstartctr = int(page) * rows - rows
     rowendctr = int(page) * rows
     pastrowstartctr = int(page) * maxpastauctionsperrow * maxpastauctions - maxpastauctionsperrow * maxpastauctions
@@ -87,8 +87,8 @@ def index(request):
         allauctions = {}
     curdatetime = datetime.datetime.now()
     curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     if allauctions.__len__() == 0:
         auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_lot_count > 0 or faac_auction_image != NULL order by faac_auction_start_date desc limit 100"
         #print("auctionsql: %s"%auctionsql)
@@ -226,7 +226,7 @@ def index(request):
             d = {'auctionname' : auctionname, 'image' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
             if allauctions.keys().__len__() > maxpastauctionsperrow * maxpastauctions:
                 break
-            if aucctr % 4 == 0:
+            if aucctr % 3 == 0:
                 rctr += 1
                 allauctions['row' + str(rctr)] = []
             allauctions['row' + str(rctr)].append(d)
@@ -281,8 +281,8 @@ def details(request):
     rows = 2
     context = {}
     artworkobj = None
-    #dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    #cursor = dbconn.cursor()
+    #connlist = connecttoDB()
+    #dbconn, cursor = connlist[0], connlist[1]
     try:
         artworkobj = Artwork.objects.get(id=lotobj.artwork_id)
     except:
@@ -509,8 +509,8 @@ def search(request):
         return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
     #print(searchkey)
     context = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_title like '%" + searchkey + "%'";
     cursor.execute(auctionsql)
     auctionsqset = cursor.fetchall()
@@ -564,6 +564,7 @@ def search(request):
         allauctions.append(d)
     cursor.close()
     dbconn.close()
+    #print(allauctions)
     context['allauctions'] = allauctions
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
@@ -618,8 +619,8 @@ def moreauctions(request):
         filterauctions = []
         #allartists = {}
         allauctions = {}
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     if allauctions.__len__() == 0: # We didn't get any data from redis cache...
         limitval = 100 #(rowendctr - rowstartctr)
         offsetval = rowstartctr
@@ -745,8 +746,8 @@ def showauction(request):
     auctioninfo = {}
     curdatetime = datetime.datetime.now()
     curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     auctionobj = None
     try:
         auctionobj = Auction.objects.get(id=aucid)
