@@ -16,5 +16,7 @@ urlpatterns = [
     path('morefavourites/', views.morefavourites, name='morefavourites'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('show/', views.show, name='show'),
+    path('notifications/', views.notifications, name='notifications'),
+    path('settings/', views.acctsettings, name='acctsettings'),
 ]
 

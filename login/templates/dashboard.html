@@ -375,13 +375,13 @@ a[data-toggle="collapse"] {
 
         // donut 1
         var chDonutData1 = {
-            labels: ['Active', 'Not Active'],
+            labels: ['This Week', 'Prior Weeks'],
             datasets: [
               {
                 backgroundColor: colors.slice(0,2),
                 borderWidth: 0,
                 // label: 'My First Dataset',
-                data: [20, 80]
+                data: [{{favouriteartistscurweek}}, {{totalfavouriteartists}}]
               }
             ]
         };
@@ -397,12 +397,12 @@ a[data-toggle="collapse"] {
 
         // donut 2
         var chDonutData2 = {
-            labels: ['Active', 'Not Active'],
+            labels: ['2-Dim', '3-Dim'],
             datasets: [
               {
-                backgroundColor: colors.slice(2,4),
+                backgroundColor: colors.slice(2, 4),
                 borderWidth: 0,
-                data: [50, 50]
+                data: [{{artwork_type_counts.painting}} + {{artwork_type_counts.print}} + {{artwork_type_counts.workonpaper}}, {{artwork_type_counts.sculpture}}]
               }
             ]
         };
@@ -432,9 +432,9 @@ a[data-toggle="collapse"] {
 
                 <ul class="list-unstyled components">
                     <li class="my-4"><a href="/login/dashboard/" class="text-light"><i class="fa fa-dashboard"></i>&nbsp;My Dashboard</a></li>
-                     <li class="my-4"><a href="/login/notifications/" class="text-light"><i class="fa fa-bell"></i>&nbsp;My Notification</a></li>
-                     <li class="my-4"><a href="/login/favartists/" class="text-light"><i class="fa fa-user"></i>&nbspMy Artist</a></li>
-                     <li class="my-4"><a href="/login/favartworks/" class="text-light"><i class="fa fa-paint-brush"></i>&nbspMy Artwork</a></li>
+                     <li class="my-4"><a href="/login/notifications/" class="text-light"><i class="fa fa-bell"></i>&nbsp;My Notifications</a></li>
+                     <!-- <li class="my-4"><a href="/login/favartists/" class="text-light"><i class="fa fa-user"></i>&nbspMy Artist</a></li>
+                     <li class="my-4"><a href="/login/favartworks/" class="text-light"><i class="fa fa-paint-brush"></i>&nbspMy Artwork</a></li> -->
                      <li class="my-4"><a href="/login/settings/" class="text-light"><i class="fa fa-gear"></i>&nbspAccount Setting</a></li>
                 </ul>
 
@@ -442,8 +442,8 @@ a[data-toggle="collapse"] {
                     <h5 class="text-uppercase text-center my-4 pt-4"><i class="fa fa-headphones"></i>&nbsp;Contact Us</h5>
                      <hr>
                      <ul class="sidebar-menu">
-                        <li class="my-4"><a href="" class="text-light"><i class="fa fa-phone"></i>&nbsp;Call Us</a></li>
-                        <li class="my-4"><a href="" class="text-light"><i class="fa fa-comments-o"></i>&nbsp;Chat</a></li>
+                        <!-- <li class="my-4"><a href="" class="text-light"><i class="fa fa-phone"></i>&nbsp;Call Us</a></li>
+                        <li class="my-4"><a href="" class="text-light"><i class="fa fa-comments-o"></i>&nbsp;Chat</a></li> -->
                         <li class="my-4"><a href="" class="text-light"><i class="fa fa-fax"></i>&nbsp;Feedback</a></li>
                      </ul>
                 </div>
@@ -454,7 +454,7 @@ a[data-toggle="collapse"] {
                     <button type="button" id="sidebarCollapse" class="btn theme-bg-color text-light d-none">
                         <i class="fa fa-angle-double-right"></i>
                     </button>
-                    <a class="text-dark font-weight-bold text-uppercase" href="#"><img src="/static/dashboard/Picture1.png" style="width: 50px;"> @{{username}}</a>
+                    <a class="text-dark font-weight-bold" href="#"><img src="/static/dashboard/Picture1.png" style="width: 50px;"> @{{username}}</a>
 
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                       <span class="navbar-toggler-icon"></span>
@@ -485,7 +485,7 @@ a[data-toggle="collapse"] {
                   <div class="row">
                       <div class="col-md-12">
                           <div class="example searchTags_section">
-                             <label class="input_label">Agent</label>
+                             <label class="input_label">Search</label>
                              <div class="real">
                                 <div id="artistsSearch" tagname="artistsSearch"></div>
                              </div>
@@ -499,7 +499,7 @@ a[data-toggle="collapse"] {
                               <div class="col-md-7">
                                   <p class="font-weight-bold">Artists</p>
                                   <canvas id="artist_chart"></canvas>
-                                  <div class="artist_chart_label-text">{{favourite_artists|length}}</div>
+                                  <div class="artist_chart_label-text">{{totalfavouriteartists}}</div>
                               </div>
                               <div class="col-md-5">
                                   <div>
@@ -507,12 +507,12 @@ a[data-toggle="collapse"] {
                                       <tr>
                                         <td>Followed This Week</td>
                                         <td>&nbsp;</td>
-                                        <td>04</td>
+                                        <td>{{favouriteartistscurweek}}</td>
                                       </tr>
                                       <tr>
-                                        <td>Total Artist</td>
+                                        <td>Total Followed</td>
                                         <td>&nbsp;</td>
-                                        <td>{{favourite_artists|length}}</td>
+                                        <td>{{totalfavouriteartists}}</td>
                                       </tr>
                                     </table>
                                   </div>
@@ -524,7 +524,7 @@ a[data-toggle="collapse"] {
                               <div class="col-md-7">
                                   <p class="font-weight-bold">Artworks</p>
                                   <canvas id="artwork_chart"></canvas>
-                                  <div class="artwork_chart_label-text">{{favourite_artworks|length}}</div>
+                                  <div class="artwork_chart_label-text">{{totalfavouriteartworks}}</div>
                               </div>
                               <div class="col-md-5">
                                   <div>
@@ -561,77 +561,72 @@ a[data-toggle="collapse"] {
                        <!-- Success -->
                        <div class="g-brd-around g-brd-gray-light-v7 g-rounded-4 g-pa-15 g-pa-20--md g-mb-30">
                           <h4 class="d-flex align-self-center text-uppercase g-font-size-12 g-font-size-default--md g-color-black g-mb-20">Artists Notifications</h4>
+			{% for email in emailalerts %}
+			  {% if email.emailtype == 'artist' %}
                           <div class="noty_bar noty_type__success noty_theme__unify--v1--light g-mb-25">
                              <div class="noty_body">
                                 <div class="g-mr-20">
                                    <div class="noty_body__icon">
-                                      <i class="hs-admin-check"></i>
+                                      <i class="hs-admin-check"></i>{{email.emaildate}}
                                    </div>
                                 </div>
-                                <div>Hi, welcome to Unify. This is example of Toastr notification box.</div>
+				{% if email.emailstatus %}
+                                <div>{{email.emailcontent}}</div>
+				{% else %}
+				<div style='color:#aa0000;'>{{email.emailcontent}}</div>
+				{% endif %}
                              </div>
                           </div>
-                          <div class="noty_bar noty_type__success noty_theme__unify--v1--light noty_close_with_click noty_close_with_button g-mb-25">
+			  {% endif %}
+			{% endfor %}
+                        {% if emailalerts_artist == 0 %}
+			<div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
                              <div class="noty_body">
                                 <div class="g-mr-20">
                                    <div class="noty_body__icon">
-                                      <i class="hs-admin-check"></i>
+                                      <i class="hs-admin-info"></i>
                                    </div>
                                 </div>
-                                <div>Hi, welcome to Unify. This is example of Toastr notification box.</div>
-                             </div>
-                             <div class="noty_close_button">×</div>
-                          </div>
-                          <div class="noty_bar noty_type__success noty_theme__unify--v1--light noty_close_with_click noty_has_progressbar noty_has_timeout">
-                             <div class="noty_body">
-                                <div class="g-mr-20">
-                                   <div class="noty_body__icon">
-                                      <i class="hs-admin-check"></i>
-                                   </div>
-                                </div>
-                                <div>Hi, welcome to Unify. This is example of Toastr notification box.</div>
-                             </div>
-                             <div class="noty_progressbar" style="width: 70%;"></div>
-                          </div>
+				<div>None sent as yet.</div>
+			    </div>
+                         </div>
+			 {% endif %}
                        </div>
-                       <!-- End Success -->
                     </div>
                     <div class="col-md-6">
                        <!-- Info -->
                        <div class="g-brd-around g-brd-gray-light-v7 g-rounded-4 g-pa-15 g-pa-20--md g-mb-30">
                           <h4 class="d-flex align-self-center text-uppercase g-font-size-12 g-font-size-default--md g-color-black g-mb-20">Artworks Notifications</h4>
+			{% for email in emailalerts %}
+			  {% if email.emailtype == 'artwork' %}
                           <div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
                              <div class="noty_body">
                                 <div class="g-mr-20">
                                    <div class="noty_body__icon">
-                                      <i class="hs-admin-info"></i>
+                                      <i class="hs-admin-info"></i>{{email.emaildate}}
                                    </div>
                                 </div>
-                                <div>Hi, welcome to Unify. This is example of Toastr notification box.</div>
+                                {% if email.emailstatus %}
+                                <div>{{email.emailcontent}}</div>
+				{% else %}
+				<div style='color:#aa0000;'>{{email.emailcontent}}</div>
+				{% endif %}
                              </div>
                           </div>
-                          <div class="noty_bar noty_type__info noty_theme__unify--v1--light noty_close_with_click noty_close_with_button g-mb-25">
+			  {% endif %}
+			{% endfor %}
+			{% if emailalerts_artwork == 0 %}
+			<div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
                              <div class="noty_body">
                                 <div class="g-mr-20">
                                    <div class="noty_body__icon">
                                       <i class="hs-admin-info"></i>
                                    </div>
                                 </div>
-                                <div>Hi, welcome to Unify. This is example of Toastr notification box.</div>
-                             </div>
-                             <div class="noty_close_button">×</div>
-                          </div>
-                          <div class="noty_bar noty_type__info noty_theme__unify--v1--light noty_close_with_click noty_has_progressbar noty_has_timeout">
-                             <div class="noty_body">
-                                <div class="g-mr-20">
-                                   <div class="noty_body__icon">
-                                      <i class="hs-admin-info"></i>
-                                   </div>
-                                </div>
-                                <div>Hi, welcome to Unify. This is example of Toastr notification box.</div>
-                             </div>
-                             <div class="noty_progressbar" style="width: 70%;"></div>
-                          </div>
+				<div>None sent as yet.</div>
+			    </div>
+                         </div>
+			 {% endif %}
                        </div>
                        <!-- End Info -->
                     </div>
@@ -676,13 +671,23 @@ a[data-toggle="collapse"] {
                           <table id="artworks" class="table table-striped table-bordered"  cellspacing="0">
                               <thead>
                                   <tr>
-                                      <th>Artist</th>
-                                      <th>Total Artwork</th>
-                                      <th>Artwork sold in last 12 months</th>
-                                      <th>Average Selling</th>
-                                      <th>Average Selling Price</th>
-                                      <th>Average Selling Price last 12 months</th>
+                                      <th>Artwork Name</th>
+                                      <th>Artist Name</th>
+                                      <th>Material</th>
+                                      <th>Low Estimate</th>
+                                      <th>High Estimate</th>
+                                      <th>Sold Price</th>
                                   </tr>
+				{% for artworkobj in favourite_artworks %}
+				  <tr>
+                                      <td>{{artworkobj.artworkname}}</td>
+                                      <td>{{artworkobj.artistname}}</td>
+                                      <td>{{artworkobj.medium}}</td>
+                                      <td>US$ {{artworkobj.lowestimate}}</td>
+                                      <td>US$ {{artworkobj.highestimate}}</td>
+                                      <td>US$ {{artworkobj.soldprice}}</td>
+                                  </tr>
+				{% endfor %}
                               </thead>
                           </table>
                       </div>
@@ -705,14 +710,15 @@ a[data-toggle="collapse"] {
                       null,
                       null
                     ],
-                    ajax: 'array.txt',
+                    //ajax: 'array.txt',
+		    ajax: '',
                     scrollY: 400,
                     scrollCollapse: true,
                     paging: false,
                 });
              
                 // Apply a search to the second table for the demo
-                $('#myTable2').DataTable().search('New York').draw();
+                //$('#myTable2').DataTable().search('New York').draw();
               });
 
 

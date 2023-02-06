@@ -168,4 +168,17 @@ class Favourite(models.Model):
         return ""
 
 
+class EmailAlerts(models.Model):
+    user = models.ForeignKey(djUser, db_column='user_id', on_delete=models.CASCADE)
+    emailcontent = models.TextField(db_column='email_content')
+    emailtype = models.CharField(max_length=20, default='artist', blank=False, db_column='email_type')
+    emaildate = models.DateTimeField(auto_now=True, db_column='email_date')
+    sendstatus = models.BooleanField(default=True, db_column='send_status')
+
+    class Meta:
+        verbose_name = "Email Alerts Table"
+        db_table = 'user_email_alert'
+
+    def __unicode__(self):
+        return ""
 

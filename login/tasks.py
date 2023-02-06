@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.template import RequestContext
 from django.db.models import Q
 from django.template.response import TemplateResponse
+from django.template import Template
 from django.contrib.auth.models import User as djUser
 from django.core.mail import send_mail
 from django.template.loader import get_template
@@ -23,6 +24,7 @@ import MySQLdb
 import unicodedata, itertools
 
 from auctionhouses.models import AuctionHouse
+from login.models import EmailAlerts
 
 def get_fav_info():
     dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
@@ -66,14 +68,59 @@ def get_fav_info():
 
 
 def sendemail(username, emailaddr, datatype, datalist, auctionslist):
-    subject = ""
-    message = ""
-    fromemail = settings.FROM_EMAIL_USER
-    send_mail(subject, message, fromemail, [emailaddr,])
-    tmpl = loader.get_template('email_alert.html')
+    tmpl = get_template('email_alert.html')
     context = {}
-    
-    return HttpResponse(template.render(context, request))
+    emailalert = EmailAlerts()
+    userobj = djUser.objects.get(username=username)
+    fromemail = settings.FROM_EMAIL_USER
+    subject = ""
+    request = None
+    context['username'] = username
+    context['datatype'] = datatype
+    if datatype == "artist":
+        context['artistname'] = datalist[0]
+        context['nationality'] = datalist[1]
+        context['lifetime'] = datalist[2]
+        context['artistdesc'] = datalist[3]
+        context['artistbio'] = datalist[4]
+        context['artistimg'] = datalist[5]
+        context['aid'] = datalist[6]
+    if datatype == "artwork":
+        context['artworkname'] = datalist[9]
+        context['lotnum'] = datalist[0]
+        context['auction_id'] = datalist[1]
+        context['material'] = datalist[2]
+        context['sizedetails'] = datalist[3]
+        context['estimate'] = datalist[4]
+        context['saleprice'] = datalist[5]
+        context['provenance'] = datalist[6]
+        context['artworkimg'] = datalist[7]
+        context['awid'] = datalist[8]
+    if datatype == "auction":
+        context['auctionname'] = datalist[0]
+        context['auctioncode'] = datalist[1]
+        context['auctionhouse'] = datalist[2]
+        context['source'] = datalist[3]
+        context['auctionstart'] = datalist[4]
+        context['auctionend'] = datalist[5]
+        context['lotcount'] = datalist[6]
+        context['auctionimg'] = datalist[7]
+        context['aucid'] = datalist[8]
+    message = tmpl.render(context, request)
+    try:
+        send_mail(subject, message, fromemail, [emailaddr,])
+        emailalert.sendstatus = True
+    except:
+        emailalert.sendstatus = False
+    emailalert.user = userobj
+    emailalert.emailcontent = message
+    emailalert.emailtype = datatype
+    emailalert.emaildate = datetime.datetime.now()
+    try:
+        emailalert.save()
+    except:
+        print("Error saving email: %s"%sys.exc_info()[1].__str__())
+    return emailalert.sendstatus
 
 
 def send_email_alerts():
@@ -106,7 +153,7 @@ def send_email_alerts():
         aucend = aucrec[6]
         lotcount = aucrec[7]
         aucimg = aucrec[8]
-        upcoming_auctions_dict[str(aucid)] = [auctitle, salecode, auchousename, aucsrc, aucstart, aucend, lotcount, aucimg]
+        upcoming_auctions_dict[str(aucid)] = [auctitle, salecode, auchousename, aucsrc, aucstart, aucend, lotcount, aucimg, aucid]
         # List out all artworks available in the auction
         lotsql = "select fal_lot_ID, fal_lot_no, fal_artwork_ID, fal_auction_ID, fal_lot_material, fal_lot_size_details, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_provenance, fal_lot_image1 from fineart_lots where fal_auction_ID=%s"%aucid
         cursor.execute(lotsql)
@@ -114,13 +161,14 @@ def send_email_alerts():
         for lotrec in alllotsrecords:
             artworkid = lotrec[2]
             estimatesUSD = str(lotrec[7]) + " - " + str(lotrec[6])
-            upcoming_artworks_dict[str(artworkid)] = [lotrec[1], lotrec[3], lotrec[4], lotrec[5], estimatesUSD, lotrec[8], lotrec[9], lotrec[10]]
-            artworksql = "select faa_artist_ID from fineart_artworks where faa_artwork_ID=%s"%artworkid
+            upcoming_artworks_dict[str(artworkid)] = [lotrec[1], lotrec[3], lotrec[4], lotrec[5], estimatesUSD, lotrec[8], lotrec[9], lotrec[10], artworkid]
+            artworksql = "select faa_artist_ID, faa_artwork_title from fineart_artworks where faa_artwork_ID=%s"%artworkid
             cursor.execute(artworksql)
             artworkrecords = cursor.fetchall() # This will just be a single record
             if artworkrecords.__len__() == 0:
                 continue
             artworkartists.append(str(artworkrecords[0][0]))
+            upcoming_artworks_dict[str(artworkid)].append(artworkrecords[0][1]) # Got artwork name
             if str(artworkrecords[0][0]) not in artist_auction_dict.keys():
                 artist_auction_dict[str(artworkrecords[0][0])] = [aucid,]
             else:
@@ -141,7 +189,7 @@ def send_email_alerts():
     allartistrecords = cursor.fetchall(artistsql)
     for artistrec in allartistrecords:
         lifetime = str(artistrec[3]) + " - " + str(artistrec[4])
-        upcoming_artists_dict[str(artistrec[0])] = [artistrec[1], artistrec[2], lifetime, artistrec[5], artistrec[6], artistrec[7]]
+        upcoming_artists_dict[str(artistrec[0])] = [artistrec[1], artistrec[2], lifetime, artistrec[5], artistrec[6], artistrec[7], artistrec[0]]
     # Now iterate through every user and find out what they are interested in. If there is any id that exists in the respective table, send an email to the email address.
     for useridstr in favdict.keys():
         favlist = favdict[useridstr]

@@ -28,7 +28,7 @@ import MySQLdb
 
 #from gallery.models import Gallery, Event
 #from museum.models import Museum, MuseumEvent, MuseumPieces
-from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
+from login.models import User, Session, Favourite, EmailAlerts #,WebConfig, Carousel, Follow
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
@@ -861,13 +861,13 @@ def dashboard(request):
             artistname = lotartist.artist_name
         sellingratefloat = 'NA'
         if float(artistartworkcount ) > 0:
-            sellingratefloat = float(artworksoldtotal/artistartworkcount)
+            sellingratefloat = "{:.3f}".format(artworksoldtotal/artistartworkcount)
         avgsalepricefloat = 'NA'
         if float(artworksoldtotal) > 0:
-            avgsalepricefloat = float(totalsoldusd/artworksoldtotal)
+            avgsalepricefloat = "{:.2f}".format(totalsoldusd/artworksoldtotal)
         avgsalepricelast12monthsfloat = 'NA'
         if float(artworksoldlast12months) > 0:
-            avgsalepricelast12monthsfloat = float(totalsoldusdlast12months/artworksoldlast12months)
+            avgsalepricelast12monthsfloat = "{:.2f}".format(totalsoldusdlast12months/artworksoldlast12months)
         d = {'totalartworks' : artistartworkcount, 'artistname' : artistname, 'artistid' : favartistid, 'totalartworkssold' : artworksoldtotal, 'artworkssoldlast12months' : artworksoldlast12months, 'sellingrate' : sellingratefloat, 'avgsaleprice' : avgsalepricefloat, 'avgsalepricelast12months' : avgsalepricelast12monthsfloat}
         favourite_artists.append(d)
     for favartwork in favartworksqset:
@@ -916,6 +916,22 @@ def dashboard(request):
         auctionhousename = auchouseobj.housename
         d = {'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'lotcount' : lotcount, 'auctionhousename' : auctionhousename, 'auctionid' : favauction.id}
         favourite_auctions.append(d)
+    emailalerts = []
+    emailalerts_artist = 0
+    emailalerts_artwork = 0
+    try:
+        emailalertsqset = EmailAlerts.objects.filter(user=userobj)
+        for emailalertobj in emailalertsqset:
+            d = {'emailcontent' : emailalertobj.emailcontent, 'emaildate' : emailalertobj.emaildate, 'emailstatus' : emailalertobj.sendstatus, 'emailtype' : emailalertobj.emailtype}
+            emailalerts.append(d)
+            if emailalertobj.emailtype == 'artist':
+                emailalerts_artist += 1
+            elif emailalertobj.emailtype == 'artwork':
+                emailalerts_artwork += 1
+            else:
+                pass
+    except:
+        pass
     context['favourite_artists'] = favourite_artists
     context['favourite_artworks'] = favourite_artworks
     context['artwork_type_counts'] = artwork_type_counts
@@ -926,10 +942,45 @@ def dashboard(request):
     context['favouriteartworkscurweek'] = favouriteartworkscurweek
     context['totalfavouriteauctions'] = totalfavouriteauctions
     context['favouriteauctionscurweek'] = favouriteauctionscurweek
+    context['emailalerts'] = emailalerts
+    context['emailalerts_artwork'] = emailalerts_artwork
+    context['emailalerts_artist'] = emailalerts_artist
     context['username'] = userobj.username
     template = loader.get_template('dashboard.html')
     return HttpResponse(template.render(context, request))
     
+
+@login_required(login_url="/login/show/")
+def notifications(request):
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'err' : 'Invalid method of call',})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/login/index/")
+        #return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
+    userobj = request.user
+    sessionkey = request.session.session_key
+    context = {}
+    # Add page specific code here
+    context['username'] = userobj.username
+    template = loader.get_template('email_alert.html')
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url="/login/show/")
+def acctsettings(request):
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'err' : 'Invalid method of call',})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/login/index/")
+        #return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
+    userobj = request.user
+    sessionkey = request.session.session_key
+    context = {}
+    # Add page specific code here
+    context['username'] = userobj.username
+    template = loader.get_template('account_settings.html')
+    return HttpResponse(template.render(context, request))
+
 
 
 
