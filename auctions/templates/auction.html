@@ -217,9 +217,9 @@
     	    //adminuser = context['adminuser'];
             for(var i=0; i < searchauctions.length; i++){
                 auctionobj = searchauctions[i];
-		searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+		searchtext += "<div class='col-sm-12 col-md-6 col-lg-4 col-xl-4'><div class='artist-category'><div class='img-box'>";
                 searchtext += "<div class='thumb text-center'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "'><img src='" + auctionobj.coverimage + "'></a></div>";
-		searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + auctionobj.aucid + "' style='color:#000000;'><h4 class='auction_title'>" + auctionobj.auctionname +"</h4>";
+		searchtext += "<a href='/auction/showauction/?aucid=" + auctionobj.aucid + "' style='color:#000000;'><h4 class='auction_title'>" + auctionobj.auctionname +"</h4>";
 		if (auctionobj.auctionperiod != ''){
 		    searchtext += "<h6>" + auctionobj.auctionperiod + "</h6>";
 		}
@@ -481,16 +481,14 @@
                               <li class="nav-item scroll-to-section">
                                   <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
                               </li>
-                              <li class="nav-item scroll-to-section">
-                                  <button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button>
-                              </li>
+			      
                           </ul>
                           <ul class="navbar-nav sm-icons mr-0">
                               {% if not user.is_authenticated %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li>
+                              <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                               {% else %}
-                              <li class="nav-item">
-                                 <button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login" onclick='javascript:logout();'>Log Out</button></li>
+                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                               {% endif %}
                           </ul>
                       </div>

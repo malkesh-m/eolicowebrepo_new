@@ -513,16 +513,14 @@
                               <li class="nav-item scroll-to-section">
                                   <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
                               </li>
-                              <li class="nav-item scroll-to-section">
-                                  <button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button>
-                              </li>
+                              
                           </ul>
                           <ul class="navbar-nav sm-icons mr-0">
                               {% if not user.is_authenticated %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li>
+                              <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                               {% else %}
-                              <li class="nav-item">
-                                 <button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login" onclick='javascript:logout();'>Log Out</button></li>
+                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                               {% endif %}
                           </ul>
                       </div>
@@ -729,13 +727,13 @@
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_feat_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
 				{% if artistobj.follow == 0 %}
-				<div id='follow_feat_{{forloop.counter}}'>
+				<!-- <div id='follow_feat_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_feat_{{forloop.counter}}');">Follow</a></h6>
-				</div>
+				</div> -->
 				{% else %}
-				<div id='follow_feat_{{forloop.counter}}'>
+				<!-- <div id='follow_feat_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_feat_{{forloop.counter}}');">Following</a></h6>
-				</div>
+				</div> -->
 				{% endif %}
 				{% if artistobj.favourite == 0 %}
 				<div id='favourite_feat_{{forloop.counter}}'>
@@ -797,13 +795,13 @@
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_1_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
 				{% if artistobj.follow == 0 %}
-				<div id='follow_1_{{forloop.counter}}'>
+				<!-- <div id='follow_1_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_1_{{forloop.counter}}');">Follow</a></h6>
-				</div>
+				</div> -->
 				{% else %}
-				<div id='follow_1_{{forloop.counter}}'>
+				<!-- <div id='follow_1_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_1_{{forloop.counter}}');">Following</a></h6>
-				</div>
+				</div> -->
 				{% endif %}
 				{% if artistobj.favourite == 0 %}
 				<div id='favourite_1_{{forloop.counter}}'>
@@ -865,13 +863,13 @@
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_2_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
 				{% if artistobj.follow == 0 %}
-				<div id='follow_2_{{forloop.counter}}'>
+				<!-- <div id='follow_2_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_2_{{forloop.counter}}');">Follow</a></h6>
-				</div>
+				</div> -->
 				{% else %}
-				<div id='follow_2_{{forloop.counter}}'>
+				<!-- <div id='follow_2_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_2_{{forloop.counter}}');">Following</a></h6>
-				</div>
+				</div> -->
 				{% endif %}
 				{% if artistobj.favourite == 0 %}
 				<div id='favourite_2_{{forloop.counter}}'>
@@ -933,13 +931,13 @@
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_3_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
 				{% if artistobj.follow == 0 %}
-				<div id='follow_3_{{forloop.counter}}'>
+				<!-- <div id='follow_3_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_3_{{forloop.counter}}');">Follow</a></h6>
-				</div>
+				</div> -->
 				{% else %}
-				<div id='follow_3_{{forloop.counter}}'>
+				<!-- <div id='follow_3_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_3_{{forloop.counter}}');">Following</a></h6>
-				</div>
+				</div> -->
 				{% endif %}
 				{% if artistobj.favourite == 0 %}
 				<div id='favourite_3_{{forloop.counter}}'>
@@ -1001,13 +999,13 @@
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_4_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
 				{% if artistobj.follow == 0 %}
-				<div id='follow_4_{{forloop.counter}}'>
+				<!-- <div id='follow_4_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_4_{{forloop.counter}}');">Follow</a></h6>
-				</div>
+				</div> -->
 				{% else %}
-				<div id='follow_4_{{forloop.counter}}'>
+				<!-- <div id='follow_4_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_4_{{forloop.counter}}');">Following</a></h6>
-				</div>
+				</div> -->
 				{% endif %}
 				{% if artistobj.favourite == 0 %}
 				<div id='favourite_4_{{forloop.counter}}'>
@@ -1069,13 +1067,13 @@
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_5_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
 				{% if artistobj.follow == 0 %}
-				<div id='follow_5_{{forloop.counter}}'>
+				<!-- <div id='follow_5_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_5_{{forloop.counter}}');">Follow</a></h6>
-				</div>
+				</div> -->
 				{% else %}
-				<div id='follow_5_{{forloop.counter}}'>
+				<!-- <div id='follow_5_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_5_{{forloop.counter}}');">Following</a></h6>
-				</div>
+				</div> -->
 				{% endif %}
 				{% if artistobj.favourite == 0 %}
 				<div id='favourite_5_{{forloop.counter}}'>
@@ -1136,13 +1134,13 @@
 				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_6_{{forloop.counter}}');">Show Stats</a></h6>
 				</div>
 				{% if artistobj.follow == 0 %}
-				<div id='follow_6_{{forloop.counter}}'>
+				<!-- <div id='follow_6_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_6_{{forloop.counter}}');">Follow</a></h6>
-				</div>
+				</div> -->
 				{% else %}
-				<div id='follow_6_{{forloop.counter}}'>
+				<!-- <div id='follow_6_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_6_{{forloop.counter}}');">Following</a></h6>
-				</div>
+				</div> -->
 				{% endif %}
 				{% if artistobj.favourite == 0 %}
 				<div id='favourite_6_{{forloop.counter}}'>

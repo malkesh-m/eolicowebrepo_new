@@ -439,50 +439,44 @@ footer .under-footer a:hover {
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <nav class="main-nav">
-                        <!-- ***** Logo Start ***** -->
-                        <a href="/login/index/" class="logo">
-                            <img src="/static/images/logo1.png">
-                        </a>
-                        <!-- ***** Logo End ***** -->
-                        <!-- ***** Menu Start ***** -->
-                        <ul class="nav">
-                         <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-			 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
-                         <li class="scroll-to-section"><a href="/login/dashboard/">Dashboard</a></li>
-			 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-			 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-			 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-			 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
-                         <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
-
-			 {% if not user.is_authenticated %}
-			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-			{% else %}
-			    <li><a href="/login/logout/">Logout</a></li>
-			{% endif %}
-
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
-				
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
-
-                            <!--<li class="submenu">
-                                <a href="javascript:;">Pages</a>
-                                <ul>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="products.html">Products</a></li>
-                                    <li><a href="single-product.html">Single Product</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
-                                </ul>
-                            </li>-->
-                            
-                            
-                        </ul>        
-                        <a class='menu-trigger'>
-                            <span>Menu</span>
-                        </a>
-                        <!-- ***** Menu End ***** -->
-                    </nav>
+                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav" >
+                      <a class="navbar-brand" href="/login/dashboard/">
+                        <!-- <img src="static/images/logo1.png"> -->
+                        ARTBIDDER
+                     </a>
+                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
+                          aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon"></span>
+                      </button>
+                      <div class="collapse navbar-collapse" id="myNavbarToggler10">
+                          <ul class="navbar-nav mx-auto">
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+                              </li>
+                              
+                          </ul>
+                          <ul class="navbar-nav sm-icons mr-0">
+                              {% if not user.is_authenticated %}
+                              <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                              {% else %}
+                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                              {% endif %}
+                          </ul>
+                      </div>
+                  </nav>
                 </div>
             </div>
         </div>

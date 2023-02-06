@@ -279,16 +279,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <nav class="main-nav">
-                        <!-- ***** Logo Start ***** -->
+                    <!-- <nav class="main-nav">
+
                         <a href="/login/index/" class="logo">
                             <img src="/static/images/logo1.png">
                         </a>
-                        <!-- ***** Logo End ***** -->
-                        <!-- ***** Menu Start ***** -->
+                        
                         <ul class="nav">
-                            <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-			    <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
+                            
                             <li class="scroll-to-section"><a href="/login/dashboard/">Dashboard</a></li>
 			    <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 			    <li class="scroll-to-section"><a href="/auctionhouse/index/" class="active">Auction Houses</a></li>
@@ -301,26 +299,51 @@
 				<li><a href="/login/logout/">Logout</a></li>
 			    {% endif %}
 
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
-				
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
-
-                            <!--<li class="submenu">
-                                <a href="javascript:;">Pages</a>
-                                <ul>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="products.html">Products</a></li>
-                                    <li><a href="single-product.html">Single Product</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
-                                </ul>
-                            </li>-->
+			    
                             
                         </ul>        
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
-                        <!-- ***** Menu End ***** -->
-                    </nav>
+
+                    </nav> -->
+		    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav" >
+                      <a class="navbar-brand" href="/login/dashboard/">
+                        <!-- <img src="static/images/logo1.png"> -->
+                        ARTBIDDER
+                     </a>
+                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
+                          aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon"></span>
+                      </button>
+                      <div class="collapse navbar-collapse" id="myNavbarToggler10">
+                          <ul class="navbar-nav mx-auto">
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+                              </li>
+                              <li class="nav-item scroll-to-section">
+                                  <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+                              </li>
+                              
+                          </ul>
+                          <ul class="navbar-nav sm-icons mr-0">
+                              {% if not user.is_authenticated %}
+				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                              {% else %}
+                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                              {% endif %}
+                          </ul>
+                      </div>
+                  </nav>
                 </div>
             </div>
         </div>
@@ -346,384 +369,7 @@
 						</div>
 						
                     </div>
-                </div>
-            </div>
-        </div>
-	<section class="category-tabs mrt-90">
-		<div class="container">
-            <!-- START TABS DIV -->
-      <div class="tabbable-responsive">
-        <div class="tabbable">
-          <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="true">Upcoming Auctions</a>
-            </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="false">Auctions</a>
-            </li>
-            
-            <li class="nav-item">
-              <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false" >Lots</a>
-            </li> 
-            <li class="nav-item">
-              <a class="nav-link" id="Articles-tab" data-toggle="tab" href="#Articles" role="tab" aria-controls="Articles" aria-selected="false">Articles</a>
-            </li> -->
-            <li class="nav-item">
-              <a class="nav-link" id="Contact-tab" data-toggle="tab" href="#Contact" role="tab" aria-controls="Contact" aria-selected="false">Past Auctions</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-	<div class="container">
-    <div class="card-body">
-      
-      <div class="tab-content">
-        <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
-			<div class="container">
-				<div class="row gl-ov-row">
-					<div class="col-md-7">
-						<!-- <h6>Past Show</h6> -->
-						<h2></h2>
-						<h4></h4>
-						<h6></h6>
-						<!-- <p></p> -->
-					</div>
-					<div class="col-md-5">
-						<img src="{{auctioninfo.coverimage}}" class="img-fluid"/>
-					</div>
-				</div>
-				<!-- <div class="row gal-tab-row">
-					<div class="col-lg-12 gl-abt">
-						<div class="section-heading text-center">
-							<h3>About</h3>
-							<hr>
-							<p>{{auctioninfo.description}}</p>
-							<p><a href="{{auctioninfo.auctionurl}}" target="_bnalk" style="color:#000000;">{{auctioninfo.auctionname}}</a></p>
-						</div>
-					</div>
-				</div> -->
-
-
-				<div class="row gal-tab-row pst-ev">
-				    <h5 class="card-title">Upcoming Auctions</h5>
-				</div>
-				{% if upcomingauctions|length == 0 %}
-				<div class="row align-items-end" style='text-align:center;justify:center;'><h6>There are no upcoming auctions for this auction house at this moment.</h6></div>
-				{% else %}
-				<div class="row align-items-end">
-				{% for auction in upcomingauctions %}
-				  <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
-					<div class="img-box">
-					<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
-					<a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
-					<h4>{{auction.auctionname}}</h4>
-					<h6>{{auction.auctionhousename}}</h6>
-					<h6>{{auction.aucperiod}}</h6>
-					</a>
-					</div>
-				  </div>
-				{% endfor %}  
-				</div>
-				{% endif %}
-				<br>
-				<div class="row articl-row">
-					
-				</div>
-			</div>
-        </div>
-        <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
-          <div class="container">
-			
-	  </div>
-        </div>
-        
-        <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
-          <div id="mySidebar" class="sidebar">
-			<!-- <div class="fixed-sidbr-header">
-				<h5>Filter</h5>
-				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-			</div>
-			<div id="accordion" class="accordion">
-				<div class="card mb-0">
-					<div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
-						<a class="card-title">
-							Artists
-						</a>
-					</div>
-					<div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
-						 <div class="form-check">
-						  <label class="form-check-label" for="Artists1">
-							<input type="checkbox" class="form-check-input" id="Artists1" name="option1" value="something" >Aage Birck
-						  </label>
-						</div>
-						<div class="form-check">
-						  <label class="form-check-label" for="Artists2">
-							<input type="checkbox" class="form-check-input" id="Artists2" name="option2" value="something">Achille Salvagni
-						  </label>
-						</div>
-						<div class="form-check">
-						  <label class="form-check-label" for="Artists3">
-							<input type="checkbox" class="form-check-input" id="Artists3" name="option2" value="something">Aldus
-						  </label>
-						</div>
-					</div>
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-						<a class="card-title">
-						  Rarity
-						</a>
-					</div>
-					<div id="collapseTwo" class="card-body collapse" data-parent="#accordion" >
-						<div class="form-check">
-						  <label class="form-check-label" for="Unique">
-							<input type="checkbox" class="form-check-input" id="Unique" name="option1" value="something" >Unique
-						  </label>
-						</div>
-						<div class="form-check">
-						  <label class="form-check-label" for="LimitedEdition">
-							<input type="checkbox" class="form-check-input" id="LimitedEdition" name="option1" value="something" >Limited Edition
-						  </label>
-						</div>
-						<div class="form-check">
-						  <label class="form-check-label" for="OpenEdition">
-							<input type="checkbox" class="form-check-input" id="OpenEdition" name="option1" value="something" >Open Edition
-						  </label>
-						</div>
-					</div>
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-						<a class="card-title">
-						  Medium
-						</a>
-					</div>
-					<div id="collapseThree" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-							<div class="form-check">
-							  <label class="form-check-label" for="Design">
-								<input type="checkbox" class="form-check-input" id="Design" name="option1" value="something" >Design
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Sculpture">
-								<input type="checkbox" class="form-check-input" id="Sculpture" name="option1" value="something" >Sculpture
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Painting">
-								<input type="checkbox" class="form-check-input" id="Painting" name="option1" value="something" >Painting
-							  </label>
-							</div>
-						</div>
-					</div>
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
-						<a class="card-title">
-						  Size
-						</a>
-					</div>
-					<div id="collapse4" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-							<div class="form-check">
-							  <label class="form-check-label" for="SmallSize">
-								<input type="checkbox" class="form-check-input" id="SmallSize" name="option1" value="something" >Small (under 40cm)
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Medium">
-								<input type="checkbox" class="form-check-input" id="Medium" name="option1" value="something" >Medium (40 – 100cm)
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Large">
-								<input type="checkbox" class="form-check-input" id="Large" name="option1" value="something" >Large (over 100cm)
-							  </label>
-							</div>
-						</div>
-					</div>
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
-						<a class="card-title">
-						  Material
-						</a>
-					</div>
-					<div id="collapse5" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-							<div class="form-check">
-							  <label class="form-check-label" for="Acrylic">
-								<input type="checkbox" class="form-check-input" id="Acrylic" name="option1" value="something" >Acrylic
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Aluminum">
-								<input type="checkbox" class="form-check-input" id="Aluminum" name="option1" value="something" >Aluminum
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Artpaper">
-								<input type="checkbox" class="form-check-input" id="Artpaper" name="option1" value="something" >Art paper
-							  </label>
-							</div>
-						</div>
-					</div>
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse6">
-						<a class="card-title">
-						  Artist Nationality
-						</a>
-					</div>
-					<div id="collapse6" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-							<div class="form-check">
-							  <label class="form-check-label" for="American">
-								<input type="checkbox" class="form-check-input" id="American" name="option1" value="something" >American
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Argentine">
-								<input type="checkbox" class="form-check-input" id="Argentine" name="option1" value="something" >Argentine
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Armenian">
-								<input type="checkbox" class="form-check-input" id="Armenian" name="option1" value="something" >Armenian
-							  </label>
-							</div>
-						</div>
-					</div>
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse7">
-						<a class="card-title">
-						  Time Period
-						</a>
-					</div>
-					<div id="collapse7" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-							<div class="form-check">
-							  <label class="form-check-label" for="time-2020">
-								<input type="checkbox" class="form-check-input" id="time-2020" name="option1" value="something" >2020s
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="time-2010">
-								<input type="checkbox" class="form-check-input" id="time-2010" name="option1" value="something" >2010s
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="time-2000">
-								<input type="checkbox" class="form-check-input" id="time-2000" name="option1" value="something" >2000s
-							  </label>
-							</div>
-						</div>
-					</div>
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse8">
-						<a class="card-title">
-						  Color
-						</a>
-					</div>
-					<div id="collapse8" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-							<div class="form-check">
-							  <label class="form-check-label" for="Color-red">
-								<input type="checkbox" class="form-check-input" id="Color-red" name="option1" value="something" >Red <span class="color-span" style="background:red;"></span>
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Color-blue">
-								<input type="checkbox" class="form-check-input" id="Color-blue" name="option1" value="something" >Blue <span class="color-span" style="background:blue;"></span>
-							  </label>
-							</div>
-							<div class="form-check">
-							  <label class="form-check-label" for="Color-green">
-								<input type="checkbox" class="form-check-input" id="Color-green" name="option1" value="something" >Green <span class="color-span" style="background:green;"></span>
-							  </label>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div> -->
-			</div>
-
-			
-        </div>
-        <!-- <div class="tab-pane fade" id="Articles" role="tabpanel" aria-labelledby="Articles-tab">
-			<div class="row">
-				<div class="col-lg-12">
-					   <div class="section-heading text-center">
-							<h3>Articles</h3>
-							<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-						<hr>
-					</div>
-				</div>
-			</div>
-			<div class="row ">
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="#"><img src="/static/images/men-02.jpg" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>Béchir Boussandel</h4>
-							<span>Taymour Grahne Projects</span>
-							<span>Feb 11 to Apr 15</span>
-						</div>
-					</div>
-				  </div>
-				</div>
+                </div				</div>
         </div> -->
         <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
           <h5 class="card-title">Past Auctions</h5>
