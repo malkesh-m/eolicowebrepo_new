@@ -31,7 +31,7 @@ import MySQLdb
 from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
-from artists.models import Artist, Artwork, FeaturedArtist
+from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
 from eolicowebsite.utils import connecttoDB, disconnectDB
 
 # Caching related imports and variables
