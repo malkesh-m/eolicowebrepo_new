@@ -374,6 +374,9 @@ def index(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     cursor.close()
     dbconn.close() # Closing db connection. Don't want unwanted open connections.
     template = loader.get_template('artist.html')
@@ -779,6 +782,9 @@ def details(request):
     else:
         context['favourite_link'] = ""
     #context['favourite_link'] = "%s"%aid
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     prevpage = int(page) - 1
     nextpage = int(page) + 1
     displayedprevpage1 = 0
@@ -1119,6 +1125,9 @@ def showartwork(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     template = loader.get_template('artist_artworkdetails.html')
     return HttpResponse(template.render(context, request))
 
@@ -1416,6 +1425,9 @@ def morefilter(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     return HttpResponse(json.dumps(context))
 
 

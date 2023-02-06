@@ -126,6 +126,9 @@ def index(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     template = loader.get_template('auctionhouses.html')
     return HttpResponse(template.render(context, request))
 
@@ -315,6 +318,9 @@ def index_old(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     template = loader.get_template('auctionhouses.html')
     return HttpResponse(template.render(context, request))
 
@@ -373,7 +379,7 @@ def details(request):
             maxlowestimate = lotsqset[0].lowestimateUSD
             lotobj_maxlowestimate = lotsqset[0]
             for lot in lotsqset:
-                if lot.lowestimateUSD > maxlowestimate:
+                if lot.lowestimateUSD is not None and maxlowestimate is not None and lot.lowestimateUSD > maxlowestimate:
                     maxlowestimate = lot.lowestimateUSD
                     lotobj_maxlowestimate = lot
                 else:
@@ -413,6 +419,9 @@ def details(request):
     displayednextpage2 = nextpage + 2
     firstpage = 1
     context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     #cursor.close()
     #dbconn.close()
     template = loader.get_template('auctionhouse_details.html')
@@ -584,7 +593,7 @@ def search(request):
                 maxlowestimate = lotsqset[0].lowestimateUSD
                 lotobj_maxlowestimate = lotsqset[0]
                 for lot in lotsqset:
-                    if lot.lowestimateUSD > maxlowestimate:
+                    if lot.lowestimateUSD is not None and maxlowestimate is not None and lot.lowestimateUSD > maxlowestimate:
                         maxlowestimate = lot.lowestimateUSD
                         lotobj_maxlowestimate = lot
                     else:
@@ -610,6 +619,9 @@ def search(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     return HttpResponse(json.dumps(context))
 
 

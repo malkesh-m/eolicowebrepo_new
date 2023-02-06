@@ -109,6 +109,10 @@ def getcarouselinfo_new():
     return entrieslist
 
 
+def show(request):
+    return HttpResponseRedirect("/login/index/")
+
+
 #@cache_page(CACHE_TTL)
 def index(request):
     if request.method != 'GET':
@@ -434,6 +438,8 @@ def index(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    userobj = request.user
+    context['username'] = userobj.username
     template = loader.get_template('homepage.html')
     return HttpResponse(template.render(context, request))
 
@@ -772,7 +778,8 @@ def dashboard(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'err' : 'Invalid method of call',})) # Operation failed!
     if not request.user.is_authenticated:
-        return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
+        return HttpResponseRedirect("/login/index/")
+        #return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
     userobj = request.user
     sessionkey = request.session.session_key
     page = 1
@@ -790,6 +797,7 @@ def dashboard(request):
     artistsidlist = []
     artworksidlist = []
     auctionsidlist = []
+    artwork_type_counts = {'painting' : 0, 'sculpture' : 0, 'print' : 0, 'workonpaper' : 0}
     context = {}
     totalfavouriteartists = 0
     favouriteartistscurweek = 0
@@ -799,6 +807,8 @@ def dashboard(request):
     favouriteauctionscurweek = 0
     curdate = datetime.datetime.now()
     datelastweek = curdate - datetime.timedelta(days=7)
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     allfavouritesqset = Favourite.objects.filter(user=userobj).order_by("-updated")
     for fav in allfavouritesqset:
         favtype = fav.reference_model
@@ -855,6 +865,14 @@ def dashboard(request):
         artworkname = favartwork.artworkname
         artworkid = favartwork.id
         medium = favartwork.medium
+        if favartwork.category == "paintings":
+            artwork_type_counts['painting'] += 1
+        elif favartwork.category == "works on paper":
+            artwork_type_counts['workonpaper'] += 1
+        elif favartwork.category == "prints":
+            artwork_type_counts['print'] += 1
+        elif favartwork.category == "sculptures":
+            artwork_type_counts['sculpture'] += 1
         sizedetails = favartwork.sizedetails
         artworkimage = ""
         if favartwork.image1 is not None:
@@ -891,6 +909,7 @@ def dashboard(request):
         favourite_auctions.append(d)
     context['favourite_artists'] = favourite_artists
     context['favourite_artworks'] = favourite_artworks
+    context['artwork_type_counts'] = artwork_type_counts
     context['favourite_auctions'] = favourite_auctions
     context['totalfavouriteartists'] = totalfavouriteartists
     context['favouriteartistscurweek'] = favouriteartistscurweek
@@ -898,6 +917,7 @@ def dashboard(request):
     context['favouriteartworkscurweek'] = favouriteartworkscurweek
     context['totalfavouriteauctions'] = totalfavouriteauctions
     context['favouriteauctionscurweek'] = favouriteauctionscurweek
+    context['username'] = userobj.username
     template = loader.get_template('dashboard.html')
     return HttpResponse(template.render(context, request))
     

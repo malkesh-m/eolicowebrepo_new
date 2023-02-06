@@ -15,5 +15,6 @@ urlpatterns = [
     #path('morefollows/', views.morefollows, name='morefollows'),
     path('morefavourites/', views.morefavourites, name='morefavourites'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('show/', views.show, name='show'),
 ]
 

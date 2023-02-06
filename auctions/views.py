@@ -247,6 +247,9 @@ def index(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     prevpage = int(page) - 1
     nextpage = int(page) + 1
     displayedprevpage1 = 0
@@ -485,6 +488,9 @@ def details(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     template = loader.get_template('auction_details.html')
     return HttpResponse(template.render(context, request))
     
@@ -570,6 +576,9 @@ def search(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     return HttpResponse(json.dumps(context))
 
 
@@ -714,6 +723,9 @@ def moreauctions(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     template = loader.get_template('moreauctions.html')
     return HttpResponse(template.render(context, request))
 
@@ -844,6 +856,9 @@ def showauction(request):
     context['selectlots'] = selectlots
     context['allartists'] = allartists
     context['nationalities'] = nationalities
+    if request.user:
+        userobj = request.user
+        context['username'] = userobj.username
     template = loader.get_template('showauction.html')
     return HttpResponse(template.render(context, request))
 
