@@ -245,3 +245,23 @@ function addtofavourites(entitytype, entityid, divid){
 }
 
 
+function logout(){
+  var xmlhttp;
+  if (window.XMLHttpRequest){
+    xmlhttp=new XMLHttpRequest();
+  }
+  else{
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  // Register the handler
+  xmlhttp.onreadystatechange = function(){
+  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+    return(); // Do nothing as a redirect has already been made from the server side.
+  }
+  };
+  xmlhttp.open("GET", "/login/logout/");
+  xmlhttp.send();
+}
+
+
+

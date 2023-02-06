@@ -8,6 +8,10 @@
    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="static/css/font-awesome.css">
    <link rel="stylesheet" href="static/css/style.css">
+
+   <script src="/static/js/editfromfront.js"></script>
+   <script src="/static/js/eolicoauth.js"></script>
+
    <script src="static/js/jquery-2.1.0.min.js"></script>
    
    <!-- <script src="static/js/popper.js"></script> -->
@@ -460,19 +464,19 @@ a[data-toggle="collapse"] {
                     <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
                       <ul class="navbar-nav">
                         <li class="nav-item">
-                          <a class="nav-link" href="#">Artist</a>
+                          <a class="nav-link" href="/artist/index/">Artist</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" href="#">Auction Houses</a>
+                          <a class="nav-link" href="/auctionhouse/index/">Auction Houses</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" href="#">Auction</a>
+                          <a class="nav-link" href="/auction/index/">Auction</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" href="#">Price DataTable</a>
+                          <a class="nav-link" href="/price/database/">Price DataTable</a>
                         </li>
                         <li class="nav-item">
-                          <button class="btn text-uppercase text-light theme-bg-color btn-sm px-4" style="border-radius: 20px;">Logout</button>
+                          <button class="btn text-uppercase text-light theme-bg-color btn-sm px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
                         </li>
                       </ul>
                     </div>
