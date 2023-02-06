@@ -839,7 +839,7 @@ def dashboard(request):
         lotartistqset = LotArtist.objects.filter(artist_id=favartistid)
         artistartworkcount = list(lotartistqset).__len__()
         curdate = datetime.datetime.now()
-        datenow = str(datetime.date(curdate.year, curdate.month,curdate.day))
+        datenow = datetime.date(curdate.year, curdate.month,curdate.day)
         date12monthsago = datenow - datetime.timedelta(days=365)
         artworksoldlast12months = 0
         artworksoldtotal = 0
@@ -859,7 +859,16 @@ def dashboard(request):
                 except:
                     pass
             artistname = lotartist.artist_name
-        d = {'totalartworks' : artistartworkcount, 'artistname' : artistname, 'artistid' : favartistid, 'totalartworkssold' : artworksoldtotal, 'artworkssoldlast12months' : artworksoldlast12months, 'sellingrate' : float(artworksoldtotal/artistartworkcount), 'avgsaleprice' : float(totalsoldusd/artworksoldtotal), 'avgsalepricelast12months' : float(totalsoldusdlast12months/artworksoldlast12months)}
+        sellingratefloat = 'NA'
+        if float(artistartworkcount ) > 0:
+            sellingratefloat = float(artworksoldtotal/artistartworkcount)
+        avgsalepricefloat = 'NA'
+        if float(artworksoldtotal) > 0:
+            avgsalepricefloat = float(totalsoldusd/artworksoldtotal)
+        avgsalepricelast12monthsfloat = 'NA'
+        if float(artworksoldlast12months) > 0:
+            avgsalepricelast12monthsfloat = float(totalsoldusdlast12months/artworksoldlast12months)
+        d = {'totalartworks' : artistartworkcount, 'artistname' : artistname, 'artistid' : favartistid, 'totalartworkssold' : artworksoldtotal, 'artworkssoldlast12months' : artworksoldlast12months, 'sellingrate' : sellingratefloat, 'avgsaleprice' : avgsalepricefloat, 'avgsalepricelast12months' : avgsalepricelast12monthsfloat}
         favourite_artists.append(d)
     for favartwork in favartworksqset:
         artworkname = favartwork.artworkname
