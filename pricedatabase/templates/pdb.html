@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
+        rel="stylesheet">
 
     <title>ArtBidder Price Database</title>
 
@@ -15,7 +17,6 @@
     <!-- Additional CSS Files -->
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
-    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/responsive.css">
     <link rel="stylesheet" href="/static/css/owl-carousel.css">
     <link rel="stylesheet" href="/static/css/lightbox.css">
@@ -24,26 +25,59 @@
     <link rel="stylesheet" href="/static/css/newcarousel.css">
     <link rel="stylesheet" href="/static/css/autocomplete.css">
 
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
-	.owl-prev, .owl-next {
-        width: 15px;
-        height: 100px;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        display: block !important;
-        border:0px solid black;
-    }
-    .owl-prev { left: -20px; }
-    .owl-next { right: -20px; }
-    .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
- 
+        .owl-prev,
+        .owl-next {
+            width: 15px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: block !important;
+            border: 0px solid black;
+        }
+
+        .owl-prev {
+            left: -20px;
+        }
+
+        .owl-next {
+            right: -20px;
+        }
+
+        .owl-prev i,
+        .owl-next i {
+            transform: scale(2, 5);
+            color: #ccc;
+        }
+
+        #frmsearchpdb {
+            background-color: #f9f9f9 !important;
+            padding: 20px !important;
+            border-radius: 10px !important;
+        }
+
+        .advanced-search-btn {
+            background-color: #17a2b8;
+            padding: 10px;
+            color: #ffffff;
+            border-radius: 5px;
+        }
+
+        .p-tag-style {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 0;
+        }
     </style>
     <style>
-    #frmsearchauctions input[type=search]{width:430px !important;}
+        #frmsearchauctions input[type=search] {
+            width: 430px !important;
+        }
     </style>
 
-<!--
+    <!--
 
 TemplateMo 571 Hexashop
 
@@ -51,199 +85,202 @@ https://templatemo.com/tm-571-hexashop
 
 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script type='text/javascript'>
-	
-	function filterresults(page=1){
-          waitdivtag = document.getElementById('waitdiv');
-          waitdivtag.style.display = "";
-          waitdivtag.innerHTML = "<img src='/static/images/loading.gif'><div style='padding-left:7px;'>Please wait while we process your search query. Depending on the parameters you have specified, it might take a little while...</div>";
-	  csrf = document.frmpricefilter.csrfmiddlewaretoken.value;
-	  //alert(csrf);
-	  artistname = document.frmpricefilter.txtartistname.value;
-	  title = document.frmpricefilter.txttitle.value;
-	  auctionhouses = document.frmpricefilter.sel_auctionhouses.options;
-          selectedauctionhouses = "";
-          for(var i=0; i < auctionhouses.length; i++){
-              if(auctionhouses[i].selected == true){
-                  selectedauctionhouses += auctionhouses[i].value + "|";
-              }
-          }
-          if(selectedauctionhouses.length > 0){
-              selectedauctionhouses = selectedauctionhouses.substr(0, selectedauctionhouses.length - 1); // Remove the last '|' character.
-          }
-	  mediumpattern = /medium/i;
-	  artwork_start_period = document.frmpricefilter.sel_artwork_start.options[document.frmpricefilter.sel_artwork_start.options.selectedIndex].value;
-          artwork_end_period = document.frmpricefilter.sel_artwork_end.options[document.frmpricefilter.sel_artwork_end.options.selectedIndex].value;
-	  saletitle = document.frmpricefilter.txtsaletitle.value;
-	  auctionlocation = document.frmpricefilter.txtauctionlocation.value;
-          salecode = document.frmpricefilter.txtsalecode.value;
-          salestartdate = document.frmpricefilter.dtauctionstartdate.value;
-          saleenddate = document.frmpricefilter.dtauctionenddate.value;
-	  allformelements = document.frmpricefilter.elements;
-	  auctionhouseparam = "&auctionhouses=" + encodeURI(selectedauctionhouses);
-	  mediumparam = "&category=";
-	  artistparam = "&artistname=" + encodeURI(artistname);
-	  lottitleparam = "&lottitle=" + encodeURI(title);
-	  saletitleparam = "&saletitle=" + encodeURI(saletitle);
-          auctionlocationparam = "&auclocation=" + encodeURI(auctionlocation);
-          salecodeparam = "&salecode=" + salecode;
-          salestartparam = "&salestartdate=" + encodeURI(salestartdate);
-          saleendparam = "&saleenddate=" + encodeURI(saleenddate);
-	  for(var i=0; i < allformelements.length; i++){
-	    elemname = allformelements[i].name;
-	    elemid = allformelements[i].id;
-	    elemvalue = allformelements[i].value;
-	    if(mediumpattern.test(elemid)){
-		mediumelement = document.getElementById(elemid);
-		if(mediumelement.checked == true){
-		    mediumparam += encodeURI(elemvalue + "|");
-		}
-	    }
-	    /*
-	    if(saleoutcomepattern.test(elemid)){
-		soelement = document.getElementById(elemid);
-		if(soelement.checked == true){
-		    saleoutcomeparam += elemvalue + "|";
-		}
-	    } */
-	  }
-	  postdata = "csrfmiddlewaretoken=" + csrf + auctionhouseparam + mediumparam + auctionlocationparam + saletitleparam + salecodeparam + artistparam + lottitleparam + salestartparam + saleendparam + "&artwork_start=" + encodeURI(artwork_start_period) + "&artwork_end=" + encodeURI(artwork_end_period) + "&page=" + page;
-          alert(postdata);
-	  var xmlhttp;
-	  if (window.XMLHttpRequest){
-	    xmlhttp=new XMLHttpRequest();
-	  }
-	  else{
-	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  // Register the handler
-	  xmlhttp.onreadystatechange = function(){
-	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    context = JSON.parse(xmlhttp.responseText);
-	    secheaderdiv = document.getElementById('sectionheaderdiv');
-	    secheaderdiv.innerHTML = "<h2>Advanced Search Results</h2><hr>";
-	    latestlotsdiv = document.getElementById('latestlots');
-	    latestlotsdiv.innerHTML = "";
-	    waitdivtag.innerHTML = "";
-            waitdivtag.style.display = "none";
-	    searchtext = "";
-	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
-            searchresults = context['allsearchresults'];
-    	    adminuser = context['adminuser'];
-	    pages = context['pages'];
-            for(var i=0; i < searchresults.length; i++){
-                resobj = searchresults[i];
-                obtype = resobj.obtype;
-    		if(obtype == 'auction'){
-		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
-	            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='" + resobj.coverimage + "'></a></div>";
-		    searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname +"</h4>";
-		    if (resobj.auctionperiod != ''){
-		        searchtext += "<h6>" + resobj.auctionperiod + "</h6>";
-		    }
-		    searchtext += "<h6>" + resobj.auctionhouse + "</h6>";
-		    searchtext += "<h6>Number of lots: " + resobj.lotcount + "</h6>";
-		    searchtext += "</a></div>";
-		    if(adminuser == 1){
-		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
-		    }
-		}
-		else if(obtype == 'lot'){
-		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
-	            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
-		    searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle +"</h4>";
-	            searchtext += "<h6>" + resobj.artistname + "</h6>";
-		    searchtext += "<h6>" + resobj.medium + "</h6>";
-		    searchtext += "<h6>" + resobj.size + "</h6>";
-		    searchtext += "<h6>US$&nbsp;&nbsp;" + resobj.soldprice + "</h6>";
-		    searchtext += "</a></div>";
-		    if(adminuser == 1){
-		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
-		    }
-		}
-		searchtext += "</div></div><br />";
-	    }
-	    searchtext += "</div>";
-	    if(searchresults.length > 0){
-	    searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";     
-	    if(pages.prevpage >= 1){
-		searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:filterresults(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
-	    }
-       	    searchtext += "</li>";
-	    if(pages.displayedprevpage2 > 0){
-		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
-	    }
-	    if(pages.displayedprevpage1 > 0){
-		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
-	    }
-	    searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:filterresults(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
-	    } // End of 'if searchresults.length > 0'...
-	    searchtext += "</div>";
-	    latestlotsdiv.innerHTML = searchtext;
-	  }
-	  };
-	  xmlhttp.open("POST", "/price/filter/");
-	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
-	  xmlhttp.send(postdata);
-	}
+
+        function filterresults(page = 1) {
+            waitdivtag = document.getElementById('waitdiv');
+            waitdivtag.style.display = "";
+            waitdivtag.innerHTML = "<img src='/static/images/loading.gif'><div style='padding-left:7px;'>Please wait while we process your search query. Depending on the parameters you have specified, it might take a little while...</div>";
+            csrf = document.frmpricefilter.csrfmiddlewaretoken.value;
+            //alert(csrf);
+            artistname = document.frmpricefilter.txtartistname.value;
+            title = document.frmpricefilter.txttitle.value;
+            auctionhouses = document.frmpricefilter.sel_auctionhouses.options;
+            selectedauctionhouses = "";
+            for (var i = 0; i < auctionhouses.length; i++) {
+                if (auctionhouses[i].selected == true) {
+                    selectedauctionhouses += auctionhouses[i].value + "|";
+                }
+            }
+            if (selectedauctionhouses.length > 0) {
+                selectedauctionhouses = selectedauctionhouses.substr(0, selectedauctionhouses.length - 1); // Remove the last '|' character.
+            }
+            mediumpattern = /medium/i;
+            artwork_start_period = document.frmpricefilter.sel_artwork_start.options[document.frmpricefilter.sel_artwork_start.options.selectedIndex].value;
+            artwork_end_period = document.frmpricefilter.sel_artwork_end.options[document.frmpricefilter.sel_artwork_end.options.selectedIndex].value;
+            saletitle = document.frmpricefilter.txtsaletitle.value;
+            auctionlocation = document.frmpricefilter.txtauctionlocation.value;
+            salecode = document.frmpricefilter.txtsalecode.value;
+            salestartdate = document.frmpricefilter.dtauctionstartdate.value;
+            saleenddate = document.frmpricefilter.dtauctionenddate.value;
+            allformelements = document.frmpricefilter.elements;
+            auctionhouseparam = "&auctionhouses=" + encodeURI(selectedauctionhouses);
+            mediumparam = "&category=";
+            artistparam = "&artistname=" + encodeURI(artistname);
+            lottitleparam = "&lottitle=" + encodeURI(title);
+            saletitleparam = "&saletitle=" + encodeURI(saletitle);
+            auctionlocationparam = "&auclocation=" + encodeURI(auctionlocation);
+            salecodeparam = "&salecode=" + salecode;
+            salestartparam = "&salestartdate=" + encodeURI(salestartdate);
+            saleendparam = "&saleenddate=" + encodeURI(saleenddate);
+            for (var i = 0; i < allformelements.length; i++) {
+                elemname = allformelements[i].name;
+                elemid = allformelements[i].id;
+                elemvalue = allformelements[i].value;
+                if (mediumpattern.test(elemid)) {
+                    mediumelement = document.getElementById(elemid);
+                    if (mediumelement.checked == true) {
+                        mediumparam += encodeURI(elemvalue + "|");
+                    }
+                }
+                /*
+                if(saleoutcomepattern.test(elemid)){
+                soelement = document.getElementById(elemid);
+                if(soelement.checked == true){
+                    saleoutcomeparam += elemvalue + "|";
+                }
+                } */
+            }
+            postdata = "csrfmiddlewaretoken=" + csrf + auctionhouseparam + mediumparam + auctionlocationparam + saletitleparam + salecodeparam + artistparam + lottitleparam + salestartparam + saleendparam + "&artwork_start=" + encodeURI(artwork_start_period) + "&artwork_end=" + encodeURI(artwork_end_period) + "&page=" + page;
+            alert(postdata);
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // Register the handler
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    context = JSON.parse(xmlhttp.responseText);
+                    secheaderdiv = document.getElementById('sectionheaderdiv');
+                    secheaderdiv.innerHTML = "<h2>Advanced Search Results</h2><hr>";
+                    latestlotsdiv = document.getElementById('latestlots');
+                    latestlotsdiv.innerHTML = "";
+                    waitdivtag.innerHTML = "";
+                    waitdivtag.style.display = "none";
+                    searchtext = "";
+                    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+                    searchresults = context['allsearchresults'];
+                    adminuser = context['adminuser'];
+                    pages = context['pages'];
+                    for (var i = 0; i < searchresults.length; i++) {
+                        resobj = searchresults[i];
+                        obtype = resobj.obtype;
+                        if (obtype == 'auction') {
+                            searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+                            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='" + resobj.coverimage + "'></a></div>";
+                            searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname + "</h4>";
+                            if (resobj.auctionperiod != '') {
+                                searchtext += "<h6>" + resobj.auctionperiod + "</h6>";
+                            }
+                            searchtext += "<h6>" + resobj.auctionhouse + "</h6>";
+                            searchtext += "<h6>Number of lots: " + resobj.lotcount + "</h6>";
+                            searchtext += "</a></div>";
+                            if (adminuser == 1) {
+                                searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
+                            }
+                        }
+                        else if (obtype == 'lot') {
+                            searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+                            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
+                            searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle + "</h4>";
+                            searchtext += "<h6>" + resobj.artistname + "</h6>";
+                            searchtext += "<h6>" + resobj.medium + "</h6>";
+                            searchtext += "<h6>" + resobj.size + "</h6>";
+                            searchtext += "<h6>US$&nbsp;&nbsp;" + resobj.soldprice + "</h6>";
+                            searchtext += "</a></div>";
+                            if (adminuser == 1) {
+                                searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
+                            }
+                        }
+                        searchtext += "</div></div><br />";
+                    }
+                    searchtext += "</div>";
+                    if (searchresults.length > 0) {
+                        searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                        if (pages.prevpage >= 1) {
+                            searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:filterresults(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                        }
+                        searchtext += "</li>";
+                        if (pages.displayedprevpage2 > 0) {
+                            searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                        }
+                        if (pages.displayedprevpage1 > 0) {
+                            searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                        }
+                        searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:filterresults(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                    } // End of 'if searchresults.length > 0'...
+                    searchtext += "</div>";
+                    latestlotsdiv.innerHTML = searchtext;
+                }
+            };
+            xmlhttp.open("POST", "/price/filter/");
+            xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+            xmlhttp.send(postdata);
+        }
     </script>
 
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
@@ -251,117 +288,118 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/autocomplete.js"></script>
 
     <script>
-	pdb = [
-		{% for entityname in filterpdb %}
-		    "{{entityname}}",
-		{% endfor %}
+        pdb = [
+            {% for entityname in filterpdb %}
+        "{{entityname}}",
+            {% endfor %}
 		]; // Should get populated during page load.
-	
-    </script> 
+
+    </script>
     <script>
-	function searchpdb(pageno=1){
-	  var xmlhttp;
-	  searchkey = document.getElementById('pdbsearch').value;
-	  if (window.XMLHttpRequest){
-	    xmlhttp=new XMLHttpRequest();
-	  }
-	  else{
-	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  loadingspan = document.getElementById('loading');
-	  // Register the handler
-	  xmlhttp.onreadystatechange = function(){
-	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    context = JSON.parse(xmlhttp.responseText);
-	    searchresults = context['allsearchresults'];
-	    secheaderdiv = document.getElementById('sectionheaderdiv');
-	    headercontent = "<h2>Search Results for '" + searchkey + "'...</h2><hr>";
-	    if(searchresults.length == 0){
-		headercontent += "<br/><br/><h6>No match found!</h6>";
-	    }
-	    secheaderdiv.innerHTML = headercontent;
-	    latestlotsdiv = document.getElementById('latestlots');
-	    latestlotsdiv.innerHTML = "";
-	    loadingspan.innerHTML = "";
-	    searchtext = "";
-	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
-    	    adminuser = context['adminuser'];
-	    pages = context['pages'];
-            for(var i=0; i < searchresults.length; i++){
-                resobj = searchresults[i];
-                obtype = resobj.obtype;
-    		if(obtype == 'auction'){
-		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
-	            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='" + resobj.coverimage + "'></a></div>";
-		    searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname +"</h4>";
-		    if (resobj.auctionperiod != ''){
-		        searchtext += "<h6>" + resobj.auctionperiod + "</h6>";
-		    }
-		    searchtext += "<h6>" + resobj.auctionhouse + "</h6>";
-		    searchtext += "<h6>Number of lots: " + resobj.lotcount + "</h6>";
-		    searchtext += "</a></div>";
-		    if(adminuser == 1){
-		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
-		    }
-		}
-		else if(obtype == 'lot'){
-		    searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
-	            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
-		    searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle +"</h4>";
-	            searchtext += "<h6>" + resobj.artistname + "</h6>";
-		    searchtext += "<h6>" + resobj.medium + "</h6>";
-		    searchtext += "<h6>" + unescape(resobj.size) + "</h6>";
-		    searchtext += "<h6>US$&nbsp;&nbsp;" + resobj.soldprice + "</h6>";
-		    searchtext += "</a></div>";
-		    if(adminuser == 1){
-		    	searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
-		    }
-		}
-		searchtext += "</div></div><br />";
-	    }
-	    searchtext += "</div>";
-	    // Pagination div starts here...
-	    if(searchresults.length > 0){
-	    searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";     
-	    if(pages.prevpage >= 1){
-		searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchpdb(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
-	    }
-       	    searchtext += "</li>";
-	    if(pages.displayedprevpage2 > 0){
-		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
-	    }
-	    if(pages.displayedprevpage1 > 0){
-		searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
-	    }
-	    searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchpdb(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
-	    searchtext += "</div>";
-	    } // End of 'if searchresults.length > 0'...
-	    latestlotsdiv.innerHTML = searchtext;
-	  }
-	  };
-	  loadingspan.innerHTML = "<img src='/static/images/loading.gif'>";
-	  xmlhttp.open("GET", "/price/search/?q=" + searchkey + "&page=" + pageno);
-	  xmlhttp.send();
-	}
+        function searchpdb(pageno = 1) {
+            var xmlhttp;
+            searchkey = document.getElementById('pdbsearch').value;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            loadingspan = document.getElementById('loading');
+            // Register the handler
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    context = JSON.parse(xmlhttp.responseText);
+                    searchresults = context['allsearchresults'];
+                    secheaderdiv = document.getElementById('sectionheaderdiv');
+                    headercontent = "<h2>Search Results for '" + searchkey + "'...</h2><hr>";
+                    if (searchresults.length == 0) {
+                        headercontent += "<br/><br/><h6>No match found!</h6>";
+                    }
+                    secheaderdiv.innerHTML = headercontent;
+                    latestlotsdiv = document.getElementById('latestlots');
+                    latestlotsdiv.innerHTML = "";
+                    loadingspan.innerHTML = "";
+                    searchtext = "";
+                    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+                    adminuser = context['adminuser'];
+                    pages = context['pages'];
+                    for (var i = 0; i < searchresults.length; i++) {
+                        resobj = searchresults[i];
+                        obtype = resobj.obtype;
+                        if (obtype == 'auction') {
+                            searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+                            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='" + resobj.coverimage + "'></a></div>";
+                            searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname + "</h4>";
+                            if (resobj.auctionperiod != '') {
+                                searchtext += "<h6>" + resobj.auctionperiod + "</h6>";
+                            }
+                            searchtext += "<h6>" + resobj.auctionhouse + "</h6>";
+                            searchtext += "<h6>Number of lots: " + resobj.lotcount + "</h6>";
+                            searchtext += "</a></div>";
+                            if (adminuser == 1) {
+                                searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
+                            }
+                        }
+                        else if (obtype == 'lot') {
+                            searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+                            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
+                            searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle + "</h4>";
+                            searchtext += "<h6>" + resobj.artistname + "</h6>";
+                            searchtext += "<h6>" + resobj.medium + "</h6>";
+                            searchtext += "<h6>" + unescape(resobj.size) + "</h6>";
+                            searchtext += "<h6>US$&nbsp;&nbsp;" + resobj.soldprice + "</h6>";
+                            searchtext += "</a></div>";
+                            if (adminuser == 1) {
+                                searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
+                            }
+                        }
+                        searchtext += "</div></div><br />";
+                    }
+                    searchtext += "</div>";
+                    // Pagination div starts here...
+                    if (searchresults.length > 0) {
+                        searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                        if (pages.prevpage >= 1) {
+                            searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchpdb(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                        }
+                        searchtext += "</li>";
+                        if (pages.displayedprevpage2 > 0) {
+                            searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                        }
+                        if (pages.displayedprevpage1 > 0) {
+                            searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                        }
+                        searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchpdb(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                        searchtext += "</div>";
+                    } // End of 'if searchresults.length > 0'...
+                    latestlotsdiv.innerHTML = searchtext;
+                }
+            };
+            loadingspan.innerHTML = "<img src='/static/images/loading.gif'>";
+            xmlhttp.open("GET", "/price/search/?q=" + searchkey + "&page=" + pageno);
+            xmlhttp.send();
+        }
 
 
-        function openadvancedsearch(){
-	    advsearchdiv = document.getElementById('advsearch');
-            if(advsearchdiv.style.display == 'none'){
-		advsearchdiv.style.display = '';
-	    }
-	    else{
-		advsearchdiv.style.display = 'none';
-	    }
+        function openadvancedsearch() {
+            advsearchdiv = document.getElementById('advsearch');
+            if (advsearchdiv.style.display == 'none') {
+                advsearchdiv.style.display = '';
+            }
+            else {
+                advsearchdiv.style.display = 'none';
+            }
         }
     </script>
 
-    </head>
-    
-    <body onload="javascript:autocomplete(document.getElementById('pdbsearch'), pdb);">
+</head>
+
+<body onload="javascript:autocomplete(document.getElementById('pdbsearch'), pdb);">
 
     <!-- Sign up Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -380,25 +418,29 @@ https://templatemo.com/tm-571-hexashop
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label>
+                            {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
-                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
+                                <input type="text" class="form-control" id="emailid" name="emailid"
+                                    placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
                                 <label for="password1">Password</label>
-                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
+                                <input type="password" class="form-control" id="password1" name="password1"
+                                    placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
-			    <div class="form-group">
+                            <div class="form-group">
                                 <label for="password2">Confirm Password</label>
-                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
+                                <input type="password" class="form-control" id="password2" name="password2"
+                                    placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
@@ -406,13 +448,17 @@ https://templatemo.com/tm-571-hexashop
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from ArtBidder.</p>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a
+                                            href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a
+                                            href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider"
+                                    onclick="javascript:doregister();">Sign up</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -427,10 +473,13 @@ https://templatemo.com/tm-571-hexashop
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
+                                        data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                                <p>This site is protected by reCAPTCHA and the Google <a
+                                        href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
+                                        Service</a> apply.</p>
                             </div>
                         </form>
                     </div>
@@ -440,7 +489,8 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
+        aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -459,15 +509,17 @@ https://templatemo.com/tm-571-hexashop
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label>
+                            {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="username"
+                                    placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
-                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
+                                <input type="password" class="form-control" name='passwd' id="passwd"
+                                    placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <!-- <div class="form-group">
@@ -476,22 +528,27 @@ https://templatemo.com/tm-571-hexashop
                                 </div>
                             </div> -->
                             <div class="form-group">
-                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
+                                <button type="button" value="submit" name="" class="btn btn-slider"
+                                    onclick="javascript:dologin();">Log in</button>
                             </div>
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
                             <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with
+                                    Apple</a>
                             </div>
                             <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with
+                                    Google</a>
                             </div>
                             <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue
+                                    with Facebook</a>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
+                                        data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -501,7 +558,8 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -526,10 +584,13 @@ https://templatemo.com/tm-571-hexashop
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset
+                                    instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
+                                        data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
+                                        data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -538,7 +599,7 @@ https://templatemo.com/tm-571-hexashop
         </div>
     </div>
     <!-- Sign in Modal -->
-    
+
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -546,10 +607,10 @@ https://templatemo.com/tm-571-hexashop
             <div></div>
             <div></div>
         </div>
-    </div>  
+    </div>
     <!-- ***** Preloader End ***** -->
-    
-    
+
+
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
@@ -577,44 +638,47 @@ https://templatemo.com/tm-571-hexashop
                             <span>Menu</span>
                         </a>
                     </nav> -->
-		    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav" >
-                      <a class="navbar-brand" href="/login/dashboard/">
-                        <!-- <img src="static/images/logo1.png"> -->
-                        ARTBIDDER
-                     </a>
-                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                          aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                      </button>
-                      <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                          <ul class="navbar-nav mx-auto">
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
-                              </li>
-                              
-                          </ul>
-                          <ul class="navbar-nav sm-icons mr-0">
-                              {% if not user.is_authenticated %}
-                              <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-                              {% else %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-                              {% endif %}
-                          </ul>
-                      </div>
-                  </nav>
+                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
+                        <a class="navbar-brand" href="/login/dashboard/">
+                            <!-- <img src="static/images/logo1.png"> -->
+                            ARTBIDDER
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="myNavbarToggler10">
+                            <ul class="navbar-nav mx-auto">
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+                                </li>
+
+                            </ul>
+                            <ul class="navbar-nav sm-icons mr-0">
+                                {% if not user.is_authenticated %}
+                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+                                <li class="nav-item"><button type="button" class="btn btn-info btn-round"
+                                        data-toggle="modal" data-target="#exampleModal-login"
+                                        aria-controls="exampleModal-login">Login</button></li>
+                                {% else %}
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -622,11 +686,11 @@ https://templatemo.com/tm-571-hexashop
     <!-- ***** Header Area End ***** -->
 
     <!-- ***** Main Banner Area Start ***** -->
-    
-   	<!-- Carousel -->
+
+    <!-- Carousel -->
     <section class="testimonials">
-     <div class="container">
-      <!-- <div class="row">
+        <div class="container">
+            <!-- <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
@@ -645,171 +709,263 @@ https://templatemo.com/tm-571-hexashop
           </div>
         </div>
       </div> -->
-     </div>
+        </div>
     </section>
     <!-- END OF Carousels -->
-    <section class="section gal-section" id="searchsitesection" style='width:1000px;'>
-      	<div class="container" style='width:1000px;'>
-	    <div class="row" style='display:flex;'>
-                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Emerging Art</h2> -->
-                          <span>
-			      <form autocomplete="off" name='frmsearchpdb' id='frmsearchpdb' method='POST' action="">
-				  {% csrf_token %}
-				  <div class="autocomplete">
-				    <!-- <div class="row" style='width:800px;'><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openNav()">Advanced Search</a></div> -->
-				    <div class="row" style='width:800px;'><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openadvancedsearch();">Advanced Search</a></div>
-				    <br/>
-				    <div class="row" style='width:1000px;text-align:center;'>Search 10 Million plus Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses around the world.</div>
-				  </div>
-			      </form>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-	</div>
-	<div class="container" style='width:1000px;'>
-	    <div class="row" style='text-align:center;display:flex;'>
-                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
-                      <div class="section-heading section-heading-2">
-			<span class='input-group' style='900px;'>
-			<div class="row" style='width:900px;'>Space for content on why you should subscribe to ADS database</div>
-			</span>
-		      </div>
-		  </div>
-	    </div>
-	</div>
+    <section class="section gal-section" id="searchsitesection">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading">
+                        <!-- <h2>Emerging Art</h2> -->
+                        <form autocomplete="off" name='frmsearchpdb' id='frmsearchpdb' method='POST' action="">
+                            {% csrf_token %}
+                            <div class="autocomplete">
+                                <!-- <div class="row" style='width:800px;'><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openNav()">Advanced Search</a></div> -->
+                                <div class="row justify-content-center">
+                                    <div class="col-6">
+                                        <div class="input-group mb-3">
+                                            <input type="search" class='form-control  rounded-0' name='pdbsearch'
+                                                id='pdbsearch' maxLength="200"
+                                                placeholder="Search artists, artworks, auctions..." />
+                                            <span class="input-group-text rounded-0"><button type="button"
+                                                    class="btn border-0 p-0 rounded-right"
+                                                    onclick='javascript:searchpdb();'><i
+                                                        class="fa fa-search"></i></button></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span id='loading'></span>
+                                        <a class="nav-link advanced-search-btn" id="AdvancedSearch-tab"
+                                            data-toggle="tab" href="#AdvancedSearch" role="tab"
+                                            aria-controls="AdvancedSearch" aria-selected="false"
+                                            onclick="openadvancedsearch();">Advanced Search</a>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <p class="p-tag-style">Search 10 Million plus
+                                            Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses
+                                            around the world.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- <a href="">View All</a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="section-heading">
+                        <span class='input-group justify-content-center'>
+                            <div>Space for content on why you should subscribe to ADS
+                                database</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <div class="container" style='width:1000px;'>
-	    <div class="row" style='text-align:center;display:flex;'>
-                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
-                      <div class="section-heading section-heading-2">
-			<span class='input-group' style='900px;'>
-			<div class="row" style='width:900px;display:none;' id='advsearch'> 
-			<form method="POST" name='frmpricefilter' id='frmpricefilter' action=''>
-			{% csrf_token %}
-			<span><h2>Advanced Search Form </h2></span><br/><hr style='width:400px;text-align:center;'><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;'>Artist's Name:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Artwork Title:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txttitle" name="txttitle" value="" placeholder="Filter by title" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
-			<div class='row flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Category:</label></div><div class='col-lg align-items-left'>
-			<div class="row form-check">
-                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right flex-nowrap'><label class="form-check-label flex-nowrap" for="Design-tow" style='text-align:right;padding-right:10px;padding-left:10px;font-size:small;'>Work on Paper
-                            </label></div>
-                        </div><br/>
-                        <div class="row form-check">
-                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right flex-nowrap'><label class="form-check-label  flex-nowrap" for="Sculpture-tow" style='text-align:left;padding-right:10px;padding-left:10px;font-size:small;'>Sculpture
-                            </label></div>
-                        </div><br/>
-                        <div class="row form-check">
-                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right'><label class="form-check-label  flex-nowrap" for="Painting-two" style='text-align:left;padding-right:10px;padding-left:10px;font-size:small;'>Painting
-                            </label></div>
-                        </div><br/>
-                        <div class="row form-check">
-                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right'><label class="form-check-label  flex-nowrap" for="Installation" style='text-align:left;padding-right:10px;padding-left:10px;font-size:small;'>Installation
-                            </label></div>
-                        </div><br/>
-                        <div class="row form-check">
-                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right'><label class="form-check-label  flex-nowrap" for="photography" style='text-align:right;padding-right:10px;padding-left:10px;font-size:small;'>Photography
-                            </label></div>
-                        </div><br/>
-                        <div class="row form-check">
-                            <div class='col-lg-3 align-items-left'><input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" style='text-align:right;padding-right:10px;'></div><div class='col-lg-3 align-items-right'><label class="form-check-label  flex-nowrap" for="texttile-arts" style='text-align:right;padding-right:10px;padding-left:10px;font-size:small;'>Textile arts
-                            </label></div>
-                        </div><br/>
-			</div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Artwork Start:</label></div><div class='col-lg align-items-left'><select name='sel_artwork_start' id='sel_artwork_start' style='padding-left:10px;height:28px;width:350px;font-size:small;' class='form-control'>
-			{% for syk, syr in artwork_year_list.items %}
-			<option value="{{syk}}">{{syr}}</option>
-			{%endfor %}</select></div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Artwork End:</label></div><div class='col-lg align-items-left'><select name='sel_artwork_end' id='sel_artwork_end' style='padding-left:10px;height:28px;width:350px;font-size:small;' class='form-control'>
-			{% for syk, syr in artwork_year_list.items %}
-			<option value="{{syk}}">{{syr}}</option>
-			{%endfor %}</select></div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Auction House:</label></div><div class='col-lg align-items-left'>
-			<select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' style='height:84px;padding-left:10px;width:350px;font-size:small;' size=3 multiple>
-			{% for auctionhouse, ahid in auctionhouses.items %}
-			  <option value='{{ahid}}'>{{auctionhouse}}</option>
-			{% endfor %}
-			</select>
-			</div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Auction Location:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" value="" placeholder="Auction location" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Sale Title:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" value="" placeholder="Sale title" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Sale Start Date:</label></div><div class='col-lg align-items-left'><input type="date" class="form-date-input" id="dtauctionstartdate" name="dtauctionstartdate" value="" placeholder="" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Sale End Date:</label></div><div class='col-lg align-items-left'><input type="date" class="form-date-input" id="dtauctionenddate" name="dtauctionenddate" value="" placeholder="" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
-			<div class='row  flex-nowrap'><div class='col-lg align-items-left text-nowrap'><label style='padding-right:10px;nowrap;'>Sale Code:</label></div><div class='col-lg align-items-left'><input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value="" placeholder="Sale code" style='padding-left:10px;height:28px;width:350px;font-size:small;'></div></div><br/>
-			<div class='row'>&nbsp;&nbsp;</div>
-                        <div class='row  flex-nowrap'><div class='col-lg align-items-left'>&nbsp;</div><div class='col-lg align-items-right text-nowrap'><input type="button" class="btn btn-primary" id="btnsearch" name="btnsearch" value="Search" aria-expanded="true" onclick="javascript:filterresults();" style='width:175px;'><span id='loadingspan'></span>&nbsp;&nbsp;<input type='reset' name='rstbtn' id='rstbtn' value='Clear' class='btn btn-secondary' style='width:175px;'></div><div id='waitdiv' style='display:none;'></div></div><br/>
-			</div>
-			</form>
-			</span>
-		      </div>
-		  </div>
-	    </div>
-	</div>
+        <div class="container">
+
+            <div class="section-heading">
+                <div id='advsearch'>
+                    <form method="POST" name='frmpricefilter' id='frmpricefilter' action=''>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <h2>Advanced Search Form </h2>
+                                <hr style='width:400px;text-align:center;'><br />
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-6'>
+                                <div class="mb-4">
+                                    <label>Artist's Name:</label>
+                                    <input type="text" class="form-control" id="txtartistname" name="txtartistname"
+                                        value="" placeholder="Search by artist name" />
+                                </div>
+                                <div class="mb-4">
+                                    <label>Artwork Title:</label>
+                                    <input type="text" class="form-control" id="txttitle" name="txttitle" value=""
+                                        placeholder="Filter by title" />
+                                </div>
+                                <div class="mb-4">
+                                    <label>Category:</label>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="form-check mr-4">
+                                            <input type="checkbox" class="form-check-input" id="medium1" name="medium1"
+                                                value="paper|etch|charcoal">
+                                            <label class="form-check-label" for="Design-tow">Work on Paper</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="medium2" name="medium2"
+                                                value="stone|marble|bronze|brass|gold|wood">
+                                            <label class="form-check-label  flex-nowrap"
+                                                for="Sculpture-tow">Sculpture</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="form-check mr-4">
+                                            <input type="checkbox" class="form-check-input" id="medium3" name="medium3"
+                                                value="painting|oil|canvas">
+                                            <label class="form-check-label" for="Painting-two">Painting</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="medium4" name="medium4"
+                                                value="installation">
+                                            <label class="form-check-label" for="Installation">Installation </label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="form-check mr-4">
+                                            <input type="checkbox" class="form-check-input" id="medium5" name="medium5"
+                                                value="print|photo|celluloid">
+                                            <label class="form-check-label" for="photography">Photography</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="medium6" name="medium6"
+                                                value="textile|cloth|fabric">
+                                            <label class="form-check-label" for="texttile-arts">Textile arts </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label>Artwork Start:</label>
+                                    <select name='sel_artwork_start' id='sel_artwork_start' class='form-control'>
+                                        {% for syk, syr in artwork_year_list.items %}
+                                        <option value="{{syk}}">{{syr}}</option>
+                                        {%endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Artwork End:</label>
+                                    <select name='sel_artwork_end' id='sel_artwork_end' class='form-control'>
+                                        {% for syk, syr in artwork_year_list.items %}
+                                        <option value="{{syk}}">{{syr}}</option>
+                                        {%endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-4">
+                                    <label>Auction House:</label>
+                                    <select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' size=4
+                                        multiple>
+                                        {% for auctionhouse, ahid in auctionhouses.items %}
+                                        <option value='{{ahid}}'>{{auctionhouse}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label>Auction Location:</label>
+                                    <input type="text" class="form-control" id="txtauctionlocation"
+                                        name="txtauctionlocation" value="" placeholder="Auction location">
+                                </div>
+                                <div class="mb-4">
+                                    <label>Sale Title:</label>
+                                    <input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle"
+                                        value="" placeholder="Sale title">
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-4">
+                                            <label>Sale Start Date:</label>
+                                            <input type="date" class="form-control" id="dtauctionstartdate"
+                                                name="dtauctionstartdate" value="" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-4">
+                                            <label>Sale End Date:</label>
+                                            <input type="date" class="form-control" id="dtauctionenddate"
+                                                name="dtauctionenddate" value="" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div    >
+                                    <label>Sale Code:</label>
+                                    <input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value=""
+                                        placeholder="Sale code">
+                                </div>
+                            </div>
+                            <div class="col-12 text-center mt-4">
+                                <input type="button" class="btn btn-primary" id="btnsearch" name="btnsearch"
+                                    value="Search" aria-expanded="true" onclick="javascript:filterresults();">
+                                <span id='loadingspan'></span>
+                                <input type='reset' name='rstbtn' id='rstbtn' value='Clear' class='btn btn-secondary'>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </section>
     <!-- ***** Main Banner Area End ***** -->
 
-	
 
 
-	<section class="section gal-section" id="">
+
+    <section class="section gal-section" id="">
         <div class="container">
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="section-heading text-center" id='sectionheaderdiv'>
                         <h3>Trending Artworks</h3>
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
         </div>
-	
-	
-	<!-- Begining of new auctions gallery -->
-	<div>
-	<section class="oth-works mrt-90">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading section-heading-2 mrb-50">
-                        
-                    </div>
-                </div>
-            </div>
 
-            <div class="row align-items-end" id="latestlots">
-		{% for entity in entities %}
-                <div class="column">
-                    <div class="img-box">
-			<a href="/auction/details/?lid={{entity.lid}}"><img src="{{entity.lotimage}}" alt=""></a>
-                        <a href="/auction/details/?lid={{entity.lid}}" style="color:#000000;">
-				<h4>{{entity.artworkname}}: {{entity.auctionhouse}}</h4>
-				<h6>{{entity.artistname}}</h6>
-				<h6>US$&nbsp;&nbsp;{{entity.soldprice}}</h6>
-				<h6 style="padding-left:10px;">{{entity.auctionname}}</h6>
-		                <h6>
-		                    {{entity.auctionperiod}}
-		                </h6>
-				
-				<!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
-			</a>
-			{% if adminuser == 1 %}
-			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
-			{% endif %}
+
+        <!-- Begining of new auctions gallery -->
+        <div>
+            <section class="oth-works mrt-90">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="section-heading section-heading-2 mrb-50">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-end" id="latestlots">
+                        {% for entity in entities %}
+                        <div class="column">
+                            <div class="img-box">
+                                <a href="/auction/details/?lid={{entity.lid}}"><img src="{{entity.lotimage}}"
+                                        alt=""></a>
+                                <a href="/auction/details/?lid={{entity.lid}}" style="color:#000000;">
+                                    <h4>{{entity.artworkname}}: {{entity.auctionhouse}}</h4>
+                                    <h6>{{entity.artistname}}</h6>
+                                    <h6>US$&nbsp;&nbsp;{{entity.soldprice}}</h6>
+                                    <h6 style="padding-left:10px;">{{entity.auctionname}}</h6>
+                                    <h6>
+                                        {{entity.auctionperiod}}
+                                    </h6>
+
+                                    <!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
+                                </a>
+                                {% if adminuser == 1 %}
+                                <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
+                                        onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
-		{% endfor %}
-            </div>
-        </div>
-	<div class="container">
-    	<div class="card-body">
-      
-      <div class="tab-content">
-	<div class="tab-pane fade" id="AdvancedSearch" role="tabpanel" aria-labelledby="AdvancedSearch-tab">
-          <div id="mySidebar" class="sidebar">
-			<!-- <div class="fixed-sidbr-header">
+                <div class="container">
+                    <div class="card-body">
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade" id="AdvancedSearch" role="tabpanel"
+                                aria-labelledby="AdvancedSearch-tab">
+                                <div id="mySidebar" class="sidebar">
+                                    <!-- <div class="fixed-sidbr-header">
 				<h5>Filter</h5>
 				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
 			</div>
@@ -1030,24 +1186,24 @@ https://templatemo.com/tm-571-hexashop
 					</div>
 					</div>
 				</div> -->
-			</div>
-			
-		</form>
-		</div>
-        </div>
-    	</section>
-    	
-	<!-- <div class="container">
+                                </div>
+
+                                </form>
+                            </div>
+                        </div>
+            </section>
+
+            <!-- <div class="container">
 	    <div class="row">
 	    	<div class="col-lg-12">
 		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=0">View More</a>
 	    	</div>
 	    </div>
 	</div> -->
-	
-	<!-- End of new auctions gallery -->
-	
-	<!-- <div class="container">
+
+            <!-- End of new auctions gallery -->
+
+            <!-- <div class="container">
 	    <div class="row">
 	    	<div class="col-lg-12">
 		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=1">View More</a>
@@ -1059,14 +1215,14 @@ https://templatemo.com/tm-571-hexashop
 
 
     <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
-    
+        <a href="#" class="cancel">×</a>
+        <form name='frmedit' id='frmedit'>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="cover">
+    </div>
+
     <!-- ***** Footer Start ***** -->
     <footer>
         <div class="container">
@@ -1083,7 +1239,7 @@ https://templatemo.com/tm-571-hexashop
                         </ul>
                     </div>
                 </div>
-                 <div class="col-lg-3">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -1113,7 +1269,7 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-12">
                     <div class="under-footer">
                         <p>Copyright © 2022. All Rights Reserved.</p>
-                       
+
                         <ul>
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -1124,7 +1280,7 @@ https://templatemo.com/tm-571-hexashop
             </div>
         </div>
     </footer>
-    
+
 
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js"></script>
@@ -1140,78 +1296,79 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
-    
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
+
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
 
     <script>
-    function openNav() {
-  	document.getElementById("mySidebar").style.width = "350px";
-  	//document.getElementById("main").style.marginLeft = "250px";
-    }
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "350px";
+            //document.getElementById("main").style.marginLeft = "250px";
+        }
 
-    function closeNav() {
-  	document.getElementById("mySidebar").style.width = "0";
-  	document.getElementById("main").style.marginLeft= "0";
-    }
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
     </script>
-	
-	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
 
-jQuery(document).ready(function($) {
-"use strict";
-$('#customers-testimonials').owlCarousel( {
-		loop: true,
-		center: true,
-		items: 3,
-		margin: 30,
-		autoplay: true,
-		dots:true,
-    		nav:true,
-		autoplayTimeout: 8500,
-		smartSpeed: 450,
-  		navText: ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-		responsive: {
-			0: {
-				items: 1
-			},
-			768: {
-				items: 2
-			},
-			1170: {
-				items: 3
-			}
-		}
-	});
-});
-	</script>
     <script>
-		
-        $(function() {
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
+
+        jQuery(document).ready(function ($) {
+            "use strict";
+            $('#customers-testimonials').owlCarousel({
+                loop: true,
+                center: true,
+                items: 3,
+                margin: 30,
+                autoplay: true,
+                dots: true,
+                nav: true,
+                autoplayTimeout: 8500,
+                smartSpeed: 450,
+                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    1170: {
+                        items: 3
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+
+        $(function () {
             var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
+            $("p").click(function () {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function () {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
             });
         });
 
     </script>
 
-  </body>
+</body>
+
 </html>

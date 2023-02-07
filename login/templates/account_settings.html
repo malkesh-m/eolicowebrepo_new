@@ -10,13 +10,12 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
         rel="stylesheet">
 
-    <title>ArtBidder Plans</title>
+    <title>ArtBidder Price Database</title>
 
 
     <!-- Additional CSS Files -->
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
-    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/responsive.css">
     <link rel="stylesheet" href="/static/css/owl-carousel.css">
     <link rel="stylesheet" href="/static/css/lightbox.css">
@@ -25,11 +24,8 @@
     <link rel="stylesheet" href="/static/css/newcarousel.css">
     <link rel="stylesheet" href="/static/css/autocomplete.css">
 
+    <link rel="stylesheet" href="/static/css/style.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-        body{
-            font-family: 'Poppins', sans-serif !important;
-        }
         .owl-prev,
         .owl-next {
             width: 15px;
@@ -54,6 +50,25 @@
             transform: scale(2, 5);
             color: #ccc;
         }
+
+        #frmsearchpdb {
+            background-color: #f9f9f9 !important;
+            padding: 20px !important;
+            border-radius: 10px !important;
+        }
+
+        .advanced-search-btn {
+            background-color: #17a2b8;
+            padding: 10px;
+            color: #ffffff;
+            border-radius: 5px;
+        }
+
+        .p-tag-style {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 0;
+        }
     </style>
     <style>
         #frmsearchauctions input[type=search] {
@@ -74,6 +89,143 @@ https://templatemo.com/tm-571-hexashop
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <script type='text/javascript'>
+
+        function filterresults(page = 1) {
+            waitdivtag = document.getElementById('waitdiv');
+            waitdivtag.style.display = "";
+            waitdivtag.innerHTML = "<img src='/static/images/loading.gif'><div style='padding-left:7px;'>Please wait while we process your search query. Depending on the parameters you have specified, it might take a little while...</div>";
+            csrf = document.frmpricefilter.csrfmiddlewaretoken.value;
+            //alert(csrf);
+            artistname = document.frmpricefilter.txtartistname.value;
+            title = document.frmpricefilter.txttitle.value;
+            auctionhouses = document.frmpricefilter.sel_auctionhouses.options;
+            selectedauctionhouses = "";
+            for (var i = 0; i < auctionhouses.length; i++) {
+                if (auctionhouses[i].selected == true) {
+                    selectedauctionhouses += auctionhouses[i].value + "|";
+                }
+            }
+            if (selectedauctionhouses.length > 0) {
+                selectedauctionhouses = selectedauctionhouses.substr(0, selectedauctionhouses.length - 1); // Remove the last '|' character.
+            }
+            mediumpattern = /medium/i;
+            artwork_start_period = document.frmpricefilter.sel_artwork_start.options[document.frmpricefilter.sel_artwork_start.options.selectedIndex].value;
+            artwork_end_period = document.frmpricefilter.sel_artwork_end.options[document.frmpricefilter.sel_artwork_end.options.selectedIndex].value;
+            saletitle = document.frmpricefilter.txtsaletitle.value;
+            auctionlocation = document.frmpricefilter.txtauctionlocation.value;
+            salecode = document.frmpricefilter.txtsalecode.value;
+            salestartdate = document.frmpricefilter.dtauctionstartdate.value;
+            saleenddate = document.frmpricefilter.dtauctionenddate.value;
+            allformelements = document.frmpricefilter.elements;
+            auctionhouseparam = "&auctionhouses=" + encodeURI(selectedauctionhouses);
+            mediumparam = "&category=";
+            artistparam = "&artistname=" + encodeURI(artistname);
+            lottitleparam = "&lottitle=" + encodeURI(title);
+            saletitleparam = "&saletitle=" + encodeURI(saletitle);
+            auctionlocationparam = "&auclocation=" + encodeURI(auctionlocation);
+            salecodeparam = "&salecode=" + salecode;
+            salestartparam = "&salestartdate=" + encodeURI(salestartdate);
+            saleendparam = "&saleenddate=" + encodeURI(saleenddate);
+            for (var i = 0; i < allformelements.length; i++) {
+                elemname = allformelements[i].name;
+                elemid = allformelements[i].id;
+                elemvalue = allformelements[i].value;
+                if (mediumpattern.test(elemid)) {
+                    mediumelement = document.getElementById(elemid);
+                    if (mediumelement.checked == true) {
+                        mediumparam += encodeURI(elemvalue + "|");
+                    }
+                }
+                /*
+                if(saleoutcomepattern.test(elemid)){
+                soelement = document.getElementById(elemid);
+                if(soelement.checked == true){
+                    saleoutcomeparam += elemvalue + "|";
+                }
+                } */
+            }
+            postdata = "csrfmiddlewaretoken=" + csrf + auctionhouseparam + mediumparam + auctionlocationparam + saletitleparam + salecodeparam + artistparam + lottitleparam + salestartparam + saleendparam + "&artwork_start=" + encodeURI(artwork_start_period) + "&artwork_end=" + encodeURI(artwork_end_period) + "&page=" + page;
+            alert(postdata);
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // Register the handler
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    context = JSON.parse(xmlhttp.responseText);
+                    secheaderdiv = document.getElementById('sectionheaderdiv');
+                    secheaderdiv.innerHTML = "<h2>Advanced Search Results</h2><hr>";
+                    latestlotsdiv = document.getElementById('latestlots');
+                    latestlotsdiv.innerHTML = "";
+                    waitdivtag.innerHTML = "";
+                    waitdivtag.style.display = "none";
+                    searchtext = "";
+                    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+                    searchresults = context['allsearchresults'];
+                    adminuser = context['adminuser'];
+                    pages = context['pages'];
+                    for (var i = 0; i < searchresults.length; i++) {
+                        resobj = searchresults[i];
+                        obtype = resobj.obtype;
+                        if (obtype == 'auction') {
+                            searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+                            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='" + resobj.coverimage + "'></a></div>";
+                            searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname + "</h4>";
+                            if (resobj.auctionperiod != '') {
+                                searchtext += "<h6>" + resobj.auctionperiod + "</h6>";
+                            }
+                            searchtext += "<h6>" + resobj.auctionhouse + "</h6>";
+                            searchtext += "<h6>Number of lots: " + resobj.lotcount + "</h6>";
+                            searchtext += "</a></div>";
+                            if (adminuser == 1) {
+                                searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
+                            }
+                        }
+                        else if (obtype == 'lot') {
+                            searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+                            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
+                            searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle + "</h4>";
+                            searchtext += "<h6>" + resobj.artistname + "</h6>";
+                            searchtext += "<h6>" + resobj.medium + "</h6>";
+                            searchtext += "<h6>" + resobj.size + "</h6>";
+                            searchtext += "<h6>US$&nbsp;&nbsp;" + resobj.soldprice + "</h6>";
+                            searchtext += "</a></div>";
+                            if (adminuser == 1) {
+                                searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
+                            }
+                        }
+                        searchtext += "</div></div><br />";
+                    }
+                    searchtext += "</div>";
+                    if (searchresults.length > 0) {
+                        searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                        if (pages.prevpage >= 1) {
+                            searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:filterresults(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                        }
+                        searchtext += "</li>";
+                        if (pages.displayedprevpage2 > 0) {
+                            searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                        }
+                        if (pages.displayedprevpage1 > 0) {
+                            searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                        }
+                        searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:filterresults(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:filterresults(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                    } // End of 'if searchresults.length > 0'...
+                    searchtext += "</div>";
+                    latestlotsdiv.innerHTML = searchtext;
+                }
+            };
+            xmlhttp.open("POST", "/price/filter/");
+            xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+            xmlhttp.send(postdata);
+        }
+    </script>
 
     <style type="text/css">
         .button {
@@ -130,24 +282,110 @@ https://templatemo.com/tm-571-hexashop
         }
     </style>
 
-    <style>
-        /* td div:nth-of-type(odd) {
-            background: #e0e0e0;
-        } */
-
-        td div:nth-of-type(even) {
-            background: #FFFFFF;
-        }
-    </style>
-
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
     <script src="/static/js/autocomplete.js"></script>
+    <script>
+        function searchpdb(pageno = 1) {
+            var xmlhttp;
+            searchkey = document.getElementById('pdbsearch').value;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            loadingspan = document.getElementById('loading');
+            // Register the handler
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    context = JSON.parse(xmlhttp.responseText);
+                    searchresults = context['allsearchresults'];
+                    secheaderdiv = document.getElementById('sectionheaderdiv');
+                    headercontent = "<h2>Search Results for '" + searchkey + "'...</h2><hr>";
+                    if (searchresults.length == 0) {
+                        headercontent += "<br/><br/><h6>No match found!</h6>";
+                    }
+                    secheaderdiv.innerHTML = headercontent;
+                    latestlotsdiv = document.getElementById('latestlots');
+                    latestlotsdiv.innerHTML = "";
+                    loadingspan.innerHTML = "";
+                    searchtext = "";
+                    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+                    adminuser = context['adminuser'];
+                    pages = context['pages'];
+                    for (var i = 0; i < searchresults.length; i++) {
+                        resobj = searchresults[i];
+                        obtype = resobj.obtype;
+                        if (obtype == 'auction') {
+                            searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+                            searchtext += "<div class='thumb'><a href='/auction/showauction/?aucid=" + resobj.aucid + "'><img src='" + resobj.coverimage + "'></a></div>";
+                            searchtext += "<div class='down-content'><a href='/auction/showauction/?aucid=" + resobj.aucid + "' style='color:#000000;'><h4>" + resobj.auctionname + "</h4>";
+                            if (resobj.auctionperiod != '') {
+                                searchtext += "<h6>" + resobj.auctionperiod + "</h6>";
+                            }
+                            searchtext += "<h6>" + resobj.auctionhouse + "</h6>";
+                            searchtext += "<h6>Number of lots: " + resobj.lotcount + "</h6>";
+                            searchtext += "</a></div>";
+                            if (adminuser == 1) {
+                                searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
+                            }
+                        }
+                        else if (obtype == 'lot') {
+                            searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
+                            searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
+                            searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle + "</h4>";
+                            searchtext += "<h6>" + resobj.artistname + "</h6>";
+                            searchtext += "<h6>" + resobj.medium + "</h6>";
+                            searchtext += "<h6>" + unescape(resobj.size) + "</h6>";
+                            searchtext += "<h6>US$&nbsp;&nbsp;" + resobj.soldprice + "</h6>";
+                            searchtext += "</a></div>";
+                            if (adminuser == 1) {
+                                searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editlot('" + resobj.lid + "');\">Edit</a></div>";
+                            }
+                        }
+                        searchtext += "</div></div><br />";
+                    }
+                    searchtext += "</div>";
+                    // Pagination div starts here...
+                    if (searchresults.length > 0) {
+                        searchtext += "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                        if (pages.prevpage >= 1) {
+                            searchtext += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchpdb(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                        }
+                        searchtext += "</li>";
+                        if (pages.displayedprevpage2 > 0) {
+                            searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                        }
+                        if (pages.displayedprevpage1 > 0) {
+                            searchtext += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                        }
+                        searchtext += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchpdb(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchpdb(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                        searchtext += "</div>";
+                    } // End of 'if searchresults.length > 0'...
+                    latestlotsdiv.innerHTML = searchtext;
+                }
+            };
+            loadingspan.innerHTML = "<img src='/static/images/loading.gif'>";
+            xmlhttp.open("GET", "/price/search/?q=" + searchkey + "&page=" + pageno);
+            xmlhttp.send();
+        }
 
+
+        function openadvancedsearch() {
+            advsearchdiv = document.getElementById('advsearch');
+            if (advsearchdiv.style.display == 'none') {
+                advsearchdiv.style.display = '';
+            }
+            else {
+                advsearchdiv.style.display = 'none';
+            }
+        }
+    </script>
 
 </head>
 
-<body>
+<body onload="javascript:autocomplete(document.getElementById('pdbsearch'), pdb);">
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
@@ -171,7 +409,6 @@ https://templatemo.com/tm-571-hexashop
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
                             <label style="color:red;" id="errormsg"></label>
-                            {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="username" name="username"
@@ -262,7 +499,6 @@ https://templatemo.com/tm-571-hexashop
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
                             <label style="color:red;" id="errormsg"></label>
-                            {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="username"
@@ -377,14 +613,14 @@ https://templatemo.com/tm-571-hexashop
 			    <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
 			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
 			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
-                            <li class="scroll-to-section"><a href="/price/plans/" class="active">Plans</a></li>
+			    <li class="scroll-to-section"><a href="/price/database/" class="active">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
 			{% if not user.is_authenticated %}
 			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
 			{% else %}
 			    <li><a href="/login/logout/">Logout</a></li>
 			{% endif %}
-                            
+
                         </ul>        
                         <a class='menu-trigger'>
                             <span>Menu</span>
@@ -417,21 +653,16 @@ https://templatemo.com/tm-571-hexashop
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
                                 </li>
-                                <li class="nav-item scroll-to-section">
-                                    <button type="button" class="btn btn-info btn-round" data-toggle="modal"
-                                        data-target="#exampleModal-login"
-                                        aria-controls="exampleModal-login">Login</button>
-                                </li>
+
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
                                 {% if not user.is_authenticated %}
-                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li>
+                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+                                <li class="nav-item"><button type="button" class="btn btn-info btn-round"
+                                        data-toggle="modal" data-target="#exampleModal-login"
+                                        aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
-                                <li class="nav-item">
-                                    <button type="button" class="btn btn-info btn-round" data-toggle="modal"
-                                        data-target="#exampleModal-login" aria-controls="exampleModal-login"
-                                        onclick='javascript:logout();'>Log Out</button>
-                                </li>
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                                 {% endif %}
                             </ul>
                         </div>
@@ -469,222 +700,67 @@ https://templatemo.com/tm-571-hexashop
         </div>
     </section>
     <!-- END OF Carousels -->
-    <section class="section gal-section" id="searchsitesection">
 
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <div class="section-heading">
-                        <h2>ARTBIDDER</h2>
-                        <hr/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row align-items-end">
-                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                    Artbider is one of the fastest emerging online service of the auction market for fine art, antiques
-                    and collectibles. Artbider offers access to more than 10 millions auctioned records, dating back to
-                    1970. Our team of fine art specialists, art historians and worlds best art data analyst working hard
-                    to compile the most up-to-date and precise Art Market information.
-                </div>
-            </div>
-        </div>
-    </section>
     <!-- ***** Main Banner Area End ***** -->
 
 
-    <section class="section gal-section" id="">
+
+    <section class="mt-5">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <div class="section-heading" id='sectionheaderdiv'>
-                        <h2>ArtBidder Offers</h2>
-                        <hr>
+            <div class="row pt-5">
+                <div class="col-12 mt-5 text-center">
+                    <h2>Account Setting Form</h2>
+                    <hr style="width:400px;text-align:center;     border-top: 2px solid #c2a476;"><br>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Name of Card</label>
+                        <input type="text" class="form-control" placeholder="Enter Name of Card">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Card number</label>
+                        <input type="text" class="form-control" placeholder="Enter Card Number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">CVV Code</label>
+                        <input type="text" class="form-control" placeholder="Enter Cvv Code">
                     </div>
                 </div>
-            </div>
-            <div class="row align-items-end" id="offers">
-                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                    <label style='font-weight:bold;font-size:larger;'>Price Database - </label> Artbider offers a
-                    keyword-search to our comprehensive price database of over 10 million auctioned records with
-                    classified details – Title, Categories, Medium, Artwork Dates etc. You can access more than 500,000
-                    artists records, with images, bio’s and art genre. Artbider covers more than 1000 top auction houses
-                    globally.
-                </div>
-            </div>
-            <br />
-            <div class="row align-items-end" id="offers">
-                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                    <label style='font-weight:bold;font-size:larger;'>Market Alerts - </label> We send daily alerts of
-                    your favourite artists on their upcoming artworks and events.
-                    You will not be missing any of your favourite Auctions and Events now.
-                </div>
-            </div>
-            <br />
-            <div class="row align-items-end" id="offers">
-                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                    <label style='font-weight:bold;font-size:larger;'>Latest Art Market Updates - </label> Artbider
-                    keeps you ahead with the latest art market updates – Upcoming Auctions, News and Events.
-                </div>
-            </div>
-            <br />
-            <div class="row align-items-end" id="offers">
-                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                    <label style='font-weight:bold;font-size:larger;'>Collection Management - </label> Add and save your
-                    favourite artworks and artists to your collection. Artbider allows you to build and manage your own
-                    collection of your favourite Artworks, Artists and Auctions.
-                </div>
-            </div>
-            <br />
-            <div class="row align-items-end" id="offers">
-                <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                    <label style='font-weight:bold;font-size:larger;'>Artist Insights - </label> Get the insights of
-                    your favourite artist annual performance – total lots sold, average sold price, selling rate and
-                    more to make better and precise decisions.
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Begining of new auctions gallery -->
-        <div>
-            <section class="oth-works mrt-90">
-                <div class="container mt-5">
-                    <div class="row">
-                        <div class="col-lg-12 text-center">
-                            <div class="section-heading" id='sectionheaderdiv'>
-                                <h2>Pocket Friendly Subscription Plans</h2>
-                                <hr>
-                            </div>
-                        </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Expiry date of the card.</label>
+                        <input type="date" class="form-control" placeholder="Enter Expiry date of the card.">
                     </div>
-                    <div class="row align-items-end" id="offers">
-                        <div class="d-lg-block text-justify"
-                            style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                            <ul class="entry-content">
-                                <li>Artbider offers you the most cost effective subscription plans amongst the other art
-                                    databases.</li>
-                            </ul>
-                        </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Country</label>
+                        <select class="form-control" id="exampleFormControlSelect1">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
                     </div>
-                    <br />
-                    <div class="row align-items-end" id="offers">
-                        <div class="d-lg-block text-justify"
-                            style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                            <ul class="entry-content">
-                                <li>Special pricing plans starting from $99 (anual) for Art Institutions and Art
-                                    Organizations.</li>
-                            </ul>
-                        </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email Address of the user</label>
+                        <input type="email" class="form-control" placeholder="Enter Email Address of the user">
                     </div>
-                    <br />
-                    <div class="row align-items-end" id="offers">
-                        <div class="d-lg-block text-justify"
-                            style="max-width: 1400px;padding-left:20px;padding-right:30px;">
-                            <ul class="entry-content">
-                                <li><b>Special Launch Offer</b> – First 50 users will get 50% Off on our annual
-                                    subscription, Use code FIRST50 (limited period offer)</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <br />
                 </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-
-                <table id="newtable" class="table table-bordered table-striped fixedtable">
-                    <thead>
-                        <th><label
-                                style='font-weight:bold;font-size:larger;padding-left:10px;padding-right:10px;'>Basic</label>
-                        </th>
-                        <th><label
-                                style='font-weight:bold;font-size:larger;padding-left:10px;padding-right:10px;'>Premium</label>
-                        </th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <ul class="entry-content">
-                                    <li>&#9642; Unlimited Searches</li>
-                                    <li>&#9642; Artwork Details & Images</li>
-                                    <li>&#9642; Auction Results</li>
-                                    <li>&#9642; Upcoming Auctions</li>
-                                </ul>
-                            </td>
-                            <td>
-                                <ul class="entry-content">
-                                    <li>&#9642; Unlimited Searches</li>
-                                    <li>&#9642; Artwork Details & Images</li>
-                                    <li>&#9642; Auction Results</li>
-                                    <li>&#9642; Upcoming Auctions</li>
-                                    <li>&#9642; Market Alerts</li>
-                                    <li>&#9642; Artist Insights</li>
-                                    <li>&#9642; Collection Management</li>
-                                </ul>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div>One day pass - $5.00</div>
-                            </td>
-                            <td>
-                                <div>One day pass - $9.00</div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div>Monthly Subscription - $20.00</div>
-                            </td>
-                            <td>
-                                <div>Monthly Subscription - $29.00</div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div>Annual Subscription - <strike>$240.00</strike> &nbsp;&nbsp;$149.00 (save 38%)</div>
-                            </td>
-                            <td>
-                                <div>Annual Subscription - <strike>$348.00</strike> &nbsp;&nbsp;$199.00 (save 43%)</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
+                <div class="col-12 text-center mt-4">
+                    <input type="button" class="btn btn-primary" id="" name="btnsearch" value="Save"
+                        aria-expanded="true">
+                    <span id="loadingspan"></span>
+                    <input type="reset" name="rstbtn" id="" value="Clear" class="btn btn-secondary">
+                </div>
             </div>
         </div>
     </section>
-
-    <!-- <div class="container">
-	    <div class="row">
-	    	<div class="col-lg-12">
-		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=0">View More</a>
-	    	</div>
-	    </div>
-	</div> -->
-
-    <!-- End of new auctions gallery -->
-
-    <!-- <div class="container">
-	    <div class="row">
-	    	<div class="col-lg-12">
-		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=1">View More</a>
-	    	</div>
-	    </div>
-	</div> -->
-    </section>
-    </div>
-
 
     <div id="adminScreen">
         <a href="#" class="cancel">×</a>
         <form name='frmedit' id='frmedit'>
-            {% csrf_token %}
         </form>
     </div>
     <div id="cover">
@@ -750,10 +826,10 @@ https://templatemo.com/tm-571-hexashop
 
 
     <!-- jQuery -->
-    <script src="/static/js/jquery-2.1.0.min.js"></script>
+    <script src="/static/js/jquery-2.1.0.min.js"></>
 
-    <!-- Bootstrap -->
-    <script src="/static/js/popper.js"></script>
+            <!-- Bootstrap -->
+            <script src="/static/js/popper.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
 
     <!-- Plugins -->
@@ -773,46 +849,46 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/custom.js"></script>
 
     <script>
-        function openNav() {
-            document.getElementById("mySidebar").style.width = "350px";
+                                                         function openNav() {
+                                                             document.getElementById("mySidebar").style.width = "350px";
             //document.getElementById("main").style.marginLeft = "250px";
         }
 
-        function closeNav() {
-            document.getElementById("mySidebar").style.width = "0";
-            document.getElementById("main").style.marginLeft = "0";
+                                                         function closeNav() {
+                                                             document.getElementById("mySidebar").style.width = "0";
+                                                         document.getElementById("main").style.marginLeft = "0";
         }
     </script>
 
     <script>
-        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-        $('.demo').dropdown({
-            limitCount: 1,
-            input: '<input type="text" maxLength="20" placeholder="Search">'
+                                                         /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+                                                         $('.demo').dropdown({
+                                                             limitCount: 1,
+                                                         input: '<input type="text" maxLength="20" placeholder="Search">'
         });
 
-        jQuery(document).ready(function ($) {
-            "use strict";
-            $('#customers-testimonials').owlCarousel({
-                loop: true,
-                center: true,
-                items: 3,
-                margin: 30,
-                autoplay: true,
-                dots: true,
-                nav: true,
-                autoplayTimeout: 8500,
-                smartSpeed: 450,
-                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
-                responsive: {
-                    0: {
-                        items: 1
+                                                             jQuery(document).ready(function ($) {
+                                                                 "use strict";
+                                                             $('#customers-testimonials').owlCarousel({
+                                                                 loop: true,
+                                                             center: true,
+                                                             items: 3,
+                                                             margin: 30,
+                                                             autoplay: true,
+                                                             dots: true,
+                                                             nav: true,
+                                                             autoplayTimeout: 8500,
+                                                             smartSpeed: 450,
+                                                             navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                                                             responsive: {
+                                                                 0: {
+                                                                 items: 1
                     },
-                    768: {
-                        items: 2
+                                                             768: {
+                                                                 items: 2
                     },
-                    1170: {
-                        items: 3
+                                                             1170: {
+                                                                 items: 3
                     }
                 }
             });
@@ -820,15 +896,15 @@ https://templatemo.com/tm-571-hexashop
     </script>
     <script>
 
-        $(function () {
+                                                             $(function () {
             var selectedClass = "";
-            $("p").click(function () {
-                selectedClass = $(this).attr("data-rel");
-                $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("." + selectedClass).fadeOut();
-                setTimeout(function () {
-                    $("." + selectedClass).fadeIn();
-                    $("#portfolio").fadeTo(50, 1);
+                                                             $("p").click(function () {
+                                                                 selectedClass = $(this).attr("data-rel");
+                                                             $("#portfolio").fadeTo(50, 0.1);
+                                                             $("#portfolio div").not("." + selectedClass).fadeOut();
+                                                             setTimeout(function () {
+                                                                 $("." + selectedClass).fadeIn();
+                                                             $("#portfolio").fadeTo(50, 1);
                 }, 500);
 
             });
