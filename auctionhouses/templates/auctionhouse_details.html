@@ -367,12 +367,81 @@
 							<p>{{auctionhouselocation}}, {{auctionhousecountry}}</p>
 							
 						</div>
-						
                     </div>
-                </div				</div>
-        </div> -->
-        <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
-          <h5 class="card-title">Past Auctions</h5>
+                </div>
+	    </div>
+        </div>
+	</section>
+	<section class="category-tabs mrt-90">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="tabbable-responsive tabbable-responsive-new">
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Upcoming Auctions</a>
+                                </li>
+                                <!-- <li class="nav-item">
+                                    <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Past Auctions</a>
+                                </li> -->
+
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Past Auctions</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+	    <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="cate-tabs-content mrt-90">
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
+				    
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="section-heading section-heading-2 pdb-50">
+                                                <h2>Upcoming Auctions</h2>
+                                                <span>
+                                                    <!-- <a href="">View All</a> -->
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+		{% if upcomingauctions|length == 0 %}
+				<div class="row align-items-end" style='text-align:center;justify:center;'><h6>There are no past auctions for this auction house as of now.</h6></div>
+		{% else %}
+          	<div class="row align-items-end">
+			{% for auction in upcomingauctions %}
+			<div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                            <div class="img-box">
+				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
+                            	<a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+                                <h4>{{auction.auctionname}}</h4>
+                                <h6>{{auction.auctionhousename}}</h6>
+				<h6>{{auction.aucperiod}}</h6>
+			    </a>
+                            </div>
+                        </div>
+			{% endfor %}
+		</div>
+		{% endif %}
+        </div>
+	
+        			<div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Contact-tab">
+          			    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="section-heading section-heading-2 pdb-50">
+                                                <h2>Past Auctions</h2>
+                                                <span>
+                                                    <!-- <a href="">View All</a> -->
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
 		{% if pastauctions|length == 0 %}
 				<div class="row align-items-end" style='text-align:center;justify:center;'><h6>There are no past auctions for this auction house as of now.</h6></div>
 		{% else %}
@@ -394,7 +463,8 @@
         </div>
       </div>
       </div>
-     </div>
+     </div></div></div>
+	</div>
 	</section>
 
       

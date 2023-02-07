@@ -17,20 +17,20 @@ import os, sys, datetime, re
 from django.core.mail import send_mail
 import glob, base64
 import simplejson as json
-import urllib
-from BeautifulSoup import BeautifulSoup
 import shutil
 import MySQLdb
 import unicodedata, itertools
 
 from auctionhouses.models import AuctionHouse
 from login.models import EmailAlerts
+from eolicowebsite.utils import connecttoDB, disconnectDB
 
 def get_fav_info():
-    dbconn = MySQLdb.connect(user="websiteadmin",passwd="AVNS_UHIULiqroqLJ4x2ivN_",host="art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com", port=25060, db="staging")
-    cursor = dbconn.cursor()
+    dbconn, cursor = None, None
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     # First, get all users and their favourites
-    favsql = "select user_id, reference_table, reference_table_id from user_favorites"
+    favsql = "select user_id, reference_table, referenced_table_id from user_favorites"
     cursor.execute(favsql)
     allrecords = cursor.fetchall()
     favdict = {}
@@ -64,6 +64,7 @@ def get_fav_info():
         except:
             print("Encountered error on user Id %s: %s"%(userid, sys.exc_info()[1].__str__()))
     returndict = {'favdata' : favdict, 'artist_ids' : artistsidlist, 'artwork_ids' : artworksidlist, 'auction_ids' : auctionsidlist}
+    disconnectDB(dbconn, cursor)
     return returndict
 
 
@@ -77,6 +78,10 @@ def sendemail(username, emailaddr, datatype, datalist, auctionslist):
     request = None
     context['username'] = username
     context['datatype'] = datatype
+    curdatetime = datetime.datetime.now()
+    currentdate = curdatetime.strftime("%d %b, %Y")
+    context['currentdate'] = currentdate
+    context['address'] = ["", "", "", ""]
     if datatype == "artist":
         context['artistname'] = datalist[0]
         context['nationality'] = datalist[1]
@@ -103,6 +108,7 @@ def sendemail(username, emailaddr, datatype, datalist, auctionslist):
         context['source'] = datalist[3]
         context['auctionstart'] = datalist[4]
         context['auctionend'] = datalist[5]
+        context['auctionperiod'] = datalist[9]
         context['lotcount'] = datalist[6]
         context['auctionimg'] = datalist[7]
         context['aucid'] = datalist[8]
@@ -115,7 +121,7 @@ def sendemail(username, emailaddr, datatype, datalist, auctionslist):
     emailalert.user = userobj
     emailalert.emailcontent = message
     emailalert.emailtype = datatype
-    emailalert.emaildate = datetime.datetime.now()
+    emailalert.emaildate = curdatetime
     try:
         emailalert.save()
     except:
@@ -138,6 +144,9 @@ def send_email_alerts():
     artworkartists = []
     artist_auction_dict = {}
     artwork_auction_dict = {}
+    dbconn, cursor = None, None
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     dateafter2weeks = datetime.datetime.now() + datetime.timedelta(days=2*7)
     auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image from fineart_auction_calendar where faac_auction_ID in %s and faac_auction_start_date > now() and faac_auction_start_date < %s"%(auctionidslist, dateafter2weeks)
     cursor.execute(auctionsql)
@@ -151,9 +160,12 @@ def send_email_alerts():
         aucsrc = aucrec[4]
         aucstart = aucrec[5]
         aucend = aucrec[6]
+        aucperiod = aucstart.strftime("%d %b, %Y")
+        if str(aucend) != "0000-00-00" and str(aucend) != "01 Jan, 1":
+            aucperiod = aucperiod + " - " + str(aucend)
         lotcount = aucrec[7]
         aucimg = aucrec[8]
-        upcoming_auctions_dict[str(aucid)] = [auctitle, salecode, auchousename, aucsrc, aucstart, aucend, lotcount, aucimg, aucid]
+        upcoming_auctions_dict[str(aucid)] = [auctitle, salecode, auchousename, aucsrc, aucstart, aucend, lotcount, settings.IMG_URL_PREFIX + str(aucimg), aucid, aucperiod]
         # List out all artworks available in the auction
         lotsql = "select fal_lot_ID, fal_lot_no, fal_artwork_ID, fal_auction_ID, fal_lot_material, fal_lot_size_details, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_provenance, fal_lot_image1 from fineart_lots where fal_auction_ID=%s"%aucid
         cursor.execute(lotsql)
@@ -161,7 +173,7 @@ def send_email_alerts():
         for lotrec in alllotsrecords:
             artworkid = lotrec[2]
             estimatesUSD = str(lotrec[7]) + " - " + str(lotrec[6])
-            upcoming_artworks_dict[str(artworkid)] = [lotrec[1], lotrec[3], lotrec[4], lotrec[5], estimatesUSD, lotrec[8], lotrec[9], lotrec[10], artworkid]
+            upcoming_artworks_dict[str(artworkid)] = [lotrec[1], lotrec[3], lotrec[4], lotrec[5], estimatesUSD, lotrec[8], lotrec[9], settings.IMG_URL_PREFIX + str(lotrec[10]), artworkid]
             artworksql = "select faa_artist_ID, faa_artwork_title from fineart_artworks where faa_artwork_ID=%s"%artworkid
             cursor.execute(artworksql)
             artworkrecords = cursor.fetchall() # This will just be a single record
@@ -189,7 +201,7 @@ def send_email_alerts():
     allartistrecords = cursor.fetchall(artistsql)
     for artistrec in allartistrecords:
         lifetime = str(artistrec[3]) + " - " + str(artistrec[4])
-        upcoming_artists_dict[str(artistrec[0])] = [artistrec[1], artistrec[2], lifetime, artistrec[5], artistrec[6], artistrec[7], artistrec[0]]
+        upcoming_artists_dict[str(artistrec[0])] = [artistrec[1], artistrec[2], lifetime, artistrec[5], artistrec[6], artistrec[7], settings.IMG_URL_PREFIX + str(artistrec[0])]
     # Now iterate through every user and find out what they are interested in. If there is any id that exists in the respective table, send an email to the email address.
     for useridstr in favdict.keys():
         favlist = favdict[useridstr]
@@ -209,7 +221,7 @@ def send_email_alerts():
                             auctioninfolist.append(auctioninfo)
                         sendemail(username, emailaddr, 'artist', artistinfo, auctioninfolist)
                     except:
-                        pass
+                        print("Failed to send email alert. Error: %s"%sys.exc_info()[1].__str__())
             elif reftable == 'fineart_artworks':
                 if refid in upcoming_artworks_dict.keys():
                     artworkinfo = upcoming_artworks_dict[refid]
@@ -219,11 +231,17 @@ def send_email_alerts():
                         for aucid in aucidlist:
                             auctioninfo = upcoming_auctions_dict[str(aucid)]
                             auctioninfolist.append(auctioninfo)
-                    sendemail(username, emailaddr, 'artwork', artworkinfo, auctioninfolist)
+                        sendemail(username, emailaddr, 'artwork', artworkinfo, auctioninfolist)
+                    except:
+                        print("Failed to send email alert. Error: %s"%sys.exc_info()[1].__str__())
             elif reftable == 'fineart_auction_calendar':
                 if refid in upcoming_auctions_dict.keys():
-                    auctioninfo = upcoming_auctions_dict[refid]
-                    sendemail(username, emailaddr, 'auction', auctioninfo, [])
+                    try:
+                        auctioninfo = upcoming_auctions_dict[refid]
+                        sendemail(username, emailaddr, 'auction', auctioninfo, [])
+                    except:
+                        print("Failed to send email alert. Error: %s"%sys.exc_info()[1].__str__())
+    disconnectDB(dbconn, cursor)
     print("Done sending email alerts.")
         
 

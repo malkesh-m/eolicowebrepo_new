@@ -7,7 +7,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
-   <link rel="stylesheet" href="static/css/style.css">
+   <link rel="stylesheet" type="text/css" href="static/css/style.css">
 
    <script src="/static/js/editfromfront.js"></script>
    <script src="/static/js/eolicoauth.js"></script>
@@ -34,6 +34,14 @@
         $("#artistsSearch").tagsInit();
        });
     </script>
+
+    <script type="text/javascript">
+      function searchaccount(){
+
+      }
+
+    </script>
+
    <style type="text/css">
       body{
          background-color: #fff6f1;
@@ -487,7 +495,7 @@ a[data-toggle="collapse"] {
                           <div class="example searchTags_section">
                              <label class="input_label">Search</label>
                              <div class="real">
-                                <div id="artistsSearch" tagname="artistsSearch"></div>
+                                <div id="artistsSearch" tagname="artistsSearch" onkeypress="Javascript:searchaccount();"></div>
                              </div>
                           </div>
                       </div>

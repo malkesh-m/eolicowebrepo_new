@@ -32,7 +32,7 @@ function dologin(){
     loginpagepattern = new RegExp(/login\/show\//);
     if(window.location.href.match(loginpagepattern)){
 	// Redirect to the profile page
-	window.location.href = "/login/profile/";
+	window.location.href = "/login/dashboard/";
     }
     else{ // Else, simply refresh the current page
     	window.location.href = window.location.href; // Simply refresh the page so that user can see the logged-in view.
@@ -256,7 +256,8 @@ function logout(){
   // Register the handler
   xmlhttp.onreadystatechange = function(){
   if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-    return(); // Do nothing as a redirect has already been made from the server side.
+    //return (); // Do nothing as a redirect has already been made from the server side.
+    window.location.href = "/login/index/";
   }
   };
   xmlhttp.open("GET", "/login/logout/");

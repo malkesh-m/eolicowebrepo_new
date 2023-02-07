@@ -87,19 +87,60 @@
                   <tr>
                      <td valign="top" style="text-align: left; padding:25px;">
                         <p style="font-size:18px; font-weight:700; font-family:Arial, Helvetica, sans-serif; text-transform: capitalize;">Hello {{username}}</p>
+			<p style="font-size: 15px">Here are some alerts from ArtBider&copy; for {{currentdate}}</p>
+			<br/>
 			{% if datatype == 'artist' %}
-                        <p style="font-size: 15px">{{artistname}} is being featured on ArtBider.
+                        <p style="font-size: 15px">
+			  <div class="row">
+			    <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2">
+                              <div class="img-box">
+			        <a href="/artist/details/?aid={{aid}}"><img src="{{artistimg}}" alt=""></a>
+                            	<a href="/artist/details/?aid={{aid}}" style="color:#000000;">
+                                <h4>{{artistname}}</h4>
+                                <h6>{{nationality}}, {{lifetime}}</h6>
+				<h6>{{artistbio}}</h6>
+				</a>
+			      </div>
+             		    </div>
+			  </div>
+			</p>
 			{% endif %}
 			{% if datatype == 'artwork' %}
-                        <p style="font-size: 15px">"{{artworkname}}" is being featured on ArtBider.
+			<p style="font-size: 15px">
+			  <div class="row">
+			    <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2">
+                              <div class="img-box">
+			        <a href="/artist/artworkdetails/?awid={{awid}}"><img src="{{artworkimg}}" alt=""></a>
+                            	<a href="/artist/artworkdetails/?awid={{awid}}" style="color:#000000;">
+                                <h4>{{artworkname}}</h4>
+                                <h6>{{material}}, {{sizedetails}}</h6>
+				<h6>{{estimate}}</h6>
+				</a>
+			      </div>
+             		    </div>
+			  </div>
+			</p>
 			{% endif %}
 			{% if datatype == 'auction' %}
-                        <p style="font-size: 15px">The auction "{{auctionname}}" is being featured on ArtBider.
+                        <p style="font-size: 15px">
+			  <div class="row">
+			    <div class="col-sm-12 col-md-6 col-lg-2 col-xl-2">
+                              <div class="img-box">
+			        <a href="/auction/showauction/?aucid={{aucid}}"><img src="{{auctionimg}}" alt=""></a>
+                            	<a href="/auction/showauction/?aucid={{aucid}}" style="color:#000000;">
+                                <h4>{{auctionname}}</h4>
+                                <h6>{{auctionhouse}}, {{auctionperiod}}</h6>
+				<h6>Sale Code: {{auctioncode}}</h6>
+				</a>
+			      </div>
+             		    </div>
+			  </div>
+			</p>
 			{% endif %}
-                        </p>
-                        <p style="font-size: 15px">Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                        </p>                       
-                        <p style="font-size: 15px">If you have any problems, please contact us at admin@gmail.com.</p>
+                        
+                        <!-- <p style="font-size: 15px">Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p> -->                  
+                        <p style="font-size: 15px">If you have any problems, please contact us at artbider@gmail.com.</p>
                         <br>
                      </td>
                   </tr>
@@ -120,13 +161,13 @@
                   </tr>
                   <tr>
                      <td align="center" style="font-weight:normal; padding: 0 0 15px; font-size: 14px; margin: 0; line-height: 17px; font-family:Arial, Helvetica, sans-serif;" valign="top">
-                        <p style="margin:0">2-3/6 Endeavour Boulevard, North Lakes, QLD 4509</p>
-                        <p style="margin:0">Phone: (07) 3491 3994</p>
-                        <p style="margin:0">Mobile: 0423 173 541</p>
-                        <p style="margin:0">Fax: 07 3112 4206</p>
-                        <p style="margin:0">Email: info@asokahealth.com.au</p>
+                        <p style="margin:0">{{address.0}}</p>
+                        <p style="margin:0">{{address.1}}</p>
+                        <p style="margin:0">{{address.2}}</p>
+                        <p style="margin:0">{{address.3}}</p>
+                        <!-- <p style="margin:0">Email: info@asokahealth.com.au</p>
                         <p style="margin:0">Web: http://www.asokahealth.com.au
-                        <p>To unsubscribe please check <a href="#"><u>Here</u></a></p>
+                        <p>To unsubscribe please check <a href="#"><u>Here</u></a></p> -->
                      </td>
                   </tr>
                </table>

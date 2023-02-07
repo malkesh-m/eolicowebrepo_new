@@ -932,6 +932,8 @@ def dashboard(request):
                 pass
     except:
         pass
+    cursor.close()
+    dbconn.close()
     context['favourite_artists'] = favourite_artists
     context['favourite_artworks'] = favourite_artworks
     context['artwork_type_counts'] = artwork_type_counts
