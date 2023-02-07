@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
         rel="stylesheet">
 
-    <title>ArtBidder Price Database</title>
+    <title>ArtBider Price Database</title>
 
 
     <!-- Additional CSS Files -->
@@ -384,11 +384,14 @@ https://templatemo.com/tm-571-hexashop
 
         function openadvancedsearch() {
             advsearchdiv = document.getElementById('advsearch');
+	    searchbutton = document.getElementById('AdvancedSearch-tab');
             if (advsearchdiv.style.display == 'none') {
                 advsearchdiv.style.display = '';
+		searchbutton.innerHTML = "Hide Search Form";
             }
             else {
                 advsearchdiv.style.display = 'none';
+		searchbutton.innerHTML = "Advanced Search";
             }
         }
     </script>
@@ -531,6 +534,7 @@ https://templatemo.com/tm-571-hexashop
                                 <button type="button" value="submit" name="" class="btn btn-slider"
                                     onclick="javascript:dologin();">Log in</button>
                             </div>
+			    <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -546,6 +550,7 @@ https://templatemo.com/tm-571-hexashop
                                 <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue
                                     with Facebook</a>
                             </div>
+			    -->
                             <div class="form-group text-center">
                                 <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
                                         data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
@@ -641,7 +646,7 @@ https://templatemo.com/tm-571-hexashop
                     <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
                         <a class="navbar-brand" href="/login/dashboard/">
                             <!-- <img src="static/images/logo1.png"> -->
-                            ARTBIDDER
+                            ARTBIDER
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false"
@@ -674,7 +679,10 @@ https://templatemo.com/tm-571-hexashop
                                         data-toggle="modal" data-target="#exampleModal-login"
                                         aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
-                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+			      <li class="nav-item">
+                          	<button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                              </li>
                                 {% endif %}
                             </ul>
                         </div>
@@ -739,7 +747,7 @@ https://templatemo.com/tm-571-hexashop
                                         <a class="nav-link advanced-search-btn" id="AdvancedSearch-tab"
                                             data-toggle="tab" href="#AdvancedSearch" role="tab"
                                             aria-controls="AdvancedSearch" aria-selected="false"
-                                            onclick="openadvancedsearch();">Advanced Search</a>
+                                            onclick="openadvancedsearch();">Hide Search Form</a>
                                     </div>
                                     <div class="col-12 text-center">
                                         <p class="p-tag-style">Search 10 Million plus

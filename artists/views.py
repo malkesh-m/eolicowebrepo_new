@@ -1535,6 +1535,7 @@ def showstats(request):
     
 
 @login_required(login_url="/login/show/")
+@csrf_exempt
 def addfavourite(request):
     """
     Add an artist as a 'favourite' by a legit user.

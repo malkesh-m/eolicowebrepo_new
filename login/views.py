@@ -432,8 +432,8 @@ def index(request):
     context['auctionhouses'] = auctionhouses
     cursor.close()
     dbconn.close()
-    #carouselentries = getcarouselinfo_new()
-    #context['carousel'] = carouselentries
+    carouselentries = getcarouselinfo_new()
+    context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -697,6 +697,8 @@ def morefollows(request):
 def morefavourites(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'msg' : 0, 'aid' : ''})) # Operation failed!
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/login/index/")
     page = 1
     if 'page' in request.GET.keys():
         page = request.GET['page']
@@ -769,6 +771,9 @@ def morefavourites(request):
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
+    context['username'] = ""
+    if request.user.is_authenticated:
+        context['username'] = request.user.username
     template = loader.get_template('morefavourites.html')
     return HttpResponse(template.render(context, request))
 
@@ -970,8 +975,6 @@ def notifications(request):
 
 @login_required(login_url="/login/show/")
 def acctsettings(request):
-    if request.method != 'GET':
-        return HttpResponse(json.dumps({'err' : 'Invalid method of call',})) # Operation failed!
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login/index/")
         #return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
@@ -980,8 +983,11 @@ def acctsettings(request):
     context = {}
     # Add page specific code here
     context['username'] = userobj.username
-    template = loader.get_template('account_settings.html')
-    return HttpResponse(template.render(context, request))
+    if request.method == 'GET':
+        template = loader.get_template('account_settings.html')
+        return HttpResponse(template.render(context, request))
+    elif request.method == 'POST': # User is trying to save account settings
+        pass
 
 
 
