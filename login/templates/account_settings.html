@@ -519,7 +519,7 @@ https://templatemo.com/tm-571-hexashop
                                 <button type="button" value="submit" name="" class="btn btn-slider"
                                     onclick="javascript:dologin();">Log in</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -665,9 +665,10 @@ https://templatemo.com/tm-571-hexashop
                                         aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
                                 <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-			        <li class="nav-item">
-                          	<button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
-                              </li>
+                                <li class="nav-item">
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;"
+                                        onclick='javascript:logout();'>Logout</button>
+                                </li>
                                 {% endif %}
                             </ul>
                         </div>
@@ -712,52 +713,86 @@ https://templatemo.com/tm-571-hexashop
 
     <section class="mt-5">
         <div class="container">
-            <div class="row pt-5">
+            <div class="row pt-5 col-12">
                 <div class="col-12 mt-5 text-center">
                     <h2>Account Setting Form</h2>
-                    <hr style="width:400px;text-align:center;     border-top: 2px solid #c2a476;"><br>
+                    <hr class="mt-1" style="width:320px; text-align:center;     border-top: 2px solid #c2a476;"><br>
                 </div>
+            </div>
+            <div class="row justify-content-center">
                 <div class="col-6">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Name of Card</label>
-                        <input type="text" class="form-control" placeholder="Enter Name of Card">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Account Info</label>
+                                <input type="text" class="form-control" placeholder="Enter First Name">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">&nbsp;</label>
+                                <input type="text" class="form-control" placeholder="Enter Last Name">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Enter Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Enter Password">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Shipping Address</label>
+                                <select class="form-control">
+                                    <option></option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" placeholder="Address" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter City"/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">                                
+                                <input type="text" class="form-control" placeholder="Enter State">
+                            </div>                         
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">                                
+                                <input type="text" class="form-control" placeholder="Enter Postal Code">
+                            </div>                         
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Phone Number"/>
+                            </div>
+                            <button type="submit" class="btn btn-info btn-round">Save Changes</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Card number</label>
-                        <input type="text" class="form-control" placeholder="Enter Card Number">
-                    </div>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <h4>Current Subscription</h4>
+                            <p class="mt-4">Current subscription level</p>
+                            <p class="mt-2">You are registered user with no active subscription.</p>
+                            <button type="button" class="btn btn-info btn-round mt-3">Subscribe</button>
+                            <hr>
+                            <h4>Card Details</h4>
+                            <button type="button" class="btn btn-info btn-round mt-3">Add Card</button>
+                            <hr>
+                            <h4>SB hiosfff</h4>
+                            <button type="button" class="btn btn-info btn-round mt-3 mr-3">Add A New Card</button>
+                            <button type="button" class="btn btn-info btn-round mt-3">Subscription Payment</button>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">CVV Code</label>
-                        <input type="text" class="form-control" placeholder="Enter Cvv Code">
                     </div>
-                </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Expiry date of the card.</label>
-                        <input type="date" class="form-control" placeholder="Enter Expiry date of the card.">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Country</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Email Address of the user</label>
-                        <input type="email" class="form-control" placeholder="Enter Email Address of the user">
-                    </div>
-                </div>
-                <div class="col-12 text-center mt-4">
-                    <input type="button" class="btn btn-primary" id="" name="btnsearch" value="Save"
-                        aria-expanded="true">
-                    <span id="loadingspan"></span>
-                    <input type="reset" name="rstbtn" id="" value="Clear" class="btn btn-secondary">
                 </div>
             </div>
         </div>
