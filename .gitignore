@@ -2,3 +2,4 @@ venv/
 need/
 .idea/
 manage.py
+.vs/
