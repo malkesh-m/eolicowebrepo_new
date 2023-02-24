@@ -48,9 +48,114 @@ def removecontrolcharacters(s):
     return control_char_re.sub('', s)
 
 
+def advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture, painting, installation, photography, textTilesArt, selArtworkStart, selArtworkEnd, selAuctionHouse, auctionLocation, saleTitle, auctionStartDate, auctionEndDate, saleCode):
+    selectQuery = """SELECT * FROM fineart_artworks WHERE """
+    andFlag = False
+    print(workOnPaper)
+    if artistName and artistName != '':
+        selectQuery = selectQuery + f"""faa_artist_ID IN (SELECT fa_artist_ID FROM fineart_artists WHERE UPPER(fa_artist_name) LIKE '%{artistName.upper()}%')"""
+        andFlag = True
+    if artworkTitle and artworkTitle != '':
+        if andFlag:
+            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_title) LIKE '%{artworkTitle.upper()}%'"""
+        else:
+            selectQuery = selectQuery + f"""UPPER(faa_artwork_title) LIKE '%{artworkTitle.upper()}%'"""
+            andFlag = True
+    if workOnPaper:
+        if andFlag:
+            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{workOnPaper.upper()}%'"""
+        else:
+            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{workOnPaper.upper()}%'""" 
+            andFlag = True
+    if sculpture:
+        if andFlag:
+            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{sculpture.upper()}%'"""
+        else:
+            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{sculpture.upper()}%'""" 
+            andFlag = True
+    if painting:
+        if andFlag:
+            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{painting.upper()}%'"""
+        else:
+            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{painting.upper()}%'"""
+            andFlag = True
+    if installation:
+        if andFlag:
+            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{installation.upper()}%'"""
+        else:
+            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{installation.upper()}%'"""
+            andFlag = True
+    if photography:
+        if andFlag:
+            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{photography.upper()}%'"""
+        else:
+            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{photography.upper()}%'"""
+            andFlag = True
+    if textTilesArt:
+        if andFlag:
+            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{textTilesArt.upper()}%'"""
+        else:
+            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{textTilesArt.upper()}%'"""
+            andFlag = True
+    if selArtworkStart and selArtworkStart != '':
+        if andFlag:
+            selectQuery = selectQuery + f""" AND faa_artwork_start_year = {selArtworkStart}"""
+        else:
+            selectQuery = selectQuery + f"""faa_artwork_start_year = {selArtworkStart}"""
+            andFlag = True
+    if selArtworkEnd and selArtworkEnd != '':
+        if andFlag:
+            selectQuery = selectQuery + f""" AND faa_artwork_end_year = {selArtworkEnd}"""
+        else:
+            selectQuery = selectQuery + f"""faa_artwork_end_year = {selArtworkEnd}"""
+            andFlag = True
+    if selAuctionHouse and selAuctionHouse != '':
+        if andFlag:
+            selectQuery = selectQuery + f""" AND faa_artwork_end_year = {selArtworkEnd}"""
+        else:
+            selectQuery = selectQuery + f"""faa_artwork_end_year = {selArtworkEnd}"""
+            andFlag = True
+    if auctionLocation and auctionLocation != '':
+        pass
+    if saleTitle and saleTitle != '':
+        pass
+    if auctionStartDate and auctionStartDate != '':
+        pass
+    if auctionEndDate and auctionEndDate != '':
+        pass
+    if saleCode and saleCode != '':
+        pass
+    print(selectQuery)
+    # connlist = connecttoDB()
+    # dbconn = connlist[0]
+    # cursor = connlist[1]
+    # cursor.execute(selectQuery)
+    # print(cursor.fetchall())
+    # connectionClose = disconnectDB(cursor, dbconn)
+    return artistName
+
 
 #@cache_page(CACHE_TTL)
 def index(request):
+    if request.method == 'POST':
+        artistName = request.POST.get('txtartistname')
+        artworkTitle = request.POST.get('txttitle')
+        workOnPaper = request.POST.get('medium1')
+        sculpture = request.POST.get('medium2')
+        painting = request.POST.get('medium3')
+        installation = request.POST.get('medium4')
+        photography = request.POST.get('medium5')
+        textTilesArt = request.POST.get('medium6')
+        selArtworkStart = request.POST.get('sel_artwork_start')
+        selArtworkEnd = request.POST.get('sel_artwork_end')
+        selAuctionHouse = request.POST.get('sel_auctionhouses')
+        auctionLocation = request.POST.get('txtauctionlocation')
+        saleTitle = request.POST.get('txtsaletitle')
+        auctionStartDate = request.POST.get('dtauctionstartdate')
+        auctionEndDate = request.POST.get('dtauctionenddate')
+        saleCode = request.POST.get('txtsalecode')
+        advanceSearchData = advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture, painting, installation, photography, textTilesArt, int(selArtworkStart), int(selArtworkEnd), selAuctionHouse, auctionLocation, saleTitle, auctionStartDate, auctionEndDate, saleCode)
+        return HttpResponse('hi')
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     page = "1"
