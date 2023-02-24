@@ -29,81 +29,101 @@
     <link rel="stylesheet" href="/static/css/autocomplete.css">
 
     <style>
-	.owl-prev, .owl-next {
-        width: 15px;
-        height: 100px;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        display: block !important;
-        border:0px solid black;
-    }
-    .owl-prev { left: -20px; }
-    .owl-next { right: -20px; }
-    .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
- 
+        .owl-prev,
+        .owl-next {
+            width: 15px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: block !important;
+            border: 0px solid black;
+        }
+        
+        .owl-prev {
+            left: -20px;
+        }
+        
+        .owl-next {
+            right: -20px;
+        }
+        
+        .owl-prev i,
+        .owl-next i {
+            transform: scale(2, 5);
+            color: #ccc;
+        }
     </style>
 
     <style>
-    #frmsearchartists input[type=search]{width:430px !important;}
+        #frmsearchartists input[type=search] {
+            width: 430px !important;
+        }
     </style>
 
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        #secsearchartist input[type=search] {
+            width: 700px !important;
+        }
     </style>
-    
-    
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/static/css/new-style.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
@@ -113,165 +133,155 @@
     <script src="/static/js/autocomplete.js"></script>
     <!-- Autocomplete is inspired by the content in https://www.w3schools.com/howto/howto_js_autocomplete.asp -->
     <script>
-	artists = [
-		{% for artistname in filterartists %}
-		    "{{artistname}}",
-		{% endfor %}
-		]; // Should get populated during page load.
-	
-    </script> 
+        artists = [{ %
+                for artistname in filterartists %
+            }
+            "{{artistname}}", { % endfor %
+            }
+        ]; // Should get populated during page load.
+    </script>
     <script>
-	function searchartist(page=1){
-	  searchkey = document.getElementById('artistsearch').value;
-	  loaderspan = document.getElementById("loader");
-	  var xmlhttp;
-	  if (window.XMLHttpRequest){
-	    xmlhttp=new XMLHttpRequest();
-	  }
-	  else{
-	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  // Register the handler
-	  xmlhttp.onreadystatechange = function(){
-	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    context = JSON.parse(xmlhttp.responseText);
-	    featureddiv = document.getElementById('featuredartistsdiv');
-	    featureddiv.innerHTML = "";
-	    searchtext = "";
-	    alldiv0 = document.getElementById('allartistsdiv0');
-	    alldiv1 = document.getElementById('allartistsdiv1');
-	    alldiv2 = document.getElementById('allartistsdiv2');
-	    alldiv3 = document.getElementById('allartistsdiv3');
-	    alldiv4 = document.getElementById('allartistsdiv4');
-	    alldiv5 = document.getElementById('allartistsdiv5');
-	    alldiv0.innerHTML = "";
-	    alldiv1.innerHTML = "";
-	    alldiv2.innerHTML = "";
- 	    alldiv3.innerHTML = "";
-	    alldiv4.innerHTML = "";
-	    alldiv5.innerHTML = "";
-            pageheaderdiv = document.getElementById('pageheader');
-            pageheaderdiv.innerHTML = "<h2>Search Results for '" + searchkey + "'</h2><span>Browse over 100,000 artists</span>";
-	    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
-            searchartists = context['featuredartists'];
-    	    adminuser = context['adminuser'];
-	    pages = context['pages'];
-            for(var i=0; i < searchartists.length; i++){
-                artistobj = searchartists[i];
-		searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
-                if(artistobj.atype == '1'){
-		    searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artworkimage + "'></a></div>";
-		}
-		else{
-		    searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artistimage + "'></a></div>";
-		}
-		searchtext += "<div class='down-content'><a href='/artist/details/?aid=" + artistobj.aid + "' style='color:#000000;'><h4>" + artistobj.artistname +"</h4>";
-		if (artistobj.birthdate == ''){
-		    searchtext += "<h6>" + artistobj.nationality + "</h6>";
-		}
-		else{
-		    if (artistobj.deathdate == '0'){
-		      searchtext += "<h6>" + artistobj.nationality + " b." + artistobj.birthdate + "</h6>";
-		    }
-		    else{
-                      if(artistobj.nationality != ""){
-		          searchtext += "<h6>" + artistobj.nationality + ", " + artistobj.birthdate + " - " + artistobj.deathdate + "</h6>";
-                      }
-                      else{
-                          searchtext += "<h6>" + artistobj.birthdate + " - " + artistobj.deathdate + "</h6>";
-                      }
-		    }
-		}
-		searchtext += "</a></div>";
-		if(adminuser == 1){
-		    searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editartist('" + artistobj.aid + "');\">Edit</a></div>";
-		}
-		searchtext += "</div></div>";
-	    }
-	    searchtext += "</div></div><br/>";
-	    paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
-	    if(pages.prevpage >= 1){
-		paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchartist(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
-	    }
-       	    paginationcontent += "</li>";
-	    if(pages.displayedprevpage2 > 0){
-		paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
-	    }
-	    if(pages.displayedprevpage1 > 0){
-		paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
-	    }
-	    paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchartist(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
-	    paginationcontent += "</div>";
-	    searchtext += paginationcontent;
-	    featureddiv.innerHTML = searchtext;
-	    loaderspan.innerHTML = "";
-	    //featureddiv.innerHTML = featureddiv.innerHTML.replace("<div class=\"row align-items-end\"></div></div>", "<div class=\"row align-items-end\">");
-	    //alert(featureddiv.innerHTML);
-	  }
-	  };
-	  xmlhttp.open("GET", "/artist/search/?q=" + searchkey + "&page=" + page);
-	  xmlhttp.send();
-          loaderspan.innerHTML = "<img src='/static/images/loading.gif'>";
-	}
+        function searchartist(page = 1) {
+            searchkey = document.getElementById('artistsearch').value;
+            loaderspan = document.getElementById("loader");
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // Register the handler
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    context = JSON.parse(xmlhttp.responseText);
+                    featureddiv = document.getElementById('featuredartistsdiv');
+                    featureddiv.innerHTML = "";
+                    searchtext = "";
+                    alldiv0 = document.getElementById('allartistsdiv0');
+                    alldiv1 = document.getElementById('allartistsdiv1');
+                    alldiv2 = document.getElementById('allartistsdiv2');
+                    alldiv3 = document.getElementById('allartistsdiv3');
+                    alldiv4 = document.getElementById('allartistsdiv4');
+                    alldiv5 = document.getElementById('allartistsdiv5');
+                    alldiv0.innerHTML = "";
+                    alldiv1.innerHTML = "";
+                    alldiv2.innerHTML = "";
+                    alldiv3.innerHTML = "";
+                    alldiv4.innerHTML = "";
+                    alldiv5.innerHTML = "";
+                    pageheaderdiv = document.getElementById('pageheader');
+                    pageheaderdiv.innerHTML = "<h2>Search Results for '" + searchkey + "'</h2><span>Browse over 100,000 artists</span>";
+                    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+                    searchartists = context['featuredartists'];
+                    adminuser = context['adminuser'];
+                    pages = context['pages'];
+                    for (var i = 0; i < searchartists.length; i++) {
+                        artistobj = searchartists[i];
+                        searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+                        if (artistobj.atype == '1') {
+                            searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artworkimage + "'></a></div>";
+                        } else {
+                            searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artistimage + "'></a></div>";
+                        }
+                        searchtext += "<div class='down-content'><a href='/artist/details/?aid=" + artistobj.aid + "' style='color:#000000;'><h4>" + artistobj.artistname + "</h4>";
+                        if (artistobj.birthdate == '') {
+                            searchtext += "<h6>" + artistobj.nationality + "</h6>";
+                        } else {
+                            if (artistobj.deathdate == '0') {
+                                searchtext += "<h6>" + artistobj.nationality + " b." + artistobj.birthdate + "</h6>";
+                            } else {
+                                if (artistobj.nationality != "") {
+                                    searchtext += "<h6>" + artistobj.nationality + ", " + artistobj.birthdate + " - " + artistobj.deathdate + "</h6>";
+                                } else {
+                                    searchtext += "<h6>" + artistobj.birthdate + " - " + artistobj.deathdate + "</h6>";
+                                }
+                            }
+                        }
+                        searchtext += "</a></div>";
+                        if (adminuser == 1) {
+                            searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editartist('" + artistobj.aid + "');\">Edit</a></div>";
+                        }
+                        searchtext += "</div></div>";
+                    }
+                    searchtext += "</div></div><br/>";
+                    paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                    if (pages.prevpage >= 1) {
+                        paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchartist(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                    }
+                    paginationcontent += "</li>";
+                    if (pages.displayedprevpage2 > 0) {
+                        paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                    }
+                    if (pages.displayedprevpage1 > 0) {
+                        paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                    }
+                    paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchartist(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                    paginationcontent += "</div>";
+                    searchtext += paginationcontent;
+                    featureddiv.innerHTML = searchtext;
+                    loaderspan.innerHTML = "";
+                    //featureddiv.innerHTML = featureddiv.innerHTML.replace("<div class=\"row align-items-end\"></div></div>", "<div class=\"row align-items-end\">");
+                    //alert(featureddiv.innerHTML);
+                }
+            };
+            xmlhttp.open("GET", "/artist/search/?q=" + searchkey + "&page=" + page);
+            xmlhttp.send();
+            loaderspan.innerHTML = "<img src='/static/images/loading.gif'>";
+        }
 
 
-	function showstats(aid, statsdivid){
-	  statsdiv = document.getElementById(statsdivid);
-	  var xmlhttp;
-	  if (window.XMLHttpRequest){
-	    xmlhttp=new XMLHttpRequest();
-	  }
-	  else{
-	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  // Register the handler
-	  xmlhttp.onreadystatechange = function(){
-	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    context = JSON.parse(xmlhttp.responseText);
-	    divid = context['div_id'];
-	    aid = context['aid'];
-	    err = context['err'];
-	    statsdiv = document.getElementById(divid);
-            if(err == "nologin"){
-		htmlcontent = context['stats'];
-		statsdiv.innerHTML = htmlcontent;
-	    }
-	    else if(err == "noaid"){
-		htmlcontent = context['stats'];
-		statsdiv.innerHTML = htmlcontent;
-	    }
-	    else if(err == "nodiv"){
-		htmlcontent = context['stats'];
-		statsdiv.innerHTML = htmlcontent;
-	    }
-	    else if(err == "noartist"){
-		htmlcontent = context['stats'];
-		statsdiv.innerHTML = htmlcontent;
-	    }
-	    else if(err == ""){
-	        htmlcontent = context['stats'] + "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:hidestats(" + aid + ", '" + divid + "');\">Hide Stats</a></h6>";
-	        statsdiv.innerHTML = htmlcontent;
-	    }
-	  }
-	  };
-	  xmlhttp.open("GET", "/artist/showstats/?aid=" + aid + "&div_id=" + statsdivid); // Need to keep track of the div id values. 
-	  // Javascript runs separate threads for each call, so data is shared. So, javascript will not be able to keep track of data
-	  // returned and the corresponding div it should be placed in.
-	  xmlhttp.send();
-          statsdiv.innerHTML = "<img src='/static/images/loading.gif'>";
-	}
+        function showstats(aid, statsdivid) {
+            statsdiv = document.getElementById(statsdivid);
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // Register the handler
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    context = JSON.parse(xmlhttp.responseText);
+                    divid = context['div_id'];
+                    aid = context['aid'];
+                    err = context['err'];
+                    statsdiv = document.getElementById(divid);
+                    if (err == "nologin") {
+                        htmlcontent = context['stats'];
+                        statsdiv.innerHTML = htmlcontent;
+                    } else if (err == "noaid") {
+                        htmlcontent = context['stats'];
+                        statsdiv.innerHTML = htmlcontent;
+                    } else if (err == "nodiv") {
+                        htmlcontent = context['stats'];
+                        statsdiv.innerHTML = htmlcontent;
+                    } else if (err == "noartist") {
+                        htmlcontent = context['stats'];
+                        statsdiv.innerHTML = htmlcontent;
+                    } else if (err == "") {
+                        htmlcontent = context['stats'] + "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:hidestats(" + aid + ", '" + divid + "');\">Hide Stats</a></h6>";
+                        statsdiv.innerHTML = htmlcontent;
+                    }
+                }
+            };
+            xmlhttp.open("GET", "/artist/showstats/?aid=" + aid + "&div_id=" + statsdivid); // Need to keep track of the div id values. 
+            // Javascript runs separate threads for each call, so data is shared. So, javascript will not be able to keep track of data
+            // returned and the corresponding div it should be placed in.
+            xmlhttp.send();
+            statsdiv.innerHTML = "<img src='/static/images/loading.gif'>";
+        }
 
-	function hidestats(aid, statsdivid){
-	  statsdivelement = document.getElementById(statsdivid);
-	  statsdivelement.innerHTML = "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:showstats(" + aid + ", '" + statsdivid + "');\">Show Stats</a></h6>";
-	}
+        function hidestats(aid, statsdivid) {
+            statsdivelement = document.getElementById(statsdivid);
+            statsdivelement.innerHTML = "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:showstats(" + aid + ", '" + statsdivid + "');\">Show Stats</a></h6>";
+        }
     </script>
 
 </head>
-    
-  <body onload="javascript:autocomplete(document.getElementById('artistsearch'), artists);">
 
-  <!-- Sign up Modal -->
+<body onload="javascript:autocomplete(document.getElementById('artistsearch'), artists);">
+
+    <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -291,8 +301,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
@@ -307,7 +316,7 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
-			    <div class="form-group">
+                            <div class="form-group">
                                 <label for="password2">Confirm Password</label>
                                 <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -317,13 +326,14 @@
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from ArtBidder.</p>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -341,7 +351,8 @@
                                 <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
+                                        Service</a> apply.</p>
                             </div>
                         </form>
                     </div>
@@ -370,8 +381,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
@@ -389,7 +399,7 @@
                             <div class="form-group">
                                 <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -438,10 +448,11 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset
+                                    instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -451,21 +462,21 @@
     </div>
     <!-- Sign in Modal -->
 
-      <!-- ***** Preloader Start ***** -->
-      <div id="preloader">
-          <div class="jumper">
-              <div></div>
-              <div></div>
-              <div></div>
-          </div>
-      </div>
-      <!-- ***** Preloader End ***** -->
-      <!-- ***** Header Area Start ***** -->
-      <header class="header-area header-sticky">
-          <div class="container">
-              <div class="row">
-                  <div class="col-12">
-                      <!-- <nav class="main-nav">
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- <nav class="main-nav">
 
                           <a href="/login/index/" class="logo">
                               ARTBIDDER
@@ -489,54 +500,68 @@
                               <span>Menu</span>
                           </a>
                       </nav> -->
-		      <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav" >
-                      <a class="navbar-brand" href="/login/dashboard/">
-                        <!-- <img src="static/images/logo1.png"> -->
-                        ARTBIDER
-                     </a>
-                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                          aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                      </button>
-                      <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                          <ul class="navbar-nav mx-auto">
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
-                              </li>
-                              
-                          </ul>
-                          <ul class="navbar-nav sm-icons mr-0">
-                              {% if not user.is_authenticated %}
-                              <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-                              {% else %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-			      <li class="nav-item">
-                          	<button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
-                              </li>
-                              {% endif %}
-                          </ul>
-                      </div>
-                  </nav>
-                  </div>
-              </div>
-          </div>
-      </header>
-      <!-- ***** Header Area End ***** -->
-      <!-- ***** Main Banner Area Start ***** -->
-      <!----<section class="featured-artist-slider">
+                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
+                        <a class="navbar-brand" href="/login/dashboard/">
+                            <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
+                            <!-- <img src="static/images/logo1.png"> -->
+                            <!-- ARTBIDER -->
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
+                            <ul class="navbar-nav mr-0">
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="#">Home</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link active" href="/artist/index/">Artists</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="/auctionhouse/index/">Auction Houses</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/auction/index/">Auctions</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/database/">Price Database</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/plans/">Price Plans</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Galleries</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Shows</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#"> News</a>
+                                </li>
+
+                            </ul>
+                            <ul class="navbar-nav sm-icons mr-0">
+                                {% if not user.is_authenticated %}
+                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                                {% else %}
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                                <li class="nav-item">
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+    <!-- ***** Main Banner Area Start ***** -->
+    <!----<section class="featured-artist-slider">
         <div class="container max-container">
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -593,10 +618,11 @@
             </div>
         </div>
     </section>-->
-   	<!-- Carousel -->
-    {% comment %} <section class="testimonials">
-     <div class="container"> {% endcomment %}
-      <!-- <div class="row">
+    <!-- Carousel -->
+    {% comment %}
+    <section class="testimonials">
+        <div class="container"> {% endcomment %}
+            <!-- <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
@@ -615,605 +641,784 @@
           </div>
         </div>
       </div> -->
-     {% comment %} </div>
+            {% comment %}
+        </div>
     </section> {% endcomment %}
     <!-- END OF Carousels -->
-      <!------ Featured Artist ------->
-      <section class="section gal-section" id="secsearchartist" style='width:1200px;'>
-      	<div class="container" style='width:1000px;'>
-	    <div class="row" style='display:flex;'>
-                  <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
-                      <div class="section-heading section-heading-2 input-group">
-                          <!-- <h2>Emerging Art</h2> -->
-			<span style='font-weight:bold;font-size:larger;'>Search over 500,000 artists</span>
-                          <span>
-			      <form autocomplete="off" name='frmsearchartists' id='frmsearchartists' method='POST' action="">
-				  {% csrf_token %}
-				  <div class="autocomplete">
-				    <div class="row" style='width:1000px;'><input type="search" class='form-control' name='artistsearch' id='artistsearch' maxLength="200" placeholder="Enter Artist's Name" style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchartist();'><i class="fa fa-search"></i></button>&nbsp;&nbsp;<span id="loader"></span></div>
-				    
-				  </div>
-			      </form>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-	</div>
-      </section>
-      <section class="featured-artist">
-          <div class="container">
-              <div class="row d-flex">
-                  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                      <div class="section-heading" id='pageheader'>
-                          <h2>Top Performing Artists</h2>
-                          
-                      </div>
-                  </div>
-                  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                      <ul class="text-end">
-                          <li><a href="/artist/index/?page=a">a</a></li>
-                          <li><a href="/artist/index/?page=b">b</a></li>
-                          <li><a href="/artist/index/?page=c">c</a></li>
-                          <li><a href="/artist/index/?page=d">d</a></li>
-                          <li><a href="/artist/index/?page=e">e</a></li>
-                          <li><a href="/artist/index/?page=f">f</a></li>
-                          <li><a href="/artist/index/?page=g">g</a></li>
-                          <li><a href="/artist/index/?page=h">h</a></li>
-                          <li><a href="/artist/index/?page=i">i</a></li>
-                          <li><a href="/artist/index/?page=j">j</a></li>
-                          <li><a href="/artist/index/?page=k">k</a></li>
-                          <li><a href="/artist/index/?page=l">l</a></li>
-                          <li><a href="/artist/index/?page=m">m</a></li>
-                          <li><a href="/artist/index/?page=n">n</a></li>
-                          <li><a href="/artist/index/?page=o">o</a></li>
-                          <li><a href="/artist/index/?page=p">p</a></li>
-                          <li><a href="/artist/index/?page=q">q</a></li>
-                          <li><a href="/artist/index/?page=r">r</a></li>
-                          <li><a href="/artist/index/?page=s">s</a></li>
-                          <li><a href="/artist/index/?page=t">t</a></li>
-                          <li><a href="/artist/index/?page=u">u</a></li>
-                          <li><a href="/artist/index/?page=v">v</a></li>
-                          <li><a href="/artist/index/?page=w">w</a></li>
-                          <li><a href="/artist/index/?page=x">x</a></li>
-                          <li><a href="/artist/index/?page=y">y</a></li>
-                          <li><a href="/artist/index/?page=z">z</a></li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-      </section>
-      <!------ Featured Artist ------->
-      <!-- ***** Main Banner Area End ***** -->
-      <section class="section gal-section br-none" id='featuredartistsdiv'>
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Emerging Art</h2> -->
-                          <span>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-		  {% for artistobj in featuredartists %}
-                  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                      <div class="artist-category">
-			  {% if artistobj.atype == '1' %}
-                          <div class="img-box">
-			    <div class="thumb text-center">
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
-			    </div>
-			  {% else %}
-			  <div class="img-box">
-			    <div class="thumb text-center">
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
-  			    </div>
-			  {% endif %}
-                          
-                              <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
-                                  <h4>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
-				<!-- 
-				{% if artistobj.birthdate == '' %}
-                                  <h6>{{artistobj.nationality}}</h6>
-				{% else %}
-				  <h6>{{artistobj.nationality}}</h6>
-				  <h6>{{artistobj.birthdeath}}</h6>
-				{% endif %}
-				-->
-				<!-- <h6>Total Sold: US$&nbsp;{{artistobj.totalsold}}</h6> -->
-                              </a>
-			      {% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			      {% else %}
-				<div id='statsview_feat_{{forloop.counter}}'>
-				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_feat_{{forloop.counter}}');">Show Stats</a></h6>
-				</div>
-				{% if artistobj.follow == 0 %}
-				<!-- <div id='follow_feat_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_feat_{{forloop.counter}}');">Follow</a></h6>
-				</div> -->
-				{% else %}
-				<!-- <div id='follow_feat_{{forloop.counter}}'>
+    <!------ Featured Artist ------->
+    <section class="section gal-section" id="secsearchartist">
+        <div class="container">
+            <!-- <div class="row" style='display:flex;'>
+                <div class="col-lg-4 col-lg-offset-4" style='margin:auto;float:none;'>
+                    <div class="section-heading section-heading-2 input-group">
+                        <h2>Emerging Art</h2>
+                        <span style='font-weight:bold;font-size:larger;'>Search over 500,000 artists</span>
+                        <span>
+                            <form autocomplete="off" name='frmsearchartists' id='frmsearchartists' method='POST'
+                                action="">
+                                {% csrf_token %}
+                                <div class="autocomplete">
+                                    <div class="row">
+                                        <input type="search" class='form-control' name='artistsearch' id='artistsearch'
+                                            maxLength="200" placeholder="Enter Artist's Name"
+                                            style="width:600px;"><button type="button" class="btn btn-primary"
+                                            onclick='javascript:searchartist();'><i
+                                                class="fa fa-search"></i></button>&nbsp;&nbsp;<span id="loader"></span>
+                                    </div>
+
+                                </div>
+                            </form>
+                            <a href="">View All</a>
+                        </span>
+                    </div>
+                </div>
+            </div> -->
+            <div class="search-bg">
+                <div class="">
+                    <h3 class="heading-style">Search Your Artist Here</h3>
+                    <form autocomplete="off" name="frmsearchartists" id="frmsearchartists" method="POST" action="">
+                        <div class="autocomplete">
+                            <div class="row">
+                                <input type="search" class="form-control  rounded-0" name="artistsearch" id="artistsearch" placeholder="Search over 500,000 artists">
+                                <span class="input-group-text rounded-0">
+                                    <button type="button" class="btn border-0 p-0 rounded-right"
+                                        onclick="javascript:searchartist();"><i class="fa fa-search"></i></button>
+                                </span> &nbsp;&nbsp;
+                                <span id="loader"></span>
+                            </div>
+
+                        </div>
+                    </form>
+                    <!-- <a href="">View All</a> -->
+                    <div class="col-sm-12">
+                        <ul class="leter-style text-center mt-3 justify-content-center">
+                            <li class="list-alfabat"><a href="/artist/index/?page=a">a</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=b">b</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=c">c</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=d">d</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=e">e</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=f">f</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=g">g</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=h">h</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=i">i</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=j">j</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=k">k</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=l">l</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=m">m</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=n">n</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=o">o</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=p">p</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=q">q</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=r">r</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=s">s</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=t">t</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=u">u</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=v">v</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=w">w</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=x">x</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=y">y</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=z">z</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- <section class="featured-artist">
+        <div class="container">
+            <div class="row d-flex">
+                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="section-heading" id='pageheader'>
+                        <h2>Top Performing Artists</h2>
+
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <ul class="text-end">
+                        <li><a href="/artist/index/?page=a">a</a></li>
+                        <li><a href="/artist/index/?page=b">b</a></li>
+                        <li><a href="/artist/index/?page=c">c</a></li>
+                        <li><a href="/artist/index/?page=d">d</a></li>
+                        <li><a href="/artist/index/?page=e">e</a></li>
+                        <li><a href="/artist/index/?page=f">f</a></li>
+                        <li><a href="/artist/index/?page=g">g</a></li>
+                        <li><a href="/artist/index/?page=h">h</a></li>
+                        <li><a href="/artist/index/?page=i">i</a></li>
+                        <li><a href="/artist/index/?page=j">j</a></li>
+                        <li><a href="/artist/index/?page=k">k</a></li>
+                        <li><a href="/artist/index/?page=l">l</a></li>
+                        <li><a href="/artist/index/?page=m">m</a></li>
+                        <li><a href="/artist/index/?page=n">n</a></li>
+                        <li><a href="/artist/index/?page=o">o</a></li>
+                        <li><a href="/artist/index/?page=p">p</a></li>
+                        <li><a href="/artist/index/?page=q">q</a></li>
+                        <li><a href="/artist/index/?page=r">r</a></li>
+                        <li><a href="/artist/index/?page=s">s</a></li>
+                        <li><a href="/artist/index/?page=t">t</a></li>
+                        <li><a href="/artist/index/?page=u">u</a></li>
+                        <li><a href="/artist/index/?page=v">v</a></li>
+                        <li><a href="/artist/index/?page=w">w</a></li>
+                        <li><a href="/artist/index/?page=x">x</a></li>
+                        <li><a href="/artist/index/?page=y">y</a></li>
+                        <li><a href="/artist/index/?page=z">z</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!------ Featured Artist ------->
+    <!-- ***** Main Banner Area End ***** -->
+    <section class="section py--80 pb-0" id='featuredartistsdiv'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center">
+                        <h2 class="heading-style">Top Performing Artists</h2>
+                        <span>
+                            <!-- <a href="">View All</a> -->
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="latest-artists ">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-12 text-center mt-4">
+                        <button type="button" class="btn btn-login btn-round">View More</button>
+                    </div>
+                    <!-- {% for artistobj in featuredartists %}
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                        <div class="artist-category">
+                            {% if artistobj.atype == '1' %}
+                            <div class="img-box">
+                                <div class="thumb text-center">
+                                    <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
+                                </div>
+                                {% else %}
+                                <div class="img-box">
+                                    <div class="thumb text-center">
+                                        <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
+                                    </div>
+                                    {% endif %}
+
+                                    <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
+                                        <h4>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})
+                                        </h4>
+
+                                        {% if artistobj.birthdate == '' %}
+                                        <h6>{{artistobj.nationality}}</h6>
+                                        {% else %}
+                                        <h6>{{artistobj.nationality}}</h6>
+                                        <h6>{{artistobj.birthdeath}}</h6>
+                                        {% endif %}
+                                        <h6>Total Sold: US$&nbsp;{{artistobj.totalsold}}</h6>
+                                    </a>
+                                    {% if not user.is_authenticated %}
+                                    <h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a>
+                                    </h6>
+                                    {% else %}
+                                    <div id='statsview_feat_{{forloop.counter}}'>
+                                        <h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_feat_{{forloop.counter}}');">Show
+                                            Stats</a></h6>
+                                    </div>
+                                    {% if artistobj.follow == 0 %}
+                                    <div id='follow_feat_{{forloop.counter}}'>
+                                        <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_feat_{{forloop.counter}}');">Follow</a></h6>
+                                    </div> -->{% else %}
+                    <!-- <div id='follow_feat_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_feat_{{forloop.counter}}');">Following</a></h6>
-				</div> -->
-				{% endif %}
-				{% if artistobj.favourite == 0 %}
-				<div id='favourite_feat_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_feat_{{forloop.counter}}');">Add to Favourites</a></h6>
-				</div>
-				{% else %}
-				<div id='favourite_feat_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			      {% endif %}
-			      
-                          </div>
-			  {% if adminuser == 1 %}
-			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
-		          {% endif %}
-                      </div>
-                  </div>
-		  {% endfor %}
-              </div>
-          </div>
-      </section>
+				</div> 
+                                {% endif %} {% if artistobj.favourite == 0 %}
+                                <div id='favourite_feat_{{forloop.counter}}'>
+                                    <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_feat_{{forloop.counter}}');">Add
+                                            to Favourites</a></h6>
+                                </div>
+                                {% else %}
+                                <div id='favourite_feat_{{forloop.counter}}'>
+                                    <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+                                </div>
+                                {% endif %} {% endif %}
 
-      <section class="section gal-section br-none pdt-0" id='allartistsdiv0'>
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Contemporary Chinese Art</h2> -->
-                          <span>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-                  {% for artistobj in allartists.0 %}
-                  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                      <div class="artist-category">
-                          <div class="img-box">
-			    <div class='thumb text-center'>
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
-			    </div>
-                              <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
-                                  <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
-				<!-- 
+                            </div>
+                            {% if adminuser == 1 %}
+                            <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}-->
+                    <!-- </div> -->
+                </div>
+            </div>
+    </section>
+
+    <!-- <section class="section gal-section br-none pdt-0" id='allartistsdiv0'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2">
+                        <h2>Contemporary Chinese Art</h2>
+                        <span>
+                             <a href="">View All</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for artistobj in allartists.0 %}
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="artist-category">
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
+                            </div>
+                            <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
+                                <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})
+                                </h4>
+                                
 				{% if artistobj.birthdate == '' %}
                                   <h6>{{artistobj.nationality}}</h6>
 				{% else %}
 				  <h6>{{artistobj.nationality}}</h6>
 				  <h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
-				-->
-                              </a>
-			      {% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			      {% else %}
-				<div id='statsview_1_{{forloop.counter}}'>
-				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_1_{{forloop.counter}}');">Show Stats</a></h6>
-				</div>
-				{% if artistobj.follow == 0 %}
-				<!-- <div id='follow_1_{{forloop.counter}}'>
+				
+                            </a>
+                            {% if not user.is_authenticated %}
+                            <h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+                            {% else %}
+                            <div id='statsview_1_{{forloop.counter}}'>
+                                <h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_1_{{forloop.counter}}');">Show
+                                        Stats</a></h6>
+                            </div>
+                            {% if artistobj.follow == 0 %}
+                            <div id='follow_1_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_1_{{forloop.counter}}');">Follow</a></h6>
-				</div> -->
-				{% else %}
-				<!-- <div id='follow_1_{{forloop.counter}}'>
+				</div>
+                            {% else %}
+                            <div id='follow_1_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_1_{{forloop.counter}}');">Following</a></h6>
-				</div> -->
-				{% endif %}
-				{% if artistobj.favourite == 0 %}
-				<div id='favourite_1_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_1_{{forloop.counter}}');">Add to Favourites</a></h6>
 				</div>
-				{% else %}
-				<div id='favourite_1_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			      {% endif %}
-				<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-                          </div>
-			  {% if adminuser == 1 %}
-			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
-		          {% endif %}
-                      </div>
-                  </div>
-		  {% endfor %}
-                  
-              </div>
-          </div>
-      </section>
-      <section class="section gal-section br-none pdt-0" id='allartistsdiv1'>
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Abstract Sculpture</h2> -->
-                          <span>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-                  {% for artistobj in allartists.1 %}
-                  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                      <div class="artist-category">
-                          <div class="img-box">
-			    <div class='thumb text-center'>
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
-			    </div>
-                              <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
-                                  <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
-				<!-- 
+                            {% endif %} {% if artistobj.favourite == 0 %}
+                            <div id='favourite_1_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_1_{{forloop.counter}}');">Add
+                                        to Favourites</a></h6>
+                            </div>
+                            {% else %}
+                            <div id='favourite_1_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+                            </div>
+                            {% endif %} {% endif %}
+                            <a class="btn btn-slider" href="#">Follow</a>
+                        </div>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section br-none pdt-0" id='allartistsdiv1'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2">
+                        <h2>Abstract Sculpture</h2>
+                        <span>
+                            <a href="">View All</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for artistobj in allartists.1 %}
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="artist-category">
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
+                            </div>
+                            <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
+                                <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})
+                                </h4>
+                                
                                 {% if artistobj.birthdate == '' %}
                                   <h6>{{artistobj.nationality}}</h6>
 				{% else %}
 				  <h6>{{artistobj.nationality}}</h6>
 				  <h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
-				-->
-                              </a>
-			      {% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			      {% else %}
-				<div id='statsview_2_{{forloop.counter}}'>
-				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_2_{{forloop.counter}}');">Show Stats</a></h6>
-				</div>
-				{% if artistobj.follow == 0 %}
-				<!-- <div id='follow_2_{{forloop.counter}}'>
+				
+                            </a>
+                            {% if not user.is_authenticated %}
+                            <h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+                            {% else %}
+                            <div id='statsview_2_{{forloop.counter}}'>
+                                <h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_2_{{forloop.counter}}');">Show
+                                        Stats</a></h6>
+                            </div>
+                            {% if artistobj.follow == 0 %}
+                            <div id='follow_2_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_2_{{forloop.counter}}');">Follow</a></h6>
-				</div> -->
-				{% else %}
-				<!-- <div id='follow_2_{{forloop.counter}}'>
+				</div>
+                            {% else %}
+                            <div id='follow_2_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_2_{{forloop.counter}}');">Following</a></h6>
-				</div> -->
-				{% endif %}
-				{% if artistobj.favourite == 0 %}
-				<div id='favourite_2_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_2_{{forloop.counter}}');">Add to Favourites</a></h6>
 				</div>
-				{% else %}
-				<div id='favourite_2_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			      {% endif %}
-	 		      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
-                          </div>
-			  {% if adminuser == 1 %}
-			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
-		          {% endif %}
-                      </div>
-                  </div>
-		  {% endfor %}
-                  
-              </div>
-          </div>
-      </section>
-      <section class="section gal-section br-none pdt-0" id='allartistsdiv2'>
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Post-War European Art</h2> -->
-                          <span>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-                  {% for artistobj in allartists.2 %}
-                  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                      <div class="artist-category">
-                          <div class="img-box">
-			    <div class='thumb text-center'>
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
-			    </div>
-                              <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
-                                  <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
-				<!--
+                            {% endif %} {% if artistobj.favourite == 0 %}
+                            <div id='favourite_2_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_2_{{forloop.counter}}');">Add
+                                        to Favourites</a></h6>
+                            </div>
+                            {% else %}
+                            <div id='favourite_2_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+                            </div>
+                            {% endif %} {% endif %}
+                            <a class="btn btn-slider" href="#">Follow</a>
+                        </div>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section br-none pdt-0" id='allartistsdiv2'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2">
+                        <h2>Post-War European Art</h2>
+                        <span>
+                            <a href="">View All</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for artistobj in allartists.2 %}
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="artist-category">
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
+                            </div>
+                            <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
+                                <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})
+                                </h4>
+                                
                                 {% if artistobj.birthdate == '' %}
                                   <h6>{{artistobj.nationality}}</h6>
 				{% else %}
 				  <h6>{{artistobj.nationality}}</h6>
 				  <h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
-				-->
-                              </a>
-			      {% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			      {% else %}
-				<div id='statsview_3_{{forloop.counter}}'>
-				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_3_{{forloop.counter}}');">Show Stats</a></h6>
-				</div>
-				{% if artistobj.follow == 0 %}
-				<!-- <div id='follow_3_{{forloop.counter}}'>
+				
+                            </a>
+                            {% if not user.is_authenticated %}
+                            <h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+                            {% else %}
+                            <div id='statsview_3_{{forloop.counter}}'>
+                                <h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_3_{{forloop.counter}}');">Show
+                                        Stats</a></h6>
+                            </div>
+                            {% if artistobj.follow == 0 %}
+                            <div id='follow_3_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_3_{{forloop.counter}}');">Follow</a></h6>
-				</div> -->
-				{% else %}
-				<!-- <div id='follow_3_{{forloop.counter}}'>
+				</div>
+                            {% else %}
+                            <div id='follow_3_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_3_{{forloop.counter}}');">Following</a></h6>
-				</div> -->
-				{% endif %}
-				{% if artistobj.favourite == 0 %}
-				<div id='favourite_3_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_3_{{forloop.counter}}');">Add to Favourites</a></h6>
 				</div>
-				{% else %}
-				<div id='favourite_3_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			      {% endif %}
-			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
-                          </div>
-			  {% if adminuser == 1 %}
-			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
-		          {% endif %}
-                      </div>
-                  </div>
-		  {% endfor %}
-                  
-              </div>
-          </div>
-      </section>
-      <section class="section gal-section br-none pdt-0" id='allartistsdiv3'>
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Contemporary Furniture and Design</h2> -->
-                          <span>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-                  {% for artistobj in allartists.3 %}
-                  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                      <div class="artist-category">
-                         <div class="img-box">
-			    <div class='thumb text-center'>
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
-			    </div>
-                              <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
-                                  <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
-				<!--
+                            {% endif %} {% if artistobj.favourite == 0 %}
+                            <div id='favourite_3_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_3_{{forloop.counter}}');">Add
+                                        to Favourites</a></h6>
+                            </div>
+                            {% else %}
+                            <div id='favourite_3_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+                            </div>
+                            {% endif %} {% endif %}
+                            <a class="btn btn-slider" href="#">Follow</a>
+                        </div>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section br-none pdt-0" id='allartistsdiv3'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2">
+                        <h2>Contemporary Furniture and Design</h2>
+                        <span>
+                            <a href="">View All</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for artistobj in allartists.3 %}
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="artist-category">
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
+                            </div>
+                            <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
+                                <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})
+                                </h4>
+                                
                                 {% if artistobj.birthdate == '' %}
                                   <h6>{{artistobj.nationality}}</h6>
 				{% else %}
 				  <h6>{{artistobj.nationality}}</h6>
 				  <h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
-				-->
-                              </a>
-			      {% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			      {% else %}
-				<div id='statsview_4_{{forloop.counter}}'>
-				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_4_{{forloop.counter}}');">Show Stats</a></h6>
-				</div>
-				{% if artistobj.follow == 0 %}
-				<!-- <div id='follow_4_{{forloop.counter}}'>
+				
+                            </a>
+                            {% if not user.is_authenticated %}
+                            <h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+                            {% else %}
+                            <div id='statsview_4_{{forloop.counter}}'>
+                                <h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_4_{{forloop.counter}}');">Show
+                                        Stats</a></h6>
+                            </div>
+                            {% if artistobj.follow == 0 %}
+                            <div id='follow_4_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_4_{{forloop.counter}}');">Follow</a></h6>
-				</div> -->
-				{% else %}
-				<!-- <div id='follow_4_{{forloop.counter}}'>
+				</div>
+                            {% else %}
+                            <div id='follow_4_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_4_{{forloop.counter}}');">Following</a></h6>
-				</div> -->
-				{% endif %}
-				{% if artistobj.favourite == 0 %}
-				<div id='favourite_4_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_4_{{forloop.counter}}');">Add to Favourites</a></h6>
 				</div>
-				{% else %}
-				<div id='favourite_4_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			      {% endif %}
-			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
-                          </div>
-			  {% if adminuser == 1 %}
-			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
-		          {% endif %}
-                      </div>
-                  </div>
-		  {% endfor %}
-                  
-              </div>
-          </div>
-      </section>
-      <section class="section gal-section br-none pdt-0" id='allartistsdiv4'>
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Contemporary Conceptualism</h2> -->
-                          <span>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-                  {% for artistobj in allartists.4 %}
-                  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                      <div class="artist-category">
-                          <div class="img-box">
-			    <div class='thumb text-center'>
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
-			    </div>
-                              <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
-                                  <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
-				<!--
+                            {% endif %} {% if artistobj.favourite == 0 %}
+                            <div id='favourite_4_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_4_{{forloop.counter}}');">Add
+                                        to Favourites</a></h6>
+                            </div>
+                            {% else %}
+                            <div id='favourite_4_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+                            </div>
+                            {% endif %} {% endif %}
+                            <a class="btn btn-slider" href="#">Follow</a>
+                        </div>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section br-none pdt-0" id='allartistsdiv4'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2">
+                        <h2>Contemporary Conceptualism</h2>
+                        <span>
+                            <a href="">View All</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for artistobj in allartists.4 %}
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="artist-category">
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
+                            </div>
+                            <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
+                                <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})
+                                </h4>
+                                
                                 {% if artistobj.birthdate == '' %}
                                   <h6>{{artistobj.nationality}}</h6>
 				{% else %}
 				  <h6>{{artistobj.nationality}}</h6>
 				  <h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
-				-->
-                              </a>
-			      {% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			      {% else %}
-				<div id='statsview_5_{{forloop.counter}}'>
-				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_5_{{forloop.counter}}');">Show Stats</a></h6>
-				</div>
-				{% if artistobj.follow == 0 %}
-				<!-- <div id='follow_5_{{forloop.counter}}'>
+				
+                            </a>
+                            {% if not user.is_authenticated %}
+                            <h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+                            {% else %}
+                            <div id='statsview_5_{{forloop.counter}}'>
+                                <h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_5_{{forloop.counter}}');">Show
+                                        Stats</a></h6>
+                            </div>
+                            {% if artistobj.follow == 0 %}
+                            <div id='follow_5_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_5_{{forloop.counter}}');">Follow</a></h6>
-				</div> -->
-				{% else %}
-				<!-- <div id='follow_5_{{forloop.counter}}'>
+				</div>
+                            {% else %}
+                            <div id='follow_5_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_5_{{forloop.counter}}');">Following</a></h6>
-				</div> -->
-				{% endif %}
-				{% if artistobj.favourite == 0 %}
-				<div id='favourite_5_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_5_{{forloop.counter}}');">Add to Favourites</a></h6>
 				</div>
-				{% else %}
-				<div id='favourite_5_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			      {% endif %}
-			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
-                          </div>
-			  {% if adminuser == 1 %}
-			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
-		          {% endif %}
-                      </div>
-                  </div>
-		  {% endfor %}
-              </div>
-          </div>
-      </section>
-      <section class="section gal-section br-none pdt-0" id='allartistsdiv5'>
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>East Village Art</h2> -->
-                          <span>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-                  {% for artistobj in allartists.5 %}
-                  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                      <div class="artist-category">
-                          <div class="img-box">
-			    <div class='thumb text-center'>
-                              <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
-			    </div>
-                              <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
-                                  <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})</h4>
-				<!--
+                            {% endif %} {% if artistobj.favourite == 0 %}
+                            <div id='favourite_5_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_5_{{forloop.counter}}');">Add
+                                        to Favourites</a></h6>
+                            </div>
+                            {% else %}
+                            <div id='favourite_5_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+                            </div>
+                            {% endif %} {% endif %}
+                            <a class="btn btn-slider" href="#">Follow</a>
+                        </div>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section br-none pdt-0" id='allartistsdiv5'>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2">
+                        <h2>East Village Art</h2>
+                        <span>
+                            <a href="">View All</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for artistobj in allartists.5 %}
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="artist-category">
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href="/artist/details/?aid={{artistobj.aid}}"><img src="{{artistobj.artistimage}}" alt=""></a>
+                            </div>
+                            <a href="/artist/details/?aid={{artistobj.aid}}" style="color:#000000;">
+                                <h4 class='auction_title'>{{artistobj.artistname}}&nbsp;&nbsp;- {{artistobj.nationality}}&nbsp;&nbsp;({{artistobj.bdstring}})
+                                </h4>
+                                
                                 {% if artistobj.birthdate == '' %}
                                   <h6>{{artistobj.nationality}}</h6>
 				{% else %}
 				  <h6>{{artistobj.nationality}}</h6>
 				  <h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
-				-->
-                              </a>
-			      {% if not user.is_authenticated %}
-				<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-			      {% else %}
-				<div id='statsview_6_{{forloop.counter}}'>
-				<h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_6_{{forloop.counter}}');">Show Stats</a></h6>
-				</div>
-				{% if artistobj.follow == 0 %}
-				<!-- <div id='follow_6_{{forloop.counter}}'>
+				
+                            </a>
+                            {% if not user.is_authenticated %}
+                            <h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
+                            {% else %}
+                            <div id='statsview_6_{{forloop.counter}}'>
+                                <h6><a href='#/' style="color:#000000;bgcolor:#ffffff;" onclick="javascript:showstats({{artistobj.aid}}, 'statsview_6_{{forloop.counter}}');">Show
+                                        Stats</a></h6>
+                            </div>
+                            {% if artistobj.follow == 0 %}
+                            <div id='follow_6_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_6_{{forloop.counter}}');">Follow</a></h6>
-				</div> -->
-				{% else %}
-				<!-- <div id='follow_6_{{forloop.counter}}'>
+				</div>
+                            {% else %}
+                            <div id='follow_6_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_6_{{forloop.counter}}');">Following</a></h6>
-				</div> -->
-				{% endif %}
-				{% if artistobj.favourite == 0 %}
-				<div id='favourite_6_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_6_{{forloop.counter}}');">Add to Favourites</a></h6>
 				</div>
-				{% else %}
-				<div id='favourite_6_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-			      {% endif %}
-			      <!-- <a class="btn btn-slider" href="#">Follow</a> -->
-                          </div>
-			  {% if adminuser == 1 %}
-			      <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
-		          {% endif %}
-                      </div>
-                  </div>
-		  {% endfor %}
-                  
-              </div>
-          </div>
-      </section>
-      <section class="download-app">
-          <div class="container max-container">
-              <div class="row">
-                  <div class="col-sm-12 col-md-5 col-lg-4 col-xl-4">
-                      <div class="download-app">
-                          <h4>Get More from ArtBidder—on the App</h4>
-                          <div class="pl-st">
-                              <a href=""><img src="/static/images/app-store.png" alt=""></a> <a href=""><img src="/static/images/google-play.png" alt=""></a>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-sm-12 col-md-7 col-lg-8 col-xl-8">
-                      <img src="/static/images/download-app.jpg" alt="">
-                  </div>
-              </div>
-          </div>
-      </section>
+                            {% endif %} {% if artistobj.favourite == 0 %}
+                            <div id='favourite_6_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artist', {{artistobj.aid}}, 'favourite_6_{{forloop.counter}}');">Add
+                                        to Favourites</a></h6>
+                            </div>
+                            {% else %}
+                            <div id='favourite_6_{{forloop.counter}}'>
+                                <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
+                            </div>
+                            {% endif %} {% endif %}
+                            <a class="btn btn-slider" href="#">Follow</a>
+                        </div>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{artistobj.aid}}');">Edit</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
 
-      <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
-      
+            </div>
+        </div>
+    </section> -->
+    <!-- <section class="download-app">
+        <div class="container max-container">
+            <div class="row">
+                <div class="col-sm-12 col-md-5 col-lg-4 col-xl-4">
+                    <div class="download-app">
+                        <h4>Get More from ArtBidder—on the App</h4>
+                        <div class="pl-st">
+                            <a href=""><img src="/static/images/app-store.png" alt=""></a>
+                            <a href=""><img src="/static/images/google-play.png" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7 col-lg-8 col-xl-8">
+                    <img src="/static/images/download-app.jpg" alt="">
+                </div>
+            </div>
+        </div>
+    </section> -->
 
-      <!-- ***** Footer Start ***** -->
-      <footer>
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-3">
-                      <div class="first-item">
-                          <div class="logo">
-                              <img src="/static/images/logo-white.png" alt="">
-                          </div>
-                          <ul>
-                              <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
-                              <li><a href="#"><span class="__cf_email__" data-cfemail="e98d8c8486a98a868499888790c78a8684">[email&#160;protected]</span></a></li>
-                              <li><a href="#">010-020-0340</a></li>
-                          </ul>
-                      </div>
-                  </div>
-                  <div class="col-lg-3">
+    <div id="adminScreen">
+        <a href="#" class="cancel">×</a>
+        <form name='frmedit' id='frmedit'>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="cover">
+    </div>
+
+
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="first-item">
+                        <div class="logo">
+                            <img src="/static/images/logo-white.png" alt="">
+                        </div>
+                        <ul>
+                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
+                            <li><a href="#"><span class="__cf_email__"
+                                        data-cfemail="e98d8c8486a98a868499888790c78a8684">[email&#160;protected]</span></a>
+                            </li>
+                            <li><a href="#">010-020-0340</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -1240,96 +1445,96 @@
                         <li><a href="/security/">Security</a></li>
                     </ul>
                 </div>
-                  <div class="col-lg-12">
-                      <div class="under-footer">
-                          <p>Copyright © 2022. All Rights Reserved.</p>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
 
-                          <ul>
-                              <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                              <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                              <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                          </ul>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </footer>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 
-      <!-- jQuery -->
-      <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/static/js/jquery-2.1.0.min.js"></script>
+    <!-- jQuery -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
 
-      <!-- Bootstrap -->
-      <script src="/static/js/popper.js"></script>
-      <script src="/static/js/bootstrap.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
 
-      <!-- Plugins -->
-      <script src="/static/js/owl-carousel.js"></script>
-      <script src="/static/js/accordions.js"></script>
-      <script src="/static/js/datepicker.js"></script>
-      <script src="/static/js/scrollreveal.min.js"></script>
-      <script src="/static/js/waypoints.min.js"></script>
-      <script src="/static/js/jquery.counterup.min.js"></script>
-      <script src="/static/js/imgfix.min.js"></script>
-      <script src="/static/js/slick.js"></script>
-      <script src="/static/js/lightbox.js"></script>
-      <script src="/static/js/isotope.js"></script>
-      <script src="/static/js/jquery.dropdown.min.js"></script>
+    <!-- Plugins -->
+    <script src="/static/js/owl-carousel.js"></script>
+    <script src="/static/js/accordions.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <script src="/static/js/scrollreveal.min.js"></script>
+    <script src="/static/js/waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
 
-      <!-- Global Init -->
-      <script src="/static/js/custom.js"></script>
+    <!-- Global Init -->
+    <script src="/static/js/custom.js"></script>
 
-      <script>
-          /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-          $('.demo').dropdown({
-              limitCount: 1,
-              input: '<input type="text" maxLength="20" placeholder="Search">'
-          });
-         
-jQuery(document).ready(function($) {
-	"use strict";
-	$('#customers-testimonials').owlCarousel( {
-		loop: true,
-		center: true,
-		items: 3,
-		margin: 30,
-		autoplay: true,
-		dots:true,
-    		nav:true,
-		autoplayTimeout: 8500,
-		smartSpeed: 450,
-  		navText: ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-		responsive: {
-			0: {
-				items: 1
-			},
-			768: {
-				items: 2
-			},
-			1170: {
-				items: 3
-			}
-		}
-	});
-});
-      </script>
-      <script>
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
 
-          $(function () {
-              var selectedClass = "";
-              $("p").click(function () {
-                  selectedClass = $(this).attr("data-rel");
-                  $("#portfolio").fadeTo(50, 0.1);
-                  $("#portfolio div").not("." + selectedClass).fadeOut();
-                  setTimeout(function () {
-                      $("." + selectedClass).fadeIn();
-                      $("#portfolio").fadeTo(50, 1);
-                  }, 500);
+        jQuery(document).ready(function($) {
+            "use strict";
+            $('#customers-testimonials').owlCarousel({
+                loop: true,
+                center: true,
+                items: 3,
+                margin: 30,
+                autoplay: true,
+                dots: true,
+                nav: true,
+                autoplayTimeout: 8500,
+                smartSpeed: 450,
+                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    1170: {
+                        items: 3
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
 
-              });
-          });
+            });
+        });
+    </script>
 
-      </script>
+</body>
 
-  </body>
 </html>

@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <title>ArtBider</title>
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="/static/css/viewer.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    <link rel="stylesheet" href="/static/css/owl-carousel.css">
+
+    <link rel="stylesheet" href="/static/css/lightbox.css">
+    <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
+    <link rel="stylesheet" href="/static/css/new-style.css">
+
+    <style type="text/css">
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+
+    <script src="/static/js/editfromfront.js"></script>
+    <script src="/static/js/eolicoauth.js"></script>
+
+</head>
+
+<body>
+    <!-- Unique Work Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Sign up to see full auction records — for free</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
+                            <div class="form-group">
+                                <label for="name">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="emailid">Email</label>
+                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
+                            </div>
+                            <div class="form-group">
+                                <label for="password1">Password</label>
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                <p>Password must be at least 8 characters.</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="password2">Confirm Password</label>
+                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="form-group">
+                                <div class="check-input">
+                                    <span>
+                                        <input type="checkbox" name="agree" id="agree" value="" />
+                                    </span>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
+                            </div>
+                            <!--
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+			    -->
+                            <div class="form-group text-center">
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign up Modal -->
+    <!-- Sign in Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Login</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                            </div>
+                            <div class="form-group">
+                                <label for="password">password</label>
+                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <!-- <div class="form-group">
+                                <div class="check-input">
+                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
+                                </div>
+                            </div> -->
+                            <div class="form-group">
+                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
+                            </div>
+                            <!--
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+			    -->
+                            <div class="form-group text-center">
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign in Modal -->
+    <!-- Sign in Modal -->
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
+                        <h3>Reset your password</h3>
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="email">password</label>
+                                <input type="text" class="form-control" id="password" placeholder="Enter a password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                            </div>
+                            <div class="form-group text-center">
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign in Modal -->
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
+                        <a class="navbar-brand" href="/login/dashboard/">
+                            <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon"></span>
+                      </button>
+                        <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
+                            <ul class="navbar-nav mr-0">
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="#">Home</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="/artist/index/">Artists</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="/auctionhouse/index/">Auction Houses</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link active" href="/auction/index/">Auctions</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/database/">Price Database</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/plans/">Price Plans</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Galleries</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Shows</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#"> News</a>
+                                </li>
+
+                            </ul>
+                            <ul class="navbar-nav sm-icons mr-0">
+                                {% if not user.is_authenticated %}
+                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                                {% else %}
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                                <li class="nav-item">
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <style>
+        .terms-page h6 {
+            font-size: 20px;
+            margin-top: 50px;
+            margin-bottom: 15px;
+            color: #b30000;
+        }
+        
+        .terms-page p {
+            margin-bottom: 10px;
+        }
+    </style>
+    <section style="padding-top:140px;">
+        <div class="terms-page">
+            <div class="container">
+                <h3 class="heading-style text-center">ART BIDER TERMS AND CONDITION</h3>
+                <p>
+                    THESE TERMS (AND ARTBIDER’S PRIVACY POLICY, AS NOTED BELOW) CREATE A LEGAL AGREEMENT (THIS <b>"AGREEMENT"</b>) BETWEEN ASAWARI ART INDUSTRIES PRIVATE LIMITED(<b>“ARTBIDER”, “ASAWARI” “WE”, “US”</b> OR <b>“OUR”</b>) AND THE USER OF
+                    THE SERVICE ENTERING INTO THIS AGREEMENT (<b>“YOU”</b> OR <b>“YOUR”</b>). YOU SHOULD CAREFULLY READ THIS AGREEMENT AND THE<a href="#"> PRIVACY POLICY</a> (the <b>“Privacy Policy”</b>), WHICH IS INCORPORATED INTO AND GOVERNED BY THIS
+                    AGREEMENT. THIS AGREEMENT GOVERNS YOUR USE OF THE WEBSITE WWW.ARTBIDER.COM AND ANY SUBDOMAINS (the <b>“Site”</b>) AND THE SERVICES, FEATURES, AND INFORMATION AVAILABLE ON THE SITE AND/OR ANY MOBILE APPLICATIONS WE MAY OFFER (TOGETHER
+                    WITH THE SITE, ALONG WITH ASSOCIATED AND SUCCESSOR WEBSITES, APPLICATIONS, FEATURES, INFORMATION, AND SERVICES, OR ANY PART THEREOF, THE <b>“SERVICE”</b>). BY USING OR ACCESSING THE SERVICE, YOU AGREE TO BE BOUND BY THIS AGREEMENT.
+                    IF YOU DO NOT AGREE TO BE BOUND BY THIS AGREEMENT, OR YOU ARE BELOW THE AGE OF 21, YOU ARE NOT PERMITTED TO USE THE SERVICE. THE SERVICE MAY BE ACCESSED DIRECTLY THROUGH THE SITE OR THROUGH SOCIAL MEDIA ACCOUNTS, AND OTHER ONLINE CHANNELS.
+                    ARTBIDER IS NOT LIABLE FOR THE USE OF THIS SERVICE BY, OR FOR ANY CONTENT OR ADVERTISEMENTS VIEWED BY MINORS IN VIOLATION OF THIS AGREEMENT
+                </p>
+                <h6>1. Changes to this Agreement.</h6>
+                <p> Except with respect to Section 15.4 (Mandatory Arbitration), ARTBIDER reserves the right, in its sole discretion, to change, modify, add to, supplement or delete any terms and conditions of this Agreement (including the Privacy Policy,
+                    which is incorporated into and governed by this Agreement) at any time; provided, however, that ARTBIDER will use reasonable efforts to provide you with notification of any material changes (as determined in ARTBIDER’s sole discretion)
+                    by email, postal mail, website posting, pop-up screen, or inservice notice. You should visit this page whenever you use the Service to review this Agreement and learn if any terms have changed. If any future changes to this Agreement
+                    are unacceptable to you or cause you to no longer be in compliance with this Agreement, you must immediately stop using the Service. Your continued use of the Service following any revision to this Agreement constitutes your acceptance
+                    of all such changes.</p>
+                <h6>2. Access to the Service.</h6>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">2.1</p>
+                    <p>
+                        Subject to your acceptance of and compliance with this Agreement, ARTBIDER grants to you a non-exclusive, non-transferable, revocable limited license to use the Service and any related Content for purposes of tracking, organizing, recording, offering,
+                        publicizing, acquiring, and valuing displayed artwork. You agree not to use the Service to download, save, copy, transmit, publish, license, create derivative works from, transfer, sell or distribute any Content that is not owned
+                        and contributed by you, except as specifically allowed in this Agreement. For these purposes the “Content” includes all text, images, articles, photographs, illustrations, audio, graphics, graphs, video clips, and other materials
+                        available through the Service, including without limitation material on the Service’s Public Areas (as defined below).
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">2.2</p>
+                    <p>
+                        ARTBIDER may change, modify, suspend, or discontinue all or any aspect of the Service at any time, and may also impose limits on certain features or restrict or prohibit your access to parts or all of the Service at any time, all without notice or liability,
+                        provided that (i) in most cases it would only do so for a good reason and with notice, and (ii) you will be entitled to a pro-rata refund of any amounts attributable to a period when the Service have been discontinued or substantially
+                        diminished or limited.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">2.3</p>
+                    <p>
+                        Your use of the Service is conditional upon your compliance with this Agreement, and any use of the Service in violation of this Agreement may constitute infringement of ARTBIDER’s copyrights in and to the Service and Content (as applicable). ARTBIDER
+                        reserves the right to terminate your access to the Service without notice if you violate this Agreement or for other good cause.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">2.4</p>
+                    <p>
+                        Unless you have subscribed to a multi-user account, your subscription -- and your password and account -- are personal to you and may not be shared with others.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">2.5</p>
+                    <p>
+                        Use of the Service by Minors. Individuals under the age of 21 may not use the Service. In the event you allow a minor to use the Service, you hereby accept this Agreement on the minor’s behalf and you agree that you will be responsible for all uses of
+                        the Service by the minor, whether or not these uses were authorized by you.
+                    </p>
+                </div>
+                <h6>3. Subscription and Payment. </h6>
+                <p>Access to the Service is only available to persons who create valid accounts and, where required by our subscription terms, pay the applicable fees.</p>
+                <p>Our pricing and payment terms can be found in your invoice (the <b>“Pricing Terms”</b>), which are hereby incorporated into this Agreement. If you subscribe to the Service the following applies:</p>
+
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">a)</p>
+                    <p>
+                        You will pay the full subscription price set out in the selected category for the Services used by you or by anyone using your account. The full subscription price for the plan period will be debited from your debit or credit card at the time of registration.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">a)</p>
+                    <p>
+                        You will pay the full subscription price set out in the selected category for the Services used by you or by anyone using your account. The full subscription price for the plan period will be debited from your debit or credit card at the time of registration.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">b)</p>
+                    <p>
+                        You will provide complete and accurate registration information and inform us of any changes to that information.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">c)</p>
+                    <p>
+                        You represent and warrant that you are over 21 years of age and able to enter into a valid and binding agreement with us.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">d)</p>
+                    <p>
+                        Your subscription will renew automatically, and the subscription price applicable at the time of renewal as set out in the Pricing Terms will be charged to your card, unless cancelled by you prior to the renewal date. If your card is declined, there is
+                        a grace period of 29 days before your subscription is canceled.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">e)</p>
+                    <p>
+                        All prices are exclusive of sales, use, transfer, value-added, or other taxes and duties as may be applicable in any relevant jurisdiction (international, national, state, or local) (<b>“Sales Tax”</b>) (if any). If we make an
+                        error in the amount of Sales Tax collected we reserve the right to process an additional charge in the amount of the properly chargeable Sales Tax.
+                    </p>
+                </div>
+                <h6>4. Ownership of Intellectual Property. </h6>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">4.1</p>
+                    <p>
+                        Unless otherwise specified in writing, all Content and other materials that are part of the Service are owned, controlled, or licensed by ARTBIDER and its licensors and are protected by law from unauthorized use. The entire contents of the Service are
+                        copyrighted under Indian Intellectual Property laws and/or similar laws of other jurisdictions. ARTBIDER, and the ARTBIDER logos, are trademarks of ARTBIDER and may not be used without the express written permission of ARTBIDER.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">4.2</p>
+                    <p>
+                        You do not acquire any ownership rights by using the Service, or by copying or downloading Content from the Service, though you retain ownership of any information or Content initially owned by you that you upload or incorporate into the Service. You
+                        agree that you may not and shall not use the Service or Content in any manner that competes with ARTBIDER. You represent and warrant that you have the right to upload or otherwise incorporate Content into the Service and that doing
+                        so will not violate any intellectual property or proprietary rights of any third person or entity.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">4.3</p>
+                    <p>
+                        You hereby grant to ARTBIDER an unlimited, non-exclusive, worldwide, perpetual, irrevocable, royal-free sublicensable (through multiple tiers), and transferable right and license to use all comments, feedback, blog or forum statements, suggestions, ideas,
+                        emails and other submissions disclosed or submitted to ARTBIDER in connection with your use of the Service (collectively, “Submissions”) in any manner ARTBIDER may desire, including, but not limited to, to make, have made, use,
+                        sell, offer to sell, import, reproduce, modify, create derivative versions of, distribute, publicly display and publicly perform such Submissions, in any and all forms and media now known or hereafter devised, without compensation
+                        to you and without identifying you as the creator. You agree that the provisions in this Section 4 will survive any termination of your account(s), the Service, or this Agreement.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">4.4</p>
+                    <p>
+                        You hereby grant to ARTBIDER a non-exclusive, worldwide, perpetual, irrevocable, royalty-free, sublicensable (through multiple tiers), and transferable right and license to exercise all rights you have in Your Information (including without limitation
+                        to use, adapt, and reproduce Your Information for purposes of developing and enhancing ARTBIDER’s valuation engine and service, but not to publicly display or perform Your Information except in anonymized form), in all forms and
+                        media, whether or not currently known, in connection with providing the Service. For these purposes, "Your Information" means any information or content you provide to ARTBIDER or other users, or to which you provide access to
+                        ARTBIDER or other users, in the registration or transaction process (including without limitation your name and photograph); in any Public Areas (as defined below), as well as your user profile and in-Service messages (including
+                        those between users); or through any email or other feature of the Service. To the extent that Your Information includes personal data, its use will be subject to the terms of the Privacy Policy.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">4.5</p>
+                    <p>
+                        You agree to include, and to not remove or alter, ARTBIDER’s trademark, copyright, or other proprietary rights notices, as provided by ARTBIDER on or in connection with the Service, when using or sharing content or otherwise using the Service, and you
+                        agree to comply with usage guidelines that may be provided by ARTBIDER from time to time. You agree that all goodwill that arises in connection with your use of ARTBIDER trademarks inures exclusively to ARTBIDER, and you agree
+                        not to challenge ARTBIDER’s ownership or control of any ARTBIDER trademarks, nor use or adopt any trademarks that might be confusingly similar to such ARTBIDER trademarks.
+                    </p>
+                </div>
+                <h6>5. Posting on Other Web Sites.</h6>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">5.1.</p>
+                    <p>
+                        Subject to your acceptance of and compliance with this Agreement, ARTBIDER grants to you a non-exclusive, non-transferable, revocable limited license to post a screen shot from your account, and any other Content that ARTBIDER specifically notifies you
+                        may be posted on other web sites, on your own personal web site or on a third party web site that permits posting of content at the direction of users provided that such third party web site (a) is not commercially competitive
+                        to ARTBIDER, (b) does not criticize or injure ARTBIDER, (c) does not obtain any rights to such Content other than a non-exclusive license to post it at your direction, (d) does not charge for access to such Content or associate
+                        products, services or advertising with such Content, (e) complies with all applicable laws, and (f) does not in any way abuse, defame, stalk, threaten or violate the legal rights of others or publish or distribute any inappropriate,
+                        infringing, defamatory, profane, indecent, obscene, unlawful or otherwise objectionable information or material. All of ARTBIDER’s rights and remedies are expressly reserved, and AARTBIDER may revoke this limited license, in whole
+                        or in part, upon notice.
+                    </p>
+                </div>
+                <h6>6. Public Areas.</h6>
+                <p>The Service may feature various community areas and other public forums, including but not limited to blogs or member communities, discussion boards, question and answer areas and comment areas (the <b>"Public Areas"</b>). If you use a
+                    Public Area you are solely responsible for your own Submissions, the consequences of posting your Submissions, and your reliance on any information in the Public Areas or other areas of the Service. Any information you share, including
+                    without limitation any discussions with others, in any online Public Area is by design open to the public and is not private. The ARTBIDER Parties (as defined herein) reserve the right to, but shall not be obligated to, record any
+                    dialogue or exchanges in the Public Areas of the Service. The ARTBIDER Parties shall have no responsibility for any actions taken, or failures to take action, with respect to the Public Areas of the Service or any submissions by you
+                    or other users. As with any public forum on any website, the information you post may show up in third-party search engine results.</p>
+                <h6>7. Passwords. </h6>
+                <p>
+                    ARTBIDER has several tools that allow you to record and store information in your account. You are responsible for all actions on the Service by you or under your password or account and for taking all reasonable steps to ensure that no unauthorized person
+                    shall have access to your password or account. Without limiting the foregoing, it is your sole responsibility to (1) control the dissemination and use of any login code and password; (2) authorize, monitor, and control access to and
+                    use of your Service account and password; (3) promptly inform ARTBIDER of any need to deactivate a password. You grant ARTBIDER and all other persons or entities involved in the operation of the Service the right to transmit, monitor,
+                    retrieve, store, and use any information recorded and/or stored in your account in connection with the operation of the Service.</p>
+                <h6>8. Usage Rules. </h6>
+                <p>
+                    As a condition of your use of and access to the Service, you agree to comply with any application-, tool-, or content-specific rules published within the Service as well as the following usage rules, which ARTBIDER may modify or supplement in its discretion
+                    from time to time (with notice to you of material changes, per Section 1). You agree that your activities on the Service will not (as determined by ARTBIDER in its discretion):
+                </p>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">a)</p>
+                    <p>
+                        copy, adapt, reverse engineer, decompile, reverse assemble, modify or attempt to discover any software (source code or object code) that the Service creates to generate web pages or any software or other products or processes accessible through the Service;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">b)</p>
+                    <p>
+                        use or launch, develop or distribute any automated system, including, without limitation, any spider, robot (or "bot"), cheat utility, scraper or offline reader that accesses the Service, or use or launch any unauthorized script or other software;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">c)</p>
+                    <p>
+                        distribute any virus, time bomb, trap door, or other harmful or disruptive computer code, mechanism or program;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">d)</p>
+                    <p>
+                        cover or obscure any notice, legend, warning, banner or advertisement contained on the Service;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">e)</p>
+                    <p>
+                        interfere with or circumvent any security feature of the Service or any feature that restricts or enforces limitations on use of or access to the Service;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">f)</p>
+                    <p>
+                        sell the Service or any part thereof including but not limited to user accounts and access to them in exchange for money or items of value;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">g)</p>
+                    <p>
+                        violate any applicable law, including without limitation any applicable export laws;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">h)</p>
+                    <p>
+                        harvest or otherwise collect information about others, including email addresses, without their permission, or infringe or violate the rights of any other party, including without limitation any intellectual property rights or rights of privacy or publicity;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">i)</p>
+                    <p>
+                        engage in conduct that is obscene, offensive, pornographic, fraudulent, deceptive, defamatory, threatening, harassing, abusive, slanderous, hateful, or causes embarrassment to any other person;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">j)</p>
+                    <p>
+                        further any chain letters or pyramid schemes, transmit unsolicited messages, or engage in “spam”;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">k)</p>
+                    <p>
+                        deliberately mislead anyone as to your identity, impersonate another, falsely identify the source of any Submissions, or allow another person or entity to use your identity in order to access the Service or post or view Submissions;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">l)</p>
+                    <p>
+                        engage in conduct that conflicts with the spirit or intent of the Service, including without limitation, by disrupting the flow of dialogue in a Public Area (as defined above), restricting any other user from using or enjoying the Service, or exposing
+                        ARTBIDER or another to any liability or detriment of any kind;
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">m)</p>
+                    <p>
+                        use automated queries, including screen and database scraping, spiders, robots, crawlers, information harvesting, and any other automated activity with the purpose of obtaining Content, information or data from the Service, unless you receive the express
+                        written permission of ARTBIDER; or
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">n)</p>
+                    <p>
+                        violate the terms of service of Facebook, Google, or other online channels by which you access the Service.
+                    </p>
+                </div>
+                <h6>9. Privacy and Protection of Personal Information.</h6>
+                <p>
+                    ARTBIDER respects the privacy of visitors to and users of the Service. Information collected from you by ARTBIDER is subject to the Privacy Policy at <a href="#">https://www.artbider.com/</a> privacy-policy. To the extent that the
+                    Service is available to individuals located in the European Economic Area and the United Kingdom, we are bound by and act in compliance with the General Data Protection Regulation 2016/679 (“the <b> GDPR</b>”). Further detail can be
+                    found in the Privacy Policy. If you access the Service through Facebook, Google, or other online channel, you may be allowing Facebook, Google, or such channel to share your email address and any other personally identifiable and non-personally
+                    identifiable information with ARTBIDER. You acknowledge and agree that the Privacy Policy, which describes the manner in which ARTBIDER collects, uses, and discloses your personally identifiable information and non-personally identifiable
+                    information, is incorporated into and governed by this Agreement. By accepting this Agreement, you agree to all of the terms of the Privacy Policy. You further agree to comply with all applicable laws with respect to all information
+                    you may receive from ARTBIDER.
+                </p>
+                <h6>10. Child Online Protection Act Notification. </h6>
+                <p>
+                    Pursuant to 47 U.S.C. § 230(d) as amended, ARTBIDER hereby notifies you that parental control protections (such as computer hardware, software, or filtering services) are commercially available that may assist you in limiting access to material that is
+                    harmful to minors. Information identifying providers of such protection is available on the websites StaySafeOnline (http://staysafeonline.org/stay-safe-online/), GetNetWise (http://kids.getnetwise.org/), and OnGuardOnline (http://www.onguardonline.com/).
+                    Please note that ARTBIDER is not affiliated with the above listed sites, nor is the above intended as an endorsement of any of the products or services listed on such sites.
+                </p>
+                <h6>11. Disclaimers; Limitations; Waivers of Liability. </h6>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">11.1</p>
+                    <p>
+                        YOU EXPRESSLY AGREE THAT USE OF THE SERVICE IS AT YOUR SOLE RISK AND IS PROVIDED ON AN "AS IS" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY
+                        OR FITNESS FOR A PARTICULAR PURPOSE (EXCEPT TO THE EXTENT THIS DISCLAIMER IS PROHIBITED UNDER APPLICABLE LAWS). WITHOUT LIMITING THE FOREGOING, NEITHER ARTBIDER NOR ITS AFFILIATES OR SUBSIDIARIES, OR ANY OF THEIR DIRECTORS, EMPLOYEES,
+                        AGENTS, ATTORNEYS, THIRD-PARTY CONTENT PROVIDERS, DISTRIBUTORS, LICENSEES OR LICENSORS (COLLECTIVELY, <b>"ARTBIDER PARTIES"</b>) WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, UNCORRUPTED, TIMELY, OR ERROR-FREE.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">11.2</p>
+                    <p>
+                        THE ARTBIDER PARTIES EXPRESSLY MAKE NO REPRESENTATION OR WARRANTY THAT THE SERVICE OR CONTENT (INCLUDING WITHOUT LIMITATION ANY APPRAISAL OF ANY ARTWORK) WILL BE ACCURATE, RELIABLE, COMPLETE, CURRENT, OR TIMELY. YOU ACKNOWLEDGE THAT WITH RESPECT TO ARTWORK
+                        RECORDED, DISPLAYED, APPRAISED OR OTHERWISE ASSOCIATED WITH THE SERVICE:
+                    </p>
+                </div>
+                <div class="d-flex ml-md-5">
+                    <p class="pl-md-4 pr-md-3">a)</p>
+                    <p>
+                        THE ARTBIDER PARTIES MAKE NO REPRESENTATIONS TO YOU OR TO ANY OTHER PERSONS REGARDING TITLE, PROVENANCE, AUTHENTICITY, CONDITION, OR ACCURACY OF INFORMATION WITH RESPECT TO ANY WORK. A VALUATION OR OTHER REPORT PRODUCED BY OUR SERVICES IS NOT A CERTIFICATE
+                        OF TITLE, WARRANTY OF OWNERSHIP, OR PROMISE OF ACCURACY.
+                    </p>
+                </div>
+                <div class="d-flex ml-md-5">
+                    <p class="pl-md-4 pr-md-3">b)</p>
+                    <p>
+                        OUR REAL-TIME APPRAISALS ARE BASED ON REPORTS FROM USERS, COLLECTORS, ART GALLERIES, AUCTION SITES, AND OTHER WEBSITES, WHICH WE DO NOT INDEPENDENTLY TEST OR VERIFY. WE HAVE NO WAY TO DETERMINE IF USERS OR OTHERS HAVE MISSTATED OR WITHHELD INFORMATION.
+                        THEREFORE, WE CANNOT GUARANTEE TITLE, PROVENANCE, AUTHENTICITY CONDITION, OR ACCURACY AND WE ARE NOT RESPONSIBLE FOR MISSTATED OR WITHHELD INFORMATION OR FOR POSSIBLE ERRORS OR OMISSIONS.
+                    </p>
+                </div>
+                <div class="d-flex ml-md-5">
+                    <p class="pl-md-4 pr-md-3">c)</p>
+                    <p>
+                        OUR REAL-TIME APPRAISALS ARE INTENDED TO REFLECT FAIR MARKET VALUE AT THE TIME OF THE APPRAISAL AND ARE NOT PREDICTIVE OF PAST OR FUTURE VALUES OR OF APPRAISALS THAT MIGHT BE RECEIVED BY OTHER MEANS OR FROM OTHER SOURCES. THESE APPRAISALS ARE ESTIMATES
+                        ONLY AND DO NOT NECESSARILY REFLECT THE ACTUAL VALUE THAT WOULD BE DETERMINED IN ANY SALES TRANSACTION, TAX APPRAISAL OR INSURANCE RECOVERY. ARTBIDER DOES NOT RECEIVE A COMMISSION AND IS NOT COMPENSATED BASED ON VALUES, SALES NUMBERS,
+                        SALES PRICES OR INSURANCE PAYMENTS.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">11.3</p>
+                    <p>
+                        THE ARTBIDER PARTIES WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY OR CONSEQUENTIAL DAMAGES, PERSONAL INJURY/WRONGFUL DEATH, LOST PROFITS, LOST DATA, OR BUSINESS INTERRUPTION, THE USE OR MISUSE OF SUBMISSIONS OR CONTENT IN
+                        ANY WAY WHATSOEVER ARISING OUT OF THE USE OF, OR INABILITY TO USE, THE SERVICE, WHETHER OR NOT THE ARTBIDER PARTIES ARE ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN THE EVENT THAT THE FOREGOING EXCLUSION OF LIABILITY IS FOUND
+                        BY A COURT OF COMPETENT JURISDICTION TO BE UNENFORCEABLE, AND A DETERMINATION IS MADE THAT ARTBIDER IS LIABLE, UNDER NO CIRCUMSTANCES WILL THE ARTBIDER PARTIES BE LIABLE TO YOU FOR MORE THAN THE AMOUNT YOU HAVE PAID ARTBIDER IN
+                        THE NINETY (90) DAYS IMMEDIATELY PRECEDING THE DATE ON WHICH YOU FIRST ASSERT THE CLAIM.
+                    </p>
+                </div>
+
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">11.4</p>
+                    <p>
+                        TO THE FULLEST EXTENT PERMITTED BY LAW, THESE DISCLAIMERS OF LIABILITY CONTAINED HEREIN APPLY TO ANY AND ALL DAMAGES OR INJURY WHATSOEVER CAUSED BY OR RELATED TO USE OF, OR INABILITY TO USE, THE SERVICE UNDER ANY CAUSE OR ACTION WHATSOEVER OF ANY JURISDICTION,
+                        INCLUDING, WITHOUT LIMITATION, ACTIONS FOR BREACH OF WARRANTY, BREACH OF CONTRACT OR TORT (INCLUDING NEGLIGENCE).
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">11.5</p>
+                    <p>
+                        <b>Release.</b> You forever release, discharge, and covenant not to sue the ARTBIDER Parties from any and all liability, claims, actions, and expenses that may arise, whether caused by the negligence of the ARTBIDER Parties or
+                        otherwise, in connection with your use of the Service or your interaction with any party through or as a result of the Service. In other words, you cannot sue the ARTBIDER Parties if anything happens to you or your property from
+                        using the Service or interacting with any party through the Service. You agree that the provisions in this Section 12.5 will survive any termination of your account(s), the Service, or this Agreement.
+                    </p>
+                </div>
+                <h6>12. Indemnification.</h6>
+                <p>
+                    You agree to defend, indemnify and hold harmless the ARTBIDER Parties from and against all liability, claims, actions and expenses, including attorneys' fees and costs, arising out of your use of the Service or your breach or alleged breach of any term,
+                    condition, obligation, representation or warranty in this Agreement, including without limitation your submitting or posting any information, content or images without the right to do so. You agree that the provisions in this paragraph
+                    will survive any termination of your account(s) the Service, or this Agreement.
+                </p>
+                <h6>13. Copyright Policy; Objectionable Content.</h6>
+                <p>If you believe your rights have been violated by, or you otherwise object to, any posting, content or information on the Service, please contact us promptly so we can evaluate the claim and take appropriate action. If your complaint includes
+                    a claim of copyright infringement, the following policy will apply: </p>
+                <p class="mb-5">
+                    It is ARTBIDERs policy to respond promptly to claims of copyright infringement, and to remove, or disable access to, infringing material. If you believe that any of the content or materials appearing on this Service contain infringements, please send
+                    a notice to our designated agent at the address stated below. Your notice should contain the following: a physical or electronic signature of a person (i.e., claimant) authorized to act on behalf of the copyright owner; identification
+                    of the copyrighted work claimed to be infringed; identification of the content or material claimed to be infringing; a reference or link to the infringing material or activity, or the subject of the infringing activity, including information
+                    to enable us to locate that material or reference; the address, telephone number or email address of the claimant; a statement that the claimant has a good faith belief that use of the material in the manner complained of is not authorized
+                    by the copyright owner, its agent, or the law; and a statement that the information in the notice is accurate and, under penalty of perjury, that the claimant is authorized to act on behalf of the owner of an exclusive right that is
+                    allegedly infringed. ARTBIDER will also terminate a user's account if a user is deemed to be a repeat infringer, namely, one who has been notified of bona fide infringing activity more than twice. Our designated agent, to whom you
+                    should direct your infringement claim (or other complaints), is:
+                </p>
+                <p>Vaibhav N. Belhekar, Director</p>
+                <p>Aaswari Art Industries Private Limited.</p>
+                <a href="#">info@asawari.in</a>
+                <h6>14. Third-Party Sites and Products. </h6>
+                <p>We may include links to third-party sites or services, or information about thirdparty products or services. You should review the terms of use and privacy policies of all sites and services that you link to from, or are referred to by,
+                    our Service. We do not endorse or take responsibility for these third-party offerings, whose service terms and policies may differ from ours. We do not vet or take responsibility for third-party sites, services, or products or the
+                    postings or communications of other users. Even if any of these third parties is introduced as, or refers to itself as, a partner or sponsored service, ARTBIDER has no responsibility or liability for their conduct, products, or services.</p>
+                <h6>15. Governing Law/Waiver of Injunctive Relief.</h6>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">15.1</p>
+                    <p>
+                        This Agreement and all aspects of the Service will be governed by and construed in accordance with the internal laws of the Republic of India and the State of Maharashtra governing contracts entered into and to be fully performed in Pune, Maharashtra
+                        (thus, without regard to conflict of laws provisions) regardless of your location. With respect to any disputes or claims not subject to informal dispute resolution or arbitration (as set forth below), you agree not to commence
+                        or prosecute any action in connection therewith other than in the district or city civil and commercial courts located in Pune, Maharashtra, and you hereby consent to and waive all defenses of lack of personal jurisdiction and
+                        forum non-conveniens with respect to, venue and jurisdiction in the district and city civil and commercial courts located in Pune, Maharashtra.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">15.2</p>
+                    <p>
+                        .You acknowledge that the rights granted and obligations made hereunder to ARTBIDER are of a unique and irreplaceable nature, the loss of which will irreparably harm ARTBIDER and which cannot be replaced by monetary damages alone so that ARTBIDER will
+                        be entitled to injunctive or other equitable relief (without the obligations of posting any bond or surety) in the event of any breach or anticipatory breach by you. You irrevocably waive all rights to seek injunctive or other
+                        equitable relief and agree to limit your claims to claims for monetary damages (if any).
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">15.3</p>
+                    <p>
+                        To expedite resolution and control the cost of any dispute, controversy or claim related to this Agreement (
+                        <b>"Dispute"</b>), you and ARTBIDER agree to first attempt to negotiate any Dispute (except those Disputes expressly provided below) informally for at least thirty (30) days before initiating any arbitration or court proceeding.
+                        Such informal negotiations commence upon written notice from one person to the other. You will send your notice to Asawari Art Industries Private Limited at the address listed in Section 13 above, attention: ___________, CEO.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">15.4</p>
+                    <p>
+                        <b>Mandatory Arbitration.</b> If you and ARTBIDER are unable to resolve a Dispute through informal negotiations within 30 days, either you or ARTBIDER may elect to have the Dispute (except those Disputes expressly excluded below)
+                        finally and exclusively resolved by binding arbitration. Any election to arbitrate by one party will be final and binding on the other. YOU UNDERSTAND THAT ABSENT THIS PROVISION, YOU WOULD HAVE THE RIGHT TO SUE IN COURT AND HAVE
+                        A JURY TRIAL. The arbitration will be commenced and conducted under the regulations of The Arbitration and Conciliation Act, 1996 (the <b>“Rules”</b>). Your arbitration fees and your share of arbitrator compensation will be governed
+                        by the Rules. The arbitration may be conducted in person, through the submission of documents, by phone or online. The arbitrator will make a decision in writing, but need not provide a statement of reasons unless requested by
+                        a party. The arbitrator must follow applicable law, and any award may be challenged if the arbitrator fails to do so.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">15.5</p>
+                    <p>
+                        Notwithstanding the above, you and ARTBIDER agree that arbitration will be limited to the Dispute between ARTBIDER and you individually. To the full extent permitted by law, (a) no arbitration will be joined with any other; (b) there is no right or authority
+                        for any Dispute to be arbitrated on a class-action basis or to utilize classaction procedures; and (c) there is no right or authority for any Dispute to be brought in a purported representative capacity on behalf of the general
+                        public or any other persons.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">15.6</p>
+                    <p>
+                        You and ARTBIDER agree that the following Disputes are not subject to the above provisions concerning informal negotiations and binding arbitration: (a) any Disputes seeking to enforce or protect, or concerning the validity of, any of your or ARTBIDER’s
+                        intellectual property rights; (b) any Dispute related to, or arising from, allegations of theft, piracy, invasion of privacy or unauthorized use; and (c) any claim for injunctive relief or to compel arbitration, stay proceedings
+                        pending arbitration, or to confirm, modify, vacate or enter judgment on the award entered by the arbitrator.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">15.7</p>
+                    <p>
+                        To the extent that the Service is available to individuals located in the European Economic Area and the United Kingdom, we are bound by and act in compliance with the GDPR and may be subject to investigative and corrective powers of the relevant supervisory
+                        authority. The relevant supervisory authority is the public authority established in the relevant territory within the European Economic Area and/or the United Kingdom and which is responsible for monitoring the application of
+                        the GDPR within that territory.
+                    </p>
+                </div>
+                <h6>16. Waiver/Severability. </h6>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">16.1</p>
+                    <p>
+                        The failure of ARTBIDER to require or enforce strict performance by you of any provision of this Agreement or to exercise any right under any provision of this Agreement will not be construed as a waiver or relinquishment of ARTBIDER’s right to assert
+                        or rely upon any such provision or right in that or any other instance.
+                    </p>
+                </div>
+                <div class="d-flex">
+                    <p class="pl-md-4 pr-md-3">16.2</p>
+                    <p>
+                        You and ARTBIDER agree that if any portion of this Agreement, except any portion of Section 15.6, is found illegal or unenforceable, in whole or in part by any court of competent jurisdiction, such provision will, as to such jurisdiction, be ineffective
+                        to the extent of such determination of invalidity or unenforceability without affecting the validity or enforceability thereof in any other manner or jurisdiction and without affecting the remaining provisions of this Agreement,
+                        which will continue to be in full force and effect. If Section 15.6 is found to be illegal or unenforceable, then neither you nor ARTBIDER will elect to arbitrate any Dispute falling within that portion of Section 15.6 found to
+                        be illegal or unenforceable, and such Dispute will be decided by a court of competent jurisdiction within Pune, Maharashtra and you and ARTBIDER agree to submit to the personal jurisdiction of that court.
+                    </p>
+                </div>
+                <h6>17. Term and Termination.</h6>
+                <p>This Agreement is effective until terminated by either party. You may terminate this Agreement by destroying all Service-related materials obtained from the Service, ARTBIDER or other source. We reserve the right to limit, terminate or
+                    suspend your account and/or your access to or use of any or all of our Services, at any time at our sole discretion, if we believe you are violating the rights of any third party, or you have failed to comply with any term or provision
+                    of this Agreement, or for any reason in ARTBIDER’s sole discretion. Following the termination of this Agreement, your account(s), or the Service, you will lose all access to your account information, unless you have migrated and saved
+                    it to another system prior to termination. ARTBIDER normally retains user account information for 12 months after termination, during which time the user may renew his/her account and resume access; but we reserve the right to delete
+                    all of your account information immediately following termination and make no guaranty that the account information will be retained for any period after termination. ARTBIDER shall retain all rights to the Submissions pursuant to
+                    this Agreement.</p>
+
+                <h6>18. Miscellaneous.</h6>
+                <p>
+                    ARTBIDER operates and controls the Service from its offices in the Pune, India. ARTBIDER makes no representation that the Service is appropriate or available in other locations. The information provided on the Service is not intended for distribution
+                    to or use by any person or entity in any jurisdiction or country where such distribution or use would be contrary to law or regulation or which would subject ARTBIDER to any registration requirement within such jurisdiction or country.
+                    Accordingly, those persons who choose to access the Service from other locations do so on their own initiative and are solely responsible for compliance with local laws, if and to the extent local laws are applicable. The privileges
+                    granted to you under this Agreement, including without limitation access to the Service directly or through Facebook, Google, or other online channel, will terminate immediately and automatically without notice from ARTBIDER if, in
+                    our sole discretion, you fail to comply with any term or provision of this Agreement or for any reason in ARTBIDER’s sole discretion. Neither the course of conduct between the parties nor trade practice will act to modify this Agreement.
+                    ARTBIDER may assign this Agreement to any party at any time without any notice to you. You may not assign this Agreement without ARTBIDER’s prior written consent. This Agreement (including the Privacy Policy) contains the entire understanding
+                    of you and ARTBIDER’s, and supersedes all prior understandings between the parties concerning its subject matter, and cannot be changed or modified by you. The section headings used in this Agreement are for convenience only and will
+                    not be given any legal import. Upon ARTBIDER’s request, you will furnish ARTBIDER with any documentation, substantiation or releases necessary to verify your compliance with this Agreement. You agree that this Agreement will not be
+                    construed against ARTBIDER by virtue of having drafted it. You hereby waive any and all defenses you may have based on the electronic form of this Agreement and the lack of signing by the parties hereto to execute this Agreement.
+                </p>
+                <h6>19. Statute of Limitations.</h6>
+                <p>
+                    You and ARTBIDER both agree that regardless of any statute or law to the contrary, any claim or cause of action arising out of or related to use of the Service or this Agreement (including the Privacy Policy) must be filed within THREE (3) YEARS after
+                    such claim or cause of action arose or will be forever barred.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="first-item">
+                        <div class="logo">
+                            <img src="/static/images/logo-white.png" alt="">
+                        </div>
+                        <ul>
+                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
+                            <li><a href="#"><span class="__cf_email__" data-cfemail="c9adaca4a689aaa6a4b9a8a7b0e7aaa6a4">[email&#160;protected]</span></a></li>
+                            <li><a href="#">010-020-0340</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
+                        <li><a href="/login/index/">Home</a></li>
+                        <li><a href="/auction/index/">Current Auctions</a></li>
+                        <li><a href="/artist/index/">Trending Artists</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li><a href="/about/">About Us</a></li>
+                        <li><a href="/gallery/index/">Galleries</a></li>
+                        <li><a href="/museum/index/">Museums</a></li>
+                        <li><a href="/contactus/">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="/faq/">FAQ's</a></li>
+                        <li><a href="/termsofuse/">Terms of Use</a></li>
+                        <li><a href="/privacy/">Privacy Policy</a></li>
+                        <li><a href="/security/">Security</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
+
+                        <ul>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- jQuery -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!-- Plugins -->
+    <script src="/static/js/owl-carousel.js"></script>
+    <script src="/static/js/accordions.js"></script>
+    <script src="/static/js/scrollreveal.min.js"></script>
+    <script src="/static/js/waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
+    <script src="/static/js/viewer.js" type="text/javascript"></script>
+    <script src="/static/js/viewer-init.js" type="text/javascript"></script>
+    <!-- Global Init -->
+    <script src="/static/js/custom.js"></script>
+
+
+
+
+</body>
+
+</html>

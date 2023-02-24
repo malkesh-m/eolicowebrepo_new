@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,152 +23,150 @@
 
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
-	
+    <link rel="stylesheet" href="/static/css/new-style.css">
+
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
 
     <script>
-    function filterresults(formelem){
-	allformelements = document.frmotherfilter.elements;
-	mediumpattern = /medium/i;
-	sizepattern = /size/i;
-	sizeunitpattern = /sizeunit/i;
-	artistpattern = /artist/i;
-        nationalitypattern = /nationality/i;
-	mediumparam = "&medium=";
-	nationalityparam = "&nationality=";
-	sizeparam = "&size=";
-	sizeunitparam = "&sizeunit=";
-	artistparam = "&artist=";
-	for(var i=0; i < allformelements.length; i++){
-	    elemname = allformelements[i].name;
-	    elemid = allformelements[i].id;
-	    elemvalue = allformelements[i].value;
-	    if(mediumpattern.test(elemid)){
-		mediumelement = document.getElementById(elemid);
-		if(mediumelement.checked == true){
-		    mediumparam += elemvalue + "|";
-		}
-	    }
-	    else if(nationalitypattern.test(elemid)){
-		nationalityelement = document.getElementById(elemid);
-		if(nationalityelement.checked == true){
-		    nationalityparam += elemvalue + "|";
-		}
-	    }
-	    else if(sizepattern.test(elemid)){
-		sizeelement = document.getElementById(elemid);
-		if(sizeelement.checked == true){
-		    sizeparam += elemvalue + "|";
-		}
-	    }
-	    else if(sizeunitpattern.test(elemid)){
-		sizeunitelement = document.getElementById(elemid);
-		if(sizeunitelement.checked == true){
-		    sizeunitparam += elemvalue; // This can have only a single possible value.
-		}
-	    }
-	    else if(artistpattern.test(elemid)){
-		artistelement = document.getElementById(elemid);
-		if(artistelement.checked == true){
-		    artistparam += elemvalue + "|"; // This can have only a single possible value.
-		}
-	    }
-	}
-	// Create an xmlhttp request and send it to the endpoint on server.
-	var xmlhttp;
-	  if (window.XMLHttpRequest){
-	    xmlhttp=new XMLHttpRequest();
-	  }
-	  else{
-	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  // Register the handler
-	  xmlhttp.onreadystatechange = function(){
-	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    context = JSON.parse(xmlhttp.responseText);
-	    lotsdiv = document.getElementById('alllotsdiv');
-	    lotsdiv.innerHTML = "";
-	    auctext = "";
-            searchlots = context['filteredlots'];
-    	    adminuser = context['adminuser'];
-	    for(var i=0; i < searchlots.length; i++){
-		auctext += "<div class='column'><div class='img-box'><a href='/auction/details/?lid=" + searchlots[i].lid + "' style='color:#000000;'><img src='" + searchlots[i].image + "' style='width:100%'><h4>" + searchlots[i].artworkname + "</h4><h6>Lot#: " + searchlots[i].lotno + "</h6><h6>Medium: " + searchlots[i].medium + "</h6><h6>Category: " + searchlots[i].category + "</h6><h6>Sale Details: " + searchlots[i].auctionname + ", " + searchlots[i].aucperiod + " - " + searchlots[i].auctionhouse + "</h6><h6>Estimate: US$&nbsp;" + searchlots[i].estimate + "</h6><h6>Price Sold: US$&nbsp;" + searchlots[i].soldprice + "</h6></a>";
-                if(adminuser == "1"){
-		    auctext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick=\"javascript:t_editlot('" + searchlots[i].lid + "');\">Edit</a></div>";
-		}
-		auctext += "</div></div>";
-	    }
-	    lotsdiv.innerHTML = auctext;
-	  }
-	  };
-	  csrf = document.frmotherfilter.csrfmiddlewaretoken.value;
-          aucid = document.frmotherfilter.aucid.value;
-	  postdata = "csrfmiddlewaretoken=" + csrf + "&aucid=" + aucid + mediumparam + artistparam + sizeparam + sizeunitparam + nationalityparam;
-	  postdata = encodeURI(postdata);
-	  //alert(postdata);
-	  xmlhttp.open("POST", "/auction/morefilter/");
-	  xmlhttp.setRequestHeader("X-CSRFToken", csrf);
-	  xmlhttp.send(postdata);
-    }
+        function filterresults(formelem) {
+            allformelements = document.frmotherfilter.elements;
+            mediumpattern = /medium/i;
+            sizepattern = /size/i;
+            sizeunitpattern = /sizeunit/i;
+            artistpattern = /artist/i;
+            nationalitypattern = /nationality/i;
+            mediumparam = "&medium=";
+            nationalityparam = "&nationality=";
+            sizeparam = "&size=";
+            sizeunitparam = "&sizeunit=";
+            artistparam = "&artist=";
+            for (var i = 0; i < allformelements.length; i++) {
+                elemname = allformelements[i].name;
+                elemid = allformelements[i].id;
+                elemvalue = allformelements[i].value;
+                if (mediumpattern.test(elemid)) {
+                    mediumelement = document.getElementById(elemid);
+                    if (mediumelement.checked == true) {
+                        mediumparam += elemvalue + "|";
+                    }
+                } else if (nationalitypattern.test(elemid)) {
+                    nationalityelement = document.getElementById(elemid);
+                    if (nationalityelement.checked == true) {
+                        nationalityparam += elemvalue + "|";
+                    }
+                } else if (sizepattern.test(elemid)) {
+                    sizeelement = document.getElementById(elemid);
+                    if (sizeelement.checked == true) {
+                        sizeparam += elemvalue + "|";
+                    }
+                } else if (sizeunitpattern.test(elemid)) {
+                    sizeunitelement = document.getElementById(elemid);
+                    if (sizeunitelement.checked == true) {
+                        sizeunitparam += elemvalue; // This can have only a single possible value.
+                    }
+                } else if (artistpattern.test(elemid)) {
+                    artistelement = document.getElementById(elemid);
+                    if (artistelement.checked == true) {
+                        artistparam += elemvalue + "|"; // This can have only a single possible value.
+                    }
+                }
+            }
+            // Create an xmlhttp request and send it to the endpoint on server.
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // Register the handler
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    context = JSON.parse(xmlhttp.responseText);
+                    lotsdiv = document.getElementById('alllotsdiv');
+                    lotsdiv.innerHTML = "";
+                    auctext = "";
+                    searchlots = context['filteredlots'];
+                    adminuser = context['adminuser'];
+                    for (var i = 0; i < searchlots.length; i++) {
+                        auctext += "<div class='column'><div class='img-box'><a href='/auction/details/?lid=" + searchlots[i].lid + "' style='color:#000000;'><img src='" + searchlots[i].image + "' style='width:100%'><h4>" + searchlots[i].artworkname + "</h4><h6>Lot#: " + searchlots[i].lotno + "</h6><h6>Medium: " + searchlots[i].medium + "</h6><h6>Category: " + searchlots[i].category + "</h6><h6>Sale Details: " + searchlots[i].auctionname + ", " + searchlots[i].aucperiod + " - " + searchlots[i].auctionhouse + "</h6><h6>Estimate: US$&nbsp;" + searchlots[i].estimate + "</h6><h6>Price Sold: US$&nbsp;" + searchlots[i].soldprice + "</h6></a>";
+                        if (adminuser == "1") {
+                            auctext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick=\"javascript:t_editlot('" + searchlots[i].lid + "');\">Edit</a></div>";
+                        }
+                        auctext += "</div></div>";
+                    }
+                    lotsdiv.innerHTML = auctext;
+                }
+            };
+            csrf = document.frmotherfilter.csrfmiddlewaretoken.value;
+            aucid = document.frmotherfilter.aucid.value;
+            postdata = "csrfmiddlewaretoken=" + csrf + "&aucid=" + aucid + mediumparam + artistparam + sizeparam + sizeunitparam + nationalityparam;
+            postdata = encodeURI(postdata);
+            //alert(postdata);
+            xmlhttp.open("POST", "/auction/morefilter/");
+            xmlhttp.setRequestHeader("X-CSRFToken", csrf);
+            xmlhttp.send(postdata);
+        }
     </script>
 
-    </head>
-    
-    <body>
+</head>
+
+<body>
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -181,8 +179,8 @@
                         </a>
                     </div>
                     <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+						<span aria-hidden="true">&times;</span>
+					</button>
                 </div>
                 <div class="modal-body">
                     <div class="modal-head">
@@ -190,8 +188,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
@@ -206,7 +203,7 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
-			    <div class="form-group">
+                            <div class="form-group">
                                 <label for="password2">Confirm Password</label>
                                 <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -214,15 +211,16 @@
                             <div class="form-group">
                                 <div class="check-input">
                                     <span>
-                                        <input type="checkbox" name="agree" id="agree" value="" />
-                                    </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from ArtBidder.</p>
+										<input type="checkbox" name="agree" id="agree" value="" />
+									</span>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -240,7 +238,8 @@
                                 <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
+										Service</a> apply.</p>
                             </div>
                         </form>
                     </div>
@@ -260,8 +259,8 @@
                         </a>
                     </div>
                     <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+						<span aria-hidden="true">&times;</span>
+					</button>
                 </div>
                 <div class="modal-body">
                     <div class="modal-head">
@@ -269,8 +268,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
@@ -288,7 +286,7 @@
                             <div class="form-group">
                                 <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -323,8 +321,8 @@
                         </a>
                     </div>
                     <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+						<span aria-hidden="true">&times;</span>
+					</button>
                 </div>
                 <div class="modal-body">
                     <div class="modal-head">
@@ -338,10 +336,11 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset
+									instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -358,10 +357,10 @@
             <div></div>
             <div></div>
         </div>
-    </div>  
+    </div>
     <!-- ***** Preloader End ***** -->
-    
-    
+
+
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
@@ -396,124 +395,680 @@
                         </a>
 
                     </nav> -->
-		    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav" >
-                      <a class="navbar-brand" href="/login/dashboard/">
-                        <!-- <img src="static/images/logo1.png"> -->
-                        ARTBIDER
-                     </a>
-                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                          aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                      </button>
-                      <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                          <ul class="navbar-nav mx-auto">
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
-                              </li>
-                              
-                          </ul>
-                          <ul class="navbar-nav sm-icons mr-0">
-                              {% if not user.is_authenticated %}
-                              <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-                              {% else %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-			      <li class="nav-item">
-                          	<button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
-                              </li>
-                              {% endif %}
-                          </ul>
-                      </div>
-                  </nav>
+                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
+                        <a class="navbar-brand" href="/login/dashboard/">
+                            <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
+                            <!-- <img src="static/images/logo1.png"> -->
+                            <!-- ARTBIDER -->
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+                        <div class="collapse navbar-collapse" id="myNavbarToggler10">
+                            <ul class="navbar-nav mr-0">
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="#">Home</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link active" href="/artist/index/">Artists</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="/auctionhouse/index/">Auction Houses</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/auction/index/">Auctions</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/database/">Price Database</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/plans/">Price Plans</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Galleries</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Shows</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#"> News</a>
+                                </li>
+
+                            </ul>
+                            <ul class="navbar-nav sm-icons mr-0">
+                                {% if not user.is_authenticated %}
+                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                                {% else %}
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                                <li class="nav-item">
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
                 </div>
             </div>
         </div>
     </header>
-    <!-- ***** Header Area End ***** -->
 
-    <!-- ***** Main Banner Area Start ***** -->
-    <section class="inner-top-banner"></section>
-	
-    <!-- ***** Main Banner Area End ***** -->
-	<section class="section gal-section gal-dtl-sec" id="">
+
+    <section>
+        <section class="artists-details" style="padding-top: 140px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="thumb-img">
+                            <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="artist-img" alt="img">
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="artists-details-content">
+                            <h4 class="mb-3">Contemporary Curated</h4>
+                            <h6 class="mb-3">Action Details</h6>
+                            <h5>Sotheby's</h5>
+                            <h5><span>New York, USA</span></h5>
+                            <h5><span>30 Sep, 2021</span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+    <section class="category-tabs mt-5">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading text-center">
-						<div class="gal-logo-box">
-								<img src="{{auctioninfo.coverimage}}">
-								<h2>{{auctioninfo.auctionhouse}} - {{auctioninfo.auctionname}}</h2>
-							<p>{{auctioninfo.auctionperiod}}</p>
-							<p>{{auctioninfo.lotcount}} lots</p>
-							<!-- <a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider">View</a> -->
-						</div>
-						{% if adminuser == 1 %}
-						    <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
-						{% endif %}
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="tabbable d-flex align-items-center border-bottom justify-content-end">
+                        <div class="page-show p-0">
+                            <select class="custom-select" id="inputGroupSelect01" style="border: 0; background-color: transparent;">
+								<option selected>Par Page 50</option>
+								<option value="1">Par Page 100</option>
+								<option value="2">Par Page 150</option>
+								<option value="3">Par Page 200</option>
+							</select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="cate-tabs-content">
+                        <div class="card-body">
+                            <div class="tab-content" id="upcomingauctions">
+                                <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                            <div class="sidebar-left">
+                                                <form method="POST" name="frmotherfilter" id="frmotherfilter" action="">
+                                                    <input type="hidden" name="csrfmiddlewaretoken" value="0tW5rfvBq4ZATXSUg0qnLlTgRuCF4xES6KOGQd8ARGv748a5CVBNuD6dogcl8lwx">
+                                                    <div id="accordion" class="accordion">
+                                                        <div class="card mb-0">
+                                                            <div class="">
+                                                                <h2 class="heading-style">Filtter</h2>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                                    <a class="card-title">
+																		Artwork Title
+																	</a>
+                                                                </div>
+                                                                <div id="collapseOne" class="collapse show " data-parent="#accordion">
+                                                                    <input class="form-control" type="text" value="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                                    <a class="card-title">
+																		Sort By
+																	</a>
+                                                                </div>
+                                                                <div id="collapseTwo" class="collapse show " data-parent="#accordion">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                                                        <label class="form-check-label" for="defaultCheck1">
+																			Lot Number Low to High
+																		</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div id="collapseTwo" class="collapse show " data-parent="#accordion">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Lot">
+                                                                        <label class="form-check-label" for="Lot">
+																			Lot Number High to Low
+																		</label>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="collapseTwo" class="collapse show " data-parent="#accordion">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="High">
+                                                                        <label class="form-check-label" for="High">
+																			Price Low to High
+																		</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div id="collapseTwo" class="collapse show mb-4" data-parent="#accordion">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Low">
+                                                                        <label class="form-check-label" for="Low">
+																			Price High to Low
+																		</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                                    <a class="card-title">
+																		Categories
+																	</a>
+                                                                </div>
+                                                                <div id="collapseThree" class="collapse show " data-parent="#accordion">
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Sotheby">
+                                                                        <label class="form-check-label" for="Sotheby">
+																			Paintings &nbsp;
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Christie">
+                                                                        <label class="form-check-label" for="Christie">
+																			Paintings &nbsp;
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Bonhams">
+                                                                        <label class="form-check-label" for="Bonhams">
+																			Prints
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Sotheby">
+                                                                        <label class="form-check-label" for="Sotheby">
+																			Photographs
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Phillips">
+                                                                        <label class="form-check-label" for="Phillips">
+																			Photographs
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Dorotheum">
+                                                                        <label class="form-check-label" for="Dorotheum">
+																			Miniatures &nbsp;
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check mb-4">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Dorotheum">
+                                                                        <label class="form-check-label" for="Dorotheum">
+																			Others
+																		</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                                                                    <a class="card-title">
+																		Lot Status
+																	</a>
+                                                                </div>
+                                                                <div id="collapseFour" class="collapse show mb-4" data-parent="#accordion">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="London">
+                                                                        <label class="form-check-label" for="London">
+																			Sold
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="NewYork">
+                                                                        <label class="form-check-label" for="NewYork">
+																			Yet to be Sold
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Paris">
+                                                                        <label class="form-check-label" for="Paris">
+																			Bought-in
+																		</label>
+                                                                    </div>
+                                                                    <div class="form-check mb-4">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Milan">
+                                                                        <label class="form-check-label" for="Milan">
+																			Withdrawn
+																		</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+                                                                <a class="card-title">
+																	Artwork Creation Year
+																</a>
+                                                            </div>
+                                                            <div id="collapseFive" class="collapse show" data-parent="#accordion">
+                                                                <div>
+                                                                    <label class="form-check-label">
+																		From
+																	</label>
+                                                                    <input class="form-control" type="date" value="">
+                                                                </div>
+                                                                <div>
+                                                                    <label class="form-check-label">
+																		To
+																	</label>
+                                                                    <input class="form-control" type="date" value="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div id="Overview" class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
+                                            <div class="row" id="pastauctions">
+
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                <h3 class="mb-3">Lot#309</h3>
+
+                                                                <h3>Medium : <span>oil on panel</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>Contemporary Curated</h3>
+                                                                <h3><span>Sotheby’s</span></h3>
+                                                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-		<div class="container">
-            <!-- START TABS DIV -->
-      <div class="tabbable-responsive">
-        <div class="tabbable">
-          <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
-            <!-- <li class="nav-item">
+    </section>
+
+    <!-- ***** Header Area End ***** -->
+
+    <!-- ***** Main Banner Area Start ***** -->
+    <!-- <section class="inner-top-banner"></section> -->
+
+    <!-- ***** Main Banner Area End ***** -->
+    <!-- <section class="section gal-section gal-dtl-sec" id=""> -->
+    <!-- <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <div class="gal-logo-box">
+                            <img src="{{auctioninfo.coverimage}}">
+                            <h2>{{auctioninfo.auctionhouse}} - {{auctioninfo.auctionname}}</h2>
+                            <p>{{auctioninfo.auctionperiod}}</p>
+                            <p>{{auctioninfo.lotcount}} lots</p>
+                            <a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider">View</a>
+                        </div>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    <!-- <div class="container">
+            START TABS DIV
+            <div class="tabbable-responsive">
+                <div class="tabbable">
+                    <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
+                        <li class="nav-item">
               <a class="nav-link active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="true">Overview</a>
             </li> -->
-            <!-- <li class="nav-item">
+    <!-- <li class="nav-item">
               <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="false">Auctions</a>
-            </li> -->
-            
-            <li class="nav-item">
-              <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="true" >Lots</a>
             </li>
-            <!-- <li class="nav-item">
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="true">Lots</a>
+                        </li>
+                        <li class="nav-item">
               <a class="nav-link" id="Articles-tab" data-toggle="tab" href="#Articles" role="tab" aria-controls="Articles" aria-selected="false">Articles</a>
             </li> -->
-            <!-- <li class="nav-item">
+    <!-- <li class="nav-item">
               <a class="nav-link" id="Contact-tab" data-toggle="tab" href="#Contact" role="tab" aria-controls="Contact" aria-selected="false">Contact</a>
-            </li> -->
-          </ul>
-        </div>
-      </div>
-    </div>
-	<div class="container">
-    <div class="card-body">
-      
-      <div class="tab-content">
-        <div class="tab-pane fade" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
-			<div class="container">
-				<div class="row gl-ov-row">
-					<div class="col-md-7">
-						<!-- <h6>Past Show</h6> -->
-						<h2>{{auctioninfo.auctionhouse}}: {{auctioninfo.auctionname}}</h2>
-						<h4>{{auctioninfo.auctionperiod}}</h4>
-						<h6>Hosted by {{auctioninfo.auctionhouse}}</h6>
-						<!-- <p></p> -->
-						<!-- <a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider" >Read More</a> -->
-						{% if adminuser == 1 %}
-						    <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
-						{% endif %}
-					</div>
-					<div class="col-md-5">
-						<img src="{{auctioninfo.coverimage}}" class="img-fluid"/>
-					</div>
-				</div>
-				<!-- <div class="row gal-tab-row">
+            </li>
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+    <!-- <div class="container"> -->
+    <!-- <div class="card-body"> -->
+
+    <!-- <div class="tab-content"> -->
+    <!-- <div class="tab-pane fade" id="Overview" role="tabpanel" aria-labelledby="Overview-tab"> -->
+    <!-- <div class="container"> -->
+    <!-- <div class="row gl-ov-row">
+                                <div class="col-md-7">
+                                    <h6>Past Show</h6>
+                                    <h2>{{auctioninfo.auctionhouse}}: {{auctioninfo.auctionname}}</h2>
+                                    <h4>{{auctioninfo.auctionperiod}}</h4>
+                                    <h6>Hosted by {{auctioninfo.auctionhouse}}</h6>
+                                    <p></p>
+                                    <a href="/auctionhouse/details/?aucid={{auctioninfo.aucid}}" class="btn btn-slider" >Read More</a>
+                                    {% if adminuser == 1 %}
+                                    <div><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editauction('{{auctioninfo.aucid}}');">Edit</a></div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-5">
+                                    <img src="{{auctioninfo.coverimage}}" class="img-fluid" />
+                                </div>
+                            </div> -->
+    <!-- <div class="row gal-tab-row">
 					<div class="col-lg-12 gl-abt">
 						<div class="section-heading text-center">
 							<h3>About</h3>
@@ -525,63 +1080,68 @@
 				</div> -->
 
 
-				<div class="row gal-tab-row pst-ev">
-				<div class="col-lg-12">
-					   <div class="section-heading text-center">
-							<h3>Select Lots</h3>
-							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-					   </div>
-				</div>
-				</div>
-				
-				<div class="row align-items-end">
-				{% for lot in selectlots %}
-				  <!-- <div class="column"> -->
-				  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                           	    <div class="artist-category ">
-					<div class="img-box">
-					<div class="thumb text-center">
-					<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
- 					</div>
-					<a href="/auction/details/?lid={{lot.lid}}" style="color:#000000;">
-					<h4 class="auction_title">{{lot.lottitle}}</h4>
-					<h6>{{lot.artist}}</h6>
-					<h6 class="auction_desc">{{lot.medium}}</h6>
-					</a>
-					{% if not user.is_authenticated %}
-					<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-					{% else %}
-					{% if lot.favourite == 0 %}
-					<div id='favourite_awsel_{{forloop.counter}}'>
-					<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artwork', {{lot.awid}}, 'favourite_awsel_{{forloop.counter}}');">Add to Favourites</a></h6>
-					</div>
-					{% else %}
-					<div id='favourite_awsel_{{forloop.counter}}'>
-					<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-					</div>
-					{% endif %}
-					{% endif %}
-					{% if adminuser == 1 %}
-					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
-					{% endif %}
-					</div>
-				  </div>
-				  </div>
-				{% endfor %}  
-				</div>
-				<br>
-				<div class="row articl-row">
-					<div class="col-md-12">
-						<div class="section-heading text-center">
-							<!-- <h3>Articles</h3>
-							<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-							<hr> -->
-					   	</div>
-					</div>
-					<div class="col-lg-12">
-					 <div class="men-item-carousel">
-                        <!-- <div class="owl-men-item owl-carousel">
+    <!-- <div class="row gal-tab-row pst-ev">
+								<div class="col-lg-12">
+									<div class="section-heading text-center">
+										<h3>Select Lots</h3>
+										<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+										<hr>
+									</div>
+								</div>
+							</div> -->
+
+    <!-- <div class="row align-items-end">
+								{% for lot in selectlots %}
+								<div class="column">
+								<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+									<div class="artist-category ">
+										<div class="img-box">
+											<div class="thumb text-center">
+												<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}"
+														alt=""></a>
+											</div>
+											<a href="/auction/details/?lid={{lot.lid}}" style="color:#000000;">
+												<h4 class="auction_title">{{lot.lottitle}}</h4>
+												<h6>{{lot.artist}}</h6>
+												<h6 class="auction_desc">{{lot.medium}}</h6>
+											</a>
+											{% if not user.is_authenticated %}
+											<h6><a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal"
+													href="#exampleModal-login" aria-controls="exampleModal-login">Login
+													to view</a></h6>
+											{% else %} {% if lot.favourite == 0 %}
+											<div id='favourite_awsel_{{forloop.counter}}'>
+												<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;"
+														onclick="javascript:addtofavourites('artwork', {{lot.awid}}, 'favourite_awsel_{{forloop.counter}}');">Add
+														to Favourites</a></h6>
+											</div>
+											{% else %}
+											<div id='favourite_awsel_{{forloop.counter}}'>
+												<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a>
+												</h6>
+											</div>
+											{% endif %} {% endif %} {% if adminuser == 1 %}
+											<div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;"
+													href='#adminScreen'
+													onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+											{% endif %}
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+							</div> -->
+    <!-- <br> -->
+    <!-- <div class="row articl-row"> -->
+    <!-- <div class="col-md-12"> -->
+    <!-- <div class="section-heading text-center">
+										<h3>Articles</h3>
+									<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+									<hr>
+									</div> -->
+    <!-- </div> -->
+    <!-- <div class="col-lg-12">
+									<div class="men-item-carousel"> -->
+    <!-- <div class="owl-men-item owl-carousel">
                             <div class="item">
                                 <div class="thumb">
                                     <a href="#"><img src="/static/images/men-01.jpg" alt=""></a>
@@ -625,12 +1185,12 @@
                                 </div>
                             </div>
                         </div> -->
-                    </div>
-				   </div>
-				</div>
-			</div>
-        </div>
-        <!-- <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
+    <!-- </div>
+								</div> -->
+    <!-- </div> -->
+    <!-- </div> -->
+    <!-- </div> -->
+    <!-- <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
           <div class="container">
 			<div class="row gl-ov-row">
 				<div class="col-md-7">
@@ -675,129 +1235,157 @@
 			</div>
 		  </div>
         </div> -->
-        
-        <div class="tab-pane fade show active" id="Works" role="tabpanel" aria-labelledby="Works-tab">
-          <div id="mySidebar" class="sidebar">
-			<div class="fixed-sidbr-header">
-				<h5>Filter</h5>
-				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-			</div>
-			<div id="accordion" class="accordion">
-				<form method="POST" name='frmotherfilter' id='frmotherfilter' action=''>
-				{% csrf_token %}
-				<div class="card mb-0">
-					<div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
-						<a class="card-title">
-							Artists
-						</a>
-					</div>
-					<div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
-						{% for artistname, artistid in allartists.items %}
-						 <div class="form-check">
-						  <label class="form-check-label" for="artist{{forloop.counter}}">
-							<input type="checkbox" class="form-check-input" id="artist{{forloop.counter}}" name="artist{{forloop.counter}}" value="{{artistid}}" onchange="javascript:filterresults(this);">{{artistname}}
-						  </label>
-						</div>
-						{% endfor %}
-					</div>
-					<!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+
+    <!-- <div class="tab-pane fade show active" id="Works" role="tabpanel" aria-labelledby="Works-tab">
+						<div id="mySidebar" class="sidebar">
+							<div class="fixed-sidbr-header">
+								<h5>Filter</h5>
+								<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+							</div>
+							<div id="accordion" class="accordion">
+								<form method="POST" name='frmotherfilter' id='frmotherfilter' action=''>
+									{% csrf_token %}
+									<div class="card mb-0">
+										<div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+											<a class="card-title">
+												Artists
+											</a>
+										</div>
+										<div id="collapseOne" class="card-body collapse" data-parent="#accordion">
+											{% for artistname, artistid in allartists.items %}
+											<div class="form-check">
+												<label class="form-check-label" for="artist{{forloop.counter}}">
+													<input type="checkbox" class="form-check-input"
+														id="artist{{forloop.counter}}" name="artist{{forloop.counter}}"
+														value="{{artistid}}"
+														onchange="javascript:filterresults(this);">{{artistname}}
+												</label>
+											</div>
+											{% endfor %}
+										</div>
+										 <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
 						<a class="card-title">
 						  Rarity
 						</a>
-					</div>
-					<div id="collapseTwo" class="card-body collapse" data-parent="#accordion" >
-						<div class="form-check">
-						  <label class="form-check-label" for="Unique">
+					</div> -->
+    <!-- <div id="collapseTwo" class="card-body collapse" data-parent="#accordion">
+                        <div class="form-check">
+                            <label class="form-check-label" for="Unique">
 							<input type="checkbox" class="form-check-input" id="Unique" name="option1" value="something" >Unique
 						  </label>
-						</div>
-						<div class="form-check">
-						  <label class="form-check-label" for="LimitedEdition">
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="LimitedEdition">
 							<input type="checkbox" class="form-check-input" id="LimitedEdition" name="option1" value="something" >Limited Edition
 						  </label>
-						</div>
-						<div class="form-check">
-						  <label class="form-check-label" for="OpenEdition">
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="OpenEdition">
 							<input type="checkbox" class="form-check-input" id="OpenEdition" name="option1" value="something" >Open Edition
 						  </label>
-						</div>
-					</div> -->
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-						<a class="card-title">
-						  Medium
-						</a>
-					</div>
-					<div id="collapseThree" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-							<div class="form-check">
-                                                            <label class="form-check-label" for="Design-tow">
-                                                                <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal" onchange="javascript:filterresults(this);">Work on Paper
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label" for="Sculpture-tow">
-                                                                <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood" onchange="javascript:filterresults(this);">Sculpture
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label" for="Painting-two">
-                                                                <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas" onchange="javascript:filterresults(this);">Painting
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label" for="Installation">
-                                                                <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation" onchange="javascript:filterresults(this);">Installation
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label" for="photography">
-                                                                <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid" onchange="javascript:filterresults(this);">Photography
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label" for="texttile-arts">
-                                                                <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric" onchange="javascript:filterresults(this);">Textile arts
-                                                            </label>
-                                                        </div>
-						</div>
-					</div>
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
-						<a class="card-title">
-						  Size
-						</a>
-					</div>
-					<div id="collapse4" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-							<div class="size-cm-in">
-                                                            <div class="form-check">
-                                                                <label class="form-check-label" for="cm-auction">
-                                                                    <input type="radio" class="form-check-input" id="sizeunit1" name="dimension" value="cm" checked onclick="javascript:filterresults(this);">cm
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <label class="form-check-label" for="in-auction">
-                                                                    <input type="radio" class="form-check-input" id="sizeunit2" name="dimension" value="in" onclick="javascript:filterresults(this);">in
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label" for="SmallSize-tow">
-                                                                <input type="checkbox" class="form-check-input" id="size1" name="sizevalue" value="small" onchange="javascript:filterresults(this);">Small (under 40cm)
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label" for="Medium-tow">
-                                                                <input type="checkbox" class="form-check-input" id="size2" name="sizevalue" value="medium" onchange="javascript:filterresults(this);">Medium (40 – 100cm)
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label" for="Large-tow">
-                                                                <input type="checkbox" class="form-check-input" id="size3" name="sizevalue" value="large" onchange="javascript:filterresults(this);">Large (over 100cm)
-                                                            </label>
-                                                        </div>
-						</div>
-					</div>
-					<!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+                        </div>
+                    </div> -->
+    <!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                        <a class="card-title">
+												Medium
+											</a>
+                    </div> -->
+    <!-- <div id="collapseThree" class="collapse" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="form-check">
+                                <label class="form-check-label" for="Design-tow">
+														<input type="checkbox" class="form-check-input" id="medium1"
+															name="medium1" value="paper|etch|charcoal"
+															onchange="javascript:filterresults(this);">Work on Paper
+													</label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" for="Sculpture-tow">
+														<input type="checkbox" class="form-check-input" id="medium2"
+															name="medium2" value="stone|marble|bronze|brass|gold|wood"
+															onchange="javascript:filterresults(this);">Sculpture
+													</label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" for="Painting-two">
+														<input type="checkbox" class="form-check-input" id="medium3"
+															name="medium3" value="painting|oil|canvas"
+															onchange="javascript:filterresults(this);">Painting
+													</label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" for="Installation">
+														<input type="checkbox" class="form-check-input" id="medium4"
+															name="medium4" value="installation"
+															onchange="javascript:filterresults(this);">Installation
+													</label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" for="photography">
+														<input type="checkbox" class="form-check-input" id="medium5"
+															name="medium5" value="print|photo|celluloid"
+															onchange="javascript:filterresults(this);">Photography
+													</label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" for="texttile-arts">
+														<input type="checkbox" class="form-check-input" id="medium6"
+															name="medium6" value="textile|cloth|fabric"
+															onchange="javascript:filterresults(this);">Textile arts
+													</label>
+                            </div>
+                        </div>
+                    </div> -->
+    <!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                        <a class="card-title">
+												Size
+											</a>
+                    </div> -->
+    <!-- <div id="collapse4" class="collapse" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="size-cm-in">
+                                <div class="form-check">
+                                    <label class="form-check-label" for="cm-auction">
+															<input type="radio" class="form-check-input" id="sizeunit1"
+																name="dimension" value="cm" checked
+																onclick="javascript:filterresults(this);">cm
+														</label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label" for="in-auction">
+															<input type="radio" class="form-check-input" id="sizeunit2"
+																name="dimension" value="in"
+																onclick="javascript:filterresults(this);">in
+														</label>
+                                </div>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" for="SmallSize-tow">
+														<input type="checkbox" class="form-check-input" id="size1"
+															name="sizevalue" value="small"
+															onchange="javascript:filterresults(this);">Small (under
+														40cm)
+													</label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" for="Medium-tow">
+														<input type="checkbox" class="form-check-input" id="size2"
+															name="sizevalue" value="medium"
+															onchange="javascript:filterresults(this);">Medium (40 –
+														100cm)
+													</label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" for="Large-tow">
+														<input type="checkbox" class="form-check-input" id="size3"
+															name="sizevalue" value="large"
+															onchange="javascript:filterresults(this);">Large (over
+														100cm)
+													</label>
+                            </div>
+                        </div>
+                    </div> -->
+    <!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse5">
 						<a class="card-title">
 						  Medium
 						</a>
@@ -821,23 +1409,27 @@
 							</div>
 						</div>
 					</div> -->
-					<div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse6">
-						<a class="card-title">
-						  Artist Nationality
-						</a>
-					</div>
-					<div id="collapse6" class="collapse" data-parent="#accordion" >
-						<div class="card-body">
-						    {% for nationality, c in nationalities.items %}
-							<div class="form-check">
-							  <label class="form-check-label" for="{{nationality}}">
-								<input type="checkbox" class="form-check-input" id="nationality{{forloop.counter}}" name="nationality{{forloop.counter}}" value="{{nationality}}" onchange="javascript:filterresults(this);">{{nationality}}
-							  </label>
-							</div>
-						    {% endfor %}
-						</div>
-					</div>
-					<!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse7">
+    <!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+                        <a class="card-title">
+												Artist Nationality
+											</a>
+                    </div> -->
+    <!-- <div id="collapse6" class="collapse" data-parent="#accordion">
+                        <div class="card-body">
+                            {% for nationality, c in nationalities.items %}
+                            <div class="form-check">
+                                <label class="form-check-label" for="{{nationality}}">
+														<input type="checkbox" class="form-check-input"
+															id="nationality{{forloop.counter}}"
+															name="nationality{{forloop.counter}}"
+															value="{{nationality}}"
+															onchange="javascript:filterresults(this);">{{nationality}}
+													</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div> -->
+    <!-- <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse7">
 						<a class="card-title">
 						  Time Period
 						</a>
@@ -885,68 +1477,74 @@
 							</div>
 						</div>
 					</div> -->
-				</div>
-			</div>
-			<input type='hidden' name='aucid' id='aucid' value="{{auctioninfo.aucid}}">
-			</form>
-			</div>
+    <!-- </div> -->
+    <!-- </div> -->
+    <!-- <input type='hidden' name='aucid' id='aucid' value="{{auctioninfo.aucid}}">
+			</form> -->
+    <!-- </div> -->
 
-			<div id="main">
-				<div class="work-top-pnl">
-					<button class="openbtn" onclick="openNav()"> Filter</button>
-					<!-- <div class="dropdown">Sort By:
+    <!-- <div id="main">
+			<div class="work-top-pnl">
+				<button class="openbtn" onclick="openNav()"> Filter</button>
+				<div class="dropdown">Sort By:
 						<select>
 							<option value="1">Defult</option>
 							<option value="2">Defult</option>
 						</select>
-					  </div> -->
-				  </div>
-			  <div class="row" id="alllotsdiv">
-			{% for lot in alllots %}
-			  <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
-			  <!-- <div class="column"> -->
-                           <div class="artist-category ">
-				<div class="img-box">
-				<div class="thumb text-center">
-				<a href='/auction/details/?lid={{lot.lid}}' style="color:#000000;">
-				<img src="{{lot.image}}" style="width:100%">
-				</a>
-				</div>
-				<a href='/auction/details/?lid={{lot.lid}}' style="color:#000000;">
-				<h4 class='auction_title'>{{lot.lottitle}}</h4>
-				<h6>Lot#: {{lot.lotno}}</h6>
-				<h6>Medium: {{lot.medium}}</h6>
-				<h6>Category: {{lot.category}}</h6>
-				<h6 class='auction_desc'>Sale Details: {{auctioninfo.auctionname}}, {{auctioninfo.auctionperiod}} - {{auctioninfo.auctionhouse}}</h6>
-				{% if not user.is_authenticated %}
-				<h6>Price Info: <a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal" href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a></h6>
-				{% else %}
-				<h6>Estimate: US$&nbsp;{{lot.estimate}}</h6>
-				<h6>Price Sold: US$&nbsp;{{lot.soldprice}}</h6>
-				{% if lot.favourite == 0 %}
-				<div id='favourite_aw_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:addtofavourites('artwork', {{lot.awid}}, 'favourite_aw_{{forloop.counter}}');">Add to Favourites</a></h6>
-				</div>
-				{% else %}
-				<div id='favourite_aw_{{forloop.counter}}'>
-				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My Favourite</a></h6>
-				</div>
-				{% endif %}
-				{% endif %}
-				<!-- <p>{{lot.description}}</p> -->
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
-				{% endif %}
-				</div>
-			  </div>
+					  </div>
 			</div>
-			{% endfor %}
-			  
-			  </div>
+			<div class="row" id="alllotsdiv">
+				{% for lot in alllots %}
+				<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+					<div class="column">
+					<div class="artist-category ">
+						<div class="img-box">
+							<div class="thumb text-center">
+								<a href='/auction/details/?lid={{lot.lid}}' style="color:#000000;">
+									<img src="{{lot.image}}" style="width:100%">
+								</a>
+							</div>
+							<a href='/auction/details/?lid={{lot.lid}}' style="color:#000000;">
+								<h4 class='auction_title'>{{lot.lottitle}}</h4>
+								<h6>Lot#: {{lot.lotno}}</h6>
+								<h6>Medium: {{lot.medium}}</h6>
+								<h6>Category: {{lot.category}}</h6>
+								<h6 class='auction_desc'>Sale Details: {{auctioninfo.auctionname}},
+									{{auctioninfo.auctionperiod}} - {{auctioninfo.auctionhouse}}</h6>
+								{% if not user.is_authenticated %}
+								<h6>Price Info: <a style="color:#000000;bgcolor:#ffffff;" data-toggle="modal"
+										href="#exampleModal-login" aria-controls="exampleModal-login">Login to view</a>
+								</h6>
+								{% else %}
+								<h6>Estimate: US$&nbsp;{{lot.estimate}}</h6>
+								<h6>Price Sold: US$&nbsp;{{lot.soldprice}}</h6>
+								{% if lot.favourite == 0 %}
+								<div id='favourite_aw_{{forloop.counter}}'>
+									<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;"
+											onclick="javascript:addtofavourites('artwork', {{lot.awid}}, 'favourite_aw_{{forloop.counter}}');">Add
+											to Favourites</a></h6>
+								</div>
+								{% else %}
+								<div id='favourite_aw_{{forloop.counter}}'>
+									<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;">My
+											Favourite</a></h6>
+								</div>
+								{% endif %} {% endif %}
+								<p>{{lot.description}}</p>
+							</a>
+							{% if adminuser == 1 %}
+							<div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
+									onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+
 			</div>
-        </div>
-        <!-- <div class="tab-pane fade" id="Articles" role="tabpanel" aria-labelledby="Articles-tab">
+		</div> -->
+    <!-- </div> -->
+    <!-- <div class="tab-pane fade" id="Articles" role="tabpanel" aria-labelledby="Articles-tab">
 			<div class="row">
 				<div class="col-lg-12">
 					   <div class="section-heading text-center">
@@ -1031,23 +1629,27 @@
 				  </div>
 				</div>
         </div> -->
-        <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
-          <h5 class="card-title">Sixth Tab header</h5>
-          <p class="card-text">Proin ornare purus vitae magna viverra suscipit. Etiam rutrum lorem cursus libero scelerisque lacinia. Praesent bibendum risus id aliquam finibus. Donec sed orci sodales, viverra dolor a, dignissim mi. Pellentesque nec lectus enim. Suspendisse eu ligula ac tortor mollis lobortis. Nulla a laoreet neque, sit amet luctus dolor. Nam facilisis at odio ac commodo. Nullam vehicula blandit dui, vel suscipit orci.</p>
-        </div>
-      </div>
+    <!-- <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
+			<h5 class="card-title">Sixth Tab header</h5>
+			<p class="card-text">Proin ornare purus vitae magna viverra suscipit. Etiam rutrum lorem cursus libero
+				scelerisque lacinia. Praesent bibendum risus id aliquam finibus. Donec sed orci sodales, viverra dolor
+				a, dignissim mi. Pellentesque nec lectus enim. Suspendisse
+				eu ligula ac tortor mollis lobortis. Nulla a laoreet neque, sit amet luctus dolor. Nam facilisis at odio
+				ac commodo. Nullam vehicula blandit dui, vel suscipit orci.</p>
 		</div>
 		</div>
-	</section>
+		</div>
+		</div> -->
+    <!-- </section> -->
 
-      <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
+    <div id="adminScreen">
+        <a href="#" class="cancel">×</a>
+        <form name='frmedit' id='frmedit'>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="cover">
+    </div>
 
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -1065,7 +1667,7 @@
                         </ul>
                     </div>
                 </div>
-                 <div class="col-lg-3">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -1095,7 +1697,7 @@
                 <div class="col-lg-12">
                     <div class="under-footer">
                         <p>Copyright © 2022. All Rights Reserved.</p>
-                       
+
                         <ul>
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -1106,7 +1708,7 @@
             </div>
         </div>
     </footer>
-    
+
 
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js"></script>
@@ -1122,50 +1724,48 @@
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
-    
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
+
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
-	<script>
-function openNav() {
-  document.getElementById("mySidebar").style.width = "350px";
-  //document.getElementById("main").style.marginLeft = "250px";
-}
-
-function closeNav() {
-  document.getElementById("mySidebar").style.width = "0";
-  document.getElementById("main").style.marginLeft= "0";
-}
-</script>
-	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
-		
-	</script>
     <script>
-		
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "350px";
+            //document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+    </script>
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
+    </script>
+    <script>
         $(function() {
             var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
             });
         });
-
     </script>
 
-  </body>
+</body>
+
 </html>

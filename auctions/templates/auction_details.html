@@ -25,65 +25,68 @@
 
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
-    
+    <link rel="stylesheet" href="/static/css/new-style.css">
+
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
-    
+
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
 
 </head>
-    
+
 <body>
     <!-- Unique Work Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -105,8 +108,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
@@ -121,7 +123,7 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
-			    <div class="form-group">
+                            <div class="form-group">
                                 <label for="password2">Confirm Password</label>
                                 <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -131,13 +133,14 @@
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from ArtBidder.</p>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -184,8 +187,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
@@ -203,7 +205,7 @@
                             <div class="form-group">
                                 <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -256,7 +258,7 @@
                                 <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -302,51 +304,357 @@
                             <span>Menu</span>
                         </a>
                     </nav> -->
-		    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav" >
-                      <a class="navbar-brand" href="/login/dashboard/">
-                        <!-- <img src="static/images/logo1.png"> -->
-                        ARTBIDER
-                     </a>
-                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                          aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
+                        <a class="navbar-brand" href="/login/dashboard/">
+                            <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
+                            <!-- <img src="static/images/logo1.png"> -->
+                            <!-- ARTBIDER -->
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                           <span class="navbar-toggler-icon"></span>
                       </button>
-                      <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                          <ul class="navbar-nav mx-auto">
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
-                              </li>
-                              
-                          </ul>
-                          <ul class="navbar-nav sm-icons mr-0">
-                              {% if not user.is_authenticated %}
-                              <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-                              {% else %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-			      <li class="nav-item">
-                          	<button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
-                              </li>
-                              {% endif %}
-                          </ul>
-                      </div>
-                  </nav>
+                        <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
+                            <ul class="navbar-nav mr-0">
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="#">Home</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="/artist/index/">Artists</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link " href="/auctionhouse/index/">Auction Houses</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link active" href="/auction/index/">Auctions</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/database/">Price Database</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/plans/">Price Plans</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Galleries</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Shows</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#"> News</a>
+                                </li>
+
+                            </ul>
+                            <ul class="navbar-nav sm-icons mr-0">
+                                {% if not user.is_authenticated %}
+                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                                {% else %}
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                                <li class="nav-item">
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
                 </div>
             </div>
         </div>
     </header>
+
+    <section class="artists-details" style="padding-top: 140px;">
+        <div class="container">
+            <div class="row align-items-end justify-content-between">
+                <div class="col-auto">
+                    <div class="artists-details-img">
+                        <h3>Self Portrait</h3>
+                        <p class="mb-0">Lot #: 3</p>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div>
+                        <a href="#"> <img src="/static/images/pdf.png" class="mr-2" style="width: 30px;" /></a>
+                        <a href="#">
+                            <img src="/static/images/share.png" style="width: 30px;" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="product-imgs">
+                        <div class="img-display">
+                            <div class="img-showcase">
+                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_1.jpg" alt="shoe image">
+                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
+                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg" alt="shoe image">
+                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image">
+                            </div>
+                        </div>
+                        <div class="img-select">
+                            <div class="img-item">
+                                <a href="#" data-id="1">
+                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_1.jpg" alt="shoe image">
+                                </a>
+                            </div>
+                            <div class="img-item">
+                                <a href="#" data-id="2">
+                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
+                                </a>
+                            </div>
+                            <div class="img-item">
+                                <a href="#" data-id="3">
+                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg" alt="shoe image">
+                                </a>
+                            </div>
+                            <div class="img-item">
+                                <a href="#" data-id="4">
+                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 mt-4 mt-md-0">
+                    <div class="artists-details-content">
+                        <div class="d-md-flex justify-content-between mb-5">
+                            <div>
+                                <h4 class="mb-2">Artist : <span>Gertrude Abercrombie</span></h4>
+                                <h4 class="mb-2">Title : <span>Self Portrait</span></h4>
+                                <h4 class="mb-3">Lot # 3 </h4>
+                            </div>
+                            <div>
+                                <button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;  " type="button">Follow Artist</button>
+                                <button class="btn btn-login btn-round ml-0  d-block" style="font-size: 12px; width: 100%;" type="button">Add  to Collection</button>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3">Medium : <span>oil on masonite </span></h5>
+                        <h5 class="mb-3">Category : <span>paintings</span></h5>
+                        <h5 class="mb-3">Dimensions : <span>43.2 x 33 cm</span></h5>
+                        <h5 class="mb-5">Markings : <span>Signed and dated 1973.</span></h5>
+
+                        <h5 class="mb-3">Actions : <span>Contemporary Curated</span></h5>
+                        <h5 class="mb-3"><span>Sotheby’s, New York</span></h5>
+                        <h5 class="mb-5"><span>30th Sep, 2021</span></h5>
+
+                        <h5 class="mb-3">Estimates <span>Login to View</span></h5>
+                        <h5>Sold Price <span>Login to View</span></h5>
+
+
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </section>
+    <section>
+        <div class="action-page-details">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="action-content">
+                            <div class="d-md-flex align-items-start mb-2">
+                                <h6>Provenance : </h6>
+                                <p class="pl-md-2"> Galerie Eva Presenhuber, ZurichAcquired from the above by the present owner </p>
+                            </div>
+                            <div class="d-md-flex align-items-start mb-2">
+                                <h6>Literature : </h6>
+                                <p class="pl-md-2"> Shara Hughes| Shara Hughes: Landscapes| New York| 2019| p. 15 (illustrated| p. 14)
+                                </p>
+                            </div>
+                            <div class="d-md-flex align-items-start mb-2">
+                                <h6>Exhibition : </h6>
+                                <div>
+                                    <p class="pl-md-2"> London| Gagosian Gallery| MARK TANSEY| December 10| 2009 - January 23| 2010| p. 83 (illustrated| p. 85; detail illustrated| pp. 86-89) </p>
+                                    <a href="#">Read More</a>
+                                </div>
+                            </div>
+                            <div class="d-md-flex align-items-start">
+                                <h6>Description : </h6>
+                                <div>
+                                    <p class="pl-md-2">
+                                        Property from an Important West Coast Collection Gertrude Abercrombie 1909 - 1977 Self Portrait signed oil on masonite 17 by 13 in. 43.2 by 33 cm. framed: 21½ by 17½ in. 54.6 by 44.5 cm. Executed circa 1935. The lot is sold in the condition it is in at
+                                        the time of sale
+                                    </p>
+                                    <a href="#">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </section>
+    <section class="pt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h3 class="heading-style">Related Art</h3>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- ***** Header Area End ***** -->
     <!-- ***** Main Banner Area Start ***** -->
     <!----<section class="featured-artist-slider">
@@ -406,7 +714,7 @@
             </div>
         </div>
     </section>-->
-    <section class="breducmes">
+    <!-- <section class="breducmes">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -416,44 +724,41 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- ***** Main Banner Area End ***** -->
-    <section class="auc-det">
+    <!-- <section class="auc-det">
         <div class="container docs-pictures">
             <div class="row">
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <div id="related-artist-2" class="owl-carousel owl-theme owl-d">
-			{% if lotinfo.image1 != "" %}
+                        {% if lotinfo.image1 != "" %}
                         <div class="item">
                             <div class="thumb">
                                 <img src="{{lotinfo.image1}}" class="img-fluid" alt="">
                             </div>
                         </div>
-			{% endif %}
-			{% if lotinfo.image2 != "" %}
+                        {% endif %} {% if lotinfo.image2 != "" %}
                         <div class="item">
                             <div class="thumb">
                                 <img src="{{lotinfo.image2}}" class="img-fluid" alt="">
                             </div>
                         </div>
-			{% endif %}
-			{% if lotinfo.image3 != "" %}
+                        {% endif %} {% if lotinfo.image3 != "" %}
                         <div class="item">
                             <div class="thumb">
                                 <img src="{{lotinfo.image3}}" class="img-fluid" alt="">
                             </div>
                         </div>
-			{% endif %}
-			{% if lotinfo.image4 != "" %}
+                        {% endif %} {% if lotinfo.image4 != "" %}
                         <div class="item">
                             <div class="thumb">
                                 <img src="{{lotinfo.image4}}" class="img-fluid" alt="">
                             </div>
                         </div>
-			{% endif %}
+                        {% endif %}
                     </div>
-                    <!-- <div class="save-share">
+                    <div class="save-share">
                         <ul>
                             <li>
                                 <button><i class="fa fa-heart-o" aria-hidden="true"></i> Save</button>
@@ -465,7 +770,7 @@
                                 <button><i class="fa fa-share-alt" aria-hidden="true"></i> Share</button>
                             </li>
                         </ul>
-                    </div> -->
+                    </div>
                     <section class="category-tabs mrt-90">
                         <div class="container">
                             <div class="row">
@@ -499,22 +804,17 @@
                                                                     </div>
                                                                     <div class="sec-right">
                                                                         <h2>{{lotinfo.artist}}</h2>
-									{% if lotinfo.nationality != '' %}
-                                                                        <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span>
-									{% else %}
-									{% if lotinfo.birth != '' %}
-									<span>b. {{lotinfo.birth}}</span>
-									{% else %}
-									<span>&nbsp;</span>
-									{% endif %}
-									{% endif %}
+                                                                        {% if lotinfo.nationality != '' %}
+                                                                        <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span> {% else %} {% if lotinfo.birth != '' %}
+                                                                        <span>b. {{lotinfo.birth}}</span> {% else %}
+                                                                        <span>&nbsp;</span> {% endif %} {% endif %}
                                                                     </div>
                                                                 </div>
-								{% if adminuser == 1 %}
-								    <div class="follow"><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editlot('{{lotinfo.lotid}}');">Edit</a></div>
-								{% endif %}
+                                                                {% if adminuser == 1 %}
+                                                                <div class="follow"><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editlot('{{lotinfo.lotid}}');">Edit</a></div>
+                                                                {% endif %}
                                                                 <div class="follow">
-                                                                    <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                                                                    <a class="btn btn-slider" href="#">Follow</a>
                                                                 </div>
                                                             </div>
 
@@ -528,12 +828,12 @@
                                                                 {{lotinfo.medium}}
                                                             </span>
                                                         </div>
-                                                        <!-- <div class="tb pdt20">
+                                                        <div class="tb pdt20">
                                                             <span>Frame</span>
                                                             <span>
                                                                 Not included
                                                             </span>
-                                                        </div> -->
+                                                        </div>
                                                         <div class="tb pdt20">
                                                             <h6>Literature</h6>
                                                             <span>
@@ -544,60 +844,55 @@
                                                             <h6>Selected exhibitions</h6>
                                                         </div>
                                                         <div class="tb pdt20">
-                                                            <!-- <span>2020</span> -->
+                                                            <span>2020</span>
                                                             <p>
                                                                 {{lotinfo.exhibitions}}
                                                             </p>
                                                         </div>
-                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
-                                                    <div class="details-rw">
-                                                        <div class="section-heading">
-                                                            <div class="sec-content">
-                                                                <div class="mrs">
-                                                                    <div class="sec-left">
-                                                                        <img src="{{lotinfo.image1}}" alt="" class="img-fluid">
-                                                                    </div>
-                                                                    <div class="sec-right">
-                                                                        <h2>{{lotinfo.artist}}</h2>
-									{% if lotinfo.nationality != '' %}
-                                                                        <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span>
-									{% else %}
-									{% if lotinfo.birth != '' %}
-									<span>b. {{lotinfo.birth}}</span>
-									{% else %}
-									<span>&nbsp;</span>
-									{% endif %}
-									{% endif %}
-                                                                    </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
+                                                <div class="details-rw">
+                                                    <div class="section-heading">
+                                                        <div class="sec-content">
+                                                            <div class="mrs">
+                                                                <div class="sec-left">
+                                                                    <img src="{{lotinfo.image1}}" alt="" class="img-fluid">
                                                                 </div>
-								{% if adminuser == 1 %}
-								    <div class="follow"><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editlot('{{lotinfo.lotid}}');">Edit</a></div>
-								{% endif %}
-                                                                <div class="follow">
-                                                                    <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                                                                <div class="sec-right">
+                                                                    <h2>{{lotinfo.artist}}</h2>
+                                                                    {% if lotinfo.nationality != '' %}
+                                                                    <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span> {% else %} {% if lotinfo.birth != '' %}
+                                                                    <span>b. {{lotinfo.birth}}</span> {% else %}
+                                                                    <span>&nbsp;</span> {% endif %} {% endif %}
                                                                 </div>
                                                             </div>
+                                                            {% if adminuser == 1 %}
+                                                            <div class="follow"><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editlot('{{lotinfo.lotid}}');">Edit</a></div>
+                                                            {% endif %}
+                                                            <div class="follow">
+                                                                <a class="btn btn-slider" href="#">Follow</a>
+                                                            </div>
+                                                        </div>
 
-                                                        </div>
-							<div class="tb pdt20">
-                                                            <h6>Provenance</h6>
-                                                        </div>
-                                                        <div class="tb pdt20">
-                                                            <!-- <span>2020</span> -->
-							{% if lotinfo.provenance != '' %}
-                                                            <p>
-                                                                {{lotinfo.provenance}}
-                                                            </p>
-							{% else %}
-							    <p>
-                                                                Not available
-                                                            </p>
-							{% endif %}
-                                                        </div>
-                                                        <!-- <div class="tb pdt20">
+                                                    </div>
+                                                    <div class="tb pdt20">
+                                                        <h6>Provenance</h6>
+                                                    </div>
+                                                    <div class="tb pdt20">
+                                                        <span>2020</span>
+                                                        {% if lotinfo.provenance != '' %}
+                                                        <p>
+                                                            {{lotinfo.provenance}}
+                                                        </p>
+                                                        {% else %}
+                                                        <p>
+                                                            Not available
+                                                        </p>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="tb pdt20">
                                                             <h6>Medium</h6>
                                                             <span>
                                                                 {{lotinfo.medium}}
@@ -609,80 +904,70 @@
                                                             <span>
                                                                 Not included
                                                             </span>
-                                                        </div> -->
                                                         </div>
-                                                        
-                                                    </div>
                                                 </div>
 
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <div class="sec-bid">
-                        <div class="section-heading">
-                            <div class="sec-content">
-                                <div class="mrs">
-                                    <div class="sec-left">
-                                        <img src="{{lotinfo.image1}}" alt="" class="img-fluid">
-                                    </div>
-                                    <div class="sec-right">
-                                        <h2>{{lotinfo.artist}}</h2>
-					{% if lotinfo.nationality != '' %}
-                                        <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span>
-					{% else %}
-					{% if lotinfo.birth != '' %}
-					<span>b. {{lotinfo.birth}}</span>
-					{% else %}
-					<span>&nbsp;</span>
-					{% endif %}
-					{% endif %}
-                                    </div>
-                                </div>
-                                <div class="follow">
-                                    <!-- <a class="btn btn-slider" href="#">Follow</a> -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bid-details">
-                            <h3>{{lotinfo.title}}</h3>
-                            <h6>Lot #: {{lotinfo.lotno}}</h6>
-			    <h6>{{lotinfo.housename}}, {{lotinfo.location}}: {{lotinfo.auctionname}}</h6>
-			    <h6>{{lotinfo.auctionperiod}}</h6>
-                            <p>
-				{% if lotinfo.medium != '' and lotinfo.medium != None %}
-				{{lotinfo.medium}}
-				{% endif %}
-				{% if lotinfo.size != '' and lotinfo.size != None %}
-                                {{lotinfo.size}}
-				{% endif %}
-                            </p>
 
-                            <!-- <p>182.9 × 121.9 cm</p>
-                            <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">This is a unique work.</a> -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <!-- <div class="bid-details">
-                            <h4>Bidding closed</h4>
-                        </div> -->
-                    </div>
                 </div>
             </div>
+            </section>
         </div>
-    </section>
-    
-    <section class="oth-works mrt-90">
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+            <div class="sec-bid">
+                <div class="section-heading">
+                    <div class="sec-content">
+                        <div class="mrs">
+                            <div class="sec-left">
+                                <img src="{{lotinfo.image1}}" alt="" class="img-fluid">
+                            </div>
+                            <div class="sec-right">
+                                <h2>{{lotinfo.artist}}</h2>
+                                {% if lotinfo.nationality != '' %}
+                                <span>{{lotinfo.nationality}}, b. {{lotinfo.birth}}</span> {% else %} {% if lotinfo.birth != '' %}
+                                <span>b. {{lotinfo.birth}}</span> {% else %}
+                                <span>&nbsp;</span> {% endif %} {% endif %}
+                            </div>
+                        </div>
+                        <div class="follow">
+                            <a class="btn btn-slider" href="#">Follow</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bid-details">
+                    <h3>{{lotinfo.title}}</h3>
+                    <h6>Lot #: {{lotinfo.lotno}}</h6>
+                    <h6>{{lotinfo.housename}}, {{lotinfo.location}}: {{lotinfo.auctionname}}</h6>
+                    <h6>{{lotinfo.auctionperiod}}</h6>
+                    <p>
+                        {% if lotinfo.medium != '' and lotinfo.medium != None %} {{lotinfo.medium}} {% endif %} {% if lotinfo.size != '' and lotinfo.size != None %} {{lotinfo.size}} {% endif %}
+                    </p>
+
+                    <p>182.9 × 121.9 cm</p>
+                            <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">This is a unique work.</a>
+                </div>
+                <div class="bid-details">
+                            <h4>Bidding closed</h4>
+                        </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </section> -->
+
+    <!-- <section class="oth-works mrt-90">
         <div class="container">
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="section-heading section-heading-2 mrb-50">
                         <h2>Other works by {{lotinfo.artist}}</h2>
                         <span>
-                            <!-- <a href="">View All</a> -->
+                            <a href="">View All</a>
                         </span>
                     </div>
                 </div>
@@ -690,200 +975,184 @@
             <div class="row">
                 <div class="column">
                     <div class="artist-category ">
-		    {% for wk in otherworks.0 %}
-                    <div class="img-box">
-			<div class='thumb text-center'>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="{{wk.image}}" style="width:100%">
-			</a>
-			</div>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <h4>{{wk.title}}</h4>
-                        <h6>{{wk.medium}}</h6>
-                        <p>{{wk.estimate}}</p>
-			</a>
-			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
-			{% if adminuser == 1 %}
-		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
-		        {% endif %}
+                        {% for wk in otherworks.0 %}
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                    <img src="{{wk.image}}" style="width:100%">
+                                </a>
+                            </div>
+                            <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                <h4>{{wk.title}}</h4>
+                                <h6>{{wk.medium}}</h6>
+                                <p>{{wk.estimate}}</p>
+                            </a>
+                            <a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a> {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a> {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-		    {% endfor %}
                 </div>
-		</div>
                 <div class="column">
                     <div class="artist-category ">
-                    {% for wk in otherworks.1 %}
-                    <div class="img-box">
-			<div class='thumb text-center'>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="{{wk.image}}" style="width:100%">
-			</a>
-			</div>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <h4>{{wk.title}}</h4>
-                        <h6>{{wk.medium}}</h6>
-                        <p>{{wk.estimate}}</p>
-			</a>
-			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
-			{% if adminuser == 1 %}
-		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
-		        {% endif %}
+                        {% for wk in otherworks.1 %}
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                    <img src="{{wk.image}}" style="width:100%">
+                                </a>
+                            </div>
+                            <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                <h4>{{wk.title}}</h4>
+                                <h6>{{wk.medium}}</h6>
+                                <p>{{wk.estimate}}</p>
+                            </a>
+                            <a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a> {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a> {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-		    {% endfor %}
                 </div>
-		</div>
                 <div class="column">
                     <div class="artist-category ">
-                    {% for wk in otherworks.2 %}
-                    <div class="img-box">
-			<div class='thumb text-center'>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="{{wk.image}}" style="width:100%">
-			</a>
-			</div>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <h4>{{wk.title}}</h4>
-                        <h6>{{wk.medium}}</h6>
-                        <p>{{wk.estimate}}</p>
-			</a>
-			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
-			{% if adminuser == 1 %}
-		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
-		        {% endif %}
+                        {% for wk in otherworks.2 %}
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                    <img src="{{wk.image}}" style="width:100%">
+                                </a>
+                            </div>
+                            <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                <h4>{{wk.title}}</h4>
+                                <h6>{{wk.medium}}</h6>
+                                <p>{{wk.estimate}}</p>
+                            </a>
+                            <a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a> {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a> {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-		    {% endfor %}
                 </div>
-		</div>
                 <div class="column">
                     <div class="artist-category ">
-                    {% for wk in otherworks.3 %}
-                    <div class="img-box">
-			<div class='thumb text-center'>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="{{wk.image}}" style="width:100%">
-			</a>
-			</div>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <h4>{{wk.title}}</h4>
-                        <h6>{{wk.medium}}</h6>
-                        <p>{{wk.estimate}}</p>
-			</a>
-			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
-			{% if adminuser == 1 %}
-		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
-		        {% endif %}
+                        {% for wk in otherworks.3 %}
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                    <img src="{{wk.image}}" style="width:100%">
+                                </a>
+                            </div>
+                            <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                <h4>{{wk.title}}</h4>
+                                <h6>{{wk.medium}}</h6>
+                                <p>{{wk.estimate}}</p>
+                            </a>
+                            <a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a> {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a> {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-		    {% endfor %}
                 </div>
-		</div>
             </div>
         </div>
-    </section>
-    <section class="oth-works mrt-90">
+    </section> -->
+    <!-- <section class="oth-works mrt-90">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading section-heading-2 mrb-50">
                         <h2>Related works</h2>
                         <span>
-                            <!-- <a href="">View All</a> -->
+                            <a href="">View All</a>
                         </span>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
-		    <div class="artist-category ">
-                    {% for wk in relatedworks.0 %}
-                    <div class="img-box">
-			<div class='thumb text-center'>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="{{wk.image}}" style="width:100%">
-			</a>
-			</div>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <h4>{{wk.title}}</h4>
-                        <h6>{{wk.medium}}</h6>
-                        <p>{{wk.estimate}}</p>
-			</a>
-			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
-			{% if adminuser == 1 %}
-		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
-		        {% endif %}
+                    <div class="artist-category ">
+                        {% for wk in relatedworks.0 %}
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                    <img src="{{wk.image}}" style="width:100%">
+                                </a>
+                            </div>
+                            <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                <h4>{{wk.title}}</h4>
+                                <h6>{{wk.medium}}</h6>
+                                <p>{{wk.estimate}}</p>
+                            </a>
+                            <a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a> {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a> {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-		    {% endfor %}
-		    </div>
                 </div>
                 <div class="column">
-		    <div class="artist-category ">
-                    {% for wk in relatedworks.1 %}
-                    <div class="img-box">
-			<div class='thumb text-center'>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="{{wk.image}}" style="width:100%">
-			</a>
-			</div>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <h4>{{wk.title}}</h4>
-                        <h6>{{wk.medium}}</h6>
-                        <p>{{wk.estimate}}</p>
-			</a>
-			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
-			{% if adminuser == 1 %}
-		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
-		        {% endif %}
+                    <div class="artist-category ">
+                        {% for wk in relatedworks.1 %}
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                    <img src="{{wk.image}}" style="width:100%">
+                                </a>
+                            </div>
+                            <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                <h4>{{wk.title}}</h4>
+                                <h6>{{wk.medium}}</h6>
+                                <p>{{wk.estimate}}</p>
+                            </a>
+                            <a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a> {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a> {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-		    {% endfor %}
-		    </div>
                 </div>
                 <div class="column">
-		    <div class="artist-category ">
-                    {% for wk in relatedworks.2 %}
-                    <div class="img-box">
-			<div class='thumb text-center'>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="{{wk.image}}" style="width:100%">
-			</a>
-			</div>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <h4>{{wk.title}}</h4>
-                        <h6>{{wk.medium}}</h6>
-                        <p>{{wk.estimate}}</p>
-			</a>
-			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
-			{% if adminuser == 1 %}
-		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
-		        {% endif %}
+                    <div class="artist-category ">
+                        {% for wk in relatedworks.2 %}
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                    <img src="{{wk.image}}" style="width:100%">
+                                </a>
+                            </div>
+                            <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                <h4>{{wk.title}}</h4>
+                                <h6>{{wk.medium}}</h6>
+                                <p>{{wk.estimate}}</p>
+                            </a>
+                            <a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a> {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a> {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-		    {% endfor %}
-		    </div>
                 </div>
                 <div class="column">
-		    <div class="artist-category ">
-                    {% for wk in relatedworks.3 %}
-                    <div class="img-box">
-			<div class='thumb text-center'>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <img src="{{wk.image}}" style="width:100%">
-			</a>
-			</div>
-			<a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
-                        <h4>{{wk.title}}</h4>
-                        <h6>{{wk.medium}}</h6>
-                        <p>{{wk.estimate}}</p>
-			</a>
-			<a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a>
-			{% if adminuser == 1 %}
-		            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a>
-		        {% endif %}
+                    <div class="artist-category ">
+                        {% for wk in relatedworks.3 %}
+                        <div class="img-box">
+                            <div class='thumb text-center'>
+                                <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                    <img src="{{wk.image}}" style="width:100%">
+                                </a>
+                            </div>
+                            <a href='/auction/details/?lid={{wk.lid}}' style="color:#000000;">
+                                <h4>{{wk.title}}</h4>
+                                <h6>{{wk.medium}}</h6>
+                                <p>{{wk.estimate}}</p>
+                            </a>
+                            <a class="btn btn-slider" href="/auction/details/?lid={{wk.lid}}">View Lots</a> {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{wk.lid}}');">Edit</a> {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-		    {% endfor %}
-		    </div>
                 </div>
             </div>
         </div>
-    </section>
-    <section class="oth-works mrt-90 mrb-90">
+    </section> -->
+    <!-- <section class="oth-works mrt-90 mrb-90">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -892,53 +1161,53 @@
                     </div>
                 </div>
             </div>
-	    
+
             <div class="row row-re align-items-end">
-		{% for artistname, infolist in allartists.items %}
+                {% for artistname, infolist in allartists.items %}
                 <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                     <div class="sec-content sec-tow">
                         <div class="mrs">
                             <div class="sec-left">
-				<a href='/artist/details/?aid={{infolist.0.aid}}'>
-                                <img src="{{infolist.0.image}}" alt="" class="img-fluid">
-				</a>
+                                <a href='/artist/details/?aid={{infolist.0.aid}}'>
+                                    <img src="{{infolist.0.image}}" alt="" class="img-fluid">
+                                </a>
                             </div>
                             <div class="sec-right">
-				<a href='/artist/details/?aid={{infolist.0.aid}}' style="color:#000000;">
-                                <h2>{{artistname}}</h2>
-                                <span>{{infolist.0.nationality}}, {{infolist.0.birth}}-{{infolist.0.death}}</span>
-				</a>
-				{% if adminuser == 1 %}
-				    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{infolist.0.aid}}');">Edit</a>
-				{% endif %}
+                                <a href='/artist/details/?aid={{infolist.0.aid}}' style="color:#000000;">
+                                    <h2>{{artistname}}</h2>
+                                    <span>{{infolist.0.nationality}}, {{infolist.0.birth}}-{{infolist.0.death}}</span>
+                                </a>
+                                {% if adminuser == 1 %}
+                                <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editartist('{{infolist.0.aid}}');">Edit</a> {% endif %}
                             </div>
                         </div>
                         <div class="follow">
-                            <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                            <a class="btn btn-slider" href="#">Follow</a>
                         </div>
                     </div>
                 </div>
-		{% endfor %}
-                
+                {% endfor %}
+
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <!-- <div class="sh-mr">
+                    <div class="sh-mr">
                         <a href="#" id="loadMore" class="btn btn-slider">Show More</a>
                         <a href="#" id="loadLess" class="btn btn-slider">Less More</a>
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
-    <section class="download-app">
+    </section> -->
+    <!-- <section class="download-app">
         <div class="container max-container">
             <div class="row">
                 <div class="col-sm-12 col-md-5 col-lg-4 col-xl-4">
                     <div class="download-app">
                         <h4>Get More from ArtBidder—on the App</h4>
                         <div class="pl-st">
-                            <a href=""><img src="/static/images/app-store.png" alt=""></a> <a href=""><img src="/static/images/google-play.png" alt=""></a>
+                            <a href=""><img src="/static/images/app-store.png" alt=""></a>
+                            <a href=""><img src="/static/images/google-play.png" alt=""></a>
                         </div>
                     </div>
                 </div>
@@ -947,16 +1216,16 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
+        <a href="#" class="cancel">×</a>
+        <form name='frmedit' id='frmedit'>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="cover">
+    </div>
 
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -1018,7 +1287,8 @@
 
 
     <!-- jQuery -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/static/js/jquery-2.1.0.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
 
     <!-- Bootstrap -->
     <script src="/static/js/popper.js"></script>
@@ -1041,6 +1311,28 @@
     <script src="/static/js/custom.js"></script>
 
     <script>
+        const imgs = document.querySelectorAll('.img-select a');
+        const imgBtns = [...imgs];
+        let imgId = 1;
+
+        imgBtns.forEach((imgItem) => {
+            imgItem.addEventListener('click', (event) => {
+                event.preventDefault();
+                imgId = imgItem.dataset.id;
+                slideImage();
+            });
+        });
+
+        function slideImage() {
+            const displayWidth = document.querySelector('.img-showcase img:first-child').clientWidth;
+
+            document.querySelector('.img-showcase').style.transform = `translateX(${- (imgId - 1) * displayWidth}px)`;
+        }
+
+        window.addEventListener('resize', slideImage);
+
+
+
         /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
         $('.demo').dropdown({
             limitCount: 1,
@@ -1065,9 +1357,9 @@
                 }
             }
         })
-        $(function () {
+        $(function() {
             $("row-re").slice(0, 1).show();
-            $("#loadMore").on('click', function (e) {
+            $("#loadMore").on('click', function(e) {
                 e.preventDefault();
                 $("row-re:hidden").slice(0, 1).slideDown();
                 if ($("row-re:hidden").length == 0) {
@@ -1080,7 +1372,7 @@
                 }, 1500);
             });
 
-            $("#loadLess").on('click', function (e) {
+            $("#loadLess").on('click', function(e) {
                 e.preventDefault();
                 $('row-re:not(:lt(1))').fadeOut();
                 $("#loadMore").fadeIn('slow');
@@ -1096,22 +1388,21 @@
         });
     </script>
     <script>
-
-        $(function () {
+        $(function() {
             var selectedClass = "";
-            $("p").click(function () {
+            $("p").click(function() {
                 selectedClass = $(this).attr("data-rel");
                 $("#portfolio").fadeTo(50, 0.1);
                 $("#portfolio div").not("." + selectedClass).fadeOut();
-                setTimeout(function () {
+                setTimeout(function() {
                     $("." + selectedClass).fadeIn();
                     $("#portfolio").fadeTo(50, 1);
                 }, 500);
 
             });
         });
-
     </script>
 
 </body>
+
 </html>

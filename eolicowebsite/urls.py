@@ -34,6 +34,7 @@ urlpatterns = [
     path('about/', login.views.about, name='about'),
     path('contactus/', login.views.contactus, name='contactus'),
     path('', login.views.index, name='homeindex'),
+    path('termsAndCondition/', login.views.termsAndCondition, name="termsAndCondition"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

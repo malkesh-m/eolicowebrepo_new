@@ -68,6 +68,13 @@ def getcarouselinfo():
     return entrieslist
 """
 
+def termsAndCondition(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        return render(request, 'termsAndCondition.html')
+
+
 def getcarouselinfo_new():
     entrieslist = []
     entriescount = int(os.environ.get('WEBSITE_CAROUSEL_ENTRIES_COUNT', '5')) # Default value: 5
