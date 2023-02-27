@@ -160,8 +160,6 @@ def index(request):
                     break
         except:
             pass
-        #print(featuredauctions)
-        context['featuredauctions'] = featuredauctions
         try:
             redis_instance.set('ac_featuredauctions', pickle.dumps(featuredauctions))
         except:
@@ -231,14 +229,15 @@ def index(request):
                 allauctions['row' + str(rctr)] = []
             allauctions['row' + str(rctr)].append(d)
             aucctr += 1
-        context['allauctions'] = allauctions
-        context['filterauctions'] = filterauctions
         #print(allauctions)
         try:
             redis_instance.set('ac_allauctions', pickle.dumps(allauctions))
             redis_instance.set('ac_filterauctions', pickle.dumps(filterauctions))
         except:
             pass
+    context['allauctions'] = allauctions
+    context['filterauctions'] = filterauctions
+    context['featuredauctions'] = featuredauctions
     cursor.close()
     dbconn.close()
     #carouselentries = getcarouselinfo_new()

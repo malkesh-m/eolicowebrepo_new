@@ -111,13 +111,13 @@ def index(request):
                 coverimage = "/static/images/auctionhouses/"
             d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'coverimage' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
             auctionhouses.append(d)
-        context['auctionhouses'] = auctionhouses
-        context['filterauctionhouses'] = filterauctionhouses
         try:
             redis_instance.set('ah_auctionhouses', pickle.dumps(auctionhouses))
             redis_instance.set('ah_filterauctionhouses', pickle.dumps(filterauctionhouses))
         except:
             pass
+    context['auctionhouses'] = auctionhouses
+    context['filterauctionhouses'] = filterauctionhouses
     cursor.close()
     dbconn.close()
     #carouselentries = getcarouselinfo_new()
