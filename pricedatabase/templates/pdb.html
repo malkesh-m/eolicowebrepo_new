@@ -8,8 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
 
     <title>ArtBider Price Database</title>
 
@@ -37,34 +36,34 @@
             display: block !important;
             border: 0px solid black;
         }
-
+        
         .owl-prev {
             left: -20px;
         }
-
+        
         .owl-next {
             right: -20px;
         }
-
+        
         .owl-prev i,
         .owl-next i {
             transform: scale(2, 5);
             color: #ccc;
         }
-
+        
         #frmsearchpdb {
             background-color: #f9f9f9 !important;
             padding: 20px !important;
             border-radius: 10px !important;
         }
-
+        
         .advanced-search-btn {
             background-color: #17a2b8;
             padding: 10px;
             color: #ffffff;
             border-radius: 5px;
         }
-
+        
         .p-tag-style {
             font-size: 16px;
             color: #555;
@@ -85,14 +84,12 @@ https://templatemo.com/tm-571-hexashop
 
 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script type='text/javascript'>
-
         function filterresults(page = 1) {
             waitdivtag = document.getElementById('waitdiv');
             waitdivtag.style.display = "";
@@ -152,12 +149,11 @@ https://templatemo.com/tm-571-hexashop
             var xmlhttp;
             if (window.XMLHttpRequest) {
                 xmlhttp = new XMLHttpRequest();
-            }
-            else {
+            } else {
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
             // Register the handler
-            xmlhttp.onreadystatechange = function () {
+            xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     context = JSON.parse(xmlhttp.responseText);
                     secheaderdiv = document.getElementById('sectionheaderdiv');
@@ -187,8 +183,7 @@ https://templatemo.com/tm-571-hexashop
                             if (adminuser == 1) {
                                 searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
                             }
-                        }
-                        else if (obtype == 'lot') {
+                        } else if (obtype == 'lot') {
                             searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
                             searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
                             searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle + "</h4>";
@@ -227,6 +222,7 @@ https://templatemo.com/tm-571-hexashop
             xmlhttp.send(postdata);
         }
     </script>
+    <link rel="stylesheet" href="/static/css/new-style.css">
 
     <style type="text/css">
         .button {
@@ -237,7 +233,7 @@ https://templatemo.com/tm-571-hexashop
             font-weight: bold;
             text-decoration: none;
         }
-
+        
         #cover {
             position: fixed;
             top: 0;
@@ -248,7 +244,7 @@ https://templatemo.com/tm-571-hexashop
             height: 100%;
             display: none;
         }
-
+        
         #adminScreen {
             height: 680px;
             width: 640px;
@@ -260,13 +256,13 @@ https://templatemo.com/tm-571-hexashop
             border: 5px solid #cccccc;
             border-radius: 10px;
         }
-
+        
         #adminScreen:target,
         #adminScreen:target+#cover {
             display: block;
             opacity: 2;
         }
-
+        
         .cancel {
             display: block;
             position: absolute;
@@ -281,6 +277,17 @@ https://templatemo.com/tm-571-hexashop
             text-align: center;
             font-weight: bold;
         }
+        
+        .search-bg .input-group {
+            width: 100% !important;
+            margin: auto;
+        }
+        
+        @media (max-width:767px) {
+            .search-bg .input-group {
+                width: 100% !important;
+            }
+        }
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
@@ -288,12 +295,12 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/autocomplete.js"></script>
 
     <script>
-        pdb = [
-            {% for entityname in filterpdb %}
-        "{{entityname}}",
-            {% endfor %}
-		]; // Should get populated during page load.
-
+        pdb = [{ %
+                for entityname in filterpdb %
+            }
+            "{{entityname}}", { % endfor %
+            }
+        ]; // Should get populated during page load.
     </script>
     <script>
         function searchpdb(pageno = 1) {
@@ -301,13 +308,12 @@ https://templatemo.com/tm-571-hexashop
             searchkey = document.getElementById('pdbsearch').value;
             if (window.XMLHttpRequest) {
                 xmlhttp = new XMLHttpRequest();
-            }
-            else {
+            } else {
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
             loadingspan = document.getElementById('loading');
             // Register the handler
-            xmlhttp.onreadystatechange = function () {
+            xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     context = JSON.parse(xmlhttp.responseText);
                     searchresults = context['allsearchresults'];
@@ -340,8 +346,7 @@ https://templatemo.com/tm-571-hexashop
                             if (adminuser == 1) {
                                 searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
                             }
-                        }
-                        else if (obtype == 'lot') {
+                        } else if (obtype == 'lot') {
                             searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
                             searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
                             searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle + "</h4>";
@@ -384,14 +389,13 @@ https://templatemo.com/tm-571-hexashop
 
         function openadvancedsearch() {
             advsearchdiv = document.getElementById('advsearch');
-	    searchbutton = document.getElementById('AdvancedSearch-tab');
+            searchbutton = document.getElementById('AdvancedSearch-tab');
             if (advsearchdiv.style.display == 'none') {
                 advsearchdiv.style.display = '';
-		searchbutton.innerHTML = "Hide Search Form";
-            }
-            else {
+                searchbutton.innerHTML = "Hide Search Form";
+            } else {
                 advsearchdiv.style.display = 'none';
-		searchbutton.innerHTML = "Advanced Search";
+                searchbutton.innerHTML = "Advanced Search";
             }
         }
     </script>
@@ -401,8 +405,7 @@ https://templatemo.com/tm-571-hexashop
 <body onload="javascript:autocomplete(document.getElementById('pdbsearch'), pdb);">
 
     <!-- Sign up Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -421,29 +424,24 @@ https://templatemo.com/tm-571-hexashop
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-                            <label style="color:red;" id="errormsg"></label>
-                            {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                    placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
-                                <input type="text" class="form-control" id="emailid" name="emailid"
-                                    placeholder="Enter your email address" />
+                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
                                 <label for="password1">Password</label>
-                                <input type="password" class="form-control" id="password1" name="password1"
-                                    placeholder="Enter a password" />
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
                             <div class="form-group">
                                 <label for="password2">Confirm Password</label>
-                                <input type="password" class="form-control" id="password2" name="password2"
-                                    placeholder="Re-type password" />
+                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
@@ -451,15 +449,12 @@ https://templatemo.com/tm-571-hexashop
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a
-                                            href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a
-                                            href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
                                         receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider"
-                                    onclick="javascript:doregister();">Sign up</button>
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
                             <!--
                             <div class="form-group">
@@ -476,12 +471,10 @@ https://templatemo.com/tm-571-hexashop
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                        data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a
-                                        href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
                                         Service</a> apply.</p>
                             </div>
                         </form>
@@ -492,8 +485,7 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
-        aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -512,17 +504,14 @@ https://templatemo.com/tm-571-hexashop
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-                            <label style="color:red;" id="errormsg"></label>
-                            {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username"
-                                    placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
-                                <input type="password" class="form-control" name='passwd' id="passwd"
-                                    placeholder="Enter your password" />
+                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <!-- <div class="form-group">
@@ -531,10 +520,9 @@ https://templatemo.com/tm-571-hexashop
                                 </div>
                             </div> -->
                             <div class="form-group">
-                                <button type="button" value="submit" name="" class="btn btn-slider"
-                                    onclick="javascript:dologin();">Log in</button>
+                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -552,8 +540,7 @@ https://templatemo.com/tm-571-hexashop
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                        data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -563,8 +550,7 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -593,9 +579,7 @@ https://templatemo.com/tm-571-hexashop
                                     instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
-                                        data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
-                                        data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -645,44 +629,55 @@ https://templatemo.com/tm-571-hexashop
                     </nav> -->
                     <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
                         <a class="navbar-brand" href="/login/dashboard/">
+                            <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
                             <!-- <img src="static/images/logo1.png"> -->
-                            ARTBIDER
+                            <!-- ARTBIDER -->
                         </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                            data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false"
-                            aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                            <ul class="navbar-nav mx-auto">
+                        <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
+                            <ul class="navbar-nav mr-0">
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+                                    <a class="nav-link " href="#">Home</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+                                    <a class="nav-link " href="/artist/index/">Artists</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+                                    <a class="nav-link " href="/auctionhouse/index/">Auction Houses</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+                                    <a class="nav-link " href="/auction/index/">Auctions</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+                                    <a class="nav-link active" href="/price/database/">Price Database</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/plans/">Price Plans</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Galleries</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Shows</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#"> News</a>
                                 </li>
 
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
                                 {% if not user.is_authenticated %}
                                 <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                                <li class="nav-item"><button type="button" class="btn btn-info btn-round"
-                                        data-toggle="modal" data-target="#exampleModal-login"
-                                        aria-controls="exampleModal-login">Login</button></li>
+                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-			      <li class="nav-item">
-                          	<button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
-                              </li>
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                                <li class="nav-item">
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                                </li>
                                 {% endif %}
                             </ul>
                         </div>
@@ -696,7 +691,8 @@ https://templatemo.com/tm-571-hexashop
     <!-- ***** Main Banner Area Start ***** -->
 
     <!-- Carousel -->
-    {% comment %} <section class="testimonials">
+    {% comment %}
+    <section class="testimonials">
         <div class="container"> {% endcomment %}
             <!-- <div class="row">
         <div class="col-sm-12">
@@ -717,25 +713,23 @@ https://templatemo.com/tm-571-hexashop
           </div>
         </div>
       </div> -->
-        {% comment %} </div>
+            {% comment %} </div>
     </section> {% endcomment %}
     <!-- END OF Carousels -->
-    <section class="section gal-section mt-5" id="searchsitesection">
+    <section class="section gal-section" id="searchsitesection">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="section-heading">
+                    <div class="search-bg">
                         <!-- <h2>Emerging Art</h2> -->
                         <form autocomplete="off" name='frmsearchpdb' id='frmsearchpdb' method='POST' action="">
                             {% csrf_token %}
                             <div class="autocomplete">
                                 <!-- <div class="row" style='width:800px;'><input type="search" class='form-control' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." style="width:600px;"><button type="button" class="btn btn-primary" onclick='javascript:searchpdb();'><i class="fa fa-search"></i></button><span id='loading'></span>&nbsp;&nbsp;<a class="nav-link" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openNav()">Advanced Search</a></div> -->
                                 <div class="row justify-content-center">
-                                    <div class="col-6">
-                                        <div class="input-group mb-3">
-                                            <input type="search" class='form-control  rounded-0' name='pdbsearch'
-                                                id='pdbsearch' maxLength="200"
-                                                placeholder="Search artists, artworks, auctions..." />
+                                    <div class="col-md-8">
+                                        <div class="input-group mb-3 w-100">
+                                            <input type="search" class='form-control  rounded-0' name='pdbsearch' id='pdbsearch' maxLength="200" placeholder="Search artists, artworks, auctions..." />
                                             <span class="input-group-text rounded-0"><button type="button"
                                                     class="btn border-0 p-0 rounded-right"
                                                     onclick='javascript:searchpdb();'><i
@@ -744,15 +738,10 @@ https://templatemo.com/tm-571-hexashop
                                     </div>
                                     <div class="col-auto">
                                         <span id='loading'></span>
-                                        <a class="nav-link advanced-search-btn" id="AdvancedSearch-tab"
-                                            data-toggle="tab" href="#AdvancedSearch" role="tab"
-                                            aria-controls="AdvancedSearch" aria-selected="false"
-                                            onclick="openadvancedsearch();">Hide Search Form</a>
+                                        <a class="btn btn-login btn-round py-2" id="AdvancedSearch-tab" data-toggle="tab" href="#AdvancedSearch" role="tab" aria-controls="AdvancedSearch" aria-selected="false" onclick="openadvancedsearch();">Hide Search Form</a>
                                     </div>
                                     <div class="col-12 text-center">
-                                        <p class="p-tag-style">Search 10 Million plus
-                                            Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses
-                                            around the world.</p>
+                                        <p class="p-tag-style"><b>Search 10 Million plus Auction Results, from more than 500,000 Artists and 1000 plus Auction Houses around the world.</b></p>
                                     </div>
                                 </div>
                             </div>
@@ -762,7 +751,7 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-        <div class="container">
+        <div class="container mt-4">
             <div class="row">
                 <div class="col-12 text-center">
                     <div class="section-heading">
@@ -779,133 +768,118 @@ https://templatemo.com/tm-571-hexashop
 
             <div class="section-heading">
                 <div id='advsearch'>
-                    <form method="POST" name='frmpricefilter' id='frmpricefilter' action=''>
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                <h2>Advanced Search Form </h2>
-                                <hr style='width:400px;text-align:center;'><br />
+                    <div class="bg-form">
+                        <form method="POST" name='frmpricefilter' id='frmpricefilter' action=''>
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h2 class="heading-style">Advanced Search Form </h2>
+                                </div>
                             </div>
-                        </div>
-                        <div class='row'>
-                            <div class='col-lg-6'>
-                                <div class="mb-4">
-                                    <label>Artist's Name:</label>
-                                    <input type="text" class="form-control" id="txtartistname" name="txtartistname"
-                                        value="" placeholder="Search by artist name" />
-                                </div>
-                                <div class="mb-4">
-                                    <label>Artwork Title:</label>
-                                    <input type="text" class="form-control" id="txttitle" name="txttitle" value=""
-                                        placeholder="Filter by title" />
-                                </div>
-                                <div class="mb-4">
-                                    <label>Category:</label>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="form-check mr-4">
-                                            <input type="checkbox" class="form-check-input" id="medium1" name="medium1"
-                                                value="paper|etch|charcoal">
-                                            <label class="form-check-label" for="Design-tow">Work on Paper</label>
+                            <div class='row'>
+                                <div class='col-lg-6'>
+                                    <div class="mb-4">
+                                        <label>Artist's Name:</label>
+                                        <input type="text" class="form-control" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label>Artwork Title:</label>
+                                        <input type="text" class="form-control" id="txttitle" name="txttitle" value="" placeholder="Filter by title" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label>Category:</label>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal">
+                                                <label class="form-check-label" for="Design-tow">Work on Paper</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood">
+                                                <label class="form-check-label  flex-nowrap" for="Sculpture-tow">Sculpture</label>
+                                            </div>
                                         </div>
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="medium2" name="medium2"
-                                                value="stone|marble|bronze|brass|gold|wood">
-                                            <label class="form-check-label  flex-nowrap"
-                                                for="Sculpture-tow">Sculpture</label>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas">
+                                                <label class="form-check-label" for="Painting-two">Painting</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation">
+                                                <label class="form-check-label" for="Installation">Installation </label>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid">
+                                                <label class="form-check-label" for="photography">Photography</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric">
+                                                <label class="form-check-label" for="texttile-arts">Textile arts </label>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="form-check mr-4">
-                                            <input type="checkbox" class="form-check-input" id="medium3" name="medium3"
-                                                value="painting|oil|canvas">
-                                            <label class="form-check-label" for="Painting-two">Painting</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="medium4" name="medium4"
-                                                value="installation">
-                                            <label class="form-check-label" for="Installation">Installation </label>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center">
-                                        <div class="form-check mr-4">
-                                            <input type="checkbox" class="form-check-input" id="medium5" name="medium5"
-                                                value="print|photo|celluloid">
-                                            <label class="form-check-label" for="photography">Photography</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="medium6" name="medium6"
-                                                value="textile|cloth|fabric">
-                                            <label class="form-check-label" for="texttile-arts">Textile arts </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-4">
-                                    <label>Artwork Start:</label>
-                                    <select name='sel_artwork_start' id='sel_artwork_start' class='form-control'>
+                                    <div class="mb-4">
+                                        <label>Artwork Start:</label>
+                                        <select name='sel_artwork_start' id='sel_artwork_start' class='form-control'>
                                         {% for syk, syr in artwork_year_list.items %}
                                         <option value="{{syk}}">{{syr}}</option>
                                         {%endfor %}
                                     </select>
-                                </div>
-                                <div>
-                                    <label>Artwork End:</label>
-                                    <select name='sel_artwork_end' id='sel_artwork_end' class='form-control'>
+                                    </div>
+                                    <div>
+                                        <label>Artwork End:</label>
+                                        <select name='sel_artwork_end' id='sel_artwork_end' class='form-control'>
                                         {% for syk, syr in artwork_year_list.items %}
                                         <option value="{{syk}}">{{syr}}</option>
                                         {%endfor %}
                                     </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-4">
-                                    <label>Auction House:</label>
-                                    <select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' size=4
-                                        multiple>
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label>Auction House:</label>
+                                        <select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' size=4 multiple>
                                         {% for auctionhouse, ahid in auctionhouses.items %}
                                         <option value='{{ahid}}'>{{auctionhouse}}</option>
                                         {% endfor %}
                                     </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label>Auction Location:</label>
-                                    <input type="text" class="form-control" id="txtauctionlocation"
-                                        name="txtauctionlocation" value="" placeholder="Auction location">
-                                </div>
-                                <div class="mb-4">
-                                    <label>Sale Title:</label>
-                                    <input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle"
-                                        value="" placeholder="Sale title">
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="mb-4">
-                                            <label>Sale Start Date:</label>
-                                            <input type="date" class="form-control" id="dtauctionstartdate"
-                                                name="dtauctionstartdate" value="" placeholder="">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label>Auction Location:</label>
+                                        <input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" value="" placeholder="Auction location">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label>Sale Title:</label>
+                                        <input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" value="" placeholder="Sale title">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-4">
+                                                <label>Sale Start Date:</label>
+                                                <input type="date" class="form-control" id="dtauctionstartdate" name="dtauctionstartdate" value="" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-4">
+                                                <label>Sale End Date:</label>
+                                                <input type="date" class="form-control" id="dtauctionenddate" name="dtauctionenddate" value="" placeholder="">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="mb-4">
-                                            <label>Sale End Date:</label>
-                                            <input type="date" class="form-control" id="dtauctionenddate"
-                                                name="dtauctionenddate" value="" placeholder="">
-                                        </div>
+                                    <div>
+                                        <label>Sale Code:</label>
+                                        <input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value="" placeholder="Sale code">
                                     </div>
                                 </div>
-                                <div    >
-                                    <label>Sale Code:</label>
-                                    <input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value=""
-                                        placeholder="Sale code">
+                                <div class="col-12 text-center mt-4">
+                                    <input type="button" class="btn btn-login btn-round ml-0" id="btnsearch" name="btnsearch" value="Search" aria-expanded="true" onclick="javascript:filterresults();">
+                                    <span id='loadingspan'></span>
+                                    <input type='reset' name='rstbtn' id='rstbtn' value='Clear' class='btn btn-login btn-round' style="background-color: #555;">
                                 </div>
                             </div>
-                            <div class="col-12 text-center mt-4">
-                                <input type="button" class="btn btn-primary" id="btnsearch" name="btnsearch"
-                                    value="Search" aria-expanded="true" onclick="javascript:filterresults();">
-                                <span id='loadingspan'></span>
-                                <input type='reset' name='rstbtn' id='rstbtn' value='Clear' class='btn btn-secondary'>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -915,7 +889,7 @@ https://templatemo.com/tm-571-hexashop
 
 
 
-    <section class="section gal-section" id="">
+    <!-- <section class="section gal-section" id="">
         <div class="container">
             <div class="row align-items-end">
                 <div class="col-lg-12">
@@ -925,11 +899,11 @@ https://templatemo.com/tm-571-hexashop
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
-        <!-- Begining of new auctions gallery -->
-        <div>
+    <!-- Begining of new auctions gallery -->
+    <!-- <div>
             <section class="oth-works mrt-90">
                 <div class="container">
                     <div class="row">
@@ -944,8 +918,7 @@ https://templatemo.com/tm-571-hexashop
                         {% for entity in entities %}
                         <div class="column">
                             <div class="img-box">
-                                <a href="/auction/details/?lid={{entity.lid}}"><img src="{{entity.lotimage}}"
-                                        alt=""></a>
+                                <a href="/auction/details/?lid={{entity.lid}}"><img src="{{entity.lotimage}}" alt=""></a>
                                 <a href="/auction/details/?lid={{entity.lid}}" style="color:#000000;">
                                     <h4>{{entity.artworkname}}: {{entity.auctionhouse}}</h4>
                                     <h6>{{entity.artistname}}</h6>
@@ -955,25 +928,23 @@ https://templatemo.com/tm-571-hexashop
                                         {{entity.auctionperiod}}
                                     </h6>
 
-                                    <!-- <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a> -->
+                                    <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
                                 </a>
                                 {% if adminuser == 1 %}
-                                <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
-                                        onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
+                                <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editlot('{{lot.lid}}');">Edit</a></div>
                                 {% endif %}
                             </div>
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-                <div class="container">
+                </div> -->
+    <!-- <div class="container">
                     <div class="card-body">
 
                         <div class="tab-content">
-                            <div class="tab-pane fade" id="AdvancedSearch" role="tabpanel"
-                                aria-labelledby="AdvancedSearch-tab">
-                                <div id="mySidebar" class="sidebar">
-                                    <!-- <div class="fixed-sidbr-header">
+                            <div class="tab-pane fade" id="AdvancedSearch" role="tabpanel" aria-labelledby="AdvancedSearch-tab">
+                                <div id="mySidebar" class="sidebar"> -->
+    <!-- <div class="fixed-sidbr-header">
 				<h5>Filter</h5>
 				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
 			</div>
@@ -1194,14 +1165,14 @@ https://templatemo.com/tm-571-hexashop
 					</div>
 					</div>
 				</div> -->
-                                </div>
+    <!-- </div>
 
                                 </form>
                             </div>
                         </div>
-            </section>
+            </section> -->
 
-            <!-- <div class="container">
+    <!-- <div class="container">
 	    <div class="row">
 	    	<div class="col-lg-12">
 		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=0">View More</a>
@@ -1209,9 +1180,9 @@ https://templatemo.com/tm-571-hexashop
 	    </div>
 	</div> -->
 
-            <!-- End of new auctions gallery -->
+    <!-- End of new auctions gallery -->
 
-            <!-- <div class="container">
+    <!-- <div class="container">
 	    <div class="row">
 	    	<div class="col-lg-12">
 		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=1">View More</a>
@@ -1332,7 +1303,7 @@ https://templatemo.com/tm-571-hexashop
             input: '<input type="text" maxLength="20" placeholder="Search">'
         });
 
-        jQuery(document).ready(function ($) {
+        jQuery(document).ready(function($) {
             "use strict";
             $('#customers-testimonials').owlCarousel({
                 loop: true,
@@ -1360,21 +1331,19 @@ https://templatemo.com/tm-571-hexashop
         });
     </script>
     <script>
-
-        $(function () {
+        $(function() {
             var selectedClass = "";
-            $("p").click(function () {
+            $("p").click(function() {
                 selectedClass = $(this).attr("data-rel");
                 $("#portfolio").fadeTo(50, 0.1);
                 $("#portfolio div").not("." + selectedClass).fadeOut();
-                setTimeout(function () {
+                setTimeout(function() {
                     $("." + selectedClass).fadeIn();
                     $("#portfolio").fadeTo(50, 1);
                 }, 500);
 
             });
         });
-
     </script>
 
 </body>

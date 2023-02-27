@@ -25,23 +25,20 @@
     <link rel="stylesheet" href="/static/css/newcarousel.css">
     <link rel="stylesheet" href="/static/css/new-style.css">
 
-    <style>
-
-    </style>
-
-    <style>
-
-    </style>
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script>
         function showstats(aid, statsdivid) {
@@ -660,27 +657,120 @@
                 </button>
             </div>
         </div>
-
+        <script>
+            $(function() {
+                // Owl Carousel
+                var owl = $(".owl-carousel");
+                owl.owlCarousel({
+                    items: 3,
+                    margin: 10,
+                    loop: true,
+                    nav: true,
+                    responsive: {
+                        0: {
+                            items: 1,
+                            nav: false
+                        },
+                        600: {
+                            items: 2,
+                            nav: false
+                        },
+                        1000: {
+                            items: 3,
+                            nav: true,
+                            loop: true
+                        }
+                    }
+                });
+            });
+        </script>
         <div class="latest-artists">
             <div class="container">
                 <div class="">
                     <h3 class="heading-style mb-2">Top Artists</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>Top Preforming Artists</b> here</p>
-                    <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="home-demo">
+                        <div class="owl-carousel owl-theme">
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h4>Pablo Picasso</h4>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>Spanish, 1881 - 1973</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h4>Pablo Picasso</h4>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>Spanish, 1881 - 1973</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h4>Pablo Picasso</h4>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>Spanish, 1881 - 1973</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h4>Pablo Picasso</h4>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>Spanish, 1881 - 1973</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h4>Pablo Picasso</h4>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>Spanish, 1881 - 1973</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h4>Pablo Picasso</h4>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>Spanish, 1881 - 1973</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div id="carousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h4>Pablo Picasso</h4>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>Spanish, 1881 - 1973</span>
-                                            </div>
-                                        </a>
+
                                     </div>
                                     <div class="col-md-4">
                                         <a href="#" class="latest-card">
@@ -762,7 +852,7 @@
                             </div>
                             <span class="visually-hidden">Next</span>
                         </button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -772,21 +862,88 @@
                 <div class="">
                     <h3 class="heading-style mb-2">Upcoming Auctions</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>upcoming auctions </b>here</p>
-                    <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
+                    <div class="home-demo">
+                        <div class="owl-carousel owl-theme">
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
+
                                     </div>
                                     <div class="col-md-4">
                                         <a href="#" class="latest-card">
@@ -867,7 +1024,7 @@
                             </div>
                             <span class="visually-hidden">Next</span>
                         </button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -878,7 +1035,83 @@
                 <div class="">
                     <h3 class="heading-style mb-2">Auctions Results</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>auctions results </b>here</p>
-                    <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
+                    <div class="home-demo">
+                        <div class="owl-carousel owl-theme">
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="#" class="latest-card">
+                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                    <div class="down-content">
+                                        <div class="d-flex justify-content-between">
+                                            <h5>Modern & Contemporary Day Auction</h5>
+                                            <p>View Details</p>
+                                        </div>
+                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <div class="row">
@@ -973,7 +1206,7 @@
                             </div>
                             <span class="visually-hidden">Next</span>
                         </button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

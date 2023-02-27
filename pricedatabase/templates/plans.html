@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
 
     <title>ArtBider Plans</title>
 
@@ -27,9 +26,10 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-        body{
+        body {
             font-family: 'Poppins', sans-serif !important;
         }
+        
         .owl-prev,
         .owl-next {
             width: 15px;
@@ -40,15 +40,15 @@
             display: block !important;
             border: 0px solid black;
         }
-
+        
         .owl-prev {
             left: -20px;
         }
-
+        
         .owl-next {
             right: -20px;
         }
-
+        
         .owl-prev i,
         .owl-next i {
             transform: scale(2, 5);
@@ -69,8 +69,8 @@ https://templatemo.com/tm-571-hexashop
 
 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/static/css/new-style.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
@@ -84,7 +84,7 @@ https://templatemo.com/tm-571-hexashop
             font-weight: bold;
             text-decoration: none;
         }
-
+        
         #cover {
             position: fixed;
             top: 0;
@@ -95,7 +95,7 @@ https://templatemo.com/tm-571-hexashop
             height: 100%;
             display: none;
         }
-
+        
         #adminScreen {
             height: 680px;
             width: 640px;
@@ -107,13 +107,13 @@ https://templatemo.com/tm-571-hexashop
             border: 5px solid #cccccc;
             border-radius: 10px;
         }
-
+        
         #adminScreen:target,
         #adminScreen:target+#cover {
             display: block;
             opacity: 2;
         }
-
+        
         .cancel {
             display: block;
             position: absolute;
@@ -128,13 +128,17 @@ https://templatemo.com/tm-571-hexashop
             text-align: center;
             font-weight: bold;
         }
+        
+        footer {
+            margin-top: 100px;
+        }
     </style>
 
     <style>
         /* td div:nth-of-type(odd) {
             background: #e0e0e0;
         } */
-
+        
         td div:nth-of-type(even) {
             background: #FFFFFF;
         }
@@ -150,8 +154,7 @@ https://templatemo.com/tm-571-hexashop
 <body>
 
     <!-- Sign up Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -170,29 +173,24 @@ https://templatemo.com/tm-571-hexashop
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-                            <label style="color:red;" id="errormsg"></label>
-                            {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                    placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
-                                <input type="text" class="form-control" id="emailid" name="emailid"
-                                    placeholder="Enter your email address" />
+                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
                                 <label for="password1">Password</label>
-                                <input type="password" class="form-control" id="password1" name="password1"
-                                    placeholder="Enter a password" />
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
                             <div class="form-group">
                                 <label for="password2">Confirm Password</label>
-                                <input type="password" class="form-control" id="password2" name="password2"
-                                    placeholder="Re-type password" />
+                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
@@ -200,15 +198,12 @@ https://templatemo.com/tm-571-hexashop
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a
-                                            href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a
-                                            href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
                                         receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider"
-                                    onclick="javascript:doregister();">Sign up</button>
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
                             <!--
                             <div class="form-group">
@@ -225,12 +220,10 @@ https://templatemo.com/tm-571-hexashop
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                        data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a
-                                        href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
                                         Service</a> apply.</p>
                             </div>
                         </form>
@@ -241,8 +234,7 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
-        aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -261,17 +253,14 @@ https://templatemo.com/tm-571-hexashop
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-                            <label style="color:red;" id="errormsg"></label>
-                            {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username"
-                                    placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
-                                <input type="password" class="form-control" name='passwd' id="passwd"
-                                    placeholder="Enter your password" />
+                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <!-- <div class="form-group">
@@ -280,10 +269,9 @@ https://templatemo.com/tm-571-hexashop
                                 </div>
                             </div> -->
                             <div class="form-group">
-                                <button type="button" value="submit" name="" class="btn btn-slider"
-                                    onclick="javascript:dologin();">Log in</button>
+                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -301,8 +289,7 @@ https://templatemo.com/tm-571-hexashop
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                        data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -312,8 +299,7 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -342,9 +328,7 @@ https://templatemo.com/tm-571-hexashop
                                     instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
-                                        data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
-                                        data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -394,44 +378,55 @@ https://templatemo.com/tm-571-hexashop
                     </nav> -->
                     <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
                         <a class="navbar-brand" href="/login/dashboard/">
+                            <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
                             <!-- <img src="static/images/logo1.png"> -->
-                            ARTBIDER
+                            <!-- ARTBIDER -->
                         </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                            data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false"
-                            aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                            <ul class="navbar-nav mx-auto">
+                        <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
+                            <ul class="navbar-nav mr-0">
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+                                    <a class="nav-link " href="#">Home</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+                                    <a class="nav-link " href="/artist/index/">Artists</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+                                    <a class="nav-link " href="/auctionhouse/index/">Auction Houses</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+                                    <a class="nav-link " href="/auction/index/">Auctions</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+                                    <a class="nav-link " href="/price/database/">Price Database</a>
                                 </li>
-                                
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link active" href="/price/plans/">Price Plans</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Galleries</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Shows</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#"> News</a>
+                                </li>
+
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
                                 {% if not user.is_authenticated %}
                                 <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                                <li class="nav-item"><button type="button" class="btn btn-info btn-round"
-                                        data-toggle="modal" data-target="#exampleModal-login"
-                                        aria-controls="exampleModal-login">Login</button></li>
+                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-			      <li class="nav-item">
-                          	<button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
-                              </li>
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                                <li class="nav-item">
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                                </li>
                                 {% endif %}
                             </ul>
                         </div>
@@ -445,9 +440,9 @@ https://templatemo.com/tm-571-hexashop
     <!-- ***** Main Banner Area Start ***** -->
 
     <!-- Carousel -->
-    <section class="testimonials">
-        <div class="container">
-            <!-- <div class="row">
+    <!-- <section class="testimonials"> -->
+    <!-- <div class="container"> -->
+    <!-- <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
 	    {% for d in carousel %}
@@ -467,7 +462,7 @@ https://templatemo.com/tm-571-hexashop
         </div>
       </div>
         </div>-->
-    </section> 
+    <!-- </section> -->
     <!-- END OF Carousels -->
     <!-- <section class="section gal-section" id="searchsitesection">
 
@@ -549,59 +544,144 @@ https://templatemo.com/tm-571-hexashop
 
         <!-- Begining of new auctions gallery -->
         <div>
-            <section class="oth-works mrt-90">
-                <div class="container mt-5">
+            <section class="oth-works">
+                <div class="container">
                     <div class="row">
                         <div class="col-lg-12 text-center">
                             <div class="section-heading" id='sectionheaderdiv'>
-                                <h2>Pocket Friendly Subscription Plans</h2>
-                                <hr class="mt-1" style="width: 595px;">
+                                <h2 class="heading-style">Pocket Friendly Subscription Plans</h2>
                             </div>
                         </div>
+                        <div class="col-12 text-center">
+                            <p class="p-tag-style mb-2">Artbider offers you the most cost effective subscription plans amongst the other art databases.</p>
+                            <p class="p-tag-style mb-2">Special pricing plans starting from $99 (anual) for Art Institutions and Art Organizations.</p>
+                            <p class="p-tag-style mb-5"><b>Special Launch Offer</b> – First 50 users will get 50% Off on our annual subscription, Use code FIRST50 (limited period offer)</p>
+                        </div>
                     </div>
-                    <div class="row align-items-end" id="offers">
-                        <div class="d-lg-block text-justify"
-                            style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                    <!-- <div class="row align-items-end" id="offers">
+                        <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
                             <ul class="entry-content">
-                                <li>Artbider offers you the most cost effective subscription plans amongst the other art
-                                    databases.</li>
+                                <li>Artbider offers you the most cost effective subscription plans amongst the other art databases.
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <br />
                     <div class="row align-items-end" id="offers">
-                        <div class="d-lg-block text-justify"
-                            style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                        <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
                             <ul class="entry-content">
-                                <li>Special pricing plans starting from $99 (anual) for Art Institutions and Art
-                                    Organizations.</li>
+                                <li>Special pricing plans starting from $99 (anual) for Art Institutions and Art Organizations.
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <br />
                     <div class="row align-items-end" id="offers">
-                        <div class="d-lg-block text-justify"
-                            style="max-width: 1400px;padding-left:20px;padding-right:30px;">
+                        <div class="d-lg-block text-justify" style="max-width: 1400px;padding-left:20px;padding-right:30px;">
                             <ul class="entry-content">
-                                <li><b>Special Launch Offer</b> – First 50 users will get 50% Off on our annual
-                                    subscription, Use code FIRST50 (limited period offer)</li>
+                                <li><b>Special Launch Offer</b> – First 50 users will get 50% Off on our annual subscription, Use code FIRST50 (limited period offer)</li>
                             </ul>
                         </div>
                     </div>
-                    <br />
+                    <br /> -->
                 </div>
         </div>
 
-        <div class="container">
+        <section>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-4 mb-4 mb-md-0">
+                        <div class="subscription-box">
+                            <h3>Basic</h3>
+
+                            <hr/>
+                            <ul class="text-start">
+                                <li class="text-start"><img src="/static/images/tick.svg" class="mr-2">Unlimited Searches</li>
+                                <li class="text-start"><img src="/static/images/tick.svg" class="mr-2">Artwork Details & Images</li>
+                                <li class="text-start"><img src="/static/images/tick.svg" class="mr-2">Auction Results</li>
+                                <li class="text-start"><img src="/static/images/tick.svg" class="mr-2">Upcoming Auctions</li>
+                            </ul>
+                            <div class="d-flex align-items-end justify-content-between mt--122">
+                                <div>
+                                    <h6>$5.00</h6>
+                                    <p>day</p>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6>$20.00</h6>
+                                    <p>month</p>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6><span> <del>$240.00</del></span></h6>
+                                    <h6>$149.00</h6>
+                                    <p>year</p>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" />
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-login btn btn-round ml-0 mt-5" type="button">Subscribe</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="subscription-box premium">
+                            <h3> Premium</h3>
+
+                            <hr/>
+                            <ul class="text-start">
+                                <li class="text-start"><img src="/static/images/tick.svg" class="mr-2">Unlimited Searches</li>
+                                <li class="text-start"><img src="/static/images/tick.svg" class="mr-2">Artwork Details & Images</li>
+                                <li class="text-start"><img src="/static/images/tick.svg" class="mr-2">Auction Results</li>
+                                <li class="text-start"><img src="/static/images/tick.svg" class="mr-2">Upcoming Auctions</li>
+                                <li class="text-start premium-list"><img src="/static/images/tick.svg" class="mr-2">Market Alerts</li>
+                                <li class="text-start  premium-list"><img src="/static/images/tick.svg" class="mr-2">Artist Insights</li>
+                                <li class="text-start  premium-list"><img src="/static/images/tick.svg" class="mr-2">Collection Management</li>
+                            </ul>
+
+                            <div class="d-flex align-items-end justify-content-between mt-5">
+                                <div>
+                                    <h6>$9.00</h6>
+                                    <p>day</p>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6>$29.00</h6>
+                                    <p>month</p>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6><span> <del>$348.00</del></span></h6>
+                                    <h6>$199.00</h6>
+                                    <p>year</p>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <button class="btn-login btn btn-round ml-0 mt-5" type="button">Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- <div class="container">
             <div class="row">
 
                 <table id="newtable" class="table table-bordered table-striped fixedtable">
                     <thead>
-                        <th><label
-                                style='font-weight:bold;font-size:larger;padding-left:10px;padding-right:10px;'>Basic</label>
+                        <th><label style='font-weight:bold;font-size:larger;padding-left:10px;padding-right:10px;'>Basic</label>
                         </th>
-                        <th><label
-                                style='font-weight:bold;font-size:larger;padding-left:10px;padding-right:10px;'>Premium</label>
+                        <th><label style='font-weight:bold;font-size:larger;padding-left:10px;padding-right:10px;'>Premium</label>
                         </th>
                     </thead>
                     <tbody>
@@ -657,10 +737,10 @@ https://templatemo.com/tm-571-hexashop
                 </table>
 
             </div>
-        </div>
-    </section>
+        </div> -->
+        </section>
 
-    <!-- <div class="container">
+        <!-- <div class="container">
 	    <div class="row">
 	    	<div class="col-lg-12">
 		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=0">View More</a>
@@ -668,9 +748,9 @@ https://templatemo.com/tm-571-hexashop
 	    </div>
 	</div> -->
 
-    <!-- End of new auctions gallery -->
+        <!-- End of new auctions gallery -->
 
-    <!-- <div class="container">
+        <!-- <div class="container">
 	    <div class="row">
 	    	<div class="col-lg-12">
 		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=1">View More</a>
@@ -791,7 +871,7 @@ https://templatemo.com/tm-571-hexashop
             input: '<input type="text" maxLength="20" placeholder="Search">'
         });
 
-        jQuery(document).ready(function ($) {
+        jQuery(document).ready(function($) {
             "use strict";
             $('#customers-testimonials').owlCarousel({
                 loop: true,
@@ -819,21 +899,19 @@ https://templatemo.com/tm-571-hexashop
         });
     </script>
     <script>
-
-        $(function () {
+        $(function() {
             var selectedClass = "";
-            $("p").click(function () {
+            $("p").click(function() {
                 selectedClass = $(this).attr("data-rel");
                 $("#portfolio").fadeTo(50, 0.1);
                 $("#portfolio div").not("." + selectedClass).fadeOut();
-                setTimeout(function () {
+                setTimeout(function() {
                     $("." + selectedClass).fadeIn();
                     $("#portfolio").fadeTo(50, 1);
                 }, 500);
 
             });
         });
-
     </script>
 
 </body>
