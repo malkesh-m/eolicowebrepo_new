@@ -1,281 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
- <meta charset="utf-8">
- <meta name="viewport" content="width=device-width, initialscale=1, shrink-to-fit=no">
- <meta name="description" content="">
- <meta name="author" content="">
- <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
- <title>Eolico Galleries</title>
- <!-- Additional CSS Files -->
- <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
- <link rel="stylesheet" type="text/css" href="/static/css/fontawesome.css">
- <link rel="stylesheet" href="/static/css/style.css">
-<link rel="stylesheet" href="/static/css/responsive.css">
- <link rel="stylesheet" href="/static/css/owl-carousel.css">
- <link rel="stylesheet" href="/static/css/lightbox.css">
- <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
-<style>
-#Top-owl-carousel{
-margin-top:5%;
-}
-.slide-cap{
-position: absolute;
-top: 28%;
-left: 13%;
-width: 28%;
-}
-.rit-cap{
-position: absolute;
-top: 28%;
-right: 15%;
-width: 30%;
-}
-#Top-owl-carousel p{
-margin-top:20px;
-}
-.btn-slider{
-border:1px solid #333;
-border-radius:0px;
-margin-top:20px;
-margin-bottom:10px;
-padding: 5px 22px;
-letter-spacing:2px;
-}
-.btn-slider:hover{
-background: #f1f0ef;
-}
-#Top-owl-carousel .owl-nav{
-text-align: center;
-margin-top: 15px;
-}
-#Top-owl-carousel .owl-nav .owl-prev{
-margin-right:10px;
-}
-#Top-owl-carousel .owl-nav .owl-next{
-margin-left:10px;
-}
-#Top-owl-carousel .owl-nav .owl-prev:focus,
-#Top-owl-carousel .owl-nav .owl-next:focus{
-outline:none;
-}
-.wrapper {
- margin: 10vh;
-}
-.card {
- border: none;
- //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
- overflow: hidden;
- border-radius: 20px;
- min-height: 450px;
- box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
-}
- @media (max-width: 768px) {
-.card {
- min-height: 350px;
-}
-}
- @media (max-width: 420px) {
- .card {
- min-height: 300px;
-}
-}
-.card.card-has-bg {
- //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
- background-size: 120%;
- background-repeat: no-repeat;
- background-position: center center;
-}
-.card.card-has-bg:before {
- content: '';
- position: absolute;
- top: 0;
- right: 0;
- bottom: 0;
- left: 0;
- background: inherit;
- -webkit-filter: grayscale(1);
- -moz-filter: grayscale(100%);
- -ms-filter: grayscale(100%);
- -o-filter: grayscale(100%);
- filter: grayscale(100%);
-}
-.card.card-has-bg:hover {
- //transform: scale(0.98);
- box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
- background-size: 120%;
- //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-.card.card-has-bg:hover .card-img-overlay {
- //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
- background: #234f6d;
- background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%,rgba(4, 69, 114, 1) 100%);
-}
-.card .card-footer {
- background: none;
- border-top: none;
-}
-.card .card-footer .media img {
- border: solid 3px rgba(234, 95, 0, 0.3);
-}
-.card .card-meta {
- color: orange;
-}
-.card .card-body {
- //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-.card:hover {
- cursor: pointer;
- //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-.card:hover .card-body {
- //margin-top: 30px;
- //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-.card .card-img-overlay {
- transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
- background: #c2a476;
- background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
-}
-.wrapper .section-heading{
-margin-bottom: 60px;
-}
-.btn-box{
-margin-top: 30px;
-}
-footer .under-footer a {
- color: #717171;
-}
-footer .under-footer a:hover {
- color: #c2a476;
-}
-</style>
-<!--
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initialscale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <title>Eolico Galleries</title>
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    <link rel="stylesheet" href="/static/css/owl-carousel.css">
+    <link rel="stylesheet" href="/static/css/lightbox.css">
+    <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
+
+    <style>
+        #Top-owl-carousel {
+            margin-top: 5%;
+        }
+        
+        .slide-cap {
+            position: absolute;
+            top: 28%;
+            left: 13%;
+            width: 28%;
+        }
+        
+        .rit-cap {
+            position: absolute;
+            top: 28%;
+            right: 15%;
+            width: 30%;
+        }
+        
+        #Top-owl-carousel p {
+            margin-top: 20px;
+        }
+        
+        .btn-slider {
+            border: 1px solid #333;
+            border-radius: 0px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding: 5px 22px;
+            letter-spacing: 2px;
+        }
+        
+        .btn-slider:hover {
+            background: #f1f0ef;
+        }
+        
+        #Top-owl-carousel .owl-nav {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-prev {
+            margin-right: 10px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-next {
+            margin-left: 10px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-prev:focus,
+        #Top-owl-carousel .owl-nav .owl-next:focus {
+            outline: none;
+        }
+        
+        .wrapper {
+            margin: 10vh;
+        }
+        
+        .card {
+            border: none;
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
+            border-radius: 20px;
+            min-height: 450px;
+            box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                min-height: 350px;
+            }
+        }
+        
+        @media (max-width: 420px) {
+            .card {
+                min-height: 300px;
+            }
+        }
+        
+        .card.card-has-bg {
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            background-size: 120%;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        
+        .card.card-has-bg:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: inherit;
+            -webkit-filter: grayscale(1);
+            -moz-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            filter: grayscale(100%);
+        }
+        
+        .card.card-has-bg:hover {
+            //transform: scale(0.98);
+            box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
+            background-size: 120%;
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card.card-has-bg:hover .card-img-overlay {
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #234f6d;
+            background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%, rgba(4, 69, 114, 1) 100%);
+        }
+        
+        .card .card-footer {
+            background: none;
+            border-top: none;
+        }
+        
+        .card .card-footer .media img {
+            border: solid 3px rgba(234, 95, 0, 0.3);
+        }
+        
+        .card .card-meta {
+            color: orange;
+        }
+        
+        .card .card-body {
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card:hover {
+            cursor: pointer;
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card:hover .card-body {
+            //margin-top: 30px;
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card .card-img-overlay {
+            transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #c2a476;
+            background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
+        }
+        
+        .wrapper .section-heading {
+            margin-bottom: 60px;
+        }
+        
+        .btn-box {
+            margin-top: 30px;
+        }
+        
+        footer .under-footer a {
+            color: #717171;
+        }
+        
+        footer .under-footer a:hover {
+            color: #c2a476;
+        }
+    </style>
+    <!--
 TemplateMo 571 Hexashop
 https://templatemo.com/tm-571-hexashop
 -->
 
-<script type='text/javascript'>
-	
-	function dofilter(selectid){
-	  //alert("hi");
-	  const galleriesdict = {
-	    {% for gname, glist in allgalleries.items %}
-		"{{gname}}" : Array("{{glist.0}}", "{{glist.1}}", "{{glist.2}}", "{{glist.3}}", "{{glist.4}}"),
-	    {% endfor %}
-	  };
-	  sectiontag = document.getElementById("galleries");
-	  selecttag = document.getElementById(selectid);
-	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
-	  //alert(selectedoption);
-          html = "";
- 	  if(selectid == "bylocation"){
-	    for(gname in galleriesdict){
-		gvlist = galleriesdict[gname];
-		starter = 0;
-		  if(selectedoption != "1"){
-		  //alert(gvlist[0].toLowerCase() + "gvlist"); alert(selectedoption.toLowerCase());
-		  if(gvlist[0].toLowerCase().includes(selectedoption.toLowerCase())){
-                  //if(gvlist[0].toLowerCase() == selectedoption.toLowerCase() ){
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";        
-		  }
-		}// if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";  
-		}
-		html += "</div></div></div></div></div></section>";
-	    } 
-	  }
-	  if(selectid == "byspeciality"){
-	    for(gname in galleriesdict){
-		if(gname.toLowerCase() == selectedoption.toLowerCase()){
-		  gvlist = galleriesdict[gname];
-		  starter = 0;
+    <script type='text/javascript'>
+        function dofilter(selectid) {
+            //alert("hi");
+            const galleriesdict = {
+                { %
+                    for gname, glist in allgalleries.items %
+                }
+                "{{gname}}": Array("{{glist.0}}", "{{glist.1}}", "{{glist.2}}", "{{glist.3}}", "{{glist.4}}"),
+                { % endfor %
+                }
+            };
+            sectiontag = document.getElementById("galleries");
+            selecttag = document.getElementById(selectid);
+            selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
+            //alert(selectedoption);
+            html = "";
+            if (selectid == "bylocation") {
+                for (gname in galleriesdict) {
+                    gvlist = galleriesdict[gname];
+                    starter = 0;
+                    if (selectedoption != "1") {
+                        //alert(gvlist[0].toLowerCase() + "gvlist"); alert(selectedoption.toLowerCase());
+                        if (gvlist[0].toLowerCase().includes(selectedoption.toLowerCase())) {
+                            //if(gvlist[0].toLowerCase() == selectedoption.toLowerCase() ){
+                            if (starter == 0) {
+                                html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                starter = 1;
+                            }
+                            html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";
+                        }
+                    } // if selectedoption != 1
+                    else {
+                        if (starter == 0) {
+                            html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                            html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                            starter = 1;
+                        }
+                        html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";
+                    }
+                    html += "</div></div></div></div></div></section>";
+                }
+            }
+            if (selectid == "byspeciality") {
+                for (gname in galleriesdict) {
+                    if (gname.toLowerCase() == selectedoption.toLowerCase()) {
+                        gvlist = galleriesdict[gname];
+                        starter = 0;
 
-		  if(selectedoption != "1"){
-		  if(gvlist[0].toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";  
-		  }
-		} // if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";    
-		}
+                        if (selectedoption != "1") {
+                            if (gvlist[0].toLowerCase() == selectedoption.toLowerCase()) {
+                                if (starter == 0) {
+                                    html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                    html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                    starter = 1;
+                                }
+                                html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";
+                            }
+                        } // if selectedoption != 1
+                        else {
+                            if (starter == 0) {
+                                html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + "" + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                starter = 1;
+                            }
+                            html += "<div class='item'><div class='thumb'><a href='/gallery/details/?gid=" + gvlist[3] + "'><img src='" + gvlist[1] + "' alt=''></a></div><div class='down-content'><a href='/gallery/details/?gid=" + gvlist[3] + "'>		<h4>" + gname + "</h4><span>" + gvlist[0] + "</span><a class='btn btn-slider' href='/gallery/follow/?gid=" + gvlist[3] + "'>Follow</a></a></div></div>";
+                        }
 
-		html += "</div></div></div></div></div></section>";
-		}
-	    }
-	  }
-	  sectiontag.innerHTML = html;
-	}
+                        html += "</div></div></div></div></div></section>";
+                    }
+                }
+            }
+            sectiontag.innerHTML = html;
+        }
     </script>
- </head>
+</head>
 
- <body>
+<body>
 
- <!-- ***** Preloader Start ***** -->
- <div id="preloader">
- <div class="jumper">
- <div></div>
- <div></div>
- <div></div>
- </div>
- </div>
- <!-- ***** Preloader End ***** -->
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
 
 
- <!-- ***** Header Area Start ***** -->
- <header class="header-area header-sticky">
- <div class="container">
- <div class="row">
- <div class="col-12">
- <nav class="main-nav">
- <!-- ***** Logo Start ***** -->
- <a href="/login/index/" class="logo">
- <img src="/static/images/logo1.png">
- </a>
- <!-- ***** Logo End ***** -->
- <!-- ***** Menu Start ***** -->
- <ul class="nav">
- <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
- <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
- <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
- <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
- <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
- <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
- <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
- <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
- <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
- <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
- <li class="scroll-to-section"><a href="#">Others</a></li>
- <li class="submenu">
- <ul>
- <li><a href="/about/">About</a></li>
- <li><a href="/contactus/">Contact Us</a></li>
- </ul>
- </li>
- <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
- <!--<li class="submenu">
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="/login/index/" class="logo">
+                            <img src="/static/images/logo1.png">
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
+                            <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+                            <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
+                            <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+                            <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+                            <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
+                            <li class="scroll-to-section"><a href="#">Others</a></li>
+                            <li class="submenu">
+                                <ul>
+                                    <li><a href="/about/">About</a></li>
+                                    <li><a href="/contactus/">Contact Us</a></li>
+                                </ul>
+                            </li>
+                            <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+                            <!--<li class="submenu">
  <a href="javascript:;">Pages</a>
  <ul>
  <li><a href="about.html">About Us</a></li>
@@ -286,17 +317,17 @@ https://templatemo.com/tm-571-hexashop
  </li>  
  -->
 
- </ul>
- <a class='menu-trigger'> <span>Menu</span> </a>
- <!-- ***** Menu End ***** -->
- </nav>
- </div>
- </div>
- </div>
- </header>
- <!-- ***** Header Area End ***** -->
- <!-- ***** Main Banner Area Start ***** -->
-<!-- 
+                        </ul>
+                        <a class='menu-trigger'> <span>Menu</span> </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+    <!-- ***** Main Banner Area Start ***** -->
+    <!-- 
 <div id="Top-owl-carousel" class="owl-carousel owl-theme">
 <div class="item"><img src="/static/images/slider-bg1.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Aliquam
 tincidunt dolor</h2><p>Lorem ipsum dolor sit amet, consectetur
@@ -312,51 +343,62 @@ elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn
 btn-slider" href="#">Explore</a></div></div>
 </div>
 -->
-	
-	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
-            {% for d in carousel %}
-                {% if d.datatype == "gallery" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "gevent" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "museum" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "mevent" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-	    {% endfor %}
-	</div>
-	
-<!-- ***** Main Banner Area End ***** -->
 
-<section class="section gal-section" id="">
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="section-heading text-center">
- <h2>Browse Galleries</h2>
-<hr>
- </div>
- </div>
- </div>
- </div>
-<div class="container">
- <div class="row">
- <div class="col-md-4">
-<div class="row">
-<!-- <div class="demo"> -->
- <select name="bylocation" placeholder="Select" id='bylocation' class="form-control" onChange="javascript:dofilter('bylocation');">
+    <div id="Top-owl-carousel" class="owl-carousel owl-theme">
+        {% for d in carousel %} {% if d.datatype == "gallery" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "gevent" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "museum" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "mevent" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% endfor %}
+    </div>
+
+    <!-- ***** Main Banner Area End ***** -->
+
+    <section class="section gal-section" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Browse Galleries</h2>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="row">
+                        <!-- <div class="demo"> -->
+                        <select name="bylocation" placeholder="Select" id='bylocation' class="form-control" onChange="javascript:dofilter('bylocation');">
 <option value="1">All Locations</option>
 {% for gloc, v in gallerylocations.items %}
 <option value="{{gloc}}">{{gloc}}</option>
 {% endfor %}
  </select>
-</div>
-</div>
-<!-- 
+                    </div>
+                </div>
+                <!-- 
  <div class="col-md-4">
 <div class="demo">
  <select style="display:none" name="byspeciality" placeholder="Select" id='byspeciality' onChange="javascript:dofilter('byspeciality');">
@@ -379,40 +421,40 @@ btn-slider" href="#">Explore</a></div></div>
 </div>
 </div>
  -->
-</div>
-</div>
-</section>
-<!-- Begining of addition -->
-  <div id="galleries">
-    <section class="oth-works mrt-90">
-        <div class="container max-container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading section-heading-2 mrb-50">
-                        <h2>{{gallerytypes.0}}</h2>
-                        <span>
-                            <!-- <a href="">View All</a> -->
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="row align-items-end">
-		{% for galleryname, gdata in galleries1.items %}
-                <div class="column">
-                    <div class="img-box">
-			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-                        <a href="/gallery/details/?gid={{gdata.3}}">
-			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
-			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
-			</a>
-                    </div>
-                </div>
-		{% endfor %}
-                </div>
             </div>
         </div>
+    </section>
+    <!-- Begining of addition -->
+    <div id="galleries">
+        <section class="oth-works mrt-90">
+            <div class="container max-container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-heading section-heading-2 mrb-50">
+                            <h2>{{gallerytypes.0}}</h2>
+                            <span>
+                            <!-- <a href="">View All</a> -->
+                        </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-end">
+                    {% for galleryname, gdata in galleries1.items %}
+                    <div class="column">
+                        <div class="img-box">
+                            <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+                            <a href="/gallery/details/?gid={{gdata.3}}">
+                                <h4>{{galleryname}}</h4>
+                                <span>{{gdata.0}}</span>
+                                <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                            </a>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+    </div>
     </section>
     <section class="oth-works mrt-90">
         <div class="container max-container">
@@ -427,21 +469,21 @@ btn-slider" href="#">Explore</a></div></div>
                 </div>
             </div>
             <div class="row align-items-end">
-		{% for galleryname, gdata in galleries2.items %}
+                {% for galleryname, gdata in galleries2.items %}
                 <div class="column">
                     <div class="img-box">
-			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+                        <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
-			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
-			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
-			</a>
+                            <h4>{{galleryname}}</h4>
+                            <span>{{gdata.0}}</span>
+                            <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                        </a>
+                        </a>
                     </div>
                 </div>
-		{% endfor %}
-                </div>
+                {% endfor %}
             </div>
+        </div>
         </div>
     </section>
     <section class="oth-works mrt-90">
@@ -457,21 +499,21 @@ btn-slider" href="#">Explore</a></div></div>
                 </div>
             </div>
             <div class="row align-items-end">
-		{% for galleryname, gdata in galleries3.items %}
+                {% for galleryname, gdata in galleries3.items %}
                 <div class="column">
                     <div class="img-box">
-			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+                        <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
-			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
-			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
-			</a>
+                            <h4>{{galleryname}}</h4>
+                            <span>{{gdata.0}}</span>
+                            <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                        </a>
+                        </a>
                     </div>
                 </div>
-		{% endfor %}
-                </div>
+                {% endfor %}
             </div>
+        </div>
         </div>
     </section>
     <section class="oth-works mrt-90">
@@ -487,21 +529,21 @@ btn-slider" href="#">Explore</a></div></div>
                 </div>
             </div>
             <div class="row align-items-end">
-		{% for galleryname, gdata in galleries4.items %}
+                {% for galleryname, gdata in galleries4.items %}
                 <div class="column">
                     <div class="img-box">
-			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+                        <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
-			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
-			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
-			</a>
+                            <h4>{{galleryname}}</h4>
+                            <span>{{gdata.0}}</span>
+                            <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                        </a>
+                        </a>
                     </div>
                 </div>
-		{% endfor %}
-                </div>
+                {% endfor %}
             </div>
+        </div>
         </div>
     </section>
     <section class="oth-works mrt-90">
@@ -517,27 +559,27 @@ btn-slider" href="#">Explore</a></div></div>
                 </div>
             </div>
             <div class="row align-items-end">
-		{% for galleryname, gdata in galleries5.items %}
+                {% for galleryname, gdata in galleries5.items %}
                 <div class="column">
                     <div class="img-box">
-			<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+                        <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
                         <a href="/gallery/details/?gid={{gdata.3}}">
-			<h4>{{galleryname}}</h4>
-			<span>{{gdata.0}}</span>
-			<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-			</a>
-			</a>
+                            <h4>{{galleryname}}</h4>
+                            <span>{{gdata.0}}</span>
+                            <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                        </a>
+                        </a>
                     </div>
                 </div>
-		{% endfor %}
-                </div>
+                {% endfor %}
             </div>
         </div>
+        </div>
     </section>
-  </div>
+    </div>
 
-<!-- End of addition -->
-<!--
+    <!-- End of addition -->
+    <!--
 <div id="galleries">
 <section class="section gal-section">
  <div class="container">
@@ -727,23 +769,23 @@ btn-slider" href="#">Explore</a></div></div>
  </section>
  </div>
 -->
- <!-- ***** Footer Start ***** -->
- <footer>
- <div class="container">
- <div class="row">
- <div class="col-lg-3">
- <div class="first-item">
- <div class="logo">
- <img src="/static/images/logo-white.png" alt="">
- </div>
- <ul>
- <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
- <li><a href="#">demo@company.com</a></li>
- <li><a href="#">010-020-0340</a></li>
- </ul>
- </div>
- </div>
- <div class="col-lg-3">
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="first-item">
+                        <div class="logo">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
+                        </div>
+                        <ul>
+                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
+                            <li><a href="#">demo@company.com</a></li>
+                            <li><a href="#">010-020-0340</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -770,82 +812,84 @@ btn-slider" href="#">Explore</a></div></div>
                         <li><a href="/security/">Security</a></li>
                     </ul>
                 </div>
- <div class="col-lg-12">
- <div class="under-footer">
- <p>Copyright © 2022. All Rights Reserved.</p>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
 
- <ul>
- <li><a href="#"><i class="fa fa-facebook"></i></a></li>
- <li><a href="#"><i class="fa fa-twitter"></i></a></li>
- <li><a href="#"><i class="fa fainstagram"></i></a></li>
- </ul>
- </div>
- </div>
- </div>
- </div>
- </footer>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fainstagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
- <!-- jQuery -->
- <script src="/static/js/jquery-2.1.0.min.js"></script>
- <!-- Bootstrap -->
- <script src="/static/js/popper.js"></script>
- <script src="/static/js/bootstrap.min.js"></script>
- <!-- Plugins -->
- <script src="/static/js/owl-carousel.js"></script>
- <script src="/static/js/accordions.js"></script>
- <script src="/static/js/datepicker.js"></script>
- <script src="/static/js/scrollreveal.min.js"></script>
- <script src="/static/js/waypoints.min.js"></script>
- <script src="/static/js/jquery.counterup.min.js"></script>
- <script src="/static/js/imgfix.min.js"></script>
- <script src="/static/js/slick.js"></script>
- <script src="/static/js/lightbox.js"></script>
- <script src="/static/js/isotope.js"></script>
- <script src="/static/js/jquery.dropdown.min.js"></script>
+    <!-- jQuery -->
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!-- Plugins -->
+    <script src="/static/js/owl-carousel.js"></script>
+    <script src="/static/js/accordions.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <script src="/static/js/scrollreveal.min.js"></script>
+    <script src="/static/js/waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
 
- <!-- Global Init -->
- <script src="/static/js/custom.js"></script>
-<script>
-/*https://www.jqueryscript.net/demo/Searchable-Multi-selectjQuery-Dropdown/*/
-$('.demo').dropdown({
-  limitCount: 1, input:'<input type="text" maxLength="20" placeholder="Search">'
-});
+    <!-- Global Init -->
+    <script src="/static/js/custom.js"></script>
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-selectjQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
 
-$('#Top-owl-carousel').owlCarousel({
-	loop:false,
-	rewind: true,
-	margin:10,
-	nav:true,
-	autoplay:true,
-	autoplayTimeout:8000,
-	responsiveClass:true,
-	responsive:{
-	  0:{
-	  items:1
-	  },
-	  600:{
-	  items:1
-	  },
-	  1000:{
-	  items:1
-	  }
-	}
-})
-</script>
- <script>
- $(function() {
-   var selectedClass = "";
-   $("p").click(function(){
-     selectedClass = $(this).attr("data-rel");
-     $("#portfolio").fadeTo(50, 0.1);
-     $("#portfolio div").not("."+selectedClass).fadeOut();
-     setTimeout(function() {
- 	$("."+selectedClass).fadeIn();
- 	$("#portfolio").fadeTo(50, 1);
-     }, 500);
+        $('#Top-owl-carousel').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 10,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 8000,
+            responsiveClass: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        })
+    </script>
+    <script>
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
 
-   });
- });
- </script>
- </body>
+            });
+        });
+    </script>
+</body>
+
 </html>

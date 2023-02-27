@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
-<!--
+    <!--
 
 TemplateMo 571 Hexashop
 
@@ -30,95 +30,102 @@ https://templatemo.com/tm-571-hexashop
 -->
 
     <script type='text/javascript'>
-	
-	function dofilter(selectid){
-	  //alert("hi");
-	  const artistsdict = {
-	    {% for artist, lotslist in allartists.items %}
-		"{{artist}}" : Array(
-		  {% for lot in lotslist %}
-			Array( "{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}" ),
-		  {% endfor %}
-		),
-	    {% endfor %}
-	  };
-          const auctionsdict = {
-	    {% for auction, lotslist in allauctions.items %}
-		"{{auction}}" : Array(
-		  {% for lot in lotslist %}
-			Array( "{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}", "{{lot.artist}}" ),
-		  {% endfor %}
-		),
-	    {% endfor %}
-	  };
-	  sectiontag = document.getElementById("auctions");
-	  selecttag = document.getElementById(selectid);
-	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
-	  //alert(selectedoption);
-          html = "";
- 	  if(selectid == "byartists"){
-	    for(artst in artistsdict){
-		lotslist = artistsdict[artst];
-		starter = 0;
-		for(var i=0; i < lotslist.length; i++){
-		  if(selectedoption != "1"){
-		  if(artst.toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></a></div></div>";        
-		  }
-		}// if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";  
-		}
-		} // for lotslist loop ends
-		html += "</div></div></div></div></div></section>";
-	    } 
-	  }
-	  if(selectid == "byauctions"){
-	    for(auction in auctionsdict){
-		//if(auction.toLowerCase() == selectedoption.toLowerCase()){
-		  lotslist = auctionsdict[auction];
-		  starter = 0;
-		for(var i=0; i < lotslist.length; i++){
-		  if(selectedoption != "1"){
-		  if(auction.toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";        
-		  }
-		} // if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";       
-		}
-		}  // for lotslist ends
-		html += "</div></div></div></div></div></section>";
-		//}
-	    }
-	  }
-	  sectiontag.innerHTML = html;
-	}
+        function dofilter(selectid) {
+            //alert("hi");
+            const artistsdict = {
+                { %
+                    for artist, lotslist in allartists.items %
+                }
+                "{{artist}}": Array({ %
+                        for lot in lotslist %
+                    }
+                    Array("{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}"), { % endfor %
+                    }
+                ),
+                { % endfor %
+                }
+            };
+            const auctionsdict = {
+                { %
+                    for auction, lotslist in allauctions.items %
+                }
+                "{{auction}}": Array({ %
+                        for lot in lotslist %
+                    }
+                    Array("{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}", "{{lot.artist}}"), { % endfor %
+                    }
+                ),
+                { % endfor %
+                }
+            };
+            sectiontag = document.getElementById("auctions");
+            selecttag = document.getElementById(selectid);
+            selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
+            //alert(selectedoption);
+            html = "";
+            if (selectid == "byartists") {
+                for (artst in artistsdict) {
+                    lotslist = artistsdict[artst];
+                    starter = 0;
+                    for (var i = 0; i < lotslist.length; i++) {
+                        if (selectedoption != "1") {
+                            if (artst.toLowerCase() == selectedoption.toLowerCase()) {
+                                if (starter == 0) {
+                                    html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                    html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                    starter = 1;
+                                }
+                                html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></a></div></div>";
+                            }
+                        } // if selectedoption != 1
+                        else {
+                            if (starter == 0) {
+                                html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                starter = 1;
+                            }
+                            html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";
+                        }
+                    } // for lotslist loop ends
+                    html += "</div></div></div></div></div></section>";
+                }
+            }
+            if (selectid == "byauctions") {
+                for (auction in auctionsdict) {
+                    //if(auction.toLowerCase() == selectedoption.toLowerCase()){
+                    lotslist = auctionsdict[auction];
+                    starter = 0;
+                    for (var i = 0; i < lotslist.length; i++) {
+                        if (selectedoption != "1") {
+                            if (auction.toLowerCase() == selectedoption.toLowerCase()) {
+                                if (starter == 0) {
+                                    html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                    html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                    starter = 1;
+                                }
+                                html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";
+                            }
+                        } // if selectedoption != 1
+                        else {
+                            if (starter == 0) {
+                                html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                starter = 1;
+                            }
+                            html += "<div class='item'><div class='thumb'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";
+                        }
+                    } // for lotslist ends
+                    html += "</div></div></div></div></div></section>";
+                    //}
+                }
+            }
+            sectiontag.innerHTML = html;
+        }
     </script>
-    </head>
-    
-    <body>
-    
+</head>
+
+<body>
+
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -126,10 +133,10 @@ https://templatemo.com/tm-571-hexashop
             <div></div>
             <div></div>
         </div>
-    </div>  
+    </div>
     <!-- ***** Preloader End ***** -->
-    
-    
+
+
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
@@ -144,23 +151,23 @@ https://templatemo.com/tm-571-hexashop
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
                             <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
-				 <li class="scroll-to-section"><a href="/auction/index/" class="active">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
-				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
-				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
-				 <li class="scroll-to-section"><a href="#">Others</a></li>
-				 <li class="submenu">
-				 <ul>
-				 <li><a href="/about/">About</a></li>
-				 <li><a href="/contactus/">Contact Us</a></li>
-				 </ul>
-				 </li>  
-				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+                            <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
+                            <li class="scroll-to-section"><a href="/auction/index/" class="active">Auctions</a></li>
+                            <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+                            <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+                            <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
+                            <li class="scroll-to-section"><a href="#">Others</a></li>
+                            <li class="submenu">
+                                <ul>
+                                    <li><a href="/about/">About</a></li>
+                                    <li><a href="/contactus/">Contact Us</a></li>
+                                </ul>
+                            </li>
+                            <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -170,9 +177,9 @@ https://templatemo.com/tm-571-hexashop
                                     <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </li>-->
-                            
-                            
-                        </ul>        
+
+
+                        </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -185,63 +192,73 @@ https://templatemo.com/tm-571-hexashop
     <!-- ***** Header Area End ***** -->
 
     <!-- ***** Main Banner Area Start ***** -->
-    
-	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
-	  {% for d in carousel %}
-                {% if d.datatype == "gallery" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "gevent" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "museum" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "mevent" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		
-	    {% endfor %}
-		
-	</div>
+
+    <div id="Top-owl-carousel" class="owl-carousel owl-theme">
+        {% for d in carousel %} {% if d.datatype == "gallery" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "gevent" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "museum" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "mevent" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% endfor %}
+
+    </div>
     <!-- ***** Main Banner Area End ***** -->
-	<section class="section gal-section" id="">
+    <section class="section gal-section" id="">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>Browse Auctions</h2>
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
         </div>
-		<div class="container">
+        <div class="container">
             <div class="row">
                 <div class="col-md-4">
-					<!-- <div class="demo"> -->
-					<div class="row">
-					  <select name="byartists" placeholder="Select" class="form-control" id='byartists' onChange="javascript:dofilter('byartists');">
+                    <!-- <div class="demo"> -->
+                    <div class="row">
+                        <select name="byartists" placeholder="Select" class="form-control" id='byartists' onChange="javascript:dofilter('byartists');">
 						<option value="1">All Artists</option>
 						{% for artist, lotlist in allartists.items %}
 						<option value="{{artist}}">{{artist}}</option>
 						{% endfor %}
 					  </select>
-					</div>
-				</div>
+                    </div>
+                </div>
                 <div class="col-md-4">
-					<!-- <div class="demo"> -->
-					<div class="row">
-					  <select name="byauctions" placeholder="Select" class="form-control" id='byauctions' onChange="javascript:dofilter('byauctions');">
+                    <!-- <div class="demo"> -->
+                    <div class="row">
+                        <select name="byauctions" placeholder="Select" class="form-control" id='byauctions' onChange="javascript:dofilter('byauctions');">
 						<option value="1">All Auctions</option>
 						{% for auctionname, lotslist in allauctions.items %}
 						<option value="{{auctionname}}">{{auctionname}}</option>
 						{% endfor %}
 					  </select>
-					</div>
-				</div>
+                    </div>
+                </div>
                 <div class="col-md-4">
-					<!-- <div class="demo">
+                    <!-- <div class="demo">
 					  <select style="display:none"  placeholder="Select" id='gallery' onchange='javascript:dofilter('gallery');'>
 						<option value="1">All Galleries</option>
 						<option value="2">2</option>
@@ -249,47 +266,47 @@ https://templatemo.com/tm-571-hexashop
 						<option value="4">4</option>
 					  </select>
 					</div> -->
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Begining of new auctions gallery -->
-	<div id="auctions">
-	{% for auctionname, lotslist in featuredauctions.items %}
-	<section class="oth-works mrt-90">
-        <div class="container max-container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading section-heading-2 mrb-50">
-                        <h2>{{auctionname}}</h2>
-                        <span>
-                            
-                        </span>
-                    </div>
                 </div>
-            </div>
-            <div class="row align-items-end">
-		{% for lot in lotslist %}
-                <div class="column">
-                    <div class="img-box">
-			<a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
-                        <a href="/auction/details/?lid={{lot.lid}}">
-				<h4>{{lot.title}}</h4>
-				<span>{{lot.artist}}</span>
-				<a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
-			</a>
-			</a>
-                    </div>
-                </div>
-		{% endfor %}
-                
             </div>
         </div>
-    	</section>
-    	{% endfor %}
-    	</div>
-	<!-- End of new auctions gallery -->
-	<!-- 
+    </section>
+    <!-- Begining of new auctions gallery -->
+    <div id="auctions">
+        {% for auctionname, lotslist in featuredauctions.items %}
+        <section class="oth-works mrt-90">
+            <div class="container max-container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-heading section-heading-2 mrb-50">
+                            <h2>{{auctionname}}</h2>
+                            <span>
+                            
+                        </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-end">
+                    {% for lot in lotslist %}
+                    <div class="column">
+                        <div class="img-box">
+                            <a href="/auction/details/?lid={{lot.lid}}"><img src="{{lot.image}}" alt=""></a>
+                            <a href="/auction/details/?lid={{lot.lid}}">
+                                <h4>{{lot.title}}</h4>
+                                <span>{{lot.artist}}</span>
+                                <a class="btn btn-slider" href="{{lot.loturl}}">View Lot</a>
+                            </a>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </section>
+        {% endfor %}
+    </div>
+    <!-- End of new auctions gallery -->
+    <!-- 
 	<div id="auctions">
 	{% for auctionname, lotslist in featuredauctions.items %}
 	<section class="section gal-section">
@@ -333,7 +350,7 @@ https://templatemo.com/tm-571-hexashop
 	{% endfor %}
     </div>
     -->
-    
+
     <!-- ***** Footer Start ***** -->
     <footer>
         <div class="container">
@@ -341,7 +358,7 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -350,7 +367,7 @@ https://templatemo.com/tm-571-hexashop
                         </ul>
                     </div>
                 </div>
-                 <div class="col-lg-3">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -380,7 +397,7 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-12">
                     <div class="under-footer">
                         <p>Copyright © 2022. All Rights Reserved.</p>
-                       
+
                         <ul>
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -391,7 +408,7 @@ https://templatemo.com/tm-571-hexashop
             </div>
         </div>
     </footer>
-    
+
 
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js"></script>
@@ -407,58 +424,57 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
-    
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
+
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
-	
-	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
-		$('#Top-owl-carousel').owlCarousel({
-			loop:false,
-			rewind: true,
-			margin:1,
-			nav:true,
-			autoplay:true,
-			autoplayTimeout:8000,
-			responsive:{
-				0:{
-					items:1
-				},
-				600:{
-					items:1
-				},
-				1000:{
-					items:1
-				}
-			}
-		})
-	</script>
+
     <script>
-		
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
+        $('#Top-owl-carousel').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 1,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 8000,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        })
+    </script>
+    <script>
         $(function() {
             var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
             });
         });
-
     </script>
 
-  </body>
+</body>
+
 </html>

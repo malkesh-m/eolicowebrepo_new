@@ -29,23 +29,36 @@
     <link rel="stylesheet" href="/static/css/autocomplete.css">
 
     <style>
-	.owl-prev, .owl-next {
-        width: 15px;
-        height: 100px;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        display: block !important;
-        border:0px solid black;
-    }
-    .owl-prev { left: -20px; }
-    .owl-next { right: -20px; }
-    .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
- 
+        .owl-prev,
+        .owl-next {
+            width: 15px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: block !important;
+            border: 0px solid black;
+        }
+        
+        .owl-prev {
+            left: -20px;
+        }
+        
+        .owl-next {
+            right: -20px;
+        }
+        
+        .owl-prev i,
+        .owl-next i {
+            transform: scale(2, 5);
+            color: #ccc;
+        }
     </style>
 
     <style>
-    #frmsearchauctionhouses input[type=search]{width:430px !important;}
+        #frmsearchauctionhouses input[type=search] {
+            width: 430px !important;
+        }
     </style>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
@@ -55,56 +68,58 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
@@ -112,75 +127,75 @@
     <script src="/static/js/autocomplete.js"></script>
 
     <script>
-	auctionhouses = [
-		{% for auctionhousename in filterauctionhouses %}
-		    "{{auctionhousename}}",
-		{% endfor %}
-		]; // Should get populated during page load.
-	
-    </script> 
-    <script>
-	function searchauctionhouse(page=1){
-	  searchkey = document.getElementById('auctionhousesearch').value;
-	  var xmlhttp;
-	  if (window.XMLHttpRequest){
-	    xmlhttp=new XMLHttpRequest();
-	  }
-	  else{
-	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  // Register the handler
-	  xmlhttp.onreadystatechange = function(){
-	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	    contextdict = JSON.parse(xmlhttp.responseText);
-	    auctionhousematches = contextdict['auctionhousematches'];
-	    adminuser = contextdict['adminuser'];
-            pages = contextdict['pages'];
-            search_section = document.getElementById('searchsection');
-	    featured_div = document.getElementById('featuredshowsdiv');
-	    featured_div.innerHTML = "";
-	    search_section.innerHTML = "";
-	    sectiontext = "<div class='container'><div class='row'><div class='section-heading section-heading-2 mrb-50'><h2>Search Results for '" + searchkey + "'</h2></div></div>";
-	    for(var i=0; i < auctionhousematches.length; i++){
-		auctionhouse = auctionhousematches[i];
-		sectiontext += "<div class='sub-head'><h4>" + auctionhouse.housename + ", " + auctionhouse.location + "</h4></div>";
-		sectiontext += "<div class='row align-items-end'>";
-		for(var j=0; j < auctionhouse.auctionslist.length; j++){
-		  auction = auctionhouse.auctionslist[j];
-		  sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='" + auction.coverimage + "' style='width:100%'>";
-		  sectiontext += "<h4>" + auction.auctionname + "</h4>";
-		  sectiontext += "<h6 style='padding-left:10px;'>" + auction.auctionperiod + "</h6>";
-		  sectiontext += "<h6>" + auction.location + "</h6>";
-		  sectiontext += "</a>";
-		  if(adminuser == 1){
-		    sectiontext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick='javascript:t_editauction(\"{{auction.aucid}}\");'>Edit</a></div>";
-		  }
-		  sectiontext += "</div></div>";
-		}
-		sectiontext += "</div>";
-	    }
-	    paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
-	    if(pages.prevpage >= 1){
-		paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchauctionhouse(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
-	    }
-       	    paginationcontent += "</li>";
-	    if(pages.displayedprevpage2 > 0){
-		paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
-	    }
-	    if(pages.displayedprevpage1 > 0){
-		paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
-	    }
-	    paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
-	    sectiontext += paginationcontent + "</div>";
-	    search_section.innerHTML = sectiontext
-	  }
-	  };
-	  xmlhttp.open("GET", "/auctionhouse/search/?q=" + searchkey + "&page=" + page);
-	  xmlhttp.send();
-	}
+        auctionhouses = [{ %
+                for auctionhousename in filterauctionhouses %
+            }
+            "{{auctionhousename}}", { % endfor %
+            }
+        ]; // Should get populated during page load.
     </script>
-    
+    <script>
+        function searchauctionhouse(page = 1) {
+            searchkey = document.getElementById('auctionhousesearch').value;
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // Register the handler
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    contextdict = JSON.parse(xmlhttp.responseText);
+                    auctionhousematches = contextdict['auctionhousematches'];
+                    adminuser = contextdict['adminuser'];
+                    pages = contextdict['pages'];
+                    search_section = document.getElementById('searchsection');
+                    featured_div = document.getElementById('featuredshowsdiv');
+                    featured_div.innerHTML = "";
+                    search_section.innerHTML = "";
+                    sectiontext = "<div class='container'><div class='row'><div class='section-heading section-heading-2 mrb-50'><h2>Search Results for '" + searchkey + "'</h2></div></div>";
+                    for (var i = 0; i < auctionhousematches.length; i++) {
+                        auctionhouse = auctionhousematches[i];
+                        sectiontext += "<div class='sub-head'><h4>" + auctionhouse.housename + ", " + auctionhouse.location + "</h4></div>";
+                        sectiontext += "<div class='row align-items-end'>";
+                        for (var j = 0; j < auctionhouse.auctionslist.length; j++) {
+                            auction = auctionhouse.auctionslist[j];
+                            sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='" + auction.coverimage + "' style='width:100%'>";
+                            sectiontext += "<h4>" + auction.auctionname + "</h4>";
+                            sectiontext += "<h6 style='padding-left:10px;'>" + auction.auctionperiod + "</h6>";
+                            sectiontext += "<h6>" + auction.location + "</h6>";
+                            sectiontext += "</a>";
+                            if (adminuser == 1) {
+                                sectiontext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick='javascript:t_editauction(\"{{auction.aucid}}\");'>Edit</a></div>";
+                            }
+                            sectiontext += "</div></div>";
+                        }
+                        sectiontext += "</div>";
+                    }
+                    paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                    if (pages.prevpage >= 1) {
+                        paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchauctionhouse(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                    }
+                    paginationcontent += "</li>";
+                    if (pages.displayedprevpage2 > 0) {
+                        paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                    }
+                    if (pages.displayedprevpage1 > 0) {
+                        paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                    }
+                    paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                    sectiontext += paginationcontent + "</div>";
+                    search_section.innerHTML = sectiontext
+                }
+            };
+            xmlhttp.open("GET", "/auctionhouse/search/?q=" + searchkey + "&page=" + page);
+            xmlhttp.send();
+        }
+    </script>
+
 </head>
+
 <body onload="javascript:autocomplete(document.getElementById('auctionhousesearch'), auctionhouses);">
 
     <!-- Sign up Modal -->
@@ -203,8 +218,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
@@ -219,7 +233,7 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
-			    <div class="form-group">
+                            <div class="form-group">
                                 <label for="password2">Confirm Password</label>
                                 <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -229,13 +243,14 @@
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from ArtBidder.</p>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -282,8 +297,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
@@ -351,7 +365,7 @@
                                 <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -385,19 +399,19 @@
                         <ul class="nav">
                             <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
 			    <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
-			    <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-			    <li class="scroll-to-section"><a href="/auctionhouse/index/" class="active">Auction Houses</a></li>
-			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-			    <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
-			    {% if not user.is_authenticated %}
-				<li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-			    {% else %}
-				<li><a href="/login/logout/">Logout</a></li>
-			    {% endif %}
+                            <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+                            <li class="scroll-to-section"><a href="/auctionhouse/index/" class="active">Auction Houses</a></li>
+                            <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+                            <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            {% if not user.is_authenticated %}
+                            <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                            {% else %}
+                            <li><a href="/login/logout/">Logout</a></li>
+                            {% endif %}
 
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
-				
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
+                            <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
+
+                            <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
 
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
@@ -408,7 +422,7 @@
                                     <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </li>-->
-                        </ul>        
+                        </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -420,52 +434,53 @@
     </header>
     <!-- ***** Header Area End ***** -->
     <!-- ***** Main Banner Area Start ***** -->
-    
-   	<!-- Carousel -->
-    {% comment %} <section class="testimonials">
-     <div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div id="customers-testimonials" class="owl-carousel owl-theme">
-	    {% for d in carousel %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
-                <div class="item-details">
-			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
-			<h5>{{d.artworkname}}</h5>
-			<p>{{d.medium}}</p>
-			</a>
-		</div>
-              </div>
+
+    <!-- Carousel -->
+    {% comment %}
+    <section class="testimonials">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="customers-testimonials" class="owl-carousel owl-theme">
+                        {% for d in carousel %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
+                                        <h5>{{d.artworkname}}</h5>
+                                        <p>{{d.medium}}</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-	    {% endfor %}
-          </div>
         </div>
-      </div>
-     </div>
     </section> {% endcomment %}
     <!-- END OF Carousels -->
     <section class="section gal-section" id="">
-      	<div class="container">
-	    <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Emerging Art</h2> -->
-                          <span>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2">
+                        <!-- <h2>Emerging Art</h2> -->
+                        <span>
 			      <form autocomplete="off" name='frmsearchauctionhouses' id='frmsearchauctionhouses' method='POST' action="">
 				  {% csrf_token %}
 				  <div class="autocomplete">
 				    <span class="input-group"><input type="search" class='form-control' name='auctionhousesearch' id='auctionhousesearch' maxLength="200" placeholder="Search auctions houses" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchauctionhouse();'><i class="fa fa-search"></i></button></span>
-				  </div>
-			      </form>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-	</div>
-      </section>
+                    </div>
+                    </form>
+                    <!-- <a href="">View All</a> -->
+                    </span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
     <!-- ***** Main Banner Area End ***** -->
     <section class="oth-works mrt-90">
         <div class="container">
@@ -476,7 +491,7 @@
                     </div>
                 </div>
             </div>
-	    
+
             <!-- <div class="row">
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <a href="">
@@ -503,31 +518,29 @@
                     </div>
                 </div>
             </div> -->
-            
-
-		<div class="row align-items-end" id='featuredshowsdiv'>
-			{% for show in featuredshows %}
-			{% for auction in show.auctionslist %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.coverimage}}" alt="" /></a>
-		                <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
-				    <h4>{{auction.housename}}, {{auction.location}}</h4>
-		                    <h6>Sale Code: {{auction.salecode}}</h6>
-				    <h4>{{auction.auctionname}}</h4>
-		                    <h6>{{auction.auctionperiod}}</h6>
-		                </a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-			{% endfor %}        
-		</div>
 
 
-	    <!-- 
+            <div class="row align-items-end" id='featuredshowsdiv'>
+                {% for show in featuredshows %} {% for auction in show.auctionslist %}
+                <div class="column">
+                    <div class="img-box">
+                        <a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.coverimage}}" alt="" /></a>
+                        <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+                            <h4>{{auction.housename}}, {{auction.location}}</h4>
+                            <h6>Sale Code: {{auction.salecode}}</h6>
+                            <h4>{{auction.auctionname}}</h4>
+                            <h6>{{auction.auctionperiod}}</h6>
+                        </a>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %} {% endfor %}
+            </div>
+
+
+            <!-- 
             <div class="row featured-cat2 mrt-90">
                 <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
                     <a href="">
@@ -584,31 +597,31 @@
                     </div> -->
                 </div>
             </div>
-	    {% for auctionhousename, auctionslist in currentmngshows.items %}
-	    <div class="sub-head">
-                        <h4>{{auctionhousename}}</h4>
-                        
+            {% for auctionhousename, auctionslist in currentmngshows.items %}
+            <div class="sub-head">
+                <h4>{{auctionhousename}}</h4>
+
             </div>
             <div class="row align-items-end">
-		{% for auction in auctionslist %}
+                {% for auction in auctionslist %}
                 <div class="column">
                     <div class="img-box">
-			<a href='/auction/showauction/?aucid={{auction.aucid}}' style="color:#000000;">
-                        <img src="{{auction.coverimage}}" style="width:100%">
-                        <h4>{{auctionhousename}}, {{auction.location}}</h4>
-                        <h6 style="padding-left:10px;">Sale Code: {{auction.salecode}}</h6>
-                        <h4>{{auction.auctionname}}</h4>
-			<h6 style="padding-left:10px;">{{auction.auctionperiod}}</h6>
-			</a>
-			{% if adminuser == 1 %}
-			    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
-		        {% endif %}
+                        <a href='/auction/showauction/?aucid={{auction.aucid}}' style="color:#000000;">
+                            <img src="{{auction.coverimage}}" style="width:100%">
+                            <h4>{{auctionhousename}}, {{auction.location}}</h4>
+                            <h6 style="padding-left:10px;">Sale Code: {{auction.salecode}}</h6>
+                            <h4>{{auction.auctionname}}</h4>
+                            <h6 style="padding-left:10px;">{{auction.auctionperiod}}</h6>
+                        </a>
+                        {% if adminuser == 1 %}
+                        <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{auction.aucid}}');">Edit</a></div>
+                        {% endif %}
                     </div>
                 </div>
-		{% endfor %}
-                
+                {% endfor %}
+
             </div>
-	    {% endfor %}
+            {% endfor %}
         </div>
     </section>
     <!-- 
@@ -953,7 +966,8 @@
                     <div class="download-app">
                         <h4>Get More from ArtBidder—on the App</h4>
                         <div class="pl-st">
-                            <a href=""><img src="/static/images/app-store.png" alt=""></a> <a href=""><img src="/static/images/google-play.png" alt=""></a>
+                            <a href=""><img src="/static/images/app-store.png" alt=""></a>
+                            <a href=""><img src="/static/images/google-play.png" alt=""></a>
                         </div>
                     </div>
                 </div>
@@ -964,14 +978,14 @@
         </div>
     </section>
 
-      <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
+    <div id="adminScreen">
+        <a href="#" class="cancel">×</a>
+        <form name='frmedit' id='frmedit'>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="cover">
+    </div>
 
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -980,7 +994,7 @@
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -1047,68 +1061,65 @@
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
 
-    
-    	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
 
-jQuery(document).ready(function($) {
-"use strict";
-$('#customers-testimonials').owlCarousel( {
-		loop: true,
-		center: true,
-		items: 3,
-		margin: 30,
-		autoplay: true,
-		dots:true,
-    		nav:true,
-		autoplayTimeout: 8500,
-		smartSpeed: 450,
-  		navText: ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-		responsive: {
-			0: {
-				items: 1
-			},
-			768: {
-				items: 2
-			},
-			1170: {
-				items: 3
-			}
-		}
-	});
-});
-	</script>
-    	<script>
-
-        $(function() {
-            var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
-            });
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
         });
 
-    	</script>
+        jQuery(document).ready(function($) {
+            "use strict";
+            $('#customers-testimonials').owlCarousel({
+                loop: true,
+                center: true,
+                items: 3,
+                margin: 30,
+                autoplay: true,
+                dots: true,
+                nav: true,
+                autoplayTimeout: 8500,
+                smartSpeed: 450,
+                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    1170: {
+                        items: 3
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
+            });
+        });
+    </script>
 
 </body>
+
 </html>
-
-

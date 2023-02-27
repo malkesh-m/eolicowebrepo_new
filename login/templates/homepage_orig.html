@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,145 +23,170 @@
 
     <!-- <link rel="stylesheet" href="/static/css/newcarousel.css"> -->
 
-	<style>
-		#Top-owl-carousel{
-			margin-top:5%;
-		}
-		.slide-cap{
-			position: absolute;
-			top: 28%;
-			left: 13%;
-			width: 28%;
-		}
-		.rit-cap{
-			position: absolute;
-			top: 28%;
-			right: 15%;
-			width: 30%;
-		}
-		#Top-owl-carousel p{
-			margin-top:20px;
-		}
-		.btn-slider{
-			border:1px solid #333;
-			border-radius:0px;
-			margin-top:20px;
-			margin-bottom:10px;
-			padding: 5px 22px;
-			letter-spacing:2px;
-		}
-		.btn-slider:hover{
-			background: #f1f0ef;
-		}
-		#Top-owl-carousel .owl-nav{
-			text-align: center;
-			margin-top: 15px;
-		}
-		#Top-owl-carousel .owl-nav .owl-prev{
-			margin-right:10px;
-		}
-		#Top-owl-carousel .owl-nav .owl-next{
-			margin-left:10px;
-		}
-		#Top-owl-carousel .owl-nav .owl-prev:focus,
-		#Top-owl-carousel .owl-nav .owl-next:focus{
-			outline:none;
-		}
-		
-		.wrapper {
-			 margin: 10vh;
-		}
- .card {
-	 border: none;
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-	 overflow: hidden;
-	 border-radius: 20px;
-	 min-height: 450px;
-	 box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
-}
- @media (max-width: 768px) {
-	 .card {
-		 min-height: 350px;
-	}
-}
- @media (max-width: 420px) {
-	 .card {
-		 min-height: 300px;
-	}
-}
- .card.card-has-bg {
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background-size: 120%;
-	 background-repeat: no-repeat;
-	 background-position: center center;
-}
- .card.card-has-bg:before {
-	 content: '';
-	 position: absolute;
-	 top: 0;
-	 right: 0;
-	 bottom: 0;
-	 left: 0;
-	 background: inherit;
-	 -webkit-filter: grayscale(1);
-	 -moz-filter: grayscale(100%);
-	 -ms-filter: grayscale(100%);
-	 -o-filter: grayscale(100%);
-	 filter: grayscale(100%);
-}
- .card.card-has-bg:hover {
-	 //transform: scale(0.98);
-	 box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
-	 background-size: 120%;
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card.card-has-bg:hover .card-img-overlay {
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background: #234f6d;
-	 background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%, rgba(4, 69, 114, 1) 100%);
-}
- .card .card-footer {
-	 background: none;
-	 border-top: none;
-}
- .card .card-footer .media img {
-	 border: solid 3px rgba(234, 95, 0, 0.3);
-}
- .card .card-meta {
-	 color: orange;
-}
- .card .card-body {
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card:hover {
-	 cursor: pointer;
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card:hover .card-body {
-	 //margin-top: 30px;
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card .card-img-overlay {
-	 transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background: #c2a476;
-	 background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
-}
-.wrapper .section-heading{
-	margin-bottom: 60px;
-}
-.btn-box{
-	margin-top: 30px;
-	}
-
-footer .under-footer a {
-    color: #717171;
-}
-footer .under-footer a:hover {
-    color: #c2a476;
-}
- 
-	</style>
-<!--
+    <style>
+        #Top-owl-carousel {
+            margin-top: 5%;
+        }
+        
+        .slide-cap {
+            position: absolute;
+            top: 28%;
+            left: 13%;
+            width: 28%;
+        }
+        
+        .rit-cap {
+            position: absolute;
+            top: 28%;
+            right: 15%;
+            width: 30%;
+        }
+        
+        #Top-owl-carousel p {
+            margin-top: 20px;
+        }
+        
+        .btn-slider {
+            border: 1px solid #333;
+            border-radius: 0px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding: 5px 22px;
+            letter-spacing: 2px;
+        }
+        
+        .btn-slider:hover {
+            background: #f1f0ef;
+        }
+        
+        #Top-owl-carousel .owl-nav {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-prev {
+            margin-right: 10px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-next {
+            margin-left: 10px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-prev:focus,
+        #Top-owl-carousel .owl-nav .owl-next:focus {
+            outline: none;
+        }
+        
+        .wrapper {
+            margin: 10vh;
+        }
+        
+        .card {
+            border: none;
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
+            border-radius: 20px;
+            min-height: 450px;
+            box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                min-height: 350px;
+            }
+        }
+        
+        @media (max-width: 420px) {
+            .card {
+                min-height: 300px;
+            }
+        }
+        
+        .card.card-has-bg {
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            background-size: 120%;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        
+        .card.card-has-bg:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: inherit;
+            -webkit-filter: grayscale(1);
+            -moz-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            filter: grayscale(100%);
+        }
+        
+        .card.card-has-bg:hover {
+            //transform: scale(0.98);
+            box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
+            background-size: 120%;
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card.card-has-bg:hover .card-img-overlay {
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #234f6d;
+            background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%, rgba(4, 69, 114, 1) 100%);
+        }
+        
+        .card .card-footer {
+            background: none;
+            border-top: none;
+        }
+        
+        .card .card-footer .media img {
+            border: solid 3px rgba(234, 95, 0, 0.3);
+        }
+        
+        .card .card-meta {
+            color: orange;
+        }
+        
+        .card .card-body {
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card:hover {
+            cursor: pointer;
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card:hover .card-body {
+            //margin-top: 30px;
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card .card-img-overlay {
+            transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #c2a476;
+            background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
+        }
+        
+        .wrapper .section-heading {
+            margin-bottom: 60px;
+        }
+        
+        .btn-box {
+            margin-top: 30px;
+        }
+        
+        footer .under-footer a {
+            color: #717171;
+        }
+        
+        footer .under-footer a:hover {
+            color: #c2a476;
+        }
+    </style>
+    <!--
 
 TemplateMo 571 Hexashop
 
@@ -169,18 +194,18 @@ https://templatemo.com/tm-571-hexashop
 
 -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
 
 
-    </head>
-    
-    <body>
-    
+</head>
+
+<body>
+
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -188,10 +213,10 @@ https://templatemo.com/tm-571-hexashop
             <div></div>
             <div></div>
         </div>
-    </div>  
+    </div>
     <!-- ***** Preloader End ***** -->
-    
-    
+
+
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
@@ -205,24 +230,24 @@ https://templatemo.com/tm-571-hexashop
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                         <li class="scroll-to-section"><a href="/login/index/" class="active">Home</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
-				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
-				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
-				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
-				 <li class="scroll-to-section"><a href="#">Others</a></li>
-				 <li class="submenu">
-				 <ul>
-				 <li><a href="/about/">About</a></li>
-				 <li><a href="/contactus/">Contact Us</a></li>
-				 </ul>
-				 </li>  
-				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+                            <li class="scroll-to-section"><a href="/login/index/" class="active">Home</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
+                            <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+                            <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+                            <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+                            <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
+                            <li class="scroll-to-section"><a href="#">Others</a></li>
+                            <li class="submenu">
+                                <ul>
+                                    <li><a href="/about/">About</a></li>
+                                    <li><a href="/contactus/">Contact Us</a></li>
+                                </ul>
+                            </li>
+                            <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -232,9 +257,9 @@ https://templatemo.com/tm-571-hexashop
                                     <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </li>-->
-                            
-                            
-                        </ul>        
+
+
+                        </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -257,28 +282,38 @@ https://templatemo.com/tm-571-hexashop
     -->
 
 
-<!-- ------------------------------------------------------------------------------------------  -->
+    <!-- ------------------------------------------------------------------------------------------  -->
 
-   	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
-            {% for d in carousel %}
-                {% if d.datatype == "gallery" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "gevent" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "museum" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "mevent" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		
-	    {% endfor %}
-		
-	</div>
+    <div id="Top-owl-carousel" class="owl-carousel owl-theme">
+        {% for d in carousel %} {% if d.datatype == "gallery" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "gevent" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "museum" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "mevent" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% endfor %}
 
-	
+    </div>
+
+
     <!-- ***** Main Banner Area End ***** -->
 
     <!-- ***** Men Area Starts ***** -->
@@ -289,7 +324,7 @@ https://templatemo.com/tm-571-hexashop
                     <div class="section-heading text-center">
                         <h2>Featured Shows</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -298,21 +333,21 @@ https://templatemo.com/tm-571-hexashop
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for ename, edata in events.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/gallery/eventdetails/?gevid={{edata.3}}"><img src="{{edata.4}}" alt=""></a>
-		                <a href="/gallery/eventdetails/?gevid={{edata.3}}">
-					<h4>{{ename}}</h4>
-					<span>{{edata.1}}</span>
-					<span>{{edata.2}}</span>
-				</a>
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-			<!--
+                        <div class="row align-items-end">
+                            {% for ename, edata in events.items %}
+                            <div class="column">
+                                <div class="img-box">
+                                    <a href="/gallery/eventdetails/?gevid={{edata.3}}"><img src="{{edata.4}}" alt=""></a>
+                                    <a href="/gallery/eventdetails/?gevid={{edata.3}}">
+                                        <h4>{{ename}}</h4>
+                                        <span>{{edata.1}}</span>
+                                        <span>{{edata.2}}</span>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <!--
                         <div class="owl-men-item owl-carousel">
                             {% for ename, edata in events.items %}
                             <div class="item">
@@ -336,7 +371,7 @@ https://templatemo.com/tm-571-hexashop
         </div>
     </section>
     <!-- ***** Men Area Ends ***** -->
-	<!-- ***** Explore Area Starts ***** -->
+    <!-- ***** Explore Area Starts ***** -->
     <!-- <section class="section wrapper" id="explore">
         <div class="container">
 			<div class="row">
@@ -419,16 +454,16 @@ https://templatemo.com/tm-571-hexashop
 			<a class="btn btn-slider" href="#">Explore</a>
 		</div>
     </section> -->
-	
+
     <!-- ***** Explore Area Ends ***** -->
-	<section class="section" id="men">
+    <section class="section" id="men">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>Featured Galleries</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -437,21 +472,21 @@ https://templatemo.com/tm-571-hexashop
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for gname, gdata in galleries.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-		                <a href="/gallery/details/?gid={{gdata.3}}">
-					<h4>{{gname}}</h4>
-					<span>{{gdata.0}}</span>
-					<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-				</a>
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-			<!--
+                        <div class="row align-items-end">
+                            {% for gname, gdata in galleries.items %}
+                            <div class="column">
+                                <div class="img-box">
+                                    <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+                                    <a href="/gallery/details/?gid={{gdata.3}}">
+                                        <h4>{{gname}}</h4>
+                                        <span>{{gdata.0}}</span>
+                                        <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <!--
                         <div class="owl-men-item owl-carousel">
                             {% for gname, gdata in galleries.items %}
                             <div class="item">
@@ -474,7 +509,7 @@ https://templatemo.com/tm-571-hexashop
             </div>
         </div>
     </section>
-   
+
     <section class="section" id="women">
         <div class="container">
             <div class="row">
@@ -482,7 +517,7 @@ https://templatemo.com/tm-571-hexashop
                     <div class="section-heading text-center">
                         <h2>Trending Artists</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -491,22 +526,22 @@ https://templatemo.com/tm-571-hexashop
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aname, adata in artists.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
-		                <a href="/artist/details/?aid={{adata.4}}">
-					<h4>{{aname}}</h4>
-					<span>{{adata.3}}</span>
+                        <div class="row align-items-end">
+                            {% for aname, adata in artists.items %}
+                            <div class="column">
+                                <div class="img-box">
+                                    <a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
+                                    <a href="/artist/details/?aid={{adata.4}}">
+                                        <h4>{{aname}}</h4>
+                                        <span>{{adata.3}}</span>
 
-				</a>
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
 
-			<!--
+                        <!--
                         <div class="owl-men-item owl-carousel">
                             {% for aname, adata in artists.items %}
                             <div class="item">
@@ -538,7 +573,7 @@ https://templatemo.com/tm-571-hexashop
                     <div class="section-heading text-center">
                         <h2>Upcoming Auctions</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -547,22 +582,22 @@ https://templatemo.com/tm-571-hexashop
             <div class="row">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aucname, aucdata in upcomingauctions.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-		                <a href="/auction/details/?lid={{aucdata.lid}}">
-						<h4>{{aucname}}</h4>
-						<span>{{aucdata.description}}</span>
-				</a>
-				<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
-		            </div>
-		        </div>
-			{% endfor %}
-		        
-		    	</div>
-			<!--
+                        <div class="row align-items-end">
+                            {% for aucname, aucdata in upcomingauctions.items %}
+                            <div class="column">
+                                <div class="img-box">
+                                    <a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
+                                    <a href="/auction/details/?lid={{aucdata.lid}}">
+                                        <h4>{{aucname}}</h4>
+                                        <span>{{aucdata.description}}</span>
+                                    </a>
+                                    <a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                        <!--
                         <div class="owl-men-item owl-carousel">
                             {% for aucname, aucdata in upcomingauctions.items %}
                             <div class="item">
@@ -592,7 +627,7 @@ https://templatemo.com/tm-571-hexashop
                     <div class="section-heading text-center">
                         <h2>Auction Houses</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -608,11 +643,11 @@ https://templatemo.com/tm-571-hexashop
                                     <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}">
-						<h4>{{aucdata.housename}}</h4>
-						<span>{{aucdata.location}}</span>
-						<span>{{aucdata.description}}</span>
-					</a>
+                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}">
+                                        <h4>{{aucdata.housename}}</h4>
+                                        <span>{{aucdata.location}}</span>
+                                        <span>{{aucdata.description}}</span>
+                                    </a>
                                 </div>
                             </div>
                             {% endfor %}
@@ -629,7 +664,7 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -638,7 +673,7 @@ https://templatemo.com/tm-571-hexashop
                         </ul>
                     </div>
                 </div>
-                 <div class="col-lg-3">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -668,18 +703,18 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-12">
                     <div class="under-footer">
                         <p>Copyright © 2022. All Rights Reserved.
-                       
-                        <ul>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                        </ul>
+
+                            <ul>
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                            </ul>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
-    
+
 
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js"></script>
@@ -695,53 +730,51 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
-	
-	<script>
-		$('#Top-owl-carousel').owlCarousel({
-			loop:false,
-			rewind: true,
-			margin:1,
-			nav:true,
-			autoplay:true,
-			autoplayTimeout:8000,
-			responsive:{
-				0:{
-					items:1
-				},
-				600:{
-					items:1
-				},
-				1000:{
-					items:1
-				}
-			}
-		})
 
-	</script>
     <script>
-		
+        $('#Top-owl-carousel').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 1,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 8000,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        })
+    </script>
+    <script>
         $(function() {
             var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
             });
         });
-
     </script>
 
-  </body>
+</body>
+
 </html>

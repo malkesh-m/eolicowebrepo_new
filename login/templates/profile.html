@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,159 +23,195 @@
 
     <link rel="stylesheet" href="/static/css/newcarousel.css">
 
-	<style>
-		#Top-owl-carousel{
-			margin-top:5%;
-		}
-		.slide-cap{
-			position: absolute;
-			top: 28%;
-			left: 13%;
-			width: 28%;
-		}
-		.rit-cap{
-			position: absolute;
-			top: 28%;
-			right: 15%;
-			width: 30%;
-		}
-		#Top-owl-carousel p{
-			margin-top:20px;
-		}
-		.btn-slider{
-			border:1px solid #333;
-			border-radius:0px;
-			margin-top:20px;
-			margin-bottom:10px;
-			padding: 5px 22px;
-			letter-spacing:2px;
-		}
-		.btn-slider:hover{
-			background: #f1f0ef;
-		}
-		#Top-owl-carousel .owl-nav{
-			text-align: center;
-			margin-top: 15px;
-		}
-		#Top-owl-carousel .owl-nav .owl-prev{
-			margin-right:10px;
-		}
-		#Top-owl-carousel .owl-nav .owl-next{
-			margin-left:10px;
-		}
-		#Top-owl-carousel .owl-nav .owl-prev:focus,
-		#Top-owl-carousel .owl-nav .owl-next:focus{
-			outline:none;
-		}
-		
-		.wrapper {
-			 margin: 10vh;
-		}
- .card {
-	 border: none;
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-	 overflow: hidden;
-	 border-radius: 20px;
-	 min-height: 450px;
-	 box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
-}
- @media (max-width: 768px) {
-	 .card {
-		 min-height: 350px;
-	}
-}
- @media (max-width: 420px) {
-	 .card {
-		 min-height: 300px;
-	}
-}
- .card.card-has-bg {
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background-size: 120%;
-	 background-repeat: no-repeat;
-	 background-position: center center;
-}
- .card.card-has-bg:before {
-	 content: '';
-	 position: absolute;
-	 top: 0;
-	 right: 0;
-	 bottom: 0;
-	 left: 0;
-	 background: inherit;
-	 -webkit-filter: grayscale(1);
-	 -moz-filter: grayscale(100%);
-	 -ms-filter: grayscale(100%);
-	 -o-filter: grayscale(100%);
-	 filter: grayscale(100%);
-}
- .card.card-has-bg:hover {
-	 //transform: scale(0.98);
-	 box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
-	 background-size: 120%;
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card.card-has-bg:hover .card-img-overlay {
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background: #234f6d;
-	 background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%, rgba(4, 69, 114, 1) 100%);
-}
- .card .card-footer {
-	 background: none;
-	 border-top: none;
-}
- .card .card-footer .media img {
-	 border: solid 3px rgba(234, 95, 0, 0.3);
-}
- .card .card-meta {
-	 color: orange;
-}
- .card .card-body {
-	 //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card:hover {
-	 cursor: pointer;
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card:hover .card-body {
-	 //margin-top: 30px;
-	 //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card .card-img-overlay {
-	 transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-	 background: #c2a476;
-	 background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
-}
-.wrapper .section-heading{
-	margin-bottom: 60px;
-}
-.btn-box{
-	margin-top: 30px;
-	}
-
-footer .under-footer a {
-    color: #717171;
-}
-footer .under-footer a:hover {
-    color: #c2a476;
-}
- 
-	</style>
+    <style>
+        #Top-owl-carousel {
+            margin-top: 5%;
+        }
+        
+        .slide-cap {
+            position: absolute;
+            top: 28%;
+            left: 13%;
+            width: 28%;
+        }
+        
+        .rit-cap {
+            position: absolute;
+            top: 28%;
+            right: 15%;
+            width: 30%;
+        }
+        
+        #Top-owl-carousel p {
+            margin-top: 20px;
+        }
+        
+        .btn-slider {
+            border: 1px solid #333;
+            border-radius: 0px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding: 5px 22px;
+            letter-spacing: 2px;
+        }
+        
+        .btn-slider:hover {
+            background: #f1f0ef;
+        }
+        
+        #Top-owl-carousel .owl-nav {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-prev {
+            margin-right: 10px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-next {
+            margin-left: 10px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-prev:focus,
+        #Top-owl-carousel .owl-nav .owl-next:focus {
+            outline: none;
+        }
+        
+        .wrapper {
+            margin: 10vh;
+        }
+        
+        .card {
+            border: none;
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
+            border-radius: 20px;
+            min-height: 450px;
+            box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                min-height: 350px;
+            }
+        }
+        
+        @media (max-width: 420px) {
+            .card {
+                min-height: 300px;
+            }
+        }
+        
+        .card.card-has-bg {
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            background-size: 120%;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        
+        .card.card-has-bg:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: inherit;
+            -webkit-filter: grayscale(1);
+            -moz-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            filter: grayscale(100%);
+        }
+        
+        .card.card-has-bg:hover {
+            //transform: scale(0.98);
+            box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
+            background-size: 120%;
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card.card-has-bg:hover .card-img-overlay {
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #234f6d;
+            background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%, rgba(4, 69, 114, 1) 100%);
+        }
+        
+        .card .card-footer {
+            background: none;
+            border-top: none;
+        }
+        
+        .card .card-footer .media img {
+            border: solid 3px rgba(234, 95, 0, 0.3);
+        }
+        
+        .card .card-meta {
+            color: orange;
+        }
+        
+        .card .card-body {
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card:hover {
+            cursor: pointer;
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card:hover .card-body {
+            //margin-top: 30px;
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card .card-img-overlay {
+            transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #c2a476;
+            background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
+        }
+        
+        .wrapper .section-heading {
+            margin-bottom: 60px;
+        }
+        
+        .btn-box {
+            margin-top: 30px;
+        }
+        
+        footer .under-footer a {
+            color: #717171;
+        }
+        
+        footer .under-footer a:hover {
+            color: #c2a476;
+        }
+    </style>
 
     <style>
-	.owl-prev, .owl-next {
-        width: 15px;
-        height: 100px;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        display: block !important;
-        border:0px solid black;
-    }
-    .owl-prev { left: -20px; }
-    .owl-next { right: -20px; }
-    .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
- 
+        .owl-prev,
+        .owl-next {
+            width: 15px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: block !important;
+            border: 0px solid black;
+        }
+        
+        .owl-prev {
+            left: -20px;
+        }
+        
+        .owl-next {
+            right: -20px;
+        }
+        
+        .owl-prev i,
+        .owl-next i {
+            transform: scale(2, 5);
+            color: #ccc;
+        }
     </style>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
@@ -185,64 +221,66 @@ footer .under-footer a:hover {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
 
-    </head>
-    
-    <body>
+</head>
+
+<body>
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -264,8 +302,7 @@ footer .under-footer a:hover {
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
@@ -280,7 +317,7 @@ footer .under-footer a:hover {
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
-			    <div class="form-group">
+                            <div class="form-group">
                                 <label for="password2">Confirm Password</label>
                                 <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -290,13 +327,14 @@ footer .under-footer a:hover {
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from ArtBidder.</p>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -343,8 +381,7 @@ footer .under-footer a:hover {
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
@@ -413,7 +450,7 @@ footer .under-footer a:hover {
                                 <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -422,7 +459,7 @@ footer .under-footer a:hover {
         </div>
     </div>
     <!-- Sign in Modal -->
-    
+
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -430,10 +467,10 @@ footer .under-footer a:hover {
             <div></div>
             <div></div>
         </div>
-    </div>  
+    </div>
     <!-- ***** Preloader End ***** -->
-    
-    
+
+
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
@@ -447,23 +484,23 @@ footer .under-footer a:hover {
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                         <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
 			 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li> -->
-			 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-			 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-			 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-			 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
-                         <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
+                            <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+                            <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+                            <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+                            <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
 
-			 {% if not user.is_authenticated %}
-			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-			{% else %}
-			    <li><a href="/login/logout/">Logout</a></li>
-			{% endif %}
+                            {% if not user.is_authenticated %}
+                            <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                            {% else %}
+                            <li><a href="/login/logout/">Logout</a></li>
+                            {% endif %}
 
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
-				
-			    <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
+                            <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-signup" role="tab" aria-controls="exampleModal-signup" aria-selected="false">Sign up</a></li> -->
+
+                            <!-- <li><a class="nav-link" id="Login-tab" data-toggle="modal" href="#exampleModal-login" role="tab" aria-controls="exampleModal-login" aria-selected="false">Login</a></li> -->
 
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
@@ -474,9 +511,9 @@ footer .under-footer a:hover {
                                     <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </li>-->
-                            
-                            
-                        </ul>        
+
+
+                        </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -499,84 +536,76 @@ footer .under-footer a:hover {
     -->
 
 
-<!-- ------------------------------------------------------------------------------------------  -->
+    <!-- ------------------------------------------------------------------------------------------  -->
 
-   	<!-- Carousel -->
-    {% comment %} <section class="testimonials">
-	<div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div id="customers-testimonials" class="owl-carousel owl-theme">
-	    {% for d in carousel %}
-            {% if d.datatype == "gallery" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
+    <!-- Carousel -->
+    {% comment %}
+    <section class="testimonials">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="customers-testimonials" class="owl-carousel owl-theme">
+                        {% for d in carousel %} {% if d.datatype == "gallery" %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.img}}" alt="">
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
+                                        <h5>{{d.title}}</h5>
+                                        <p>{{d.text}}</p>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gallery', {{d.data_id}});">Edit</a> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% if d.datatype == "gevent" %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.img}}" alt="">
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
+                                        <h5>{{d.title}}</h5>
+                                        <p>{{d.text}}</p>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% if d.datatype == "museum" %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.img}}" alt="">
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
+                                        <h5>{{d.title}}</h5>
+                                        <p>{{d.text}}</p>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% if d.datatype == "mevent" %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.img}}" alt="">
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
+                                        <h5>{{d.title}}</h5>
+                                        <p>{{d.text}}</p>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% endfor %}
+                    </div>
+                </div>
             </div>
-	    {% endif %}
-	    {% if d.datatype == "gevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('gevent', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "museum" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('museum', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "mevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editcarousel('mevent', {{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% endfor %}
-          </div>
         </div>
-      </div>
-      </div>
     </section> {% endcomment %}
     <!-- END OF Carousels -->
 
@@ -584,14 +613,14 @@ footer .under-footer a:hover {
 
     <!-- ***** Main Area Starts ***** -->
     <!-- ***** Explore Area Ends ***** -->
-	<section class="section" id="men">
+    <section class="section" id="men">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>Follows</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -600,24 +629,24 @@ footer .under-footer a:hover {
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for gname, gdata in galleries.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
-		                <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
-					<h4>{{gname}}</h4>
-					<h6>{{gdata.0}}</h6>
-					<!-- <a class="btn btn-slider" href="#">Follow</a> -->
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgallery('{{gdata.3}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-			<!--
+                        <div class="row align-items-end">
+                            {% for gname, gdata in galleries.items %}
+                            <div class="column">
+                                <div class="img-box">
+                                    <a href="/gallery/details/?gid={{gdata.3}}"><img src="{{gdata.1}}" alt=""></a>
+                                    <a href="/gallery/details/?gid={{gdata.3}}" style="color:#000000;">
+                                        <h4>{{gname}}</h4>
+                                        <h6>{{gdata.0}}</h6>
+                                        <!-- <a class="btn btn-slider" href="#">Follow</a> -->
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgallery('{{gdata.3}}');">Edit</a></div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <!--
                         <div class="owl-men-item owl-carousel">
                             {% for gname, gdata in galleries.items %}
                             <div class="item">
@@ -650,7 +679,7 @@ footer .under-footer a:hover {
                     <div class="section-heading text-center">
                         <h2>Favourites</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -659,24 +688,24 @@ footer .under-footer a:hover {
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for mname, mdata in museums.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/museum/details/?mid={{mdata.3}}"><img src="{{mdata.4}}" alt=""></a>
-		                <a href="/museum/details/?mid={{mdata.3}}" style="color:#000000;">
-					<h4>{{mname}}</h4>
-					<h6>{{mdata.1}}</h6>
-					<h6>{{mdata.2}}</h6>
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editmuseum('{{mdata.3}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
-			<!--
+                        <div class="row align-items-end">
+                            {% for mname, mdata in museums.items %}
+                            <div class="column">
+                                <div class="img-box">
+                                    <a href="/museum/details/?mid={{mdata.3}}"><img src="{{mdata.4}}" alt=""></a>
+                                    <a href="/museum/details/?mid={{mdata.3}}" style="color:#000000;">
+                                        <h4>{{mname}}</h4>
+                                        <h6>{{mdata.1}}</h6>
+                                        <h6>{{mdata.2}}</h6>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editmuseum('{{mdata.3}}');">Edit</a></div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <!--
                         <div class="owl-men-item owl-carousel">
                             {% for ename, edata in events.items %}
                             <div class="item">
@@ -700,7 +729,7 @@ footer .under-footer a:hover {
         </div>
     </section>
     <!-- ***** Men Area Ends ***** -->
-	<!-- ***** Explore Area Starts ***** -->
+    <!-- ***** Explore Area Starts ***** -->
     <!-- <section class="section wrapper" id="explore">
         <div class="container">
 			<div class="row">
@@ -783,7 +812,7 @@ footer .under-footer a:hover {
 			<a class="btn btn-slider" href="#">Explore</a>
 		</div>
     </section> -->
-	
+
     <section class="section" id="women">
         <div class="container">
             <div class="row">
@@ -791,7 +820,7 @@ footer .under-footer a:hover {
                     <div class="section-heading text-center">
                         <h2>Trending Artists</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -800,25 +829,25 @@ footer .under-footer a:hover {
             <div class="row align-items-end">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aname, adata in artists.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
-		                <a href="/artist/details/?aid={{adata.4}}" style="color:#000000;">
-					<h4>{{aname}}</h4>
-					<h6>{{adata.3}}</h6>
+                        <div class="row align-items-end">
+                            {% for aname, adata in artists.items %}
+                            <div class="column">
+                                <div class="img-box">
+                                    <a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
+                                    <a href="/artist/details/?aid={{adata.4}}" style="color:#000000;">
+                                        <h4>{{aname}}</h4>
+                                        <h6>{{adata.3}}</h6>
 
-				</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{adata.4}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		    	</div>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{adata.4}}');">Edit</a></div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
 
-			<!--
+                        <!--
                         <div class="owl-men-item owl-carousel">
                             {% for aname, adata in artists.items %}
                             <div class="item">
@@ -850,7 +879,7 @@ footer .under-footer a:hover {
                     <div class="section-heading text-center">
                         <h2>Auction Houses</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -866,14 +895,14 @@ footer .under-footer a:hover {
                                     <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-					<a href="/auctionhouse/details/?aucid={{aucdata.aucid}}" style="color:#000000;">
-						<h4>{{aucdata.housename}}</h4>
-						<h6>{{aucdata.location}}</h6>
-						<h6>{{aucdata.description}}</h6>
-					</a>
-					{% if adminuser == 1 %}
-					    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauctionhouse('{{aucdata.aucid}}');">Edit</a></div>
-					{% endif %}
+                                    <a href="/auctionhouse/details/?aucid={{aucdata.aucid}}" style="color:#000000;">
+                                        <h4>{{aucdata.housename}}</h4>
+                                        <h6>{{aucdata.location}}</h6>
+                                        <h6>{{aucdata.description}}</h6>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauctionhouse('{{aucdata.aucid}}');">Edit</a></div>
+                                    {% endif %}
                                 </div>
                             </div>
                             {% endfor %}
@@ -891,7 +920,7 @@ footer .under-footer a:hover {
                     <div class="section-heading text-center">
                         <h2>Upcoming Auctions</h2>
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
@@ -900,25 +929,24 @@ footer .under-footer a:hover {
             <div class="row">
                 <div class="col-lg-12">
                     <div class="men-item-carousel">
-			<div class="row align-items-end">
-			{% for aucname, aucdata in upcomingauctions.items %}
-		        <div class="column">
-		            <div class="img-box">
-				<a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
-		                <a href="/auction/details/?lid={{aucdata.lid}}" style="color:#000000;">
-						<h4>{{aucname}}</h4>
-						<h6>{{aucdata.description}}</h6>
-				</a>
-				<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
-				{% if adminuser == 1 %}
-				    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{aucdata.aucid}}');">Edit</a></div>
-				{% endif %}
-		            </div>
-		        </div>
-			{% endfor %}
-		        
-		    	</div>
-			<!--
+                        <div class="row align-items-end">
+                            {% for aucname, aucdata in upcomingauctions.items %}
+                            <div class="column">
+                                <div class="img-box">
+                                    <a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
+                                    <a href="/auction/details/?lid={{aucdata.lid}}" style="color:#000000;">
+                                        <h4>{{aucname}}</h4>
+                                        <h6>{{aucdata.description}}</h6>
+                                    </a>
+                                    <a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a> {% if adminuser == 1 %}
+                                    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editauction('{{aucdata.aucid}}');">Edit</a></div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                        <!--
                         <div class="owl-men-item owl-carousel">
                             {% for aucname, aucdata in upcomingauctions.items %}
                             <div class="item">
@@ -942,13 +970,13 @@ footer .under-footer a:hover {
     </section>
 
     <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
+        <a href="#" class="cancel">×</a>
+        <form name='frmedit' id='frmedit'>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="cover">
+    </div>
 
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -957,7 +985,7 @@ footer .under-footer a:hover {
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -966,7 +994,7 @@ footer .under-footer a:hover {
                         </ul>
                     </div>
                 </div>
-                 <div class="col-lg-3">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -996,18 +1024,18 @@ footer .under-footer a:hover {
                 <div class="col-lg-12">
                     <div class="under-footer">
                         <p>Copyright © 2022. All Rights Reserved.
-                       
-                        <ul>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                        </ul>
+
+                            <ul>
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                            </ul>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
-    
+
 
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js"></script>
@@ -1023,60 +1051,58 @@ footer .under-footer a:hover {
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
-	
-	<script>
-jQuery(document).ready(function($) {
-"use strict";
-$('#customers-testimonials').owlCarousel( {
-		loop: true,
-		center: true,
-		items: 3,
-		margin: 30,
-		autoplay: true,
-		dots:true,
-    		nav:true,
-		autoplayTimeout: 8500,
-		smartSpeed: 450,
-  		navText: ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-		responsive: {
-			0: {
-				items: 1
-			},
-			768: {
-				items: 2
-			},
-			1170: {
-				items: 3
-			}
-		}
-	});
-});
 
-	</script>
     <script>
-		
-        $(function() {
-            var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
+        jQuery(document).ready(function($) {
+            "use strict";
+            $('#customers-testimonials').owlCarousel({
+                loop: true,
+                center: true,
+                items: 3,
+                margin: 30,
+                autoplay: true,
+                dots: true,
+                nav: true,
+                autoplayTimeout: 8500,
+                smartSpeed: 450,
+                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    1170: {
+                        items: 3
+                    }
+                }
             });
         });
+    </script>
+    <script>
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
 
+            });
+        });
     </script>
 
-  </body>
+</body>
+
 </html>

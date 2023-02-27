@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,66 +23,68 @@
 
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
-	
+
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
 
-    </head>
-    
-    <body>
+</head>
+
+<body>
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -104,8 +106,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action="/login/registration/" name="frmsignup" id="frmsignup">
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
@@ -120,7 +121,7 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
-			    <div class="form-group">
+                            <div class="form-group">
                                 <label for="password2">Confirm Password</label>
                                 <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -130,13 +131,14 @@
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a>  and to receiving emails from ArtBidder.</p>
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -183,8 +185,7 @@
                     </div>
                     <div class="modal-form">
                         <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-			    <label style="color:red;" id="errormsg"></label>
-			    {% csrf_token %}
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
@@ -202,7 +203,7 @@
                             <div class="form-group">
                                 <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
-			    <!--
+                            <!--
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
@@ -255,7 +256,7 @@
                                 <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset?  <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -264,7 +265,7 @@
         </div>
     </div>
     <!-- Sign in Modal -->
-    
+
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -272,10 +273,10 @@
             <div></div>
             <div></div>
         </div>
-    </div>  
+    </div>
     <!-- ***** Preloader End ***** -->
-    
-    
+
+
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
@@ -309,46 +310,45 @@
                         </a>
 
                     </nav> -->
-		    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav" >
-                      <a class="navbar-brand" href="/login/dashboard/">
-                        <!-- <img src="static/images/logo1.png"> -->
-                        ARTBIDER
-                     </a>
-                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                          aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
+                        <a class="navbar-brand" href="/login/dashboard/">
+                            <!-- <img src="static/images/logo1.png"> -->
+                            ARTBIDER
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                           <span class="navbar-toggler-icon"></span>
                       </button>
-                      <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                          <ul class="navbar-nav mx-auto">
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
-                              </li>
-                              <li class="nav-item scroll-to-section">
-                                  <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
-                              </li>
-                              
-                          </ul>
-                          <ul class="navbar-nav sm-icons mr-0">
-                              {% if not user.is_authenticated %}
-				<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-                              {% else %}
-                              <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-			      <li class="nav-item">
-                          	<button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
-                              </li>
-                              {% endif %}
-                          </ul>
-                      </div>
-                  </nav>
+                        <div class="collapse navbar-collapse" id="myNavbarToggler10">
+                            <ul class="navbar-nav mx-auto">
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+                                </li>
+
+                            </ul>
+                            <ul class="navbar-nav sm-icons mr-0">
+                                {% if not user.is_authenticated %}
+                                <li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                                {% else %}
+                                <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                                <li class="nav-item">
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -357,27 +357,27 @@
 
     <!-- ***** Main Banner Area Start ***** -->
     <section class="inner-top-banner"></section>
-	
+
     <!-- ***** Main Banner Area End ***** -->
-	<section class="section gal-section gal-dtl-sec" id="">
+    <section class="section gal-section gal-dtl-sec" id="">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-						<div class="gal-logo-box">
-							<a href="/auctionhouse/details/?ahid={{ahid}}" class="">
-								<img src="{{auctioninfo.coverimage}}">
-								<h2>{{auctionhousename}}</h2>
-							 </a>
-							<p>{{auctionhouselocation}}, {{auctionhousecountry}}</p>
-							
-						</div>
+                        <div class="gal-logo-box">
+                            <a href="/auctionhouse/details/?ahid={{ahid}}" class="">
+                                <img src="{{auctioninfo.coverimage}}">
+                                <h2>{{auctionhousename}}</h2>
+                            </a>
+                            <p>{{auctionhouselocation}}, {{auctionhousecountry}}</p>
+
+                        </div>
                     </div>
                 </div>
-	    </div>
+            </div>
         </div>
-	</section>
-	<section class="category-tabs mrt-90">
+    </section>
+    <section class="category-tabs mrt-90">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -399,13 +399,13 @@
                     </div>
                 </div>
             </div>
-	    <div class="row">
+            <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="cate-tabs-content mrt-90">
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
-				    
+
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="section-heading section-heading-2 pdb-50">
@@ -416,28 +416,30 @@
                                             </div>
                                         </div>
                                     </div>
-		{% if upcomingauctions|length == 0 %}
-				<div class="row align-items-end" style='text-align:center;justify:center;'><h6>There are no past auctions for this auction house as of now.</h6></div>
-		{% else %}
-          	<div class="row align-items-end">
-			{% for auction in upcomingauctions %}
-			<div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
-                            <div class="img-box">
-				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
-                            	<a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
-                                <h4>{{auction.auctionname}}</h4>
-                                <h6>{{auction.auctionhousename}}</h6>
-				<h6>{{auction.aucperiod}}</h6>
-			    </a>
-                            </div>
-                        </div>
-			{% endfor %}
-		</div>
-		{% endif %}
-        </div>
-	
-        			<div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Contact-tab">
-          			    <div class="row">
+                                    {% if upcomingauctions|length == 0 %}
+                                    <div class="row align-items-end" style='text-align:center;justify:center;'>
+                                        <h6>There are no past auctions for this auction house as of now.</h6>
+                                    </div>
+                                    {% else %}
+                                    <div class="row align-items-end">
+                                        {% for auction in upcomingauctions %}
+                                        <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                            <div class="img-box">
+                                                <a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
+                                                <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+                                                    <h4>{{auction.auctionname}}</h4>
+                                                    <h6>{{auction.auctionhousename}}</h6>
+                                                    <h6>{{auction.aucperiod}}</h6>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Contact-tab">
+                                    <div class="row">
                                         <div class="col-lg-12">
                                             <div class="section-heading section-heading-2 pdb-50">
                                                 <h2>Past Auctions</h2>
@@ -447,32 +449,36 @@
                                             </div>
                                         </div>
                                     </div>
-		{% if pastauctions|length == 0 %}
-				<div class="row align-items-end" style='text-align:center;justify:center;'><h6>There are no past auctions for this auction house as of now.</h6></div>
-		{% else %}
-          	<div class="row align-items-end">
-			{% for auction in pastauctions %}
-			<div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
-                            <div class="img-box">
-				<a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
-                            	<a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
-                                <h4>{{auction.auctionname}}</h4>
-                                <h6>{{auction.auctionhousename}}</h6>
-				<h6>{{auction.aucperiod}}</h6>
-			    </a>
+                                    {% if pastauctions|length == 0 %}
+                                    <div class="row align-items-end" style='text-align:center;justify:center;'>
+                                        <h6>There are no past auctions for this auction house as of now.</h6>
+                                    </div>
+                                    {% else %}
+                                    <div class="row align-items-end">
+                                        {% for auction in pastauctions %}
+                                        <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                            <div class="img-box">
+                                                <a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
+                                                <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+                                                    <h4>{{auction.auctionname}}</h4>
+                                                    <h6>{{auction.auctionhousename}}</h6>
+                                                    <h6>{{auction.aucperiod}}</h6>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-			{% endfor %}
-		</div>
-		{% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      </div>
-     </div></div></div>
-	</div>
-	</section>
+    </section>
 
-      
+
 
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -481,7 +487,7 @@
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -490,7 +496,7 @@
                         </ul>
                     </div>
                 </div>
-                 <div class="col-lg-3">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -520,7 +526,7 @@
                 <div class="col-lg-12">
                     <div class="under-footer">
                         <p>Copyright © 2022. All Rights Reserved.</p>
-                       
+
                         <ul>
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -531,7 +537,7 @@
             </div>
         </div>
     </footer>
-    
+
 
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js"></script>
@@ -547,50 +553,48 @@
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
-    
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
+
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
-	<script>
-function openNav() {
-  document.getElementById("mySidebar").style.width = "350px";
-  //document.getElementById("main").style.marginLeft = "250px";
-}
-
-function closeNav() {
-  document.getElementById("mySidebar").style.width = "0";
-  document.getElementById("main").style.marginLeft= "0";
-}
-</script>
-	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
-		
-	</script>
     <script>
-		
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "350px";
+            //document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+    </script>
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
+    </script>
+    <script>
         $(function() {
             var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
             });
         });
-
     </script>
 
-  </body>
+</body>
+
 </html>

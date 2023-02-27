@@ -1,203 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
- <meta charset="utf-8">
- <meta name="viewport" content="width=device-width, initialscale=1, shrink-to-fit=no">
- <meta name="description" content="">
- <meta name="author" content="">
- <link href="https://fonts.googleapis.com/css?
-family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-rel="stylesheet">
- <title>Eolico</title>
- <!-- Additional CSS Files -->
- <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
- <link rel="stylesheet" type="text/css" href="/static/css/fontawesome.css">
- <link rel="stylesheet" href="/static/css/style.css">
- <link rel="stylesheet" href="/static/css/owl-carousel.css">
- <link rel="stylesheet" href="/static/css/lightbox.css">
- <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
-<style>
-#Top-owl-carousel{
-margin-top:5%;
-}
-.slide-cap{
-position: absolute;
-top: 28%;
-left: 13%;
-width: 28%;
-}
-.rit-cap{
-position: absolute;
-top: 28%;
-right: 15%;
-width: 30%;
-}
-#Top-owl-carousel p{
-margin-top:20px;
-}
-.btn-slider{
-border:1px solid #333;
-border-radius:0px;
-margin-top:20px;
-margin-bottom:10px;
-padding: 5px 22px;
-letter-spacing:2px;
-}
-.btn-slider:hover{
-background: #f1f0ef;
-}
-#Top-owl-carousel .owl-nav{
-text-align: center;
-margin-top: 15px;
-}
-#Top-owl-carousel .owl-nav .owl-prev{
-margin-right:10px;
-}
-#Top-owl-carousel .owl-nav .owl-next{
-margin-left:10px;
-}
-#Top-owl-carousel .owl-nav .owl-prev:focus,
-#Top-owl-carousel .owl-nav .owl-next:focus{
-outline:none;
-}
-.wrapper {
- margin: 10vh;
-}
- .card {
- border: none;
- //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
- overflow: hidden;
- border-radius: 20px;
- min-height: 450px;
- box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
-}
- @media (max-width: 768px) {
- .card {
- min-height: 350px;
-}
-}
- @media (max-width: 420px) {
- .card {
- min-height: 300px;
-}
-}
- .card.card-has-bg {
- //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
- background-size: 120%;
- background-repeat: no-repeat;
- background-position: center center;
-}
- .card.card-has-bg:before {
- content: '';
- position: absolute;
- top: 0;
- right: 0;
- bottom: 0;
- left: 0;
- background: inherit;
- -webkit-filter: grayscale(1);
- -moz-filter: grayscale(100%);
- -ms-filter: grayscale(100%);
- -o-filter: grayscale(100%);
- filter: grayscale(100%);
-}
- .card.card-has-bg:hover {
- //transform: scale(0.98);
- box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
- background-size: 120%;
- //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card.card-has-bg:hover .card-img-overlay {
- //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
- background: #234f6d;
- background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%,
-rgba(4, 69, 114, 1) 100%);
-}
- .card .card-footer {
- background: none;
- border-top: none;
-}
- .card .card-footer .media img {
- border: solid 3px rgba(234, 95, 0, 0.3);
-}
- .card .card-meta {
- color: orange;
-}
- .card .card-body {
- //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card:hover {
- cursor: pointer;
- //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card:hover .card-body {
- //margin-top: 30px;
- //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-}
- .card .card-img-overlay {
- transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
- background: #c2a476;
- background: linear-gradient(0deg, rgba(35, 79, 109,
-0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
-}
-.wrapper .section-heading{
-margin-bottom: 60px;
-}
-.btn-box{
-margin-top: 30px;
-}
-footer .under-footer a {
- color: #717171;
-}
-footer .under-footer a:hover {
- color: #c2a476;
-}
-</style>
-<!--
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initialscale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?
+family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <title>Eolico</title>
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/fontawesome.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/owl-carousel.css">
+    <link rel="stylesheet" href="/static/css/lightbox.css">
+    <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
+    <style>
+        #Top-owl-carousel {
+            margin-top: 5%;
+        }
+        
+        .slide-cap {
+            position: absolute;
+            top: 28%;
+            left: 13%;
+            width: 28%;
+        }
+        
+        .rit-cap {
+            position: absolute;
+            top: 28%;
+            right: 15%;
+            width: 30%;
+        }
+        
+        #Top-owl-carousel p {
+            margin-top: 20px;
+        }
+        
+        .btn-slider {
+            border: 1px solid #333;
+            border-radius: 0px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding: 5px 22px;
+            letter-spacing: 2px;
+        }
+        
+        .btn-slider:hover {
+            background: #f1f0ef;
+        }
+        
+        #Top-owl-carousel .owl-nav {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-prev {
+            margin-right: 10px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-next {
+            margin-left: 10px;
+        }
+        
+        #Top-owl-carousel .owl-nav .owl-prev:focus,
+        #Top-owl-carousel .owl-nav .owl-next:focus {
+            outline: none;
+        }
+        
+        .wrapper {
+            margin: 10vh;
+        }
+        
+        .card {
+            border: none;
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
+            border-radius: 20px;
+            min-height: 450px;
+            box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                min-height: 350px;
+            }
+        }
+        
+        @media (max-width: 420px) {
+            .card {
+                min-height: 300px;
+            }
+        }
+        
+        .card.card-has-bg {
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            background-size: 120%;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        
+        .card.card-has-bg:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: inherit;
+            -webkit-filter: grayscale(1);
+            -moz-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            filter: grayscale(100%);
+        }
+        
+        .card.card-has-bg:hover {
+            //transform: scale(0.98);
+            box-shadow: 0 0 5px -2px rgba(0, 0, 0, 0.3);
+            background-size: 120%;
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card.card-has-bg:hover .card-img-overlay {
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #234f6d;
+            background: linear-gradient(0deg, rgba(4, 69, 114, 0.5) 0%, rgba(4, 69, 114, 1) 100%);
+        }
+        
+        .card .card-footer {
+            background: none;
+            border-top: none;
+        }
+        
+        .card .card-footer .media img {
+            border: solid 3px rgba(234, 95, 0, 0.3);
+        }
+        
+        .card .card-meta {
+            color: orange;
+        }
+        
+        .card .card-body {
+            //transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card:hover {
+            cursor: pointer;
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card:hover .card-body {
+            //margin-top: 30px;
+            //transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .card .card-img-overlay {
+            transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #c2a476;
+            background: linear-gradient(0deg, rgba(35, 79, 109, 0.3785889355742297) 0%, rgba(69, 95, 113, 1) 100%);
+        }
+        
+        .wrapper .section-heading {
+            margin-bottom: 60px;
+        }
+        
+        .btn-box {
+            margin-top: 30px;
+        }
+        
+        footer .under-footer a {
+            color: #717171;
+        }
+        
+        footer .under-footer a:hover {
+            color: #c2a476;
+        }
+    </style>
+    <!--
 TemplateMo 571 Hexashop
 https://templatemo.com/tm-571-hexashop
 -->
- </head>
+</head>
 
- <body>
+<body>
 
- <!-- ***** Preloader Start ***** -->
- <div id="preloader">
- <div class="jumper">
- <div></div>
- <div></div>
- <div></div>
- </div>
- </div>
- <!-- ***** Preloader End ***** -->
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
 
 
- <!-- ***** Header Area Start ***** -->
- <header class="header-area header-sticky">
- <div class="container">
- <div class="row">
- <div class="col-12">
- <nav class="main-nav">
- <!-- ***** Logo Start ***** -->
- <a href="index.html" class="logo">
- <img src="/static/images/logo1.png">
- </a>
- <!-- ***** Logo End ***** -->
- <!-- ***** Menu Start ***** -->
- <ul class="nav">
- <li class="scroll-to-section"><a href="#"
-class="active">Home</a></li>
-<li
-class="scroll-to-section"><a href="#">About</a></li>
- <li class="scroll-to-section"><a
-href="#">Viewing Rooms</a></li>
- <li class="scroll-to-section"><a
-href="galleries.html">Galleries</a></li>
- <li class="scroll-to-section"><a
-href="#">Museums</a></li>
- <li class="scroll-to-section"><a
-href="#">Contact</a></li>
- <!--<li class="submenu">
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <img src="/static/images/logo1.png">
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li class="scroll-to-section"><a href="#" class="active">Home</a></li>
+                            <li class="scroll-to-section"><a href="#">About</a></li>
+                            <li class="scroll-to-section"><a href="#">Viewing Rooms</a></li>
+                            <li class="scroll-to-section"><a href="galleries.html">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="#">Museums</a></li>
+                            <li class="scroll-to-section"><a href="#">Contact</a></li>
+                            <!--<li class="submenu">
  <a href="javascript:;">Pages</a>
  <ul>
  <li><a href="about.html">About
@@ -210,51 +230,57 @@ Us</a></li>
  </ul>
  </li>-->
 
- </ul>
- <a class='menu-trigger'>
- <span>Menu</span>
- </a>
- <!-- ***** Menu End ***** -->
- </nav>
- </div>
- </div>
- </div>
- </header>
- <!-- ***** Header Area End ***** -->
- <!-- ***** Main Banner Area Start ***** -->
+                        </ul>
+                        <a class='menu-trigger'>
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+    <!-- ***** Main Banner Area Start ***** -->
 
-<div id="Top-owl-carousel" class="owl-carousel owl-theme">
-<div class="item"><img src="/static/images/slider-bg1.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Aliquam
-tincidunt dolor</h2><p>Lorem ipsum dolor sit amet, consectetur
-adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a
-class="btn btn-slider" href="#">Explore</a></div></div>
-<div class="item"><img src="/static/images/slider-bg2.jpg" class="img-fluid" alt=""><div class="rit-cap"><h2>Phasellus
-placerat</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing
-elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn
-btn-slider" href="#">Explore</a></div></div>
-<div class="item"><img src="/static/images/slider-bg3.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Maecenas
-molestie</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing
-elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn
-btn-slider" href="#">Explore</a></div></div>
-</div>
- <!-- ***** Main Banner Area End ***** -->
-<section class="section gal-section" id="">
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="section-heading text-center">
- <h2>Browse Galleries</h2>
-<hr>
- </div>
- </div>
- </div>
- </div>
-<div class="container">
- <div class="row">
- <div class="col-md-4">
-<div class="demo">
- <select style="display:none"
-placeholder="Select">
+    <div id="Top-owl-carousel" class="owl-carousel owl-theme">
+        <div class="item"><img src="/static/images/slider-bg1.jpg" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>Aliquam tincidunt dolor</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div>
+        </div>
+        <div class="item"><img src="/static/images/slider-bg2.jpg" class="img-fluid" alt="">
+            <div class="rit-cap">
+                <h2>Phasellus placerat
+                </h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn
+btn-slider" href="#">Explore</a></div>
+        </div>
+        <div class="item"><img src="/static/images/slider-bg3.jpg" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>Maecenas molestie
+                </h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn
+btn-slider" href="#">Explore</a></div>
+        </div>
+    </div>
+    <!-- ***** Main Banner Area End ***** -->
+    <section class="section gal-section" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Browse Galleries</h2>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="demo">
+                        <select style="display:none" placeholder="Select">
 <option value="1">All
 Locations</option>
 <option
@@ -264,12 +290,11 @@ value="3">3</option>
 <option
 value="4">4</option>
  </select>
-</div>
-</div>
- <div class="col-md-4">
-<div class="demo">
- <select style="display:none"
-placeholder="Select">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="demo">
+                        <select style="display:none" placeholder="Select">
 <option value="1">All
 Specialties</option>
 <option
@@ -279,12 +304,11 @@ value="3">3</option>
 <option
 value="4">4</option>
  </select>
-</div>
-</div>
- <div class="col-md-4">
-<div class="demo">
- <select style="display:none"
-placeholder="Select">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="demo">
+                        <select style="display:none" placeholder="Select">
 <option value="1">All
 Galleries</option>
 <option
@@ -294,488 +318,468 @@ value="3">3</option>
 <option
 value="4">4</option>
  </select>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="section gal-section" id="">
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="section-heading text-center">
- <h2>20th Century Design</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>20th Century Design</h2>
+                        <span>Lorem ipsum dolor sit amet, consectetur
 adipiscing elit.</span>
-<hr>
- </div>
- </div>
- </div>
- </div>
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="men-item-carousel">
- <div class="owl-men-item owl-carousel">
-{% for galleryname, gdata in galleries.items %}
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g1.jpg" alt=""></a>
- </div>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+                            {% for galleryname, gdata in galleries.items %}
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                                </div>
 
- <div class="down-content">
-<a href="#">
-<h4>Maison Gerard</h4>
-<span>New York</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</a>
- </div>
- </div>
-{% endfor %}
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g2.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>The Contemporary Art</h4>
-<span>Miami, Westport</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g3.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>Galerie Laurent Strouk</h4>
-<span>Paris</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <img src="/static/images/g4.jpg"
-alt="">
- </div>
- <div class="down-content">
- <h4>Alzueta Gallery</h4>
- <span>Santa Monica</span>
-<a class="btn btn-slider" href="#">Follow</a>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </section>
- <section class="section gal-section" id="">
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="section-heading text-center">
- <h2>Contemporary Glass</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
+                                <div class="down-content">
+                                    <a href="#">
+                                        <h4>Maison Gerard</h4>
+                                        <span>New York</span>
+                                        <a class="btn btn-slider" href="#">Follow</a>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g2.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>The Contemporary Art</h4>
+                                    <span>Miami, Westport</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g3.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>Galerie Laurent Strouk</h4>
+                                    <span>Paris</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <img src="/static/images/g4.jpg" alt="">
+                                </div>
+                                <div class="down-content">
+                                    <h4>Alzueta Gallery</h4>
+                                    <span>Santa Monica</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Contemporary Glass</h2>
+                        <span>Lorem ipsum dolor sit amet, consectetur
 adipiscing elit.</span>
-<hr>
- </div>
- </div>
- </div>
- </div>
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="men-item-carousel">
- <div class="owl-men-item owl-carousel">
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g1.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<a href="#">
-<h4>Maison Gerard</h4>
-<span>New York</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</a>
- </div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g2.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>The Contemporary Art</h4>
-<span>Miami, Westport</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g3.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>Galerie Laurent Strouk</h4>
-<span>Paris</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <img src="/static/images/g4.jpg"
-alt="">
- </div>
- <div class="down-content">
- <h4>Alzueta Gallery</h4>
- <span>Santa Monica</span>
-<a class="btn btn-slider" href="#">Follow</a>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </section>
-<section class="section gal-section" id="">
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="section-heading text-center">
- <h2>Middle Eastern Art</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <a href="#">
+                                        <h4>Maison Gerard</h4>
+                                        <span>New York</span>
+                                        <a class="btn btn-slider" href="#">Follow</a>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g2.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>The Contemporary Art</h4>
+                                    <span>Miami, Westport</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g3.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>Galerie Laurent Strouk</h4>
+                                    <span>Paris</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <img src="/static/images/g4.jpg" alt="">
+                                </div>
+                                <div class="down-content">
+                                    <h4>Alzueta Gallery</h4>
+                                    <span>Santa Monica</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Middle Eastern Art</h2>
+                        <span>Lorem ipsum dolor sit amet, consectetur
 adipiscing elit.</span>
-<hr>
- </div>
- </div>
- </div>
- </div>
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="men-item-carousel">
- <div class="owl-men-item owl-carousel">
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g1.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<a href="#">
-<h4>Maison Gerard</h4>
-<span>New York</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</a>
- </div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g2.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>The Contemporary Art</h4>
-<span>Miami, Westport</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g3.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>Galerie Laurent Strouk</h4>
-<span>Paris</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <img src="/static/images/g4.jpg"
-alt="">
- </div>
- <div class="down-content">
- <h4>Alzueta Gallery</h4>
- <span>Santa Monica</span>
-<a class="btn btn-slider" href="#">Follow</a>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </section>
-<section class="section gal-section" id="">
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="section-heading text-center">
- <h2>Ceramics</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <a href="#">
+                                        <h4>Maison Gerard</h4>
+                                        <span>New York</span>
+                                        <a class="btn btn-slider" href="#">Follow</a>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g2.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>The Contemporary Art</h4>
+                                    <span>Miami, Westport</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g3.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>Galerie Laurent Strouk</h4>
+                                    <span>Paris</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <img src="/static/images/g4.jpg" alt="">
+                                </div>
+                                <div class="down-content">
+                                    <h4>Alzueta Gallery</h4>
+                                    <span>Santa Monica</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>Ceramics</h2>
+                        <span>Lorem ipsum dolor sit amet, consectetur
 adipiscing elit.</span>
-<hr>
- </div>
- </div>
- </div>
- </div>
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="men-item-carousel">
- <div class="owl-men-item owl-carousel">
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g1.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<a href="#">
-<h4>Maison Gerard</h4>
-<span>New York</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</a>
- </div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g2.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>The Contemporary Art</h4>
-<span>Miami, Westport</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g3.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>Galerie Laurent Strouk</h4>
-<span>Paris</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <img src="/static/images/g4.jpg"
-alt="">
- </div>
- <div class="down-content">
- <h4>Alzueta Gallery</h4>
- <span>Santa Monica</span>
-<a class="btn btn-slider" href="#">Follow</a>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </section>
-<section class="section gal-section" id="">
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="section-heading text-center">
- <h2>African Art</h2>
- <span>Lorem ipsum dolor sit amet, consectetur
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <a href="#">
+                                        <h4>Maison Gerard</h4>
+                                        <span>New York</span>
+                                        <a class="btn btn-slider" href="#">Follow</a>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g2.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>The Contemporary Art</h4>
+                                    <span>Miami, Westport</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g3.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>Galerie Laurent Strouk</h4>
+                                    <span>Paris</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <img src="/static/images/g4.jpg" alt="">
+                                </div>
+                                <div class="down-content">
+                                    <h4>Alzueta Gallery</h4>
+                                    <span>Santa Monica</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section gal-section" id="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading text-center">
+                        <h2>African Art</h2>
+                        <span>Lorem ipsum dolor sit amet, consectetur
 adipiscing elit.</span>
-<hr>
- </div>
- </div>
- </div>
- </div>
- <div class="container">
- <div class="row">
- <div class="col-lg-12">
- <div class="men-item-carousel">
- <div class="owl-men-item owl-carousel">
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g1.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<a href="#">
-<h4>Maison Gerard</h4>
-<span>New York</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</a>
- </div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g2.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>The Contemporary Art</h4>
-<span>Miami, Westport</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <a href="#"><img
-src="/static/images/g3.jpg" alt=""></a>
- </div>
- <div class="down-content">
-<h4>Galerie Laurent Strouk</h4>
-<span>Paris</span>
-<a class="btn btn-slider" href="#">Follow</a>
-</div>
- </div>
- <div class="item">
- <div class="thumb">
- <img src="/static/images/g4.jpg"
-alt="">
- </div>
- <div class="down-content">
- <h4>Alzueta Gallery</h4>
- <span>Santa Monica</span>
-<a class="btn btn-slider" href="#">Follow</a>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </section>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="men-item-carousel">
+                        <div class="owl-men-item owl-carousel">
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g1.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <a href="#">
+                                        <h4>Maison Gerard</h4>
+                                        <span>New York</span>
+                                        <a class="btn btn-slider" href="#">Follow</a>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g2.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>The Contemporary Art</h4>
+                                    <span>Miami, Westport</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <a href="#"><img src="/static/images/g3.jpg" alt=""></a>
+                                </div>
+                                <div class="down-content">
+                                    <h4>Galerie Laurent Strouk</h4>
+                                    <span>Paris</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="thumb">
+                                    <img src="/static/images/g4.jpg" alt="">
+                                </div>
+                                <div class="down-content">
+                                    <h4>Alzueta Gallery</h4>
+                                    <span>Santa Monica</span>
+                                    <a class="btn btn-slider" href="#">Follow</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
- <!-- ***** Footer Start ***** -->
- <footer>
- <div class="container">
- <div class="row">
- <div class="col-lg-3">
- <div class="first-item">
- <div class="logo">
- <img src="/static/images/logo-white.png"
-alt="">
- </div>
- <ul>
- <li><a href="#">1234 Collins Ave, Sunny
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="first-item">
+                        <div class="logo">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
+                        </div>
+                        <ul>
+                            <li><a href="#">1234 Collins Ave, Sunny
 Isles Beach, FL 33160, United States</a></li>
- <li><a href="#">demo@company.com</a></li>
- <li><a href="#">010-020-0340</a></li>
- </ul>
- </div>
- </div>
- <div class="col-lg-3">
- <h4>Quick Links</h4>
- <ul>
- <li><a href="#">Featured shows</a></li>
- <li><a href="#">Market News</a></li>
- <li><a href="#">Current Fairs</a></li>
- <li><a href="#">Trending Artists</a></li>
- </ul>
- </div>
- <div class="col-lg-3">
- <h4>Useful Links</h4>
- <ul>
- <li><a href="#">About Us</a></li>
- <li><a href="#">Galleries</a></li>
- <li><a href="#">Museums</a></li>
- <li><a href="#">Contact Us</a></li>
- </ul>
- </div>
- <div class="col-lg-3">
- <h4>Information</h4>
- <ul>
- <li><a href="#">FAQ's</a></li>
- <li><a href="#">Terms of Use</a></li>
- <li><a href="#">Privacy Policy</a></li>
- <li><a href="#">Security</a></li>
- </ul>
- </div>
- <div class="col-lg-12">
- <div class="under-footer">
- <p>Copyright © 2022. All Rights Reserved.</p>
+                            <li><a href="#">demo@company.com</a></li>
+                            <li><a href="#">010-020-0340</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Featured shows</a></li>
+                        <li><a href="#">Market News</a></li>
+                        <li><a href="#">Current Fairs</a></li>
+                        <li><a href="#">Trending Artists</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Galleries</a></li>
+                        <li><a href="#">Museums</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="#">FAQ's</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
 
- <ul>
- <li><a href="#"><i class="fa fa-facebook">
+                        <ul>
+                            <li><a href="#"><i class="fa fa-facebook">
 </i></a></li>
- <li><a href="#"><i class="fa fa-twitter">
+                            <li><a href="#"><i class="fa fa-twitter">
 </i></a></li>
- <li><a href="#"><i class="fa fainstagram"></i></a></li>
- </ul>
- </div>
- </div>
- </div>
- </div>
- </footer>
+                            <li><a href="#"><i class="fa fainstagram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
- <!-- jQuery -->
- <script src="/static/js/jquery-2.1.0.min.js"></script>
- <!-- Bootstrap -->
- <script src="/static/js/popper.js"></script>
- <script src="/static/js/bootstrap.min.js"></script>
- <!-- Plugins -->
- <script src="/static/js/owl-carousel.js"></script>
- <script src="/static/js/accordions.js"></script>
- <script src="/static/js/datepicker.js"></script>
- <script src="/static/js/scrollreveal.min.js"></script>
- <script src="/static/js/waypoints.min.js"></script>
- <script src="/static/js/jquery.counterup.min.js"></script>
- <script src="/static/js/imgfix.min.js"></script>
- <script src="/static/js/slick.js"></script>
- <script src="/static/js/lightbox.js"></script>
- <script src="/static/js/isotope.js"></script>
- <script src="/static/js/jquery.dropdown.min.js"></script>
+    <!-- jQuery -->
+    <script src="/static/js/jquery-2.1.0.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!-- Plugins -->
+    <script src="/static/js/owl-carousel.js"></script>
+    <script src="/static/js/accordions.js"></script>
+    <script src="/static/js/datepicker.js"></script>
+    <script src="/static/js/scrollreveal.min.js"></script>
+    <script src="/static/js/waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
 
- <!-- Global Init -->
- <script src="/static/js/custom.js"></script>
-<script>
-/*https://www.jqueryscript.net/demo/Searchable-Multi-selectjQuery-Dropdown/*/
-$('.demo').dropdown({
-limitCount: 1,
-input:'<input type="text" maxLength="20"
-placeholder="Search">'
-});
-$('#Top-owl-carousel').owlCarousel({
-loop:false,
-rewind: true,
-margin:1,
-nav:true,
-autoplay:true,
-autoplayTimeout:8000,
-responsive:{
-0:{
-items:1
-},
-600:{
-items:1
-},
-1000:{
-items:1
-}
-}
-})
-</script>
- <script>
- $(function() {
- var selectedClass = "";
- $("p").click(function(){
- selectedClass = $(this).attr("data-rel");
- $("#portfolio").fadeTo(50, 0.1);
- $("#portfolio div").not("."+selectedClass).fadeOut();
- setTimeout(function() {
- $("."+selectedClass).fadeIn();
- $("#portfolio").fadeTo(50, 1);
- }, 500);
+    <!-- Global Init -->
+    <script src="/static/js/custom.js"></script>
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-selectjQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20"
+            placeholder = "Search" > '
+        });
+        $('#Top-owl-carousel').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 1,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 8000,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        })
+    </script>
+    <script>
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
 
- });
- });
- </script>
- </body>
+            });
+        });
+    </script>
+</body>
+
 </html>

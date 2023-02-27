@@ -26,12 +26,10 @@
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
     <script type='text/javascript'>
-
-
     </script>
-    
+
 </head>
-    
+
 <body>
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
@@ -56,23 +54,23 @@
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
                             <li class="scroll-to-section"><a href="/login/index/">Home</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
-				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
-				 <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
-				 <li class="scroll-to-section"><a href="/auctionhouse/index/" class="active">Auction Houses</a></li>
-				 <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
-				 <li class="scroll-to-section"><a href="#">Others</a></li>
-				 <li class="submenu">
-				 <ul>
-				 <li><a href="/about/">About</a></li>
-				 <li><a href="/contactus/">Contact Us</a></li>
-				 </ul>
-				 </li>  
-				 <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
+                            <!-- <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li> -->
+                            <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+                            <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/auctions/houses/">Auction Houses</a></li> -->
+                            <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            <!-- <li class="scroll-to-section"><a href="/microsites/index/">Microsites</a></li> -->
+                            <li class="scroll-to-section"><a href="/auctionhouse/index/" class="active">Auction Houses</a></li>
+                            <!-- <li class="scroll-to-section"><a href="#">Special Offers & Pricing Plans</a></li> -->
+                            <li class="scroll-to-section"><a href="#">Others</a></li>
+                            <li class="submenu">
+                                <ul>
+                                    <li><a href="/about/">About</a></li>
+                                    <li><a href="/contactus/">Contact Us</a></li>
+                                </ul>
+                            </li>
+                            <!-- <li class="scroll-to-section"><a href="/login/contact/">Contact</a></li> -->
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -82,7 +80,7 @@
                                     <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </li>-->
-                        </ul>        
+                        </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -94,26 +92,36 @@
     </header>
     <!-- ***** Header Area End ***** -->
     <!-- ***** Main Banner Area Start ***** -->
-    
-	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
-		{% for d in carousel %}
-                {% if d.datatype == "gallery" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "gevent" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "museum" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		{% if d.datatype == "mevent" %}
-		<div class="item"><img src="{{d.img}}" class="img-fluid" alt=""><div class="slide-cap"><h2>{{d.title}}</h2><p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div></div>
-		{% endif %}
-		
-	    {% endfor %}
-		
-	</div>
-    
+
+    <div id="Top-owl-carousel" class="owl-carousel owl-theme">
+        {% for d in carousel %} {% if d.datatype == "gallery" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "gevent" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "museum" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% if d.datatype == "mevent" %}
+        <div class="item"><img src="{{d.img}}" class="img-fluid" alt="">
+            <div class="slide-cap">
+                <h2>{{d.title}}</h2>
+                <p>{{d.text}}</p><a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">Explore</a></div>
+        </div>
+        {% endif %} {% endfor %}
+
+    </div>
+
     <!-- ***** Main Banner Area End ***** -->
     <section class="oth-works mrt-90">
         <div class="container max-container">
@@ -124,7 +132,7 @@
                     </div>
                 </div>
             </div>
-	    
+
             <!-- <div class="row">
                 <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <a href="">
@@ -152,8 +160,7 @@
                 </div>
             </div> -->
             <div class="row featured-cat2 mrt-90">
-		{% for show in featuredshows %}
-		{% for auction in show.auctionslist %}
+                {% for show in featuredshows %} {% for auction in show.auctionslist %}
                 <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
                     <a href="{{auction.auctionurl}}">
                         <img src="{{auction.coverimage}}" alt="" />
@@ -166,11 +173,10 @@
                         </a>
                     </div>
                 </div>
-		{% endfor %}
-		{% endfor %}
-                
+                {% endfor %} {% endfor %}
+
             </div>
-	    <!-- 
+            <!-- 
             <div class="row featured-cat2 mrt-90">
                 <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
                     <a href="">
@@ -227,27 +233,27 @@
                     </div> -->
                 </div>
             </div>
-	    {% for auctionhousename, auctionslist in currentmngshows.items %}
-	    <div class="sub-head">
-                        <h4>{{auctionhousename}}</h4>
-                        
+            {% for auctionhousename, auctionslist in currentmngshows.items %}
+            <div class="sub-head">
+                <h4>{{auctionhousename}}</h4>
+
             </div>
             <div class="row align-items-end">
-		{% for auction in auctionslist %}
+                {% for auction in auctionslist %}
                 <div class="column">
                     <div class="img-box">
-			<a href='/auctionhouse/details/?aucid={{auction.aucid}}'>
-                        <img src="{{auction.coverimage}}" style="width:100%">
-                        <h4>{{auction.auctionname}}</h4>
-                        <h6>{{auction.auctiondate}}</h6>
-                        <p>{{auction.location}}</p>
-			</a>
+                        <a href='/auctionhouse/details/?aucid={{auction.aucid}}'>
+                            <img src="{{auction.coverimage}}" style="width:100%">
+                            <h4>{{auction.auctionname}}</h4>
+                            <h6>{{auction.auctiondate}}</h6>
+                            <p>{{auction.location}}</p>
+                        </a>
                     </div>
                 </div>
-		{% endfor %}
-                
+                {% endfor %}
+
             </div>
-	    {% endfor %}
+            {% endfor %}
         </div>
     </section>
     <!-- 
@@ -592,7 +598,8 @@
                     <div class="download-app">
                         <h4>Get More from Eolico—on the App</h4>
                         <div class="pl-st">
-                            <a href=""><img src="/static/images/app-store.png" alt=""></a> <a href=""><img src="/static/images/google-play.png" alt=""></a>
+                            <a href=""><img src="/static/images/app-store.png" alt=""></a>
+                            <a href=""><img src="/static/images/google-play.png" alt=""></a>
                         </div>
                     </div>
                 </div>
@@ -609,7 +616,7 @@
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -676,60 +683,57 @@
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
 
-    
-    	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
-		$('#Top-owl-carousel').owlCarousel({
-			loop:false,
-			rewind: true,
-			margin:1,
-			nav:true,
-			autoplay:true,
-			autoplayTimeout:8000,
-			responsive:{
-				0:{
-					items:1
-				},
-				600:{
-					items:1
-				},
-				1000:{
-					items:1
-				}
-			}
-		})
-	</script>
-    	<script>
 
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
+        $('#Top-owl-carousel').owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 1,
+            nav: true,
+            autoplay: true,
+            autoplayTimeout: 8000,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 1
+                },
+                1000: {
+                    items: 1
+                }
+            }
+        })
+    </script>
+    <script>
         $(function() {
             var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
             });
         });
-
-    	</script>
+    </script>
 
 </body>
+
 </html>
-
-

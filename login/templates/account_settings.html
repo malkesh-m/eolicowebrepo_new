@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
 
     <title>ArtBider Account Settings</title>
 
@@ -36,34 +35,34 @@
             display: block !important;
             border: 0px solid black;
         }
-
+        
         .owl-prev {
             left: -20px;
         }
-
+        
         .owl-next {
             right: -20px;
         }
-
+        
         .owl-prev i,
         .owl-next i {
             transform: scale(2, 5);
             color: #ccc;
         }
-
+        
         #frmsearchpdb {
             background-color: #f9f9f9 !important;
             padding: 20px !important;
             border-radius: 10px !important;
         }
-
+        
         .advanced-search-btn {
             background-color: #17a2b8;
             padding: 10px;
             color: #ffffff;
             border-radius: 5px;
         }
-
+        
         .p-tag-style {
             font-size: 16px;
             color: #555;
@@ -84,14 +83,12 @@ https://templatemo.com/tm-571-hexashop
 
 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script type='text/javascript'>
-
         function filterresults(page = 1) {
             waitdivtag = document.getElementById('waitdiv');
             waitdivtag.style.display = "";
@@ -151,12 +148,11 @@ https://templatemo.com/tm-571-hexashop
             var xmlhttp;
             if (window.XMLHttpRequest) {
                 xmlhttp = new XMLHttpRequest();
-            }
-            else {
+            } else {
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
             // Register the handler
-            xmlhttp.onreadystatechange = function () {
+            xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     context = JSON.parse(xmlhttp.responseText);
                     secheaderdiv = document.getElementById('sectionheaderdiv');
@@ -186,8 +182,7 @@ https://templatemo.com/tm-571-hexashop
                             if (adminuser == 1) {
                                 searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
                             }
-                        }
-                        else if (obtype == 'lot') {
+                        } else if (obtype == 'lot') {
                             searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
                             searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
                             searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle + "</h4>";
@@ -236,7 +231,7 @@ https://templatemo.com/tm-571-hexashop
             font-weight: bold;
             text-decoration: none;
         }
-
+        
         #cover {
             position: fixed;
             top: 0;
@@ -247,7 +242,7 @@ https://templatemo.com/tm-571-hexashop
             height: 100%;
             display: none;
         }
-
+        
         #adminScreen {
             height: 680px;
             width: 640px;
@@ -259,13 +254,13 @@ https://templatemo.com/tm-571-hexashop
             border: 5px solid #cccccc;
             border-radius: 10px;
         }
-
+        
         #adminScreen:target,
         #adminScreen:target+#cover {
             display: block;
             opacity: 2;
         }
-
+        
         .cancel {
             display: block;
             position: absolute;
@@ -291,13 +286,12 @@ https://templatemo.com/tm-571-hexashop
             searchkey = document.getElementById('pdbsearch').value;
             if (window.XMLHttpRequest) {
                 xmlhttp = new XMLHttpRequest();
-            }
-            else {
+            } else {
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
             loadingspan = document.getElementById('loading');
             // Register the handler
-            xmlhttp.onreadystatechange = function () {
+            xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     context = JSON.parse(xmlhttp.responseText);
                     searchresults = context['allsearchresults'];
@@ -330,8 +324,7 @@ https://templatemo.com/tm-571-hexashop
                             if (adminuser == 1) {
                                 searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editauction('" + resobj.aucid + "');\">Edit</a></div>";
                             }
-                        }
-                        else if (obtype == 'lot') {
+                        } else if (obtype == 'lot') {
                             searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='img-box'>";
                             searchtext += "<div class='thumb'><a href='/auction/details/?lid=" + resobj.lid + "'><img src='" + resobj.coverimage + "'></a></div>";
                             searchtext += "<div class='down-content'><a href='/auction/details/?lid=" + resobj.lid + "' style='color:#000000;'><h4>" + resobj.lottitle + "</h4>";
@@ -376,8 +369,7 @@ https://templatemo.com/tm-571-hexashop
             advsearchdiv = document.getElementById('advsearch');
             if (advsearchdiv.style.display == 'none') {
                 advsearchdiv.style.display = '';
-            }
-            else {
+            } else {
                 advsearchdiv.style.display = 'none';
             }
         }
@@ -388,8 +380,7 @@ https://templatemo.com/tm-571-hexashop
 <body onload="javascript:autocomplete(document.getElementById('pdbsearch'), pdb);">
 
     <!-- Sign up Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -411,25 +402,21 @@ https://templatemo.com/tm-571-hexashop
                             <label style="color:red;" id="errormsg"></label>
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                    placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
-                                <input type="text" class="form-control" id="emailid" name="emailid"
-                                    placeholder="Enter your email address" />
+                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
                                 <label for="password1">Password</label>
-                                <input type="password" class="form-control" id="password1" name="password1"
-                                    placeholder="Enter a password" />
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
                             <div class="form-group">
                                 <label for="password2">Confirm Password</label>
-                                <input type="password" class="form-control" id="password2" name="password2"
-                                    placeholder="Re-type password" />
+                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
@@ -437,15 +424,12 @@ https://templatemo.com/tm-571-hexashop
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a
-                                            href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a
-                                            href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
                                         receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider"
-                                    onclick="javascript:doregister();">Sign up</button>
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
                             </div>
                             <!--
                             <div class="form-group">
@@ -462,12 +446,10 @@ https://templatemo.com/tm-571-hexashop
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                        data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a
-                                        href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
+                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
                                         Service</a> apply.</p>
                             </div>
                         </form>
@@ -478,8 +460,7 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
-        aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -501,13 +482,11 @@ https://templatemo.com/tm-571-hexashop
                             <label style="color:red;" id="errormsg"></label>
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username"
-                                    placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
-                                <input type="password" class="form-control" name='passwd' id="passwd"
-                                    placeholder="Enter your password" />
+                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <!-- <div class="form-group">
@@ -516,8 +495,7 @@ https://templatemo.com/tm-571-hexashop
                                 </div>
                             </div> -->
                             <div class="form-group">
-                                <button type="button" value="submit" name="" class="btn btn-slider"
-                                    onclick="javascript:dologin();">Log in</button>
+                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
                             <!--
                             <div class="form-group">
@@ -537,8 +515,7 @@ https://templatemo.com/tm-571-hexashop
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                        data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -548,8 +525,7 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -578,9 +554,7 @@ https://templatemo.com/tm-571-hexashop
                                     instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
-                                        data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
-                                        data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -633,9 +607,7 @@ https://templatemo.com/tm-571-hexashop
                             <!-- <img src="static/images/logo1.png"> -->
                             ARTBIDER
                         </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                            data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false"
-                            aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="myNavbarToggler10">
@@ -660,14 +632,11 @@ https://templatemo.com/tm-571-hexashop
                             <ul class="navbar-nav sm-icons mr-0">
                                 {% if not user.is_authenticated %}
                                 <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                                <li class="nav-item"><button type="button" class="btn btn-info btn-round"
-                                        data-toggle="modal" data-target="#exampleModal-login"
-                                        aria-controls="exampleModal-login">Login</button></li>
+                                <li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
                                 <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                                 <li class="nav-item">
-                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;"
-                                        onclick='javascript:logout();'>Logout</button>
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
                                 </li>
                                 {% endif %}
                             </ul>
@@ -682,7 +651,8 @@ https://templatemo.com/tm-571-hexashop
     <!-- ***** Main Banner Area Start ***** -->
 
     <!-- Carousel -->
-    {% comment %} <section class="testimonials">
+    {% comment %}
+    <section class="testimonials">
         <div class="container"> {% endcomment %}
             <!-- <div class="row">
         <div class="col-sm-12">
@@ -703,7 +673,7 @@ https://templatemo.com/tm-571-hexashop
           </div>
         </div>
       </div> -->
-        {% comment %} </div>
+            {% comment %} </div>
     </section> {% endcomment %}
     <!-- END OF Carousels -->
 
@@ -757,22 +727,22 @@ https://templatemo.com/tm-571-hexashop
                                 <textarea class="form-control" placeholder="Address" rows="3"></textarea>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter City"/>
+                                <input type="text" class="form-control" placeholder="Enter City" />
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="form-group">                                
+                            <div class="form-group">
                                 <input type="text" class="form-control" placeholder="Enter State">
-                            </div>                         
+                            </div>
                         </div>
                         <div class="col-6">
-                            <div class="form-group">                                
+                            <div class="form-group">
                                 <input type="text" class="form-control" placeholder="Enter Postal Code">
-                            </div>                         
+                            </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter Phone Number"/>
+                                <input type="text" class="form-control" placeholder="Enter Phone Number" />
                             </div>
                             <button type="submit" class="btn btn-info btn-round">Save Changes</button>
                         </div>
@@ -813,7 +783,7 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -866,10 +836,13 @@ https://templatemo.com/tm-571-hexashop
 
 
     <!-- jQuery -->
-    <script src="/static/js/jquery-2.1.0.min.js"></>
+    <script src="/static/js/jquery-2.1.0.min.js">
+        < />
 
-            <!-- Bootstrap -->
-            <script src="/static/js/popper.js"></script>
+        <!-- Bootstrap -->
+        <
+        script src = "/static/js/popper.js" >
+    </script>
     <script src="/static/js/bootstrap.min.js"></script>
 
     <!-- Plugins -->
@@ -889,67 +862,65 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/custom.js"></script>
 
     <script>
-                                                         function openNav() {
-                                                             document.getElementById("mySidebar").style.width = "350px";
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "350px";
             //document.getElementById("main").style.marginLeft = "250px";
         }
 
-                                                         function closeNav() {
-                                                             document.getElementById("mySidebar").style.width = "0";
-                                                         document.getElementById("main").style.marginLeft = "0";
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
         }
     </script>
 
     <script>
-                                                         /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-                                                         $('.demo').dropdown({
-                                                             limitCount: 1,
-                                                         input: '<input type="text" maxLength="20" placeholder="Search">'
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
         });
 
-                                                             jQuery(document).ready(function ($) {
-                                                                 "use strict";
-                                                             $('#customers-testimonials').owlCarousel({
-                                                                 loop: true,
-                                                             center: true,
-                                                             items: 3,
-                                                             margin: 30,
-                                                             autoplay: true,
-                                                             dots: true,
-                                                             nav: true,
-                                                             autoplayTimeout: 8500,
-                                                             smartSpeed: 450,
-                                                             navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
-                                                             responsive: {
-                                                                 0: {
-                                                                 items: 1
+        jQuery(document).ready(function($) {
+            "use strict";
+            $('#customers-testimonials').owlCarousel({
+                loop: true,
+                center: true,
+                items: 3,
+                margin: 30,
+                autoplay: true,
+                dots: true,
+                nav: true,
+                autoplayTimeout: 8500,
+                smartSpeed: 450,
+                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                responsive: {
+                    0: {
+                        items: 1
                     },
-                                                             768: {
-                                                                 items: 2
+                    768: {
+                        items: 2
                     },
-                                                             1170: {
-                                                                 items: 3
+                    1170: {
+                        items: 3
                     }
                 }
             });
         });
     </script>
     <script>
-
-                                                             $(function () {
+        $(function() {
             var selectedClass = "";
-                                                             $("p").click(function () {
-                                                                 selectedClass = $(this).attr("data-rel");
-                                                             $("#portfolio").fadeTo(50, 0.1);
-                                                             $("#portfolio div").not("." + selectedClass).fadeOut();
-                                                             setTimeout(function () {
-                                                                 $("." + selectedClass).fadeIn();
-                                                             $("#portfolio").fadeTo(50, 1);
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
                 }, 500);
 
             });
         });
-
     </script>
 
 </body>

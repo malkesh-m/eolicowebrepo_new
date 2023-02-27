@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -26,570 +26,583 @@
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
 
     <script type='text/javascript'>
-
-      function removeItemOnce(arr, value) {
-        var index = arr.indexOf(value);
-        if (index > -1) {
-          arr.splice(index, 1);
+        function removeItemOnce(arr, value) {
+            var index = arr.indexOf(value);
+            if (index > -1) {
+                arr.splice(index, 1);
+            }
+            return arr;
         }
-        return arr;
-      }
 
-      function filter(ftype, fval, elid){
-	const artworks = {
-		{% for evname, valueslist in allartworks.items %}
-		  "{{ evname }}" : [ 
-			{% for val in valueslist %}
-			   { 
-			     {% for k, v in val.items %}
-			     "{{k}}" : "{{v}}",
-			     {% endfor %} 
-			   }, 
-			{% endfor %}
-		  ],
-		{% endfor %}
-	};
-	targetcheckbox = document.getElementById(elid);
-        
-        targetdiv = document.getElementById('allworks');
-    	s1 = "";
-	s2 = "";
-	s3 = "";
-	s4 = "";
-	selections = {};
-	artistslen = {{filterartists|length}};
-        natlen = {{nationalities|length}};
-        // Check which artists are selected
-	selections['Artists'] = Array();
-        for(actr=1; actr <= artistslen; actr++){
-	  achkbox = document.getElementById("Artist" + actr);
-	  if (achkbox.checked == true){
-	    av = achkbox.value;
-	    selections['Artists'].push(av);
-	  }
-	}
-	// Check Medium selected
-	selections['Medium'] = Array();
-	for(dctr=1; dctr <= 6; dctr++){
-	  dchkbox = document.getElementById('Medium' + dctr);
-	  if (dchkbox.checked == true){
-	    dv = dchkbox.value;
-	    selections['Medium'].push(dv);
-	  }
-	}
-	// Check Material selected
-	selections['Material'] = Array();
-	for(mctr=1; mctr <= 34; mctr++){
-	  mchkbox = document.getElementById('Material' + mctr);
-	  if (mchkbox.checked == true){
-	    mv = mchkbox.value;
-	    selections['Material'].push(mv);
-	  }
-	}
-	// Check Size selected
-	selections['Size'] = Array();
-	for(zctr=1; zctr <= 3; zctr++){
-	  zchkbox = document.getElementById('Size' + zctr);
-	  if (zchkbox.checked == true){
-	    zv = zchkbox.value;
-	    selections['Size'].push(zv);
-	  }
-	}
-	// Check Nationalities selected
-	selections['Nationality'] = Array();
-	for(nctr=1; nctr <= natlen; nctr++){
-	  nchkbox = document.getElementById('nat' + nctr);
-	  if (nchkbox.checked == true){
-	    nv = nchkbox.value;
-	    selections['Nationality'].push(nv);
-	  }
-	}
-	// Check Color selected
-	selections['Color'] = Array();
-	for(cctr=1; cctr <= 3; cctr++){
-	  cchkbox = document.getElementById('Color' + cctr);
-	  if (cchkbox.checked == true){
-	    cv = cchkbox.value;
-	    selections['Color'].push(cv);
-	  }
-	}
-	// Check Period selected
-	selections['Period'] = Array();
-	for(pctr=1; pctr <= 12; pctr++){
-	  pchkbox = document.getElementById('Period' + pctr);
-	  if (pchkbox.checked == true){
-	    pv = pchkbox.value;
-	    selections['Period'].push(pv);
-	  }
-	}
-	if(targetcheckbox.checked == false){
-	    // Logic for unchecked value here
-	    l = selections[ftype];
-	    v = targetcheckbox.value;
-	    for(j=0; j < l.length; j++){
-		if(l[j] == v){
-		    l = removeItemOnce(l, v);
-		}
-	    }
-	    selections[ftype] = l;
-	}
-	s1 += "<div class='column'>";
-	s2 += "<div class='column'>";
- 	s3 += "<div class='column'>";
-	s4 += "<div class='column'>";
-	if(targetcheckbox.checked == true){
-	for(evname in artworks){
-	  l = artworks[evname];
-	  k = 0
-	  for(var i=0; i < l.length; i++){
-	    e = l[i];
-	    if(ftype == "Artists" && fval.toLowerCase() == e.artistname.toLowerCase()){
-	    if(k == 0){
-	    s1 += "<div class='img-box'>";
-	    s1 += "<img src='" + e.image + "' style='width:100%'>";
-	    s1 += "<h4>" + e.artworkname + "</h4>";
-	    s1 += "<h6>" + e.medium + "</h6>";
-	    s1 += "<p>" + e.description + "</p>";
-	    s1 += "</div>";
-	    }
-	    if(k == 1){
-	    s2 += "<div class='img-box'>";
-	    s2 += "<img src='" + e.image + "' style='width:100%'>";
-	    s2 += "<h4>" + e.artworkname + "</h4>";
-	    s2 += "<h6>" + e.medium + "</h6>";
-	    s2 += "<p>" + e.description + "</p>";
-	    s2 += "</div>";
-	    }
-	    if(k == 2){
-	    s3 += "<div class='img-box'>";
-	    s3 += "<img src='" + e.image + "' style='width:100%'>";
-	    s3 += "<h4>" + e.artworkname + "</h4>";
-	    s3 += "<h6>" + e.medium + "</h6>";
-	    s3 += "<p>" + e.description + "</p>";
-	    s3 += "</div>";
-	    }
-	    if(k == 3){
-	    s4 += "<div class='img-box'>";
-	    s4 += "<img src='" + e.image + "' style='width:100%'>";
-	    s4 += "<h4>" + e.artworkname + "</h4>";
-	    s4 += "<h6>" + e.medium + "</h6>";
-	    s4 += "<p>" + e.description + "</p>";
-	    s4 += "</div>";
-	    }
-	    k += 1;
-	    if(k == 4){
-		k = 0;
-	    }
-	    }
-	    if(ftype == "Medium" && e.description.toLowerCase().includes(fval.toLowerCase())){
-	    if(k == 0){
-	    s1 += "<div class='img-box'>";
-	    s1 += "<img src='" + e.image + "' style='width:100%'>";
-	    s1 += "<h4>" + e.artworkname + "</h4>";
-	    s1 += "<h6>" + e.medium + "</h6>";
-	    s1 += "<p>" + e.description + "</p>";
-	    s1 += "</div>";
-	    }
-	    if(k == 1){
-	    s2 += "<div class='img-box'>";
-	    s2 += "<img src='" + e.image + "' style='width:100%'>";
-	    s2 += "<h4>" + e.artworkname + "</h4>";
-	    s2 += "<h6>" + e.medium + "</h6>";
-	    s2 += "<p>" + e.description + "</p>";
-	    s2 += "</div>";
-	    }
-	    if(k == 2){
-	    s3 += "<div class='img-box'>";
-	    s3 += "<img src='" + e.image + "' style='width:100%'>";
-	    s3 += "<h4>" + e.artworkname + "</h4>";
-	    s3 += "<h6>" + e.medium + "</h6>";
-	    s3 += "<p>" + e.description + "</p>";
-	    s3 += "</div>";
-	    }
-	    if(k == 3){
-	    s4 += "<div class='img-box'>";
-	    s4 += "<img src='" + e.image + "' style='width:100%'>";
-	    s4 += "<h4>" + e.artworkname + "</h4>";
-	    s4 += "<h6>" + e.medium + "</h6>";
-	    s4 += "<p>" + e.description + "</p>";
-	    s4 += "</div>";
-	    }
-	    k += 1;
-	    if(k == 4){
-		k = 0;
-	    }
-	    }
-	    if(ftype == "Material" && e.medium.toLowerCase().includes(fval.toLowerCase())){
-	    if(k == 0){
-	    s1 += "<div class='img-box'>";
-	    s1 += "<img src='" + e.image + "' style='width:100%'>";
-	    s1 += "<h4>" + e.artworkname + "</h4>";
-	    s1 += "<h6>" + e.medium + "</h6>";
-	    s1 += "<p>" + e.description + "</p>";
-	    s1 += "</div>";
-	    }
-	    if(k == 1){
-	    s2 += "<div class='img-box'>";
-	    s2 += "<img src='" + e.image + "' style='width:100%'>";
-	    s2 += "<h4>" + e.artworkname + "</h4>";
-	    s2 += "<h6>" + e.medium + "</h6>";
-	    s2 += "<p>" + e.description + "</p>";
-	    s2 += "</div>";
-	    }
-	    if(k == 2){
-	    s3 += "<div class='img-box'>";
-	    s3 += "<img src='" + e.image + "' style='width:100%'>";
-	    s3 += "<h4>" + e.artworkname + "</h4>";
-	    s3 += "<h6>" + e.medium + "</h6>";
-	    s3 += "<p>" + e.description + "</p>";
-	    s3 += "</div>";
-	    }
-	    if(k == 3){
-	    s4 += "<div class='img-box'>";
-	    s4 += "<img src='" + e.image + "' style='width:100%'>";
-	    s4 += "<h4>" + e.artworkname + "</h4>";
-	    s4 += "<h6>" + e.medium + "</h6>";
-	    s4 += "<p>" + e.description + "</p>";
-	    s4 += "</div>";
-	    }
-	    k += 1;
-	    if(k == 4){
-		k = 0;
-	    }
-	    }
-	    if(ftype == "Nationality" && e.artistnationality.toLowerCase().includes(fval.toLowerCase())){
-	    if(k == 0){
-	    s1 += "<div class='img-box'>";
-	    s1 += "<img src='" + e.image + "' style='width:100%'>";
-	    s1 += "<h4>" + e.artworkname + "</h4>";
-	    s1 += "<h6>" + e.medium + "</h6>";
-	    s1 += "<p>" + e.description + "</p>";
-	    s1 += "</div>";
-	    }
-	    if(k == 1){
-	    s2 += "<div class='img-box'>";
-	    s2 += "<img src='" + e.image + "' style='width:100%'>";
-	    s2 += "<h4>" + e.artworkname + "</h4>";
-	    s2 += "<h6>" + e.medium + "</h6>";
-	    s2 += "<p>" + e.description + "</p>";
-	    s2 += "</div>";
-	    }
-	    if(k == 2){
-	    s3 += "<div class='img-box'>";
-	    s3 += "<img src='" + e.image + "' style='width:100%'>";
-	    s3 += "<h4>" + e.artworkname + "</h4>";
-	    s3 += "<h6>" + e.medium + "</h6>";
-	    s3 += "<p>" + e.description + "</p>";
-	    s3 += "</div>";
-	    }
-	    if(k == 3){
-	    s4 += "<div class='img-box'>";
-	    s4 += "<img src='" + e.image + "' style='width:100%'>";
-	    s4 += "<h4>" + e.artworkname + "</h4>";
-	    s4 += "<h6>" + e.medium + "</h6>";
-	    s4 += "<p>" + e.description + "</p>";
-	    s4 += "</div>";
-	    }
-	    k += 1;
-	    if(k == 4){
-		k = 0;
-	    }
-	    }
-	    if(ftype == "Period"){
-		if(e.artistbirthyear > 1800 && e.artistbirthyear < 1900){
-	     	    if(k == 0){
-		    s1 += "<div class='img-box'>";
-		    s1 += "<img src='" + e.image + "' style='width:100%'>";
-		    s1 += "<h4>" + e.artworkname + "</h4>";
-		    s1 += "<h6>" + e.medium + "</h6>";
-		    s1 += "<p>" + e.description + "</p>";
-		    s1 += "</div>";
-		    }
-		    if(k == 1){
-		    s2 += "<div class='img-box'>";
-		    s2 += "<img src='" + e.image + "' style='width:100%'>";
-		    s2 += "<h4>" + e.artworkname + "</h4>";
-		    s2 += "<h6>" + e.medium + "</h6>";
-		    s2 += "<p>" + e.description + "</p>";
-		    s2 += "</div>";
-		    }
-		    if(k == 2){
-		    s3 += "<div class='img-box'>";
-		    s3 += "<img src='" + e.image + "' style='width:100%'>";
-		    s3 += "<h4>" + e.artworkname + "</h4>";
-		    s3 += "<h6>" + e.medium + "</h6>";
-		    s3 += "<p>" + e.description + "</p>";
-		    s3 += "</div>";
-		    }
-		    if(k == 3){
-		    s4 += "<div class='img-box'>";
-		    s4 += "<img src='" + e.image + "' style='width:100%'>";
-		    s4 += "<h4>" + e.artworkname + "</h4>";
-		    s4 += "<h6>" + e.medium + "</h6>";
-		    s4 += "<p>" + e.description + "</p>";
-		    s4 += "</div>";
-		    }
-		    k += 1;
-		    if(k == 4){
-			k = 0;
-		    }
-		}
-	    }
-	  } // end for i
-	  
-	} // for evname
-	} // end if targetcheckbox.checked == true
-  	k = 0;
-	for(evname in artworks){
-	    l = artworks[evname];
-	    for(i=0; i < l.length; i++){
-		e = l[i];
-	        if(selections.hasOwnProperty('Artists')){
-		    artistslist = selections['Artists'];
-		    
-		    for(ax=0; ax < artistslist.length; ax++){
-		        a = artistslist[ax];
-			if(a.toLowerCase() == e.artistname.toLowerCase()){
-			    if(k == 0){
-				s1 += "<div class='img-box'>";
-			        s1 += "<img src='" + e.image + "' style='width:100%'>";
-			        s1 += "<h4>" + e.artworkname + "</h4>";
-			        s1 += "<h6>" + e.medium + "</h6>";
-			        s1 += "<p>" + e.description + "</p>";
-			        s1 += "</div>";
-			    }
-			    if(k == 1){
-				s2 += "<div class='img-box'>";
-			        s2 += "<img src='" + e.image + "' style='width:100%'>";
-			        s2 += "<h4>" + e.artworkname + "</h4>";
-			        s2 += "<h6>" + e.medium + "</h6>";
-			        s2 += "<p>" + e.description + "</p>";
-			        s2 += "</div>";
-			    }
-			    if(k == 2){
-				s3 += "<div class='img-box'>";
-			        s3 += "<img src='" + e.image + "' style='width:100%'>";
-			        s3 += "<h4>" + e.artworkname + "</h4>";
-			        s3 += "<h6>" + e.medium + "</h6>";
-			        s3 += "<p>" + e.description + "</p>";
-			        s3 += "</div>";
-			    }
-			    if(k == 3){
-				s4 += "<div class='img-box'>";
-			        s4 += "<img src='" + e.image + "' style='width:100%'>";
-			        s4 += "<h4>" + e.artworkname + "</h4>";
-			        s4 += "<h6>" + e.medium + "</h6>";
-			        s4 += "<p>" + e.description + "</p>";
-			        s4 += "</div>";
-			    }
-			    k = k + 1;
-			    if(k == 4){
-				k = 0;
-			    }
-			}
-		    }
-	        } // if hasOwnProperty
-		if(selections.hasOwnProperty('Medium')){
-		    mediumslist = selections['Medium'];
-		    for(ax=0; ax < mediumslist.length; ax++){
-			a = mediumslist[ax];
-			if(e.description.toLowerCase().includes(a.toLowerCase())){
-			    if(k == 0){
-				s1 += "<div class='img-box'>";
-			        s1 += "<img src='" + e.image + "' style='width:100%'>";
-			        s1 += "<h4>" + e.artworkname + "</h4>";
-			        s1 += "<h6>" + e.medium + "</h6>";
-			        s1 += "<p>" + e.description + "</p>";
-			        s1 += "</div>";
-			    }
-			    if(k == 1){
-				s2 += "<div class='img-box'>";
-			        s2 += "<img src='" + e.image + "' style='width:100%'>";
-			        s2 += "<h4>" + e.artworkname + "</h4>";
-			        s2 += "<h6>" + e.medium + "</h6>";
-			        s2 += "<p>" + e.description + "</p>";
-			        s2 += "</div>";
-			    }
-			    if(k == 2){
-				s3 += "<div class='img-box'>";
-			        s3 += "<img src='" + e.image + "' style='width:100%'>";
-			        s3 += "<h4>" + e.artworkname + "</h4>";
-			        s3 += "<h6>" + e.medium + "</h6>";
-			        s3 += "<p>" + e.description + "</p>";
-			        s3 += "</div>";
-			    }
-			    if(k == 3){
-				s4 += "<div class='img-box'>";
-			        s4 += "<img src='" + e.image + "' style='width:100%'>";
-			        s4 += "<h4>" + e.artworkname + "</h4>";
-			        s4 += "<h6>" + e.medium + "</h6>";
-			        s4 += "<p>" + e.description + "</p>";
-			        s4 += "</div>";
-			    }
-			    k = k + 1;
-			    if(k == 4){
-				k = 0;
-			    }
-			}
-		    }
-		} // if hasOwnProperty
-		if(selections.hasOwnProperty('Material')){
-		    materialslist = selections['Material'];
-		    for(ax=0; ax < materialslist.length; ax++){
-			a = materialslist[ax];
-			if(e.medium.toLowerCase().includes(a.toLowerCase())){
-			    if(k == 0){
-				s1 += "<div class='img-box'>";
-			        s1 += "<img src='" + e.image + "' style='width:100%'>";
-			        s1 += "<h4>" + e.artworkname + "</h4>";
-			        s1 += "<h6>" + e.medium + "</h6>";
-			        s1 += "<p>" + e.description + "</p>";
-			        s1 += "</div>";
-			    }
-			    if(k == 1){
-				s2 += "<div class='img-box'>";
-			        s2 += "<img src='" + e.image + "' style='width:100%'>";
-			        s2 += "<h4>" + e.artworkname + "</h4>";
-			        s2 += "<h6>" + e.medium + "</h6>";
-			        s2 += "<p>" + e.description + "</p>";
-			        s2 += "</div>";
-			    }
-			    if(k == 2){
-				s3 += "<div class='img-box'>";
-			        s3 += "<img src='" + e.image + "' style='width:100%'>";
-			        s3 += "<h4>" + e.artworkname + "</h4>";
-			        s3 += "<h6>" + e.medium + "</h6>";
-			        s3 += "<p>" + e.description + "</p>";
-			        s3 += "</div>";
-			    }
-			    if(k == 3){
-				s4 += "<div class='img-box'>";
-			        s4 += "<img src='" + e.image + "' style='width:100%'>";
-			        s4 += "<h4>" + e.artworkname + "</h4>";
-			        s4 += "<h6>" + e.medium + "</h6>";
-			        s4 += "<p>" + e.description + "</p>";
-			        s4 += "</div>";
-			    }
-			    k = k + 1;
-			    if(k == 4){
-				k = 0;
-			    }
-			}
-		    }
-		} // if hasOwnProperty
-		if(selections.hasOwnProperty('Nationality')){
-		    natlist = selections['Nationality'];
-		    for(ax=0; ax < natlist.length; ax++){
-			a = natlist[ax];
-			if(a.toLowerCase() == e.artistnationality.toLowerCase()){
-			    if(k == 0){
-				s1 += "<div class='img-box'>";
-			        s1 += "<img src='" + e.image + "' style='width:100%'>";
-			        s1 += "<h4>" + e.artworkname + "</h4>";
-			        s1 += "<h6>" + e.medium + "</h6>";
-			        s1 += "<p>" + e.description + "</p>";
-			        s1 += "</div>";
-			    }
-			    if(k == 1){
-				s2 += "<div class='img-box'>";
-			        s2 += "<img src='" + e.image + "' style='width:100%'>";
-			        s2 += "<h4>" + e.artworkname + "</h4>";
-			        s2 += "<h6>" + e.medium + "</h6>";
-			        s2 += "<p>" + e.description + "</p>";
-			        s2 += "</div>";
-			    }
-			    if(k == 2){
-				s3 += "<div class='img-box'>";
-			        s3 += "<img src='" + e.image + "' style='width:100%'>";
-			        s3 += "<h4>" + e.artworkname + "</h4>";
-			        s3 += "<h6>" + e.medium + "</h6>";
-			        s3 += "<p>" + e.description + "</p>";
-			        s3 += "</div>";
-			    }
-			    if(k == 3){
-				s4 += "<div class='img-box'>";
-			        s4 += "<img src='" + e.image + "' style='width:100%'>";
-			        s4 += "<h4>" + e.artworkname + "</h4>";
-			        s4 += "<h6>" + e.medium + "</h6>";
-			        s4 += "<p>" + e.description + "</p>";
-			        s4 += "</div>";
-			    }
-			    k = k + 1;
-			    if(k == 4){
-				k = 0;
-			    }
-			}
-		    }
-		} // if hasOwnProperty
-	    }
-	}
-	s1 += "</div>";
-	s2 += "</div>";
-	s3 += "</div>";
-	s4 += "</div>";
-	targetdiv.innerHTML = s1 + s2 + s3 + s4;
-      }
+        function filter(ftype, fval, elid) {
+            const artworks = {
+                { %
+                    for evname, valueslist in allartworks.items %
+                }
+                "{{ evname }}": [{ %
+                    for val in valueslist %
+                } {
+                    { %
+                        for k, v in val.items %
+                    }
+                    "{{k}}": "{{v}}", { % endfor %
+                    }
+                }, { % endfor %
+                }],
+                { % endfor %
+                }
+            };
+            targetcheckbox = document.getElementById(elid);
+
+            targetdiv = document.getElementById('allworks');
+            s1 = "";
+            s2 = "";
+            s3 = "";
+            s4 = "";
+            selections = {};
+            artistslen = {
+                {
+                    filterartists | length
+                }
+            };
+            natlen = {
+                {
+                    nationalities | length
+                }
+            };
+            // Check which artists are selected
+            selections['Artists'] = Array();
+            for (actr = 1; actr <= artistslen; actr++) {
+                achkbox = document.getElementById("Artist" + actr);
+                if (achkbox.checked == true) {
+                    av = achkbox.value;
+                    selections['Artists'].push(av);
+                }
+            }
+            // Check Medium selected
+            selections['Medium'] = Array();
+            for (dctr = 1; dctr <= 6; dctr++) {
+                dchkbox = document.getElementById('Medium' + dctr);
+                if (dchkbox.checked == true) {
+                    dv = dchkbox.value;
+                    selections['Medium'].push(dv);
+                }
+            }
+            // Check Material selected
+            selections['Material'] = Array();
+            for (mctr = 1; mctr <= 34; mctr++) {
+                mchkbox = document.getElementById('Material' + mctr);
+                if (mchkbox.checked == true) {
+                    mv = mchkbox.value;
+                    selections['Material'].push(mv);
+                }
+            }
+            // Check Size selected
+            selections['Size'] = Array();
+            for (zctr = 1; zctr <= 3; zctr++) {
+                zchkbox = document.getElementById('Size' + zctr);
+                if (zchkbox.checked == true) {
+                    zv = zchkbox.value;
+                    selections['Size'].push(zv);
+                }
+            }
+            // Check Nationalities selected
+            selections['Nationality'] = Array();
+            for (nctr = 1; nctr <= natlen; nctr++) {
+                nchkbox = document.getElementById('nat' + nctr);
+                if (nchkbox.checked == true) {
+                    nv = nchkbox.value;
+                    selections['Nationality'].push(nv);
+                }
+            }
+            // Check Color selected
+            selections['Color'] = Array();
+            for (cctr = 1; cctr <= 3; cctr++) {
+                cchkbox = document.getElementById('Color' + cctr);
+                if (cchkbox.checked == true) {
+                    cv = cchkbox.value;
+                    selections['Color'].push(cv);
+                }
+            }
+            // Check Period selected
+            selections['Period'] = Array();
+            for (pctr = 1; pctr <= 12; pctr++) {
+                pchkbox = document.getElementById('Period' + pctr);
+                if (pchkbox.checked == true) {
+                    pv = pchkbox.value;
+                    selections['Period'].push(pv);
+                }
+            }
+            if (targetcheckbox.checked == false) {
+                // Logic for unchecked value here
+                l = selections[ftype];
+                v = targetcheckbox.value;
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] == v) {
+                        l = removeItemOnce(l, v);
+                    }
+                }
+                selections[ftype] = l;
+            }
+            s1 += "<div class='column'>";
+            s2 += "<div class='column'>";
+            s3 += "<div class='column'>";
+            s4 += "<div class='column'>";
+            if (targetcheckbox.checked == true) {
+                for (evname in artworks) {
+                    l = artworks[evname];
+                    k = 0
+                    for (var i = 0; i < l.length; i++) {
+                        e = l[i];
+                        if (ftype == "Artists" && fval.toLowerCase() == e.artistname.toLowerCase()) {
+                            if (k == 0) {
+                                s1 += "<div class='img-box'>";
+                                s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                s1 += "<h4>" + e.artworkname + "</h4>";
+                                s1 += "<h6>" + e.medium + "</h6>";
+                                s1 += "<p>" + e.description + "</p>";
+                                s1 += "</div>";
+                            }
+                            if (k == 1) {
+                                s2 += "<div class='img-box'>";
+                                s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                s2 += "<h4>" + e.artworkname + "</h4>";
+                                s2 += "<h6>" + e.medium + "</h6>";
+                                s2 += "<p>" + e.description + "</p>";
+                                s2 += "</div>";
+                            }
+                            if (k == 2) {
+                                s3 += "<div class='img-box'>";
+                                s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                s3 += "<h4>" + e.artworkname + "</h4>";
+                                s3 += "<h6>" + e.medium + "</h6>";
+                                s3 += "<p>" + e.description + "</p>";
+                                s3 += "</div>";
+                            }
+                            if (k == 3) {
+                                s4 += "<div class='img-box'>";
+                                s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                s4 += "<h4>" + e.artworkname + "</h4>";
+                                s4 += "<h6>" + e.medium + "</h6>";
+                                s4 += "<p>" + e.description + "</p>";
+                                s4 += "</div>";
+                            }
+                            k += 1;
+                            if (k == 4) {
+                                k = 0;
+                            }
+                        }
+                        if (ftype == "Medium" && e.description.toLowerCase().includes(fval.toLowerCase())) {
+                            if (k == 0) {
+                                s1 += "<div class='img-box'>";
+                                s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                s1 += "<h4>" + e.artworkname + "</h4>";
+                                s1 += "<h6>" + e.medium + "</h6>";
+                                s1 += "<p>" + e.description + "</p>";
+                                s1 += "</div>";
+                            }
+                            if (k == 1) {
+                                s2 += "<div class='img-box'>";
+                                s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                s2 += "<h4>" + e.artworkname + "</h4>";
+                                s2 += "<h6>" + e.medium + "</h6>";
+                                s2 += "<p>" + e.description + "</p>";
+                                s2 += "</div>";
+                            }
+                            if (k == 2) {
+                                s3 += "<div class='img-box'>";
+                                s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                s3 += "<h4>" + e.artworkname + "</h4>";
+                                s3 += "<h6>" + e.medium + "</h6>";
+                                s3 += "<p>" + e.description + "</p>";
+                                s3 += "</div>";
+                            }
+                            if (k == 3) {
+                                s4 += "<div class='img-box'>";
+                                s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                s4 += "<h4>" + e.artworkname + "</h4>";
+                                s4 += "<h6>" + e.medium + "</h6>";
+                                s4 += "<p>" + e.description + "</p>";
+                                s4 += "</div>";
+                            }
+                            k += 1;
+                            if (k == 4) {
+                                k = 0;
+                            }
+                        }
+                        if (ftype == "Material" && e.medium.toLowerCase().includes(fval.toLowerCase())) {
+                            if (k == 0) {
+                                s1 += "<div class='img-box'>";
+                                s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                s1 += "<h4>" + e.artworkname + "</h4>";
+                                s1 += "<h6>" + e.medium + "</h6>";
+                                s1 += "<p>" + e.description + "</p>";
+                                s1 += "</div>";
+                            }
+                            if (k == 1) {
+                                s2 += "<div class='img-box'>";
+                                s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                s2 += "<h4>" + e.artworkname + "</h4>";
+                                s2 += "<h6>" + e.medium + "</h6>";
+                                s2 += "<p>" + e.description + "</p>";
+                                s2 += "</div>";
+                            }
+                            if (k == 2) {
+                                s3 += "<div class='img-box'>";
+                                s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                s3 += "<h4>" + e.artworkname + "</h4>";
+                                s3 += "<h6>" + e.medium + "</h6>";
+                                s3 += "<p>" + e.description + "</p>";
+                                s3 += "</div>";
+                            }
+                            if (k == 3) {
+                                s4 += "<div class='img-box'>";
+                                s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                s4 += "<h4>" + e.artworkname + "</h4>";
+                                s4 += "<h6>" + e.medium + "</h6>";
+                                s4 += "<p>" + e.description + "</p>";
+                                s4 += "</div>";
+                            }
+                            k += 1;
+                            if (k == 4) {
+                                k = 0;
+                            }
+                        }
+                        if (ftype == "Nationality" && e.artistnationality.toLowerCase().includes(fval.toLowerCase())) {
+                            if (k == 0) {
+                                s1 += "<div class='img-box'>";
+                                s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                s1 += "<h4>" + e.artworkname + "</h4>";
+                                s1 += "<h6>" + e.medium + "</h6>";
+                                s1 += "<p>" + e.description + "</p>";
+                                s1 += "</div>";
+                            }
+                            if (k == 1) {
+                                s2 += "<div class='img-box'>";
+                                s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                s2 += "<h4>" + e.artworkname + "</h4>";
+                                s2 += "<h6>" + e.medium + "</h6>";
+                                s2 += "<p>" + e.description + "</p>";
+                                s2 += "</div>";
+                            }
+                            if (k == 2) {
+                                s3 += "<div class='img-box'>";
+                                s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                s3 += "<h4>" + e.artworkname + "</h4>";
+                                s3 += "<h6>" + e.medium + "</h6>";
+                                s3 += "<p>" + e.description + "</p>";
+                                s3 += "</div>";
+                            }
+                            if (k == 3) {
+                                s4 += "<div class='img-box'>";
+                                s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                s4 += "<h4>" + e.artworkname + "</h4>";
+                                s4 += "<h6>" + e.medium + "</h6>";
+                                s4 += "<p>" + e.description + "</p>";
+                                s4 += "</div>";
+                            }
+                            k += 1;
+                            if (k == 4) {
+                                k = 0;
+                            }
+                        }
+                        if (ftype == "Period") {
+                            if (e.artistbirthyear > 1800 && e.artistbirthyear < 1900) {
+                                if (k == 0) {
+                                    s1 += "<div class='img-box'>";
+                                    s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s1 += "<h4>" + e.artworkname + "</h4>";
+                                    s1 += "<h6>" + e.medium + "</h6>";
+                                    s1 += "<p>" + e.description + "</p>";
+                                    s1 += "</div>";
+                                }
+                                if (k == 1) {
+                                    s2 += "<div class='img-box'>";
+                                    s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s2 += "<h4>" + e.artworkname + "</h4>";
+                                    s2 += "<h6>" + e.medium + "</h6>";
+                                    s2 += "<p>" + e.description + "</p>";
+                                    s2 += "</div>";
+                                }
+                                if (k == 2) {
+                                    s3 += "<div class='img-box'>";
+                                    s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s3 += "<h4>" + e.artworkname + "</h4>";
+                                    s3 += "<h6>" + e.medium + "</h6>";
+                                    s3 += "<p>" + e.description + "</p>";
+                                    s3 += "</div>";
+                                }
+                                if (k == 3) {
+                                    s4 += "<div class='img-box'>";
+                                    s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s4 += "<h4>" + e.artworkname + "</h4>";
+                                    s4 += "<h6>" + e.medium + "</h6>";
+                                    s4 += "<p>" + e.description + "</p>";
+                                    s4 += "</div>";
+                                }
+                                k += 1;
+                                if (k == 4) {
+                                    k = 0;
+                                }
+                            }
+                        }
+                    } // end for i
+
+                } // for evname
+            } // end if targetcheckbox.checked == true
+            k = 0;
+            for (evname in artworks) {
+                l = artworks[evname];
+                for (i = 0; i < l.length; i++) {
+                    e = l[i];
+                    if (selections.hasOwnProperty('Artists')) {
+                        artistslist = selections['Artists'];
+
+                        for (ax = 0; ax < artistslist.length; ax++) {
+                            a = artistslist[ax];
+                            if (a.toLowerCase() == e.artistname.toLowerCase()) {
+                                if (k == 0) {
+                                    s1 += "<div class='img-box'>";
+                                    s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s1 += "<h4>" + e.artworkname + "</h4>";
+                                    s1 += "<h6>" + e.medium + "</h6>";
+                                    s1 += "<p>" + e.description + "</p>";
+                                    s1 += "</div>";
+                                }
+                                if (k == 1) {
+                                    s2 += "<div class='img-box'>";
+                                    s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s2 += "<h4>" + e.artworkname + "</h4>";
+                                    s2 += "<h6>" + e.medium + "</h6>";
+                                    s2 += "<p>" + e.description + "</p>";
+                                    s2 += "</div>";
+                                }
+                                if (k == 2) {
+                                    s3 += "<div class='img-box'>";
+                                    s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s3 += "<h4>" + e.artworkname + "</h4>";
+                                    s3 += "<h6>" + e.medium + "</h6>";
+                                    s3 += "<p>" + e.description + "</p>";
+                                    s3 += "</div>";
+                                }
+                                if (k == 3) {
+                                    s4 += "<div class='img-box'>";
+                                    s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s4 += "<h4>" + e.artworkname + "</h4>";
+                                    s4 += "<h6>" + e.medium + "</h6>";
+                                    s4 += "<p>" + e.description + "</p>";
+                                    s4 += "</div>";
+                                }
+                                k = k + 1;
+                                if (k == 4) {
+                                    k = 0;
+                                }
+                            }
+                        }
+                    } // if hasOwnProperty
+                    if (selections.hasOwnProperty('Medium')) {
+                        mediumslist = selections['Medium'];
+                        for (ax = 0; ax < mediumslist.length; ax++) {
+                            a = mediumslist[ax];
+                            if (e.description.toLowerCase().includes(a.toLowerCase())) {
+                                if (k == 0) {
+                                    s1 += "<div class='img-box'>";
+                                    s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s1 += "<h4>" + e.artworkname + "</h4>";
+                                    s1 += "<h6>" + e.medium + "</h6>";
+                                    s1 += "<p>" + e.description + "</p>";
+                                    s1 += "</div>";
+                                }
+                                if (k == 1) {
+                                    s2 += "<div class='img-box'>";
+                                    s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s2 += "<h4>" + e.artworkname + "</h4>";
+                                    s2 += "<h6>" + e.medium + "</h6>";
+                                    s2 += "<p>" + e.description + "</p>";
+                                    s2 += "</div>";
+                                }
+                                if (k == 2) {
+                                    s3 += "<div class='img-box'>";
+                                    s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s3 += "<h4>" + e.artworkname + "</h4>";
+                                    s3 += "<h6>" + e.medium + "</h6>";
+                                    s3 += "<p>" + e.description + "</p>";
+                                    s3 += "</div>";
+                                }
+                                if (k == 3) {
+                                    s4 += "<div class='img-box'>";
+                                    s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s4 += "<h4>" + e.artworkname + "</h4>";
+                                    s4 += "<h6>" + e.medium + "</h6>";
+                                    s4 += "<p>" + e.description + "</p>";
+                                    s4 += "</div>";
+                                }
+                                k = k + 1;
+                                if (k == 4) {
+                                    k = 0;
+                                }
+                            }
+                        }
+                    } // if hasOwnProperty
+                    if (selections.hasOwnProperty('Material')) {
+                        materialslist = selections['Material'];
+                        for (ax = 0; ax < materialslist.length; ax++) {
+                            a = materialslist[ax];
+                            if (e.medium.toLowerCase().includes(a.toLowerCase())) {
+                                if (k == 0) {
+                                    s1 += "<div class='img-box'>";
+                                    s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s1 += "<h4>" + e.artworkname + "</h4>";
+                                    s1 += "<h6>" + e.medium + "</h6>";
+                                    s1 += "<p>" + e.description + "</p>";
+                                    s1 += "</div>";
+                                }
+                                if (k == 1) {
+                                    s2 += "<div class='img-box'>";
+                                    s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s2 += "<h4>" + e.artworkname + "</h4>";
+                                    s2 += "<h6>" + e.medium + "</h6>";
+                                    s2 += "<p>" + e.description + "</p>";
+                                    s2 += "</div>";
+                                }
+                                if (k == 2) {
+                                    s3 += "<div class='img-box'>";
+                                    s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s3 += "<h4>" + e.artworkname + "</h4>";
+                                    s3 += "<h6>" + e.medium + "</h6>";
+                                    s3 += "<p>" + e.description + "</p>";
+                                    s3 += "</div>";
+                                }
+                                if (k == 3) {
+                                    s4 += "<div class='img-box'>";
+                                    s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s4 += "<h4>" + e.artworkname + "</h4>";
+                                    s4 += "<h6>" + e.medium + "</h6>";
+                                    s4 += "<p>" + e.description + "</p>";
+                                    s4 += "</div>";
+                                }
+                                k = k + 1;
+                                if (k == 4) {
+                                    k = 0;
+                                }
+                            }
+                        }
+                    } // if hasOwnProperty
+                    if (selections.hasOwnProperty('Nationality')) {
+                        natlist = selections['Nationality'];
+                        for (ax = 0; ax < natlist.length; ax++) {
+                            a = natlist[ax];
+                            if (a.toLowerCase() == e.artistnationality.toLowerCase()) {
+                                if (k == 0) {
+                                    s1 += "<div class='img-box'>";
+                                    s1 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s1 += "<h4>" + e.artworkname + "</h4>";
+                                    s1 += "<h6>" + e.medium + "</h6>";
+                                    s1 += "<p>" + e.description + "</p>";
+                                    s1 += "</div>";
+                                }
+                                if (k == 1) {
+                                    s2 += "<div class='img-box'>";
+                                    s2 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s2 += "<h4>" + e.artworkname + "</h4>";
+                                    s2 += "<h6>" + e.medium + "</h6>";
+                                    s2 += "<p>" + e.description + "</p>";
+                                    s2 += "</div>";
+                                }
+                                if (k == 2) {
+                                    s3 += "<div class='img-box'>";
+                                    s3 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s3 += "<h4>" + e.artworkname + "</h4>";
+                                    s3 += "<h6>" + e.medium + "</h6>";
+                                    s3 += "<p>" + e.description + "</p>";
+                                    s3 += "</div>";
+                                }
+                                if (k == 3) {
+                                    s4 += "<div class='img-box'>";
+                                    s4 += "<img src='" + e.image + "' style='width:100%'>";
+                                    s4 += "<h4>" + e.artworkname + "</h4>";
+                                    s4 += "<h6>" + e.medium + "</h6>";
+                                    s4 += "<p>" + e.description + "</p>";
+                                    s4 += "</div>";
+                                }
+                                k = k + 1;
+                                if (k == 4) {
+                                    k = 0;
+                                }
+                            }
+                        }
+                    } // if hasOwnProperty
+                }
+            }
+            s1 += "</div>";
+            s2 += "</div>";
+            s3 += "</div>";
+            s4 += "</div>";
+            targetdiv.innerHTML = s1 + s2 + s3 + s4;
+        }
     </script>
 
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
 
-    </head>
-    
-    <body>
-    
+</head>
+
+<body>
+
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -597,10 +610,10 @@
             <div></div>
             <div></div>
         </div>
-    </div>  
+    </div>
     <!-- ***** Preloader End ***** -->
-    
-    
+
+
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
@@ -614,12 +627,12 @@
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            	 <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/gallery/index/" class="active">Galleries</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/">Museums</a></li>
+                            <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+                            <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+                            <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+                            <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -629,9 +642,9 @@
                                     <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </li>-->
-                            
-                            
-                        </ul>        
+
+
+                        </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -645,116 +658,113 @@
 
     <!-- ***** Main Banner Area Start ***** -->
     <section class="inner-top-banner"></section>
-	
+
     <!-- ***** Main Banner Area End ***** -->
-	<section class="section gal-section gal-dtl-sec" id="">
+    <section class="section gal-section gal-dtl-sec" id="">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
-						<div class="gal-logo-box">
-							<a href="/gallery/index/?gid={{eventinfo.gid}}" class="">
-								<img src="{{eventinfo.eventimage}}">
-								<h2>{{eventinfo.eventname}}</h2>
-							 </a>
-							<p>{{eventinfo.eventperiod}}</p>
-							<p>{{eventinfo.eventlocation}}</p>
-							{% if adminuser == 1 %}
-			    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
-							{% endif %}
-							<!-- <a href="{{gallery.galleryurl}}" class="btn btn-slider">Follow</a> -->
-						</div>
+                        <div class="gal-logo-box">
+                            <a href="/gallery/index/?gid={{eventinfo.gid}}" class="">
+                                <img src="{{eventinfo.eventimage}}">
+                                <h2>{{eventinfo.eventname}}</h2>
+                            </a>
+                            <p>{{eventinfo.eventperiod}}</p>
+                            <p>{{eventinfo.eventlocation}}</p>
+                            {% if adminuser == 1 %}
+                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a> {% endif %}
+                            <!-- <a href="{{gallery.galleryurl}}" class="btn btn-slider">Follow</a> -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-		<div class="container">
+        <div class="container">
             <!-- START TABS DIV -->
-      <div class="tabbable-responsive">
-        <div class="tabbable">
-          <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="true">Overview</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="false">Events</a>
-            </li>
-            <!-- <li class="nav-item">
+            <div class="tabbable-responsive">
+                <div class="tabbable">
+                    <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="true">Overview</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="false">Events</a>
+                        </li>
+                        <!-- <li class="nav-item">
               <a class="nav-link" id="ViewingRooms-tab" data-toggle="tab" href="#ViewingRooms" role="tab" aria-controls="ViewingRooms" aria-selected="false">Viewing Rooms</a>
             </li> -->
-            <li class="nav-item">
-              <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Works</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="Artists-tab" data-toggle="tab" href="#Artists" role="tab" aria-controls="Artists" aria-selected="false">Artists</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="Contact-tab" data-toggle="tab" href="#Contact" role="tab" aria-controls="Contact" aria-selected="false">Contact</a>
-            </li>
-          </ul>
+                        <li class="nav-item">
+                            <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="Artists-tab" data-toggle="tab" href="#Artists" role="tab" aria-controls="Artists" aria-selected="false">Artists</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="Contact-tab" data-toggle="tab" href="#Contact" role="tab" aria-controls="Contact" aria-selected="false">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-	<div class="container">
-    <div class="card-body">
-      
-      <div class="tab-content">
-        <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
-			<div class="container">
-				<div class="row gl-ov-row">
-					<div class="col-md-7">
-						<h2>{{eventinfo.eventname}}</h2>
-						<h4>{{eventinfo.eventperiod}}</h4>
-						<h6>{{eventinfo.eventlocation}}</h6>
-						<p></p>
-						<!-- <a href="" class="btn btn-slider" >Read More</a> -->
-					</div>
-					<div class="col-md-5">
-						<img src="{{eventinfo.eventimage}}" class="img-fluid"/>
-					</div>
-					{% if adminuser == 1 %}
-	    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
-					{% endif %}
-				</div>
-				<div class="row gal-tab-row">
-					<div class="col-lg-12 gl-abt">
-						<div class="section-heading text-center">
-							<h3>About</h3>
-							<hr>
-							<p>{{eventinfo.eventinfo}}</p>
-							<!-- <p><a href="#">demolink.com</a></p> -->
-						</div>
-					</div>
-				</div>
-				<div class="row">
-				   <div class="col-lg-12">
-					   <div class="section-heading text-center">
-							<h3>All Events</h3>
-							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-							<hr>
-					   </div>
-				   </div>
-				   <div class="col-lg-12">
-					 <div class="men-item-carousel">
-                        <div class="owl-men-item owl-carousel">
-			{% for eventname, evobj in otherevents.items %}
-                            <div class="item align-items-end">
-                                <div class="thumb">
-                                    <a href="/gallery/eventdetails/?gevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt=""></a>
+        <div class="container">
+            <div class="card-body">
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
+                        <div class="container">
+                            <div class="row gl-ov-row">
+                                <div class="col-md-7">
+                                    <h2>{{eventinfo.eventname}}</h2>
+                                    <h4>{{eventinfo.eventperiod}}</h4>
+                                    <h6>{{eventinfo.eventlocation}}</h6>
+                                    <p></p>
+                                    <!-- <a href="" class="btn btn-slider" >Read More</a> -->
                                 </div>
-                                <div class="down-content">
-									<a href="/gallery/eventdetails/?gevid={{evobj.eventid}}" style="color:#000000;">
-										<h4>{{eventname}}</h4>
-										<span>{{evobj.eventinfo}}</span>
-										<span>{{evobj.eventperiod}}</span>
-									</a>
-									{% if adminuser == 1 %}
-					    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a>
-									{% endif %}
+                                <div class="col-md-5">
+                                    <img src="{{eventinfo.eventimage}}" class="img-fluid" />
+                                </div>
+                                {% if adminuser == 1 %}
+                                <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a> {% endif %}
+                            </div>
+                            <div class="row gal-tab-row">
+                                <div class="col-lg-12 gl-abt">
+                                    <div class="section-heading text-center">
+                                        <h3>About</h3>
+                                        <hr>
+                                        <p>{{eventinfo.eventinfo}}</p>
+                                        <!-- <p><a href="#">demolink.com</a></p> -->
+                                    </div>
                                 </div>
                             </div>
-			{% endfor %}
-			<!--
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="section-heading text-center">
+                                        <h3>All Events</h3>
+                                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="men-item-carousel">
+                                        <div class="owl-men-item owl-carousel">
+                                            {% for eventname, evobj in otherevents.items %}
+                                            <div class="item align-items-end">
+                                                <div class="thumb">
+                                                    <a href="/gallery/eventdetails/?gevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt=""></a>
+                                                </div>
+                                                <div class="down-content">
+                                                    <a href="/gallery/eventdetails/?gevid={{evobj.eventid}}" style="color:#000000;">
+                                                        <h4>{{eventname}}</h4>
+                                                        <span>{{evobj.eventinfo}}</span>
+                                                        <span>{{evobj.eventperiod}}</span>
+                                                    </a>
+                                                    {% if adminuser == 1 %}
+                                                    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a> {% endif %}
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                            <!--
                             <div class="item">
                                 <div class="thumb">
                                     <a href="#"><img src="/static/images/men-02.jpg" alt=""></a>
@@ -766,87 +776,80 @@
 								</div>
                             </div>
 			-->
-                            
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row art-box">
+                                <div class="col-md-12">
+                                    <div class="section-heading text-center">
+                                        <h3>Artists</h3>
+                                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 align-items-end">
+                                    <div class="art-list">
+                                        <div class="list-item">
+                                            {% for artist in artists %}
+                                            <p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
+                                            {% if adminuser == 1 %}
+                                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a> {% endif %} {% endfor %} {% if artists|length == 0%}
+                                            <span>There are no artists listed for the featured events.</span> {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-				   </div>
-				</div>
-				<div class="row art-box">
-					<div class="col-md-12">
-						<div class="section-heading text-center">
-							<h3>Artists</h3>
-							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-							<hr>
-					   </div>
-					</div>
-					<div class="col-md-12 align-items-end">
-						<div class="art-list">
-							<div class="list-item">
-							{% for artist in artists %}
-								<p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
-								{% if adminuser == 1 %}
-				    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a>
-								{% endif %}
-							{% endfor %}
-							{% if artists|length == 0%}
-							<span>There are no artists listed for the featured events.</span>
-							{% endif %}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-        </div>
-        <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
-          <div class="container">
-			<div class="row gl-ov-row align-items-end">
-				<div class="col-md-7">
-					<h2>{{eventinfo.eventname}}</h2>
-					<h4>{{eventinfo.eventperiod}}</h4>
-					<h6>{{eventinfo.eventlocation}}</h6>
-					<p>{{eventinfo.eventinfo}}</p>
-					<!-- <a href="" class="btn btn-slider" >Read More</a> -->
-					{% if adminuser == 1 %}
-	    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a>
-					{% endif %}
-				</div>
-				<div class="col-md-5">
-					
-					<img src="{{eventinfo.eventimage}}" class="img-fluid"/>
-				</div>
-			</div>
-			<div class="row gal-tab-row pst-ev">
-				<div class="col-lg-12">
-					   <div class="section-heading text-center">
-							<h3>Other Events</h3>
-							<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-						<hr>
-					   </div>
-				   </div>
-			</div>
-			<div class="row align-items-end">
-                                  {% for eventname, evobj in otherevents.items %}
-				  <div class="col-md-4">
-					<div class="item gl-dt-item">
-						<div class="thumb">
-							<a href="/gallery/eventdetails/?gevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt="" class="img-fluid"></a>
-						</div>
-						<div class="down-content">
-							<h4>{{eventname}}</h4>
-							<span>{{evobj.eventinfo}}</span>
-							<span>{{evobj.eventperiod}}</span>
-							{% if adminuser == 1 %}
-			    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a>
-							{% endif %}
-						</div>
-					</div>
-				  </div>
-				  {% endfor %}
-				  
-			  </div>
-		  </div>
-        </div>
-        <!-- <div class="tab-pane fade" id="ViewingRooms" role="tabpanel" aria-labelledby="ViewingRooms-tab">
+                    <div class="tab-pane fade" id="Events" role="tabpanel" aria-labelledby="Events-tab">
+                        <div class="container">
+                            <div class="row gl-ov-row align-items-end">
+                                <div class="col-md-7">
+                                    <h2>{{eventinfo.eventname}}</h2>
+                                    <h4>{{eventinfo.eventperiod}}</h4>
+                                    <h6>{{eventinfo.eventlocation}}</h6>
+                                    <p>{{eventinfo.eventinfo}}</p>
+                                    <!-- <a href="" class="btn btn-slider" >Read More</a> -->
+                                    {% if adminuser == 1 %}
+                                    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{eventinfo.gevid}}');">Edit</a> {% endif %}
+                                </div>
+                                <div class="col-md-5">
+
+                                    <img src="{{eventinfo.eventimage}}" class="img-fluid" />
+                                </div>
+                            </div>
+                            <div class="row gal-tab-row pst-ev">
+                                <div class="col-lg-12">
+                                    <div class="section-heading text-center">
+                                        <h3>Other Events</h3>
+                                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row align-items-end">
+                                {% for eventname, evobj in otherevents.items %}
+                                <div class="col-md-4">
+                                    <div class="item gl-dt-item">
+                                        <div class="thumb">
+                                            <a href="/gallery/eventdetails/?gevid={{evobj.eventid}}"><img src="{{evobj.eventimage}}" alt="" class="img-fluid"></a>
+                                        </div>
+                                        <div class="down-content">
+                                            <h4>{{eventname}}</h4>
+                                            <span>{{evobj.eventinfo}}</span>
+                                            <span>{{evobj.eventperiod}}</span> {% if adminuser == 1 %}
+                                            <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editgevent('{{evobj.eventid}}');">Edit</a> {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="tab-pane fade" id="ViewingRooms" role="tabpanel" aria-labelledby="ViewingRooms-tab">
           <div class="row viewing-rooms">
 			   <div class="col-lg-12">
 				   <div class="section-heading">
@@ -930,22 +933,22 @@
 				  </div>
 			</div>
         </div> -->
-        <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
-          <div id="mySidebar" class="sidebar">
-			<div class="fixed-sidbr-header">
-				<h5>Filter</h5>
-				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-			</div>
-			<div id="accordion" class="accordion">
-				<div class="card mb-0">
-					<div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
-						&nbsp;
-					</div>
-					<div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
-						&nbsp;
-					</div>
-				</div>
-				<!-- <div class="card mb-0">
+                    <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
+                        <div id="mySidebar" class="sidebar">
+                            <div class="fixed-sidbr-header">
+                                <h5>Filter</h5>
+                                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+                            </div>
+                            <div id="accordion" class="accordion">
+                                <div class="card mb-0">
+                                    <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                                        &nbsp;
+                                    </div>
+                                    <div id="collapseOne" class="card-body collapse" data-parent="#accordion">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                                <!-- <div class="card mb-0">
 					<div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
 						<a class="card-title">
 							Artists
@@ -1334,11 +1337,11 @@
 						</div>
 					</div>
 				</div> -->
-			</div>
-			</div>
+                            </div>
+                        </div>
 
-			<div id="main">
-				<!-- 
+                        <div id="main">
+                            <!-- 
 				<div class="work-top-pnl">
 					<button class="openbtn" onclick="openNav()"> Filter</button>
 					<div class="dropdown">Sort By:
@@ -1349,124 +1352,109 @@
 					  </div>
 				</div>
 				-->
-			<div class="row align-items-end" id='allworks'>
-			  <div class="column">
-                                {% for evname, artworkslist in allartworks1.items %}
-                                {% for artwork in artworkslist %}
-				<div class="img-box">
-				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
-				<img src="{{artwork.image}}" style="width:100%">
-				<h4>{{artwork.artworkname}}</h4>
-				<h6>{{artwork.medium}}</h6>
-				<p>{{artwork.description}}</p>
-				</a>
-				{% if adminuser == 1 %}
-    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
-				{% endif %}
-				</div>
-				{% endfor %}
-				{% endfor %}
-				
-			  </div>
-			  <div class="column">
-				{% for evname, artworkslist in allartworks2.items %}
-                                {% for artwork in artworkslist %}
-				<div class="img-box">
-				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
-				<img src="{{artwork.image}}" style="width:100%">
-				<h4>{{artwork.artworkname}}</h4>
-				<h6>{{artwork.medium}}</h6>
-				<p>{{artwork.description}}</p>
-				</a>
-				{% if adminuser == 1 %}
-    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
-				{% endif %}
-				</div>
-				{% endfor %}
-				{% endfor %}
-				
-			  </div>
-			  <div class="column">
-				{% for evname, artworkslist in allartworks3.items %}
-                                {% for artwork in artworkslist %}
-				<div class="img-box">
-				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
-				<img src="{{artwork.image}}" style="width:100%">
-				<h4>{{artwork.artworkname}}</h4>
-				<h6>{{artwork.medium}}</h6>
-				<p>{{artwork.description}}</p>
-				</a>
-				{% if adminuser == 1 %}
-    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
-				{% endif %}
-				</div>
-				{% endfor %}
-				{% endfor %}
-				
-			  </div>
-			  <div class="column">
-				{% for evname, artworkslist in allartworks4.items %}
-                                {% for artwork in artworkslist %}
-				<div class="img-box">
-				<a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
-				<img src="{{artwork.image}}" style="width:100%">
-				<h4>{{artwork.artworkname}}</h4>
-				<h6>{{artwork.medium}}</h6>
-				<p>{{artwork.description}}</p>
-				</a>
-				{% if adminuser == 1 %}
-    				    <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a>
-				{% endif %}
-				</div>
-				{% endfor %}
-				{% endfor %}
-				
-			  </div>
-			  </div>
-			</div>
-        </div>
-        <div class="tab-pane fade" id="Artists" role="tabpanel" aria-labelledby="Artists-tab">
-          <div class="row ">
-				<div class="col-md-12">
-					<div class="section-heading ">
-						<h3>Artists</h3>
-						<!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
-				   </div>
-				</div>
-					<div class="col-md-12">
-						<div class="art-list">
-							<div class="list-item">
-							{% for artist in allartists %}
-								<p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
-								{% if adminuser == 1 %}
-				    				    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a>
-								{% endif %}
-							{% endfor %}
-							{% if allartists|length == 0%}
-							<span>There are no artists listed for the featured event.</span>
-							{% endif %}
-							</div>
-						</div>
-					</div>
-				</div>
-        </div>
-        <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
-          <h5 class="card-title">Sixth Tab header</h5>
-          <p class="card-text">Proin ornare purus vitae magna viverra suscipit. Etiam rutrum lorem cursus libero scelerisque lacinia. Praesent bibendum risus id aliquam finibus. Donec sed orci sodales, viverra dolor a, dignissim mi. Pellentesque nec lectus enim. Suspendisse eu ligula ac tortor mollis lobortis. Nulla a laoreet neque, sit amet luctus dolor. Nam facilisis at odio ac commodo. Nullam vehicula blandit dui, vel suscipit orci.</p>
-        </div>
-      </div>
-		</div>
-		</div>
-	</section>
+                            <div class="row align-items-end" id='allworks'>
+                                <div class="column">
+                                    {% for evname, artworkslist in allartworks1.items %} {% for artwork in artworkslist %}
+                                    <div class="img-box">
+                                        <a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
+                                            <img src="{{artwork.image}}" style="width:100%">
+                                            <h4>{{artwork.artworkname}}</h4>
+                                            <h6>{{artwork.medium}}</h6>
+                                            <p>{{artwork.description}}</p>
+                                        </a>
+                                        {% if adminuser == 1 %}
+                                        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a> {% endif %}
+                                    </div>
+                                    {% endfor %} {% endfor %}
 
-      <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
+                                </div>
+                                <div class="column">
+                                    {% for evname, artworkslist in allartworks2.items %} {% for artwork in artworkslist %}
+                                    <div class="img-box">
+                                        <a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
+                                            <img src="{{artwork.image}}" style="width:100%">
+                                            <h4>{{artwork.artworkname}}</h4>
+                                            <h6>{{artwork.medium}}</h6>
+                                            <p>{{artwork.description}}</p>
+                                        </a>
+                                        {% if adminuser == 1 %}
+                                        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a> {% endif %}
+                                    </div>
+                                    {% endfor %} {% endfor %}
+
+                                </div>
+                                <div class="column">
+                                    {% for evname, artworkslist in allartworks3.items %} {% for artwork in artworkslist %}
+                                    <div class="img-box">
+                                        <a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
+                                            <img src="{{artwork.image}}" style="width:100%">
+                                            <h4>{{artwork.artworkname}}</h4>
+                                            <h6>{{artwork.medium}}</h6>
+                                            <p>{{artwork.description}}</p>
+                                        </a>
+                                        {% if adminuser == 1 %}
+                                        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a> {% endif %}
+                                    </div>
+                                    {% endfor %} {% endfor %}
+
+                                </div>
+                                <div class="column">
+                                    {% for evname, artworkslist in allartworks4.items %} {% for artwork in artworkslist %}
+                                    <div class="img-box">
+                                        <a href='/gallery/artworkdetails/?awid={{artwork.awid}}' style="color:#000000;">
+                                            <img src="{{artwork.image}}" style="width:100%">
+                                            <h4>{{artwork.artworkname}}</h4>
+                                            <h6>{{artwork.medium}}</h6>
+                                            <p>{{artwork.description}}</p>
+                                        </a>
+                                        {% if adminuser == 1 %}
+                                        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartwork('{{artwork.awid}}');">Edit</a> {% endif %}
+                                    </div>
+                                    {% endfor %} {% endfor %}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="Artists" role="tabpanel" aria-labelledby="Artists-tab">
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="section-heading ">
+                                    <h3>Artists</h3>
+                                    <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="art-list">
+                                    <div class="list-item">
+                                        {% for artist in allartists %}
+                                        <p><a href="/artist/details/?aid={{artist.artistid}}" style="color:#000000;">{{artist.artistname}}</a></p>
+                                        {% if adminuser == 1 %}
+                                        <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editartist('{{artist.artistid}}');">Edit</a> {% endif %} {% endfor %} {% if allartists|length == 0%}
+                                        <span>There are no artists listed for the featured event.</span> {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="Contact" role="tabpanel" aria-labelledby="Contact-tab">
+                        <h5 class="card-title">Sixth Tab header</h5>
+                        <p class="card-text">Proin ornare purus vitae magna viverra suscipit. Etiam rutrum lorem cursus libero scelerisque lacinia. Praesent bibendum risus id aliquam finibus. Donec sed orci sodales, viverra dolor a, dignissim mi. Pellentesque nec lectus enim.
+                            Suspendisse eu ligula ac tortor mollis lobortis. Nulla a laoreet neque, sit amet luctus dolor. Nam facilisis at odio ac commodo. Nullam vehicula blandit dui, vel suscipit orci.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="adminScreen">
+        <a href="#" class="cancel">×</a>
+        <form name='frmedit' id='frmedit'>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="cover">
+    </div>
 
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -1475,7 +1463,7 @@
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -1484,7 +1472,7 @@
                         </ul>
                     </div>
                 </div>
-                 <div class="col-lg-3">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -1514,7 +1502,7 @@
                 <div class="col-lg-12">
                     <div class="under-footer">
                         <p>Copyright © 2022. All Rights Reserved.</p>
-                       
+
                         <ul>
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -1525,7 +1513,7 @@
             </div>
         </div>
     </footer>
-    
+
 
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js"></script>
@@ -1541,50 +1529,48 @@
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
-    
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
+
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
-	<script>
-	function openNav() {
-	  document.getElementById("mySidebar").style.width = "350px";
-	  //document.getElementById("main").style.marginLeft = "250px";
-	}
-
-	function closeNav() {
-	  document.getElementById("mySidebar").style.width = "0";
-	  document.getElementById("main").style.marginLeft= "0";
-	}
-	</script>
-	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
-		
-	</script>
     <script>
-		
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "350px";
+            //document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+    </script>
+    <script>
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
+        });
+    </script>
+    <script>
         $(function() {
             var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
             });
         });
-
     </script>
 
-  </body>
+</body>
+
 </html>

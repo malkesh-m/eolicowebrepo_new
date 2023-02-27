@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -28,25 +28,38 @@
     <link rel="stylesheet" href="/static/css/newcarousel.css">
     <link rel="stylesheet" href="/static/css/autocomplete.css">
 
-	<style>
-	.owl-prev, .owl-next {
-        width: 15px;
-        height: 100px;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        display: block !important;
-        border:0px solid black;
-    }
-    .owl-prev { left: -20px; }
-    .owl-next { right: -20px; }
-    .owl-prev i, .owl-next i {transform : scale(2,5); color: #ccc;}
-  
-	</style>
+    <style>
+        .owl-prev,
+        .owl-next {
+            width: 15px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: block !important;
+            border: 0px solid black;
+        }
+        
+        .owl-prev {
+            left: -20px;
+        }
+        
+        .owl-next {
+            right: -20px;
+        }
+        
+        .owl-prev i,
+        .owl-next i {
+            transform: scale(2, 5);
+            color: #ccc;
+        }
+    </style>
 
-	<style>
-    	#frmsearchmuseums input[type=search]{width:430px !important;}
-    	</style>
+    <style>
+        #frmsearchmuseums input[type=search] {
+            width: 430px !important;
+        }
+    </style>
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
@@ -56,189 +69,192 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script type='text/javascript'>
-	
-	function dofilter(selectid){
-	  //alert("hi");
-	  const museumsdict = {
-	    {% for mtype, museumslist in museumsfull.items %}
-		"{{mtype}}" : Array(
-		  {% for museum in museumslist %}
-			Array( "{{museum.museumname}}", "{{museum.location}}", "{{museum.coverimage}}", "{{museum.museumurl}}", "{{museum.description}}", "{{museum.mid}}" ),
-		  {% endfor %}
-		),
-	    {% endfor %}
-	  };
-	  sectiontag = document.getElementById("museums");
-	  selecttag = document.getElementById(selectid);
-	  selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
-	  //alert(selectedoption);
-          html = "";
- 	  if(selectid == "location"){
-	    for(mtype in museumsdict){
-		museumslist = museumsdict[mtype];
-		starter = 0;
-		uniquemuseums = {};
-		for(var i=0; i < museumslist.length; i++){
-		  if(selectedoption != "1"){
-		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    if(museumslist[i][0] in uniquemuseums){
-			continue;
-		    }
-		    uniquemuseums[museumslist[i][0]] = 1;
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";        
-		  }
-		}// if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    if(museumslist[i][0] in uniquemuseums){
-			continue;
-		    }
-		    uniquemuseums[museumslist[i][0]] = 1;
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";  
-		}
-		} // for museumslist loop ends
-		html += "</div></div></div></div></div></section>";
-	    } 
-	  }
-	  if(selectid == "speciality"){
-	    for(mtype in museumsdict){
-		if(mtype.toLowerCase() == selectedoption.toLowerCase()){
-		  museumslist = museumsdict[mtype];
-		  starter = 0;
-		  uniquemuseums = {};
-		for(var i=0; i < museumslist.length; i++){
-		  if(selectedoption != "1"){
-		  if(museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()){
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    if(museumslist[i][0] in uniquemuseums){
-			continue;
-		    }
-		    uniquemuseums[museumslist[i][0]] = 1;
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";        
-		  }
-		} // if selectedoption != 1
-		else{
-		    if(starter == 0){
-            		html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-			html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-		        starter = 1;
-		    }
-		    if(museumslist[i][0] in uniquemuseums){
-			continue;
-		    }
-		    uniquemuseums[museumslist[i][0]] = 1;
-		    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";       
-		}
-		}  // for museumslist ends
-		html += "</div></div></div></div></div></section>";
-		}
-	    }
-	  }
-	  sectiontag.innerHTML = html;
-	}
+        function dofilter(selectid) {
+            //alert("hi");
+            const museumsdict = {
+                { %
+                    for mtype, museumslist in museumsfull.items %
+                }
+                "{{mtype}}": Array({ %
+                        for museum in museumslist %
+                    }
+                    Array("{{museum.museumname}}", "{{museum.location}}", "{{museum.coverimage}}", "{{museum.museumurl}}", "{{museum.description}}", "{{museum.mid}}"), { % endfor %
+                    }
+                ),
+                { % endfor %
+                }
+            };
+            sectiontag = document.getElementById("museums");
+            selecttag = document.getElementById(selectid);
+            selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
+            //alert(selectedoption);
+            html = "";
+            if (selectid == "location") {
+                for (mtype in museumsdict) {
+                    museumslist = museumsdict[mtype];
+                    starter = 0;
+                    uniquemuseums = {};
+                    for (var i = 0; i < museumslist.length; i++) {
+                        if (selectedoption != "1") {
+                            if (museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()) {
+                                if (starter == 0) {
+                                    html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                    html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                    starter = 1;
+                                }
+                                if (museumslist[i][0] in uniquemuseums) {
+                                    continue;
+                                }
+                                uniquemuseums[museumslist[i][0]] = 1;
+                                html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";
+                            }
+                        } // if selectedoption != 1
+                        else {
+                            if (starter == 0) {
+                                html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                starter = 1;
+                            }
+                            if (museumslist[i][0] in uniquemuseums) {
+                                continue;
+                            }
+                            uniquemuseums[museumslist[i][0]] = 1;
+                            html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";
+                        }
+                    } // for museumslist loop ends
+                    html += "</div></div></div></div></div></section>";
+                }
+            }
+            if (selectid == "speciality") {
+                for (mtype in museumsdict) {
+                    if (mtype.toLowerCase() == selectedoption.toLowerCase()) {
+                        museumslist = museumsdict[mtype];
+                        starter = 0;
+                        uniquemuseums = {};
+                        for (var i = 0; i < museumslist.length; i++) {
+                            if (selectedoption != "1") {
+                                if (museumslist[i][1].toLowerCase() == selectedoption.toLowerCase()) {
+                                    if (starter == 0) {
+                                        html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                        html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                        starter = 1;
+                                    }
+                                    if (museumslist[i][0] in uniquemuseums) {
+                                        continue;
+                                    }
+                                    uniquemuseums[museumslist[i][0]] = 1;
+                                    html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";
+                                }
+                            } // if selectedoption != 1
+                            else {
+                                if (starter == 0) {
+                                    html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + mtype + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
+                                    html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
+                                    starter = 1;
+                                }
+                                if (museumslist[i][0] in uniquemuseums) {
+                                    continue;
+                                }
+                                uniquemuseums[museumslist[i][0]] = 1;
+                                html += "<div class='item'><div class='thumb'><a href='/museum/details/?mid=" + museumslist[i][5] + "'><img src='" + museumslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/museum/details/?mid=" + museumslist[i][5] + "'>		<h4>" + museumslist[i][0] + "</h4><span>" + museumslist[i][1] + "</span><a class='btn btn-slider' href='/museum/details/?mid=" + museumslist[i][5] + "'>Details</a></a></div></div>";
+                            }
+                        } // for museumslist ends
+                        html += "</div></div></div></div></div></section>";
+                    }
+                }
+            }
+            sectiontag.innerHTML = html;
+        }
     </script>
 
     <style type="text/css">
-    .button
-    {
-      width: 150px;
-      padding: 10px;
-      background-color: #FF8C00;
-      box-shadow: -8px 8px 10px 3px rgba(0,0,0,0.2);
-      font-weight:bold;
-      text-decoration:none;
-    }
-    #cover{
-      position:fixed;
-      top:0;
-      left:0;
-      background:rgba(0,0,0,0.6);
-      z-index:5;
-      width:100%;
-      height:100%;
-      display:none;
-    }
-    #adminScreen
-    {
-      height:680px;
-      width:640px;
-      margin:0 auto;
-      position:relative;
-      z-index:10;
-      display:none;
-      background: url(login.png) no-repeat;
-      border:5px solid #cccccc;
-      border-radius:10px;
-    }
-    #adminScreen:target, #adminScreen:target + #cover{
-      display:block;
-      opacity:2;
-    }
-    .cancel
-    {
-      display:block;
-      position:absolute;
-      top:3px;
-      right:2px;
-      background:rgb(245,245,245);
-      color:black;
-      height:30px;
-      width:35px;
-      font-size:30px;
-      text-decoration:none;
-      text-align:center;
-      font-weight:bold;
-    }
+        .button {
+            width: 150px;
+            padding: 10px;
+            background-color: #FF8C00;
+            box-shadow: -8px 8px 10px 3px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        #adminScreen {
+            height: 680px;
+            width: 640px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+            background: url(login.png) no-repeat;
+            border: 5px solid #cccccc;
+            border-radius: 10px;
+        }
+        
+        #adminScreen:target,
+        #adminScreen:target+#cover {
+            display: block;
+            opacity: 2;
+        }
+        
+        .cancel {
+            display: block;
+            position: absolute;
+            top: 3px;
+            right: 2px;
+            background: rgb(245, 245, 245);
+            color: black;
+            height: 30px;
+            width: 35px;
+            font-size: 30px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/autocomplete.js"></script>
 
     <script>
-	museums = [
-		{% for museumname in filtermuseums %}
-		    "{{museumname}}",
-		{% endfor %}
-		]; // Should get populated during page load.
-	
-    </script> 
+        museums = [{ %
+                for museumname in filtermuseums %
+            }
+            "{{museumname}}", { % endfor %
+            }
+        ]; // Should get populated during page load.
+    </script>
     <script>
-	function searchmuseum(){
-	  var xmlhttp;
-	  if (window.XMLHttpRequest){
-	    xmlhttp=new XMLHttpRequest();
-	  }
-	  else{
-	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	  // Register the handler
-	  xmlhttp.onreadystatechange = function(){
-	  if(xmlhttp.readyState == 4 && xmlhttp.status==200){
-	  }
-	  };
-	  searchkey = document.getElementById('museumsearch').value;
-	  xmlhttp.open("GET", "/museum/search/?q=" + searchkey);
-	  xmlhttp.send();
-	}
+        function searchmuseum() {
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // Register the handler
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
+            };
+            searchkey = document.getElementById('museumsearch').value;
+            xmlhttp.open("GET", "/museum/search/?q=" + searchkey);
+            xmlhttp.send();
+        }
     </script>
 
-    </head>
-    
-    <body onload="javascript:autocomplete(document.getElementById('museumsearch'), museums);">
-    
+</head>
+
+<body onload="javascript:autocomplete(document.getElementById('museumsearch'), museums);">
+
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -246,10 +262,10 @@
             <div></div>
             <div></div>
         </div>
-    </div>  
+    </div>
     <!-- ***** Preloader End ***** -->
-    
-    
+
+
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
@@ -264,11 +280,11 @@
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
                             <li class="scroll-to-section"><a href="/gallery/index/">Galleries</a></li>
-				 <li class="scroll-to-section"><a href="/museum/index/" class="active">Museums</a></li>
-				 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-				 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-				 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-				 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+                            <li class="scroll-to-section"><a href="/museum/index/" class="active">Museums</a></li>
+                            <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+                            <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+                            <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+                            <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
                             <!--<li class="submenu">
                                 <a href="javascript:;">Pages</a>
                                 <ul>
@@ -278,9 +294,9 @@
                                     <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </li>-->
-                            
-                            
-                        </ul>        
+
+
+                        </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -293,126 +309,117 @@
     <!-- ***** Header Area End ***** -->
 
     <!-- ***** Main Banner Area Start ***** -->
-    
-	   	<!-- Carousel -->
+
+    <!-- Carousel -->
     <section class="testimonials">
-	<div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div id="customers-testimonials" class="owl-carousel owl-theme">
-	    {% for d in carousel %}
-            {% if d.datatype == "gallery" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editgallery({{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "gevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editgevent({{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "museum" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmuseum({{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% if d.datatype == "mevent" %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.img}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
-			<h5>{{d.title}}</h5>
-			<p>{{d.text}}</p>
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmevent({{d.data_id}});">Edit</a>
-			{% endif %}
-		</div>
-              </div>
-            </div>
-	    {% endif %}
-	    {% endfor %}
-          </div>
-        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="customers-testimonials" class="owl-carousel owl-theme">
+                        {% for d in carousel %} {% if d.datatype == "gallery" %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.img}}" alt="">
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/gallery/details/?gid={{d.data_id}}">
+                                        <h5>{{d.title}}</h5>
+                                        <p>{{d.text}}</p>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editgallery({{d.data_id}});">Edit</a> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% if d.datatype == "gevent" %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.img}}" alt="">
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/gallery/eventdetails/?gevid={{d.data_id}}">
+                                        <h5>{{d.title}}</h5>
+                                        <p>{{d.text}}</p>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editgevent({{d.data_id}});">Edit</a> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% if d.datatype == "museum" %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.img}}" alt="">
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/museum/details/?mid={{d.data_id}}">
+                                        <h5>{{d.title}}</h5>
+                                        <p>{{d.text}}</p>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmuseum({{d.data_id}});">Edit</a> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% if d.datatype == "mevent" %}
+                        <div class="item">
+                            <div class="shadow-effect">
+                                <img class="img-responsive" src="{{d.img}}" alt="">
+                                <div class="item-details">
+                                    <a class="btn btn-slider" href="/museum/eventdetails/?mevid={{d.data_id}}">
+                                        <h5>{{d.title}}</h5>
+                                        <p>{{d.text}}</p>
+                                    </a>
+                                    {% if adminuser == 1 %}
+                                    <br/><a style="color:#000000;bgcolor:#ffffff;" href='#adminScreen' onClick="javascript:t_editmevent({{d.data_id}});">Edit</a> {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% endfor %}
+                    </div>
+                </div>
 
-	<div class="owl-controls">
-        <div class="owl-nav">
-            <div class="owl-prev"></div>
-            <div class="owl-next"></div>
-        </div>
-    	</div>
+                <div class="owl-controls">
+                    <div class="owl-nav">
+                        <div class="owl-prev"></div>
+                        <div class="owl-next"></div>
+                    </div>
+                </div>
 
-      </div>
-      </div>
+            </div>
+        </div>
     </section>
     <!-- END OF Carousels -->
     <section class="section gal-section" id="">
-      	<div class="container">
-	    <div class="row">
-                  <div class="col-lg-12">
-                      <div class="section-heading section-heading-2">
-                          <!-- <h2>Emerging Art</h2> -->
-                          <span>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading section-heading-2">
+                        <!-- <h2>Emerging Art</h2> -->
+                        <span>
 			      <form autocomplete="off" name='frmsearchmuseums' id='frmsearchmuseums' method='POST' action="">
 				  {% csrf_token %}
 				  <div class="autocomplete">
 				    <span class="input-group"><input type="search" class='form-control' name='museumsearch' id='museumsearch' maxLength="200" placeholder="Search museums" style="width:300px;"><button type="button" class="btn btn-primary" onclick='javascript:searchmuseum();'><i class="fa fa-search"></i></button></span>
-				  </div>
-			      </form>
-                              <!-- <a href="">View All</a> -->
-                          </span>
-                      </div>
-                  </div>
-              </div>
-	</div>
-      </section>
+                    </div>
+                    </form>
+                    <!-- <a href="">View All</a> -->
+                    </span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
     <!-- ***** Main Banner Area End ***** -->
-	<section class="section gal-section" id="">
+    <section class="section gal-section" id="">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>Browse Institutions</h2>
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
         </div>
-	<!-- <div class="container">
+        <!-- <div class="container">
             <div class="row">
                 <div class="col-md-4">
 					<div class="row">
@@ -447,47 +454,46 @@
 				</div>
 			</div>
 		</div> -->
-	</section>
+    </section>
 
-	<!-- Begining of new museums gallery -->
-	<div id='museums'>
-	{% for mtype, museumslist in allmuseums.items %}
-	<section class="oth-works mrt-90">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading section-heading-2 mrb-50">
-                        <h2>{{mtype}}</h2>
-                        <span>
+    <!-- Begining of new museums gallery -->
+    <div id='museums'>
+        {% for mtype, museumslist in allmuseums.items %}
+        <section class="oth-works mrt-90">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-heading section-heading-2 mrb-50">
+                            <h2>{{mtype}}</h2>
+                            <span>
                             
                         </span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row align-items-end">
-		{% for museum in museumslist %}
-                <div class="column">
-                    <div class="img-box">
-			<a href="/museum/details/?mid={{museum.mid}}"><img src="{{museum.coverimage}}" alt=""></a>
-                        <a href="/museum/details/?mid={{museum.mid}}" style="color:#000000;">
-				<h4>{{museum.museumname}}</h4>
-				<h6>{{museum.location}}</h6>
-				<!-- <a class="btn btn-slider" href="/museum/details/?mid={{museum.mid}}">Details</a> -->
-			</a>
-			{% if adminuser == 1 %}
-			    <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editmuseum('{{museum.mid}}');">Edit</a>
-			{% endif %}
+                <div class="row align-items-end">
+                    {% for museum in museumslist %}
+                    <div class="column">
+                        <div class="img-box">
+                            <a href="/museum/details/?mid={{museum.mid}}"><img src="{{museum.coverimage}}" alt=""></a>
+                            <a href="/museum/details/?mid={{museum.mid}}" style="color:#000000;">
+                                <h4>{{museum.museumname}}</h4>
+                                <h6>{{museum.location}}</h6>
+                                <!-- <a class="btn btn-slider" href="/museum/details/?mid={{museum.mid}}">Details</a> -->
+                            </a>
+                            {% if adminuser == 1 %}
+                            <br/><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen' onClick="javascript:t_editmuseum('{{museum.mid}}');">Edit</a> {% endif %}
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-		{% endfor %}
             </div>
-        </div>
-    	</section>
-	{% endfor %}
-	</div>
-	<!-- End of new museums gallery -->
+        </section>
+        {% endfor %}
+    </div>
+    <!-- End of new museums gallery -->
 
-	<!--
+    <!--
 	<div id='museums'>
 	{% for mtype, museumslist in allmuseums.items %}
 	<section class="section gal-section">
@@ -532,15 +538,15 @@
    	</div>
    	-->
 
-      <div id="adminScreen">
-	  <a href="#" class="cancel">×</a>
-	  <form name='frmedit' id='frmedit'>
-	    {% csrf_token %}
-          </form>
-      </div>
-      <div id="cover" >
-      </div>
-    
+    <div id="adminScreen">
+        <a href="#" class="cancel">×</a>
+        <form name='frmedit' id='frmedit'>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="cover">
+    </div>
+
     <!-- ***** Footer Start ***** -->
     <footer>
         <div class="container">
@@ -548,7 +554,7 @@
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/logo-white.png" alt="">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
                             <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
@@ -557,7 +563,7 @@
                         </ul>
                     </div>
                 </div>
-                 <div class="col-lg-3">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
@@ -587,7 +593,7 @@
                 <div class="col-lg-12">
                     <div class="under-footer">
                         <p>Copyright © 2022. All Rights Reserved.</p>
-                       
+
                         <ul>
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -598,7 +604,7 @@
             </div>
         </div>
     </footer>
-    
+
 
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js"></script>
@@ -614,66 +620,65 @@
     <script src="/static/js/scrollreveal.min.js"></script>
     <script src="/static/js/waypoints.min.js"></script>
     <script src="/static/js/jquery.counterup.min.js"></script>
-    <script src="/static/js/imgfix.min.js"></script> 
-    <script src="/static/js/slick.js"></script> 
-    <script src="/static/js/lightbox.js"></script> 
-    <script src="/static/js/isotope.js"></script> 
-    <script src="/static/js/jquery.dropdown.min.js"></script> 
-    
+    <script src="/static/js/imgfix.min.js"></script>
+    <script src="/static/js/slick.js"></script>
+    <script src="/static/js/lightbox.js"></script>
+    <script src="/static/js/isotope.js"></script>
+    <script src="/static/js/jquery.dropdown.min.js"></script>
+
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
-	
-	<script>
-	/*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
-	$('.demo').dropdown({
-		limitCount: 1,
-		input:'<input type="text" maxLength="20" placeholder="Search">'
-	});
 
-jQuery(document).ready(function($) {
-"use strict";
-$('#customers-testimonials').owlCarousel( {
-		loop: true,
-		center: true,
-		items: 3,
-		margin: 30,
-		autoplay: true,
-		dots:true,
-    		nav:true,
-		autoplayTimeout: 8500,
-		smartSpeed: 450,
-  		navText: ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
-		responsive: {
-			0: {
-				items: 1
-			},
-			768: {
-				items: 2
-			},
-			1170: {
-				items: 3
-			}
-		}
-	});
-});
-	</script>
     <script>
-		
-        $(function() {
-            var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-                
-            });
+        /*https://www.jqueryscript.net/demo/Searchable-Multi-select-jQuery-Dropdown/*/
+        $('.demo').dropdown({
+            limitCount: 1,
+            input: '<input type="text" maxLength="20" placeholder="Search">'
         });
 
+        jQuery(document).ready(function($) {
+            "use strict";
+            $('#customers-testimonials').owlCarousel({
+                loop: true,
+                center: true,
+                items: 3,
+                margin: 30,
+                autoplay: true,
+                dots: true,
+                nav: true,
+                autoplayTimeout: 8500,
+                smartSpeed: 450,
+                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    1170: {
+                        items: 3
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function() {
+                selectedClass = $(this).attr("data-rel");
+                $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("." + selectedClass).fadeOut();
+                setTimeout(function() {
+                    $("." + selectedClass).fadeIn();
+                    $("#portfolio").fadeTo(50, 1);
+                }, 500);
+
+            });
+        });
     </script>
 
-  </body>
+</body>
+
 </html>
