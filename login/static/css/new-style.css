@@ -368,7 +368,7 @@ footer .under-footer a:hover {
 }
 
 .latest-artists .down-content span {
-    font-size: 15px;
+    font-size: 15px !important;
     color: #a1a1a1;
     font-weight: 500;
     display: block;
@@ -383,7 +383,7 @@ footer .under-footer a:hover {
 }
 
 .latest-artists .down-content h5 {
-    font-size: 15px;
+    font-size: 18px;
     color: #2a2a2a;
     font-weight: 700;
     margin-bottom: 8px;

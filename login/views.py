@@ -229,89 +229,87 @@ def index(request):
                 except:
                     pass
     context['favourites'] = favouritesdict
-    artistsdict = {}
-    try:
-        artistsdict = pickle.loads(redis_instance.get('h_artistsdict'))
-    except:
-        pass
-    if artistsdict.keys().__len__() == 0:
-        artists = FeaturedArtist.objects.all().order_by('-totalsoldprice')[:6]
-        for a in artists:
-            if a.id == 1: # This is for 'missing' artists
-                continue
-            aname = a.artist_name
-            about = a.description
-            aurl = ""
-            if a.artistimage is None or a.artistimage == "":
-                aimg = "/static/images/default_artist.jpg"
-            else:
-                aimg = settings.IMG_URL_PREFIX + str(a.artistimage)
-            anat = a.nationality
-            aid = a.artist_id
-            # Check for follows and favourites
-            if request.user.is_authenticated:
-                #folqset = Follow.objects.filter(user=request.user, artist__id=a.artist_id)
-                folqset = []
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=a.artist_id)
-            else:
-                folqset = []
-                favqset = []
-            folflag = 0
-            if folqset.__len__() > 0:
-                folflag = 1
-            favflag = 0
-            if favqset.__len__() > 0:
-                favflag = 1         
-            artistsdict[aname] = [about, aurl, aimg, anat, aid, folflag, favflag]
-        try:
-            redis_instance.set('h_artistsdict', pickle.dumps(artistsdict))
-        except:
-            pass
-    context['artists'] = artistsdict
-    """
-    eventsdict = {}
-    try:
-        eventsdict = pickle.loads(redis_instance.get('h_eventsdict'))
-    except:
-        pass
-    if eventsdict.keys().__len__() == 0:
-        events = Event.objects.all().order_by('priority', '-edited')
-        eventslist = events[0:4]
-        for e in eventslist:
-            ename = e.eventname
-            eurl = e.eventurl
-            einfo = str(e.eventinfo[0:20]) + "..."
-            eperiod = e.eventperiod
-            eid = e.id
-            eventimage = e.eventimage
-            eventsdict[ename] = [eurl, einfo, eperiod, eid, eventimage ]
-        try:
-            redis_instance.set('h_eventsdict', pickle.dumps(eventsdict))
-        except:
-            pass
-    context['events'] = eventsdict
-    museumsdict = {}
-    try:
-        museumsdict = pickle.loads(redis_instance.get('h_museumsdict'))
-    except:
-        pass
-    if museumsdict.keys().__len__() == 0:
-        museumsqset = Museum.objects.all().order_by('priority', '-edited')
-        museumslist = museumsqset[0:4]
-        for mus in museumslist:
-            mname = mus.museumname
-            murl = mus.museumurl
-            minfo = str(mus.description[0:20]) + "..."
-            mlocation = mus.location
-            mid = mus.id
-            mimage = mus.coverimage
-            museumsdict[mname] = [murl, minfo, mlocation, mid, mimage ]
-        try:
-            redis_instance.set('h_museumsdict', pickle.dumps(museumsdict))
-        except:
-            pass
-    context['museums'] = museumsdict
-    """
+    # artistsdict = {}
+    # try:
+    #     artistsdict = pickle.loads(redis_instance.get('h_artistsdict'))
+    # except:
+    #     pass
+    # if artistsdict.keys().__len__() == 0:
+    #     artists = FeaturedArtist.objects.all().order_by('-totalsoldprice')[:6]
+    #     for a in artists:
+    #         if a.id == 1: # This is for 'missing' artists
+    #             continue
+    #         aname = a.artist_name
+    #         about = a.description
+    #         aurl = ""
+    #         if a.artistimage is None or a.artistimage == "":
+    #             aimg = "/static/images/default_artist.jpg"
+    #         else:
+    #             aimg = settings.IMG_URL_PREFIX + str(a.artistimage)
+    #         anat = a.nationality
+    #         aid = a.artist_id
+    #         # Check for follows and favourites
+    #         if request.user.is_authenticated:
+    #             #folqset = Follow.objects.filter(user=request.user, artist__id=a.artist_id)
+    #             folqset = []
+    #             favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=a.artist_id)
+    #         else:
+    #             folqset = []
+    #             favqset = []
+    #         folflag = 0
+    #         if folqset.__len__() > 0:
+    #             folflag = 1
+    #         favflag = 0
+    #         if favqset.__len__() > 0:
+    #             favflag = 1
+    #         artistsdict[aname] = [about, aurl, aimg, anat, aid, folflag, favflag]
+    #     try:
+    #         redis_instance.set('h_artistsdict', pickle.dumps(artistsdict))
+    #     except:
+    #         pass
+    # context['artists'] = artistsdict
+    # eventsdict = {}
+    # try:
+    #     eventsdict = pickle.loads(redis_instance.get('h_eventsdict'))
+    # except:
+    #     pass
+    # if eventsdict.keys().__len__() == 0:
+    #     events = Event.objects.all().order_by('priority', '-edited')
+    #     eventslist = events[0:4]
+    #     for e in eventslist:
+    #         ename = e.eventname
+    #         eurl = e.eventurl
+    #         einfo = str(e.eventinfo[0:20]) + "..."
+    #         eperiod = e.eventperiod
+    #         eid = e.id
+    #         eventimage = e.eventimage
+    #         eventsdict[ename] = [eurl, einfo, eperiod, eid, eventimage ]
+    #     try:
+    #         redis_instance.set('h_eventsdict', pickle.dumps(eventsdict))
+    #     except:
+    #         pass
+    # context['events'] = eventsdict
+    # museumsdict = {}
+    # try:
+    #     museumsdict = pickle.loads(redis_instance.get('h_museumsdict'))
+    # except:
+    #     pass
+    # if museumsdict.keys().__len__() == 0:
+    #     museumsqset = Museum.objects.all().order_by('priority', '-edited')
+    #     museumslist = museumsqset[0:4]
+    #     for mus in museumslist:
+    #         mname = mus.museumname
+    #         murl = mus.museumurl
+    #         minfo = str(mus.description[0:20]) + "..."
+    #         mlocation = mus.location
+    #         mid = mus.id
+    #         mimage = mus.coverimage
+    #         museumsdict[mname] = [murl, minfo, mlocation, mid, mimage ]
+    #     try:
+    #         redis_instance.set('h_museumsdict', pickle.dumps(museumsdict))
+    #     except:
+    #         pass
+    # context['museums'] = museumsdict
     # upcomingauctions = {}
     # try:
     #     upcomingauctions = pickle.loads(redis_instance.get('h_upcomingauctions'))
@@ -438,17 +436,17 @@ def index(request):
     dbconn.close()
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
-    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date  FROM `fineart_auction_calendar` WHERE faac_auction_start_date >= '{datetime.datetime.now().date()}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
-    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID  WHERE faac_auction_start_date < '{datetime.datetime.now().date()}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{datetime.datetime.now().date()}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{datetime.datetime.now().date()}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
     connList = connectToDb()
     connList[1].execute(upcomingAuctionSelectQuery)
     upcomingAuctionData = connList[1].fetchall()
-    context['upcomingAuctions'] = upcomingAuctionData
     connList[1].execute(recentAuctionSelectQuery)
     recentAuctionData = connList[1].fetchall()
-    print(recentAuctionData)
-    context['recentAuctions'] = recentAuctionData
     disconnectDb(connList)
+    context['upcomingAuctions'] = upcomingAuctionData
+    context['artists'] = {}
+    context['recentAuctions'] = recentAuctionData
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -494,6 +492,7 @@ def dologin(request):
         username = request.POST.get('username')
         raw_password = request.POST.get('passwd')
         user = authenticate(username=username, password=raw_password)
+        print(user)
         if user is not None:
             login(request, user)
         else:
@@ -865,6 +864,7 @@ def dashboard(request):
         artworksoldtotal = 0
         totalsoldusd = 0.00
         totalsoldusdlast12months = 0.00
+        artistname = ''
         for lotartist in lotartistqset:
             if lotartist.saledate > date12monthsago:
                 artworksoldlast12months += 1

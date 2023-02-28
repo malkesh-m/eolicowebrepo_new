@@ -872,10 +872,15 @@
                                     <img src="https://f000.backblazeb2.com/file/fineart-images/{{upcomingAuction.faac_auction_image}}" class="card-img" alt="img" />
                                     <div class="down-content">
                                         <div class="d-flex justify-content-between">
-                                            <h5>{{ upcomingAuction.faac_auction_title }}</h5>
+                                            {% if upcomingAuction.faac_auction_title|length > 17 %}
+                                            <h4>{{ upcomingAuction.faac_auction_title|slice:14 }}...</h4>
+                                            {% else %}
+                                            <h4>{{ upcomingAuction.faac_auction_title }}</h4>
+                                            {% endif %}
                                             <p>View Details</p>
                                         </div>
-                                        <span>{{ upcomingAuction.faac_auction_title }}</span>
+                                        <h5>{{ upcomingAuction.cah_auction_house_name }}</h5>
+                                        <span>{{ upcomingAuction.faac_auction_start_date }} | {{ upcomingAuction.cah_auction_house_location }}</span>
                                     </div>
                                 </a>
                             </div>
@@ -1047,10 +1052,15 @@
                                     <img src="https://f000.backblazeb2.com/file/fineart-images/{{recentAuction.faac_auction_image}}" class="card-img" alt="img" />
                                     <div class="down-content">
                                         <div class="d-flex justify-content-between">
-                                            <h5>{{ recentAuction.faac_auction_title }}</h5>
+                                            {% if recentAuction.faac_auction_title|length > 17 %}
+                                            <h4>{{ recentAuction.faac_auction_title|slice:14 }}...</h4>
+                                            {% else %}
+                                            <h4>{{ recentAuction.faac_auction_title }}</h4>
+                                            {% endif %}
                                             <p>View Details</p>
                                         </div>
-                                        <span>{{ recentAuction.cah_auction_house_location }}, {{ recentAuction.faac_auction_start_date }}</span>
+                                        <h5>{{ recentAuction.cah_auction_house_name }}</h5>
+                                        <span>{{ recentAuction.faac_auction_start_date }} | {{ recentAuction.cah_auction_house_location }}</span>
                                     </div>
                                 </a>
                             </div>
