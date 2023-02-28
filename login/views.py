@@ -13,7 +13,6 @@ from django.template.loader import get_template
 from django.core.mail import send_mail
 from django.contrib.sessions.backends.db import SessionStore
 from django.template import loader
-
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.contrib.auth.models import User as djUser, AnonymousUser
@@ -65,6 +64,15 @@ def getcarouselinfo():
             pass
     return entrieslist
 """
+
+
+def search(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        searchTerm = request.GET.get('term')
+        return HttpResponse(json.dumps([{'id': searchTerm, 'label': searchTerm, 'value': searchTerm}]))
+
 
 def termsAndCondition(request):
     if request.method != 'GET':
@@ -436,16 +444,21 @@ def index(request):
     dbconn.close()
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
-    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{datetime.datetime.now().date()}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
-    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{datetime.datetime.now().date()}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    todayDate = datetime.datetime.now().date()
+    subtractDate = todayDate - datetime.timedelta(days=365)
+    trendingArtistSelectQuery = f"""SELECT fa_artist_ID, SUM(fal_lot_sale_price) AS fal_lot_sale_price, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT 6;"""
+    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
     connList = connectToDb()
+    connList[1].execute(trendingArtistSelectQuery)
+    trendingArtistData = connList[1].fetchall()
     connList[1].execute(upcomingAuctionSelectQuery)
     upcomingAuctionData = connList[1].fetchall()
     connList[1].execute(recentAuctionSelectQuery)
     recentAuctionData = connList[1].fetchall()
     disconnectDb(connList)
+    context['trendingArtists'] = trendingArtistData
     context['upcomingAuctions'] = upcomingAuctionData
-    context['artists'] = {}
     context['recentAuctions'] = recentAuctionData
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
