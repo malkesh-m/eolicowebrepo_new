@@ -24,15 +24,13 @@ import simplejson as json
 import redis
 import pickle
 import urllib
-import MySQLdb
-
 #from gallery.models import Gallery, Event
 #from museum.models import Museum, MuseumEvent, MuseumPieces
 from login.models import User, Session, Favourite, EmailAlerts #,WebConfig, Carousel, Follow
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
-from eolicowebsite.utils import connecttoDB, disconnectDB
+from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -237,9 +235,8 @@ def index(request):
     except:
         pass
     if artistsdict.keys().__len__() == 0:
-        artists = FeaturedArtist.objects.all().order_by('-totalsoldprice')
-        artistslist = artists[0:8]
-        for a in artistslist:
+        artists = FeaturedArtist.objects.all().order_by('-totalsoldprice')[:6]
+        for a in artists:
             if a.id == 1: # This is for 'missing' artists
                 continue
             aname = a.artist_name
@@ -315,132 +312,143 @@ def index(request):
             pass
     context['museums'] = museumsdict
     """
-    upcomingauctions = {}
-    try:
-        upcomingauctions = pickle.loads(redis_instance.get('h_upcomingauctions'))
-    except:
-        pass
-    if upcomingauctions.keys().__len__() == 0:
-        auctionsqset = Auction.objects.all().order_by('-auctionstartdate')[:200] # Limiting to top 200 only.
-        actr = 0
-        srcPattern = re.compile("src=(.*)$")
-        curdate = datetime.datetime.now()
-        datenow = str(datetime.date(curdate.year, curdate.month,curdate.day))
-        aucidlist = []
-        auchouseidlist = []
-        for auction in auctionsqset:
-            if str(auction.auctionstartdate) < datenow: # Past auction - leave it.
-                continue
-            aucidlist.append(auction.id)
-            auchouseidlist.append(auction.auctionhouse_id)
-        lotsqset = Lot.objects.filter(auction_id__in=aucidlist).order_by('-lowestimateUSD')
-        lotsbyauctiondict = {}
-        for lot in lotsqset:
-            if lot.lotimage1 == '' or lot.lotimage1 is None:
-                continue
-            aucid = lot.auction_id
-            if str(aucid) not in lotsbyauctiondict.keys():
-                lotsbyauctiondict[str(aucid)] = [lot,]
-            else:
-                lotslist = lotsbyauctiondict[str(aucid)]
-                lotslist.append(lot)
-                lotsbyauctiondict[str(aucid)] = lotslist
-        auchousedict = {}
-        auchouseqset = AuctionHouse.objects.filter(id__in=auchouseidlist)
-        for auchouse in auchouseqset:
-            auchousedict[str(auchouse.id)] = auchouse
-        for auction in auctionsqset:
-            if str(auction.auctionstartdate) < datenow: # Past auction - leave it.
-                continue
-            lotsqset = lotsbyauctiondict[str(auction.id)]
-            if lotsqset.__len__() == 0:
-                continue
-            if auction.coverimage is None or auction.coverimage == "":
-                imageloc = settings.IMG_URL_PREFIX + str(lotsqset[0].lotimage1)
-            else:
-                imageloc = settings.IMG_URL_PREFIX + str(auction.coverimage)
-            lotobj = lotsqset[0]
-            if imageloc == settings.IMG_URL_PREFIX:
-                imageloc = settings.IMG_URL_PREFIX + str(lotobj.lotimage1)
-                spc = re.search(srcPattern, imageloc)
-                if spc:
-                    imageloc = settings.IMG_URL_PREFIX + str(spc.groups()[0])
-                    imageloc = imageloc.replace("%3A", ":").replace("%2F", "/")
-            auchouseobj = None
-            auchousename, ahlocation = "", ""
-            try:
-                #print(auction.auctionhouse_id)
-                auchouseobj = auchousedict[str(auction.auctionhouse_id)]
-                auchousename = auchouseobj.housename
-                #print(auchousename)
-                ahlocation = auchouseobj.location
-            except:
-                pass
-            auctionperiod = ""
-            if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
-                auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
-                aucenddate = auction.auctionenddate
-                if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
-                    auctionperiod += " - " + str(aucenddate)
-            # Check for favourites
-            #print(request.user)
-            favflag = 0
-            if request.user.is_authenticated:
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
-                favflag = 0
-                if favqset.__len__() > 0:
-                    favflag = 1         
-            d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auchousename, 'location' : ahlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'auctionperiod' : auctionperiod, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id, 'ahid' : auction.auctionhouse_id, 'favourite' : favflag}
-            upcomingauctions[auction.auctionname] = d
-            actr += 1
-            if actr >= chunksize:
-                break
-        try:
-            redis_instance.set('h_upcomingauctions', pickle.dumps(upcomingauctions))
-        except:
-            pass
-    context['upcomingauctions'] = upcomingauctions
-    auctionhouses = []
-    try:
-        auctionhouses = pickle.loads(redis_instance.get('h_auctionhouses'))
-    except:
-        pass
-    if auctionhouses.__len__() == 0:
-        auchousesqset = AuctionHouse.objects.all()[:200] # Limiting to top 200 only.
-        actr = 0
-        auchouseidlist = []
-        for auchouse in auchousesqset:
-            auchouseidlist.append(auchouse.id)
-        aucbyauchousedict = {}
-        aucqset = Auction.objects.filter(auctionhouse_id__in=auchouseidlist)
-        for auc in aucqset:
-            auchouseid = auc.auctionhouse_id
-            if str(auchouseid) not in aucbyauchousedict.keys():
-                aucbyauchousedict[str(auchouseid)] = [auc,]
-            else:
-                auclist = aucbyauchousedict[str(auchouseid)]
-                auclist.append(auc)
-                aucbyauchousedict[str(auchouseid)] = auclist
-        for auchouse in auchousesqset:
-            auchousename = auchouse.housename
-            auctionsqset = aucbyauchousedict[str(auchouse.id)]
-            if auctionsqset.__len__() == 0:
-                continue
-            #print(auctionsqset[0].coverimage)
-            d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : '', 'coverimage' : settings.IMG_URL_PREFIX + str(auctionsqset[0].coverimage), 'ahid' : auchouse.id}
-            auctionhouses.append(d)
-            actr += 1
-            if actr >= chunksize:
-                break
-        try:
-            redis_instance.set('h_auctionhouses', pickle.dumps(auctionhouses))
-        except:
-            pass
-    context['auctionhouses'] = auctionhouses
+    # upcomingauctions = {}
+    # try:
+    #     upcomingauctions = pickle.loads(redis_instance.get('h_upcomingauctions'))
+    # except:
+    #     pass
+    # if upcomingauctions.keys().__len__() == 0:
+    #     auctionsqset = Auction.objects.all().order_by('-auctionstartdate')[:6] # Limiting to top 200 only.
+    #     actr = 0
+    #     srcPattern = re.compile("src=(.*)$")
+    #     curdate = datetime.datetime.now()
+    #     datenow = str(datetime.date(curdate.year, curdate.month,curdate.day))
+    #     aucidlist = []
+    #     auchouseidlist = []
+    #     for auction in auctionsqset:
+    #         if str(auction.auctionstartdate) < datenow: # Past auction - leave it.
+    #             continue
+    #         aucidlist.append(auction.id)
+    #         auchouseidlist.append(auction.auctionhouse_id)
+    #     lotsqset = Lot.objects.filter(auction_id__in=aucidlist).order_by('-lowestimateUSD')
+    #     lotsbyauctiondict = {}
+    #     for lot in lotsqset:
+    #         if lot.lotimage1 == '' or lot.lotimage1 is None:
+    #             continue
+    #         aucid = lot.auction_id
+    #         if str(aucid) not in lotsbyauctiondict.keys():
+    #             lotsbyauctiondict[str(aucid)] = [lot,]
+    #         else:
+    #             lotslist = lotsbyauctiondict[str(aucid)]
+    #             lotslist.append(lot)
+    #             lotsbyauctiondict[str(aucid)] = lotslist
+    #     auchousedict = {}
+    #     auchouseqset = AuctionHouse.objects.filter(id__in=auchouseidlist)
+    #     for auchouse in auchouseqset:
+    #         auchousedict[str(auchouse.id)] = auchouse
+    #     for auction in auctionsqset:
+    #         if str(auction.auctionstartdate) < datenow: # Past auction - leave it.
+    #             continue
+    #         lotsqset = lotsbyauctiondict[str(auction.id)]
+    #         if lotsqset.__len__() == 0:
+    #             continue
+    #         if auction.coverimage is None or auction.coverimage == "":
+    #             imageloc = settings.IMG_URL_PREFIX + str(lotsqset[0].lotimage1)
+    #         else:
+    #             imageloc = settings.IMG_URL_PREFIX + str(auction.coverimage)
+    #         lotobj = lotsqset[0]
+    #         if imageloc == settings.IMG_URL_PREFIX:
+    #             imageloc = settings.IMG_URL_PREFIX + str(lotobj.lotimage1)
+    #             spc = re.search(srcPattern, imageloc)
+    #             if spc:
+    #                 imageloc = settings.IMG_URL_PREFIX + str(spc.groups()[0])
+    #                 imageloc = imageloc.replace("%3A", ":").replace("%2F", "/")
+    #         auchouseobj = None
+    #         auchousename, ahlocation = "", ""
+    #         try:
+    #             #print(auction.auctionhouse_id)
+    #             auchouseobj = auchousedict[str(auction.auctionhouse_id)]
+    #             auchousename = auchouseobj.housename
+    #             #print(auchousename)
+    #             ahlocation = auchouseobj.location
+    #         except:
+    #             pass
+    #         auctionperiod = ""
+    #         if auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 0001" and auction.auctionstartdate.strftime("%d %b, %Y") != "01 Jan, 1":
+    #             auctionperiod = auction.auctionstartdate.strftime("%d %b, %Y")
+    #             aucenddate = auction.auctionenddate
+    #             if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+    #                 auctionperiod += " - " + str(aucenddate)
+    #         # Check for favourites
+    #         #print(request.user)
+    #         favflag = 0
+    #         if request.user.is_authenticated:
+    #             favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction.id)
+    #             favflag = 0
+    #             if favqset.__len__() > 0:
+    #                 favflag = 1
+    #         d = {'auctionname' : auction.auctionname, 'auctionid' : auction.auctionid, 'auctionhouse' : auchousename, 'location' : ahlocation, 'coverimage' : imageloc, 'aucid' : auction.id, 'auctionperiod' : auctionperiod, 'auctionurl' : auction.auctionurl, 'lid' : lotobj.id, 'ahid' : auction.auctionhouse_id, 'favourite' : favflag}
+    #         upcomingauctions[auction.auctionname] = d
+    #         actr += 1
+    #         if actr >= chunksize:
+    #             break
+    #     try:
+    #         redis_instance.set('h_upcomingauctions', pickle.dumps(upcomingauctions))
+    #     except:
+    #         pass
+    # context['upcomingauctions'] = upcomingauctions
+    # auctionhouses = []
+    # try:
+    #     auctionhouses = pickle.loads(redis_instance.get('h_auctionhouses'))
+    # except:
+    #     pass
+    # if auctionhouses.__len__() == 0:
+    #     auchousesqset = AuctionHouse.objects.all()[:12] # Limiting to top 200 only.
+    #     actr = 0
+    #     auchouseidlist = []
+    #     for auchouse in auchousesqset:
+    #         auchouseidlist.append(auchouse.id)
+    #     aucbyauchousedict = {}
+    #     aucqset = Auction.objects.filter(auctionhouse_id__in=auchouseidlist)
+    #     for auc in aucqset:
+    #         auchouseid = auc.auctionhouse_id
+    #         if str(auchouseid) not in aucbyauchousedict.keys():
+    #             aucbyauchousedict[str(auchouseid)] = [auc,]
+    #         else:
+    #             auclist = aucbyauchousedict[str(auchouseid)]
+    #             auclist.append(auc)
+    #             aucbyauchousedict[str(auchouseid)] = auclist
+    #     for auchouse in auchousesqset:
+    #         auchousename = auchouse.housename
+    #         auctionsqset = aucbyauchousedict[str(auchouse.id)]
+    #         if auctionsqset.__len__() == 0:
+    #             continue
+    #         #print(auctionsqset[0].coverimage)
+    #         d = {'housename' : auchouse.housename, 'aucid' : auctionsqset[0].id, 'location' : auchouse.location, 'description' : '', 'coverimage' : settings.IMG_URL_PREFIX + str(auctionsqset[0].coverimage), 'ahid' : auchouse.id}
+    #         auctionhouses.append(d)
+    #         actr += 1
+    #         if actr >= chunksize:
+    #             break
+    #     try:
+    #         redis_instance.set('h_auctionhouses', pickle.dumps(auctionhouses))
+    #     except:
+    #         pass
+    # context['auctionhouses'] = auctionhouses
     cursor.close()
     dbconn.close()
-    carouselentries = getcarouselinfo_new()
-    context['carousel'] = carouselentries
+    # carouselentries = getcarouselinfo_new()
+    # context['carousel'] = carouselentries
+    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date  FROM `fineart_auction_calendar` WHERE faac_auction_start_date >= '{datetime.datetime.now().date()}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID  WHERE faac_auction_start_date < '{datetime.datetime.now().date()}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    connList = connectToDb()
+    connList[1].execute(upcomingAuctionSelectQuery)
+    upcomingAuctionData = connList[1].fetchall()
+    context['upcomingAuctions'] = upcomingAuctionData
+    connList[1].execute(recentAuctionSelectQuery)
+    recentAuctionData = connList[1].fetchall()
+    print(recentAuctionData)
+    context['recentAuctions'] = recentAuctionData
+    disconnectDb(connList)
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
