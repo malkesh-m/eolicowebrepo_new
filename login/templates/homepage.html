@@ -741,9 +741,7 @@
                                             {% endif %}
                                             <p>View Details</p>
                                         </div>
-                                        <span>{{ trendingArtist.fa_artist_nationality }}, {{
-                                            trendingArtist.fa_artist_birth_year }} - {{
-                                            trendingArtist.fa_artist_death_year }}</span>
+                                        <span>{{ trendingArtist.fa_artist_nationality }}, {{ trendingArtist.fa_artist_birth_year }} - {{ trendingArtist.fa_artist_death_year }}</span>
                                     </div>
                                 </a>
                             </div>
@@ -925,8 +923,7 @@
                                             <p>View Details</p>
                                         </div>
                                         <h5>{{ upcomingAuction.cah_auction_house_name }}</h5>
-                                        <span>{{ upcomingAuction.faac_auction_start_date }} | {{
-                                            upcomingAuction.cah_auction_house_location }}</span>
+                                        <span>{{ upcomingAuction.faac_auction_start_date }} | {{ upcomingAuction.cah_auction_house_location }}</span>
                                     </div>
                                 </a>
                             </div>
@@ -1108,8 +1105,7 @@
                                             <p>View Details</p>
                                         </div>
                                         <h5>{{ recentAuction.cah_auction_house_name }}</h5>
-                                        <span>{{ recentAuction.faac_auction_start_date }} | {{
-                                            recentAuction.cah_auction_house_location }}</span>
+                                        <span>{{ recentAuction.faac_auction_start_date }} | {{ recentAuction.cah_auction_house_location }}</span>
                                     </div>
                                 </a>
                             </div>
@@ -1811,15 +1807,8 @@
                         term: request.term
                     },
                     success: function (data) {
-                        debugger
-                        response($.map(data, function (item) {
-                            debugger
-            return {
-                label: item.label,
-                value: item.label
-            };
-        }));
-                        response(data);
+                        console.log(data)
+                        response(data.data);
                     }
                 });
             },
