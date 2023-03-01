@@ -1048,3 +1048,12 @@ li {
 .mt--122 {
     margin-top: 122px;
 }
+
+.lineSplitSetter {
+    -webkit-line-clamp: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    height: auto;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

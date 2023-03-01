@@ -509,6 +509,35 @@ def getTrendingArtist(request):
     return HttpResponse(json.dumps(trendingArtistData))
 
 
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.isoformat()
+
+
+def getUpcomingAuctions(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    todayDate = datetime.datetime.now().date()
+    connList = connectToDb()
+    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    connList[1].execute(upcomingAuctionSelectQuery)
+    upcomingAuctionsData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(upcomingAuctionsData, default=default))
+
+
+def getRecentAuctions(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    todayDate = datetime.datetime.now().date()
+    connList = connectToDb()
+    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    connList[1].execute(recentAuctionSelectQuery)
+    recentAuctionsData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(recentAuctionsData, default=default))
+
+
 def signup(request):
     if request.method == 'POST':
         context = {}
