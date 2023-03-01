@@ -511,7 +511,7 @@ def getTrendingArtist(request):
 
 def default(o):
     if isinstance(o, (datetime.date, datetime.datetime)):
-        return o.isoformat()
+        return o.strftime("%d %b, %Y")
 
 
 def getUpcomingAuctions(request):
