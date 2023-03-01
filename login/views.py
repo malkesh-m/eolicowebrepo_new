@@ -496,6 +496,19 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+def getTrendingArtist(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    todayDate = datetime.datetime.now().date()
+    subtractDate = todayDate - datetime.timedelta(days=365)
+    connList = connectToDb()
+    trendingArtistSelectQuery = f"""SELECT fa_artist_ID, SUM(fal_lot_sale_price) AS fal_lot_sale_price, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT 6;"""
+    connList[1].execute(trendingArtistSelectQuery)
+    trendingArtistData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(trendingArtistData))
+
+
 def signup(request):
     if request.method == 'POST':
         context = {}

@@ -696,28 +696,28 @@
         <script>
             $(function () {
                 // Owl Carousel
-                var owl = $(".owl-carousel");
-                owl.owlCarousel({
-                    items: 3,
-                    margin: 10,
-                    loop: true,
-                    nav: true,
-                    responsive: {
-                        0: {
-                            items: 1,
-                            nav: false
-                        },
-                        600: {
-                            items: 2,
-                            nav: false
-                        },
-                        1000: {
-                            items: 3,
-                            nav: true,
-                            loop: true
-                        }
-                    }
-                });
+                // var owl = $(".owl-carousel");
+                // owl.owlCarousel({
+                //     items: 3,
+                //     margin: 10,
+                //     loop: true,
+                //     nav: true,
+                //     responsive: {
+                //         0: {
+                //             items: 1,
+                //             nav: false
+                //         },
+                //         600: {
+                //             items: 2,
+                //             nav: false
+                //         },
+                //         1000: {
+                //             items: 3,
+                //             nav: true,
+                //             loop: true
+                //         }
+                //     }
+                // });
             });
         </script>
         <div class="latest-artists actions-result">
@@ -726,7 +726,8 @@
                     <h3 class="heading-style mb-2">Top Artists</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>Top Preforming Artists</b> here</p>
                     <div class="home-demo">
-                        <div class="owl-carousel owl-theme">
+                        <div class="owl-carousel owl-theme" id="getTrendingArtistId">
+                           
                             <!-- {% for trendingArtist in trendingArtists %}
                             <div class="item">
                                 <a href=/artist/details/?aid="{{ trendingArtist.fa_artist_ID }}" class="latest-card">
@@ -905,54 +906,9 @@
                 <div class="">
                     <h3 class="heading-style mb-2">Upcoming Auctions</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>upcoming auctions </b>here</p>
-                    <div class="home-demo">
+                    <!-- <div class="home-demo">
                         <div class="owl-carousel owl-theme">
-                            <!-- {% for upcomingAuction in upcomingAuctions %}
                             <div class="item">
-                                <a href="/auction/showauction/?aucid={{ upcomingAuction.faac_auction_ID }}"
-                                    class="latest-card">
-                                    <img src="https://f000.backblazeb2.com/file/fineart-images/{{upcomingAuction.faac_auction_image}}"
-                                        class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            {% if upcomingAuction.faac_auction_title|length > 17 %}
-                                            <h4>{{ upcomingAuction.faac_auction_title|slice:14 }}...</h4>
-                                            {% else %}
-                                            <h4>{{ upcomingAuction.faac_auction_title }}</h4>
-                                            {% endif %}
-                                            <p>View Details</p>
-                                        </div>
-                                        <h5>{{ upcomingAuction.cah_auction_house_name }}</h5>
-                                        <span>{{ upcomingAuction.faac_auction_start_date }} | {{ upcomingAuction.cah_auction_house_location }}</span>
-                                    </div>
-                                </a>
-                            </div>
-                            {% endfor %} -->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div> -->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div> -->
-                            <!-- <div class="item">
                                 <a href="#" class="latest-card">
                                     <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
                                     <div class="down-content">
@@ -987,9 +943,9 @@
                                         <span>2 MARCH 2023 | NEW YORK</span>
                                     </div>
                                 </a>
-                            </div> -->
+                            </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <div class="carousel-item active">

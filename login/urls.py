@@ -23,5 +23,9 @@ urlpatterns = [
     path('myArtistDetails/', views.myArtistDetails, name="myArtistDetails"),
     path('myArtwork/', views.myArtwork, name="myArtwork"),
     path('myArtworkDetails/', views.myArtworkDetails, name="myArtworkDetails"),
+
+    # Ajax Call Urls
+
+    path('getTrendingArtist/', views.getTrendingArtist, name="getTrendingArtist"),
 ]
 
