@@ -19,5 +19,9 @@ urlpatterns = [
     path('show/', views.show, name='show'),
     path('notifications/', views.notifications, name='notifications'),
     path('settings/', views.acctsettings, name='acctsettings'),
+    path('myArtist/', views.myArtist, name="myArtist"),
+    path('myArtistDetails/', views.myArtistDetails, name="myArtistDetails"),
+    path('myArtwork/', views.myArtwork, name="myArtwork"),
+    path('myArtworkDetails/', views.myArtworkDetails, name="myArtworkDetails"),
 ]
 

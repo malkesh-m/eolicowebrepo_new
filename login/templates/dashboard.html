@@ -125,9 +125,66 @@
             background-color: #363a40;
         }
         
+        .artists-chart .artists-box .chart canvas {
+            width: 100%;
+        }
+        
         @media (max-width:767px) {
             #content {
                 padding: 0px !important;
+            }
+            #artworks_filter,
+            #artists_filter {
+                position: unset;
+            }
+        }
+        
+        @media (min-width:768px) and (max-width:991px) {
+            .collapse:not(.show) {
+                display: none !important;
+            }
+            .navbar-expand-md .navbar-toggler {
+                display: inline-block;
+            }
+            .navbar-expand-md {
+                flex-flow: unset;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .navbar-expand-md .navbar-collapse {
+                flex-basis: 100%;
+                justify-content: center !important;
+            }
+            .navbar-expand-md .navbar-nav {
+                flex-direction: column;
+            }
+        }
+        
+        @media (min-width:991px) and (max-width:1399px) {
+            .collapse:not(.show) {
+                display: none !important;
+            }
+            .navbar-expand-md .navbar-toggler {
+                display: inline-block;
+            }
+            .navbar-expand-md {
+                flex-flow: unset;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .navbar-expand-md .navbar-collapse {
+                flex-basis: 100%;
+                justify-content: center !important;
+            }
+            .navbar-expand-md .navbar-nav {
+                flex-direction: column;
+            }
+        }
+        
+        @media (min-width: 1200px) and (max-width: 1399px) {
+            .artists-chart .artists-box h6 {
+                font-size: 16px;
+                width: 158px;
             }
         }
         
@@ -274,7 +331,7 @@
     MEDIAQUERIES
 ----------------------------------------------------- */
         
-        @media (max-width: 768px) {
+        @media (max-width: 991px) {
             #sidebarCollapse {
                 display: block !important;
             }
@@ -572,9 +629,9 @@
                   Dashboard</a></li>
                             <li class="my-4"><a href="/login/notifications/" class="text-light"><i class="fa fa-bell"></i>&nbsp;My
                   Notifications</a></li>
-                            <li class="my-4"><a href="/login/favartists/" class="text-light"><i class="fa fa-user"></i>&nbspMy
+                            <li class="my-4"><a href="/login/myArtist/" class="text-light"><i class="fa fa-user"></i>&nbspMy
                   Artist</a></li>
-                            <li class="my-4"><a href="/login/favartworks/" class="text-light"><i class="fa fa-paint-brush"></i>&nbspMy
+                            <li class="my-4"><a href="/login/myArtwork/" class="text-light"><i class="fa fa-paint-brush"></i>&nbspMy
                   Artwork</a></li>
                             <li class="my-4"><a href="/login/settings/" class="text-light"><i class="fa fa-gear"></i>&nbspAccount
                   Setting</a></li>
@@ -657,7 +714,7 @@
 
                         <div class="container-fluid mt-5">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-xl-6 mb-4 mb-xl-0">
                                     <div class="artists-chart">
                                         <h3>Artists</h3>
                                         <div class="artists-box">
@@ -686,7 +743,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-xl-6">
                                     <div class="artists-chart">
                                         <h3>Artworks</h3>
                                         <div class="artists-box">
@@ -866,7 +923,7 @@
                                             <a href="#tab-artists" data-toggle="tab" class="ml-0 py-2 btn btn-login btn-rouned active">Artists</a>
                                         </li>
                                         <li class="">
-                                            <a href="#tab-artworks" data-toggle="tab" class="ml-3 py-2 btn btn-login btn-rouned">Artworks</a>
+                                            <a href="#tab-artworks" data-toggle="tab" class="ml-2 px-4 px-md-2 py-2 btn btn-login btn-rouned">Artworks</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">

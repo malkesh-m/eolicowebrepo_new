@@ -39,6 +39,35 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
+def myArtist(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    else:
+        return render(request, 'myArtist.html')
+
+
+def myArtistDetails(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    else:
+        artistId = request.GET.get('aid')
+        return render(request, 'myArtistDetails.html')
+
+
+def myArtwork(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    else:
+        return render(request, 'myArtwork.html')
+
+
+def myArtworkDetails(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    else:
+        artistId = request.GET.get('awid')
+        return render(request, 'myArtworkDetails.html')
+
 """
 def getcarouselinfo():
     entrieslist = []
