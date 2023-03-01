@@ -115,10 +115,16 @@ function recentAuctionSlider() {
             })
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+async function setSlider() {
 
     trendingArtistSlider()
     upcomingAuctionSlider()
     recentAuctionSlider()
+
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    setSlider()
 
 })
