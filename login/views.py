@@ -473,19 +473,19 @@ def index(request):
     # dbconn.close()
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
-    todayDate = datetime.datetime.now().date()
-    subtractDate = todayDate - datetime.timedelta(days=365)
-    connList = connectToDb()
-    trendingArtistSelectQuery = f"""SELECT fa_artist_ID, SUM(fal_lot_sale_price) AS fal_lot_sale_price, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT 6;"""
-    connList[1].execute(trendingArtistSelectQuery)
-    context['trendingArtists'] = connList[1].fetchall()
-    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
-    connList[1].execute(upcomingAuctionSelectQuery)
-    context['upcomingAuctions'] = connList[1].fetchall()
-    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
-    connList[1].execute(recentAuctionSelectQuery)
-    context['recentAuctions'] = connList[1].fetchall()
-    disconnectDb(connList)
+    # todayDate = datetime.datetime.now().date()
+    # subtractDate = todayDate - datetime.timedelta(days=365)
+    # connList = connectToDb()
+    # trendingArtistSelectQuery = f"""SELECT fa_artist_ID, SUM(fal_lot_sale_price) AS fal_lot_sale_price, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT 6;"""
+    # connList[1].execute(trendingArtistSelectQuery)
+    # context['trendingArtists'] = connList[1].fetchall()
+    # upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    # connList[1].execute(upcomingAuctionSelectQuery)
+    # context['upcomingAuctions'] = connList[1].fetchall()
+    # recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    # connList[1].execute(recentAuctionSelectQuery)
+    # context['recentAuctions'] = connList[1].fetchall()
+    # disconnectDb(connList)
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:

@@ -720,14 +720,14 @@
                 });
             });
         </script>
-        <div class="latest-artists">
+        <div class="latest-artists actions-result">
             <div class="container">
                 <div class="">
                     <h3 class="heading-style mb-2">Top Artists</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>Top Preforming Artists</b> here</p>
                     <div class="home-demo">
                         <div class="owl-carousel owl-theme">
-                            {% for trendingArtist in trendingArtists %}
+                            <!-- {% for trendingArtist in trendingArtists %}
                             <div class="item">
                                 <a href=/artist/details/?aid="{{ trendingArtist.fa_artist_ID }}" class="latest-card">
                                     <img src="https://f000.backblazeb2.com/file/fineart-images/{{ trendingArtist.fa_artist_image }}"
@@ -745,7 +745,7 @@
                                     </div>
                                 </a>
                             </div>
-                            {% endfor %}
+                            {% endfor %} -->
                             <!-- <div class="item">
                                 <a href="#" class="latest-card">
                                     <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
@@ -907,7 +907,7 @@
                     <p class="p-tag-style mb-4">Explore the list of <b>upcoming auctions </b>here</p>
                     <div class="home-demo">
                         <div class="owl-carousel owl-theme">
-                            {% for upcomingAuction in upcomingAuctions %}
+                            <!-- {% for upcomingAuction in upcomingAuctions %}
                             <div class="item">
                                 <a href="/auction/showauction/?aucid={{ upcomingAuction.faac_auction_ID }}"
                                     class="latest-card">
@@ -927,7 +927,7 @@
                                     </div>
                                 </a>
                             </div>
-                            {% endfor %}
+                            {% endfor %} -->
                             <!-- <div class="item">
                                 <a href="#" class="latest-card">
                                     <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
@@ -1089,7 +1089,7 @@
                     <p class="p-tag-style mb-4">Explore the list of <b>auctions results </b>here</p>
                     <div class="home-demo">
                         <div class="owl-carousel owl-theme">
-                            {% for recentAuction in recentAuctions %}
+                            <!-- {% for recentAuction in recentAuctions %}
                             <div class="item">
                                 <a href="/auction/showauction/?aucid={{ recentAuction.faac_auction_ID }}"
                                     class="latest-card">
@@ -1109,7 +1109,7 @@
                                     </div>
                                 </a>
                             </div>
-                            {% endfor %}
+                            {% endfor %} -->
                             <!-- <div class="item">
                                 <a href="#" class="latest-card">
                                     <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
@@ -1818,6 +1818,7 @@
             }
         })
     </script>
+    <script src="/static/js/homePageAjaxCall.js"></script>
 </body>
 
 </html>
