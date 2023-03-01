@@ -3,3 +3,4 @@ need/
 .idea/
 manage.py
 .vs/
+__pycache__
