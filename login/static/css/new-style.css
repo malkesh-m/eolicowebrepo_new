@@ -1057,3 +1057,13 @@ li {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+.alphabetBtn {
+    border: none;
+    background-color: transparent;
+    padding:0;
+    margin: 0 10px;
+    color: #818181;
+}
+.alphabetBtn:focus {
+    outline: 0px auto !important;
+}

@@ -19,7 +19,6 @@ import simplejson as json
 import redis
 import pickle
 import MySQLdb
-
 #from gallery.models import Gallery, Event
 from login.models import User, Session, Favourite #,WebConfig, Carousel, Follow
 from login.views import getcarouselinfo_new
@@ -27,7 +26,7 @@ from login.views import getcarouselinfo_new
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, LotArtist
-from eolicowebsite.utils import connecttoDB, disconnectDB
+from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -43,83 +42,83 @@ def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     page = ""
-    if request.method == 'GET':
-        if 'page' in request.GET.keys():
-            page = str(request.GET['page'])
-    chunksize = 100
+    # if request.method == 'GET':
+    #     if 'page' in request.GET.keys():
+    #         page = str(request.GET['page'])
+    # chunksize = 100
     rows = 12
     context = {}
-    auctionhouses = [] # Auctions in various auction houses section.
-    filterauctionhouses = []
-    uniqueauctions = {}
-    connlist = connecttoDB()
-    dbconn, cursor = connlist[0], connlist[1]
-    try:
-        filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
-        auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))
-    except:
-        filterauctionhouses = []
-        auctionhouses = []
-    if auctionhouses.__len__() == 0:
-        auctionhousesqset = AuctionHouse.objects.all()
-        uniqauctionhouses = {}
-        auctionhousepatterns = [re.compile("sotheby\'?s\,", re.IGNORECASE|re.DOTALL), re.compile("artcurial", re.IGNORECASE|re.DOTALL), re.compile("china\s+guardian", re.IGNORECASE|re.DOTALL), re.compile("christie\'?s", re.IGNORECASE|re.DOTALL), re.compile("bonham\'?s", re.IGNORECASE|re.DOTALL), re.compile("doyle", re.IGNORECASE|re.DOTALL), re.compile("phillips", re.IGNORECASE|re.DOTALL), re.compile("dorotheum", re.IGNORECASE|re.DOTALL), re.compile("poly\s+international", re.IGNORECASE|re.DOTALL), re.compile("tajan", re.IGNORECASE|re.DOTALL)]
-        showcounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for auctionhouse in auctionhousesqset:
-            if auctionhouse.housename not in uniqauctionhouses.keys():
-                filterauctionhouses.append(auctionhouse.housename)
-                uniqauctionhouses[auctionhouse.housename] = 1
-            if page != "":
-                if not auctionhouse.housename.startswith(page) and not auctionhouse.housename.startswith(page.upper()):
-                    continue
-            auchousepass = False
-            patternindex = 0
-            for auchousepattern in auctionhousepatterns:
-                if re.search(auchousepattern, auctionhouse.housename):
-                    auchousepass = True
-                    break
-                patternindex += 1
-            #print(auctionhouse.housename)
-            #print(patternindex)
-            if auchousepass == False: # Auction houses that are not in our featured auctionhousenames would be skipped.
-                continue
-            if showcounts[patternindex] > 0: # We show a maximum of 1 branches of an auction house.
-                continue
-            showcounts[patternindex] += 1
-            coverimage = ""
-            if patternindex == 0:
-                coverimage = "/static/images/auctionhouses/Sotheby-logo.jpg"
-            elif patternindex == 1:
-                coverimage = "/static/images/auctionhouses/Artcurial-logo.png"
-            elif patternindex == 2:
-                coverimage = "/static/images/auctionhouses/ChinaGuardian-logo.jpg"
-            elif patternindex == 3:
-                coverimage = "/static/images/auctionhouses/Christies-logo.png"
-            elif patternindex == 4:
-                coverimage = "/static/images/auctionhouses/Bonhams-logo.png"
-            elif patternindex == 5:
-                coverimage = "/static/images/auctionhouses/doyle-logo.jpg"
-            elif patternindex == 6:
-                coverimage = "/static/images/auctionhouses/Phillips-logo.png"
-            elif patternindex == 7:
-                coverimage = "/static/images/auctionhouses/Dorotheum-logo.png"
-            elif patternindex == 8:
-                coverimage = "/static/images/auctionhouses/PolyInternational-logo.png"
-            elif patternindex == 9:
-                coverimage = "/static/images/auctionhouses/Tajan-logo.png"
-            else:
-                coverimage = "/static/images/auctionhouses/"
-            d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'coverimage' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
-            auctionhouses.append(d)
-        try:
-            redis_instance.set('ah_auctionhouses', pickle.dumps(auctionhouses))
-            redis_instance.set('ah_filterauctionhouses', pickle.dumps(filterauctionhouses))
-        except:
-            pass
-    context['auctionhouses'] = auctionhouses
-    context['filterauctionhouses'] = filterauctionhouses
-    cursor.close()
-    dbconn.close()
+    # auctionhouses = [] # Auctions in various auction houses section.
+    # filterauctionhouses = []
+    # uniqueauctions = {}
+    # connlist = connecttoDB()
+    # dbconn, cursor = connlist[0], connlist[1]
+    # try:
+    #     filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
+    #     auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))
+    # except:
+    #     filterauctionhouses = []
+    #     auctionhouses = []
+    # if auctionhouses.__len__() == 0:
+    #     auctionhousesqset = AuctionHouse.objects.all()
+    #     uniqauctionhouses = {}
+    #     auctionhousepatterns = [re.compile("sotheby\'?s\,", re.IGNORECASE|re.DOTALL), re.compile("artcurial", re.IGNORECASE|re.DOTALL), re.compile("china\s+guardian", re.IGNORECASE|re.DOTALL), re.compile("christie\'?s", re.IGNORECASE|re.DOTALL), re.compile("bonham\'?s", re.IGNORECASE|re.DOTALL), re.compile("doyle", re.IGNORECASE|re.DOTALL), re.compile("phillips", re.IGNORECASE|re.DOTALL), re.compile("dorotheum", re.IGNORECASE|re.DOTALL), re.compile("poly\s+international", re.IGNORECASE|re.DOTALL), re.compile("tajan", re.IGNORECASE|re.DOTALL)]
+    #     showcounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    #     for auctionhouse in auctionhousesqset:
+    #         if auctionhouse.housename not in uniqauctionhouses.keys():
+    #             filterauctionhouses.append(auctionhouse.housename)
+    #             uniqauctionhouses[auctionhouse.housename] = 1
+    #         if page != "":
+    #             if not auctionhouse.housename.startswith(page) and not auctionhouse.housename.startswith(page.upper()):
+    #                 continue
+    #         auchousepass = False
+    #         patternindex = 0
+    #         for auchousepattern in auctionhousepatterns:
+    #             if re.search(auchousepattern, auctionhouse.housename):
+    #                 auchousepass = True
+    #                 break
+    #             patternindex += 1
+    #         #print(auctionhouse.housename)
+    #         #print(patternindex)
+    #         if auchousepass == False: # Auction houses that are not in our featured auctionhousenames would be skipped.
+    #             continue
+    #         if showcounts[patternindex] > 0: # We show a maximum of 1 branches of an auction house.
+    #             continue
+    #         showcounts[patternindex] += 1
+    #         coverimage = ""
+    #         if patternindex == 0:
+    #             coverimage = "/static/images/auctionhouses/Sotheby-logo.jpg"
+    #         elif patternindex == 1:
+    #             coverimage = "/static/images/auctionhouses/Artcurial-logo.png"
+    #         elif patternindex == 2:
+    #             coverimage = "/static/images/auctionhouses/ChinaGuardian-logo.jpg"
+    #         elif patternindex == 3:
+    #             coverimage = "/static/images/auctionhouses/Christies-logo.png"
+    #         elif patternindex == 4:
+    #             coverimage = "/static/images/auctionhouses/Bonhams-logo.png"
+    #         elif patternindex == 5:
+    #             coverimage = "/static/images/auctionhouses/doyle-logo.jpg"
+    #         elif patternindex == 6:
+    #             coverimage = "/static/images/auctionhouses/Phillips-logo.png"
+    #         elif patternindex == 7:
+    #             coverimage = "/static/images/auctionhouses/Dorotheum-logo.png"
+    #         elif patternindex == 8:
+    #             coverimage = "/static/images/auctionhouses/PolyInternational-logo.png"
+    #         elif patternindex == 9:
+    #             coverimage = "/static/images/auctionhouses/Tajan-logo.png"
+    #         else:
+    #             coverimage = "/static/images/auctionhouses/"
+    #         d = {'housename' : auctionhouse.housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'coverimage' : coverimage, 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
+    #         auctionhouses.append(d)
+    #     try:
+    #         redis_instance.set('ah_auctionhouses', pickle.dumps(auctionhouses))
+    #         redis_instance.set('ah_filterauctionhouses', pickle.dumps(filterauctionhouses))
+    #     except:
+    #         pass
+    # context['auctionhouses'] = auctionhouses
+    # context['filterauctionhouses'] = filterauctionhouses
+    # cursor.close()
+    # dbconn.close()
     #carouselentries = getcarouselinfo_new()
     #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
@@ -132,6 +131,64 @@ def index(request):
     template = loader.get_template('auctionhouses.html')
     return HttpResponse(template.render(context, request))
 
+
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.strftime("%d %b, %Y")
+
+
+def getFeaturedAuctionHouses(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        keyword = request.GET.get('keyword')
+        if keyword:
+            filterAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_name LIKE '{keyword}%';"""
+            connList = connectToDb()
+            connList[1].execute(filterAuctionHousesSelectQuery)
+            filterAuctionHousesData = connList[1].fetchall()
+            disconnectDb(connList)
+            return HttpResponse(json.dumps(filterAuctionHousesData, default=default))
+        else:
+            featuredAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_ID = 1 OR cah_auction_house_ID = 27 OR cah_auction_house_ID = 36 OR cah_auction_house_ID = 78 OR cah_auction_house_ID = 80 OR cah_auction_house_ID = 560 OR cah_auction_house_ID = 952 OR cah_auction_house_ID = 1076 OR cah_auction_house_ID = 1479 OR cah_auction_house_ID = 1481;"""
+            connList = connectToDb()
+            connList[1].execute(featuredAuctionHousesSelectQuery)
+            featuredAuctionHousesData = connList[1].fetchall()
+            disconnectDb(connList)
+            for featuredAuctionHouseData in featuredAuctionHousesData:
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 1:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Phillips-logo.png"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 27:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Christies-logo.png"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 36:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Sotheby-logo.jpg"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 78:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/doyle-logo.jpg"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 80:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Dorotheum-logo.png"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 560:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Bonhams-logo.png"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 952:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Tajan-logo.png"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 1076:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Artcurial-logo.png"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 1479:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/ChinaGuardian-logo.jpg"
+                if featuredAuctionHouseData['cah_auction_house_ID'] == 1481:
+                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/PolyInternational-logo.png"
+            return HttpResponse(json.dumps(featuredAuctionHousesData, default=default))
+
+
+def getAuctionHouses(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        auctionHousesSelectQuery = """SELECT * FROM core_auction_houses;"""
+        connList = connectToDb()
+        connList[1].execute(auctionHousesSelectQuery)
+        auctionHousesData = connList[1].fetchall()
+        disconnectDb(connList)
+        return HttpResponse(json.dumps(auctionHousesData, default=default))
 
 
 #@cache_page(CACHE_TTL)
