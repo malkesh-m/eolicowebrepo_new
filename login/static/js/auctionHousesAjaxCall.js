@@ -1,5 +1,6 @@
-const featuredshowsdiv = document.querySelector('#featuredshowsdiv')
+const featuredshowsDivId = document.querySelector('#featuredshowsDivId')
 const alphabetSearchUlId = document.querySelector('#alphabetSearchUlId')
+const filterHeaderId = document.querySelector('#filterHeaderId')
 let auctionHousesData = []
 
 function searchByAlphabet(e) {
@@ -10,6 +11,7 @@ function searchByAlphabet(e) {
         .then(response => response.json())
         .then(body => {
             let htmlData = ''
+            filterHeaderId.innerHTML = searchAuctionhousesKeyword
         })
 }
 
@@ -40,7 +42,7 @@ function getFeaturedAuctionHousesData() {
                     </div>
                 </div>`
             })
-            featuredshowsdiv.innerHTML = htmlData
+            featuredshowsDivId.innerHTML = htmlData
         })
 }
 
