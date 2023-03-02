@@ -143,7 +143,7 @@ def getFeaturedAuctionHouses(request):
     else:
         keyword = request.GET.get('keyword')
         if keyword:
-            filterAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_name LIKE '{keyword}%';"""
+            filterAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_name LIKE '{keyword}%' ORDER BY cah_auction_house_name;"""
             connList = connectToDb()
             connList[1].execute(filterAuctionHousesSelectQuery)
             filterAuctionHousesData = connList[1].fetchall()
