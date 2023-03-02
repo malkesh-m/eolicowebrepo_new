@@ -161,11 +161,11 @@ def index(request):
         return HttpResponse("Invalid method of call")
     chunksize = 3
     context = {}
-    # connlist = connecttoDB()
-    # dbconn = connlist[0]
-    # cursor = connlist[1]
-    favouritesdict = {}
     if request.user.is_authenticated:
+        connlist = connecttoDB()
+        dbconn = connlist[0]
+        cursor = connlist[1]
+        favouritesdict = {}
         favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
         favartistsdict = {}
         favartistslist = []
