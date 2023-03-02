@@ -1065,7 +1065,7 @@ def notifications(request):
     context = {}
     # Add page specific code here
     context['username'] = userobj.username
-    template = loader.get_template('email_alert.html')
+    template = loader.get_template('notifications.html')
     return HttpResponse(template.render(context, request))
 
 
