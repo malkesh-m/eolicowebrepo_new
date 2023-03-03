@@ -33,7 +33,7 @@ from login.views import getcarouselinfo_new
 #from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
 from auctions.models import Auction, Lot
-from eolicowebsite.utils import connecttoDB, disconnectDB
+from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -381,6 +381,22 @@ def index(request):
             context['username'] = userobj.username
         template = loader.get_template('artist.html')
         return HttpResponse(template.render(context, request))
+
+
+def searchArtists(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        keyword = request.GET.get('keyword')
+        start = request.GET.get('start')
+        limit = request.GET.get('limit')
+        if keyword:
+            artistSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_birth_year, fa_artist_death_year FROM `fineart_artists` WHERE fa_artist_name LIKE '{keyword}%'ORDER BY fa_artist_name LIMIT {limit} OFFSET {start};"""
+            connList = connectToDb()
+            connList[1].execute(artistSelectQuery)
+            alphabetSearchArtistData = connList[1].fetchall()
+            disconnectDb(connList)
+            return HttpResponse(json.dumps(alphabetSearchArtistData))
 
 
 #@cache_page(CACHE_TTL)

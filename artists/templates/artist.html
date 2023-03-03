@@ -304,7 +304,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="regiUsername" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
@@ -384,7 +384,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="loginUsername" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
@@ -767,7 +767,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="text-center">
-                        <h2 class="heading-style">Top Performing Artists</h2>
+                        <div id="mainFilterLoaderId" class="mainFilterLoaderCls">
+                            <div id="filterLoaderId" class="filterLoaderCls"></div>
+                            <p>please wait!</p>
+                        </div>
+                        <h2 class="heading-style" id="filterHeaderId">Top Performing Artists</h2>
                         <span>
                             <!-- <a href="">View All</a> -->
                         </span>

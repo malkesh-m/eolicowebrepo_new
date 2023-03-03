@@ -49,90 +49,94 @@ def removecontrolcharacters(s):
 
 
 def advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture, painting, installation, photography, textTilesArt, selArtworkStart, selArtworkEnd, selAuctionHouse, auctionLocation, saleTitle, auctionStartDate, auctionEndDate, saleCode):
-    selectQuery = """SELECT * FROM fineart_artworks WHERE """
     andFlag = False
-    print(workOnPaper)
+    whereQuery = ""
     if artistName and artistName != '':
-        selectQuery = selectQuery + f"""faa_artist_ID IN (SELECT fa_artist_ID FROM fineart_artists WHERE UPPER(fa_artist_name) LIKE '%{artistName.upper()}%')"""
+        whereQuery = whereQuery + f"""faa_artist_ID IN (SELECT fa_artist_ID FROM fineart_artists WHERE UPPER(fa_artist_name) LIKE '%{artistName.upper()}%')"""
         andFlag = True
     if artworkTitle and artworkTitle != '':
         if andFlag:
-            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_title) LIKE '%{artworkTitle.upper()}%'"""
-        else:
-            selectQuery = selectQuery + f"""UPPER(faa_artwork_title) LIKE '%{artworkTitle.upper()}%'"""
-            andFlag = True
+            whereQuery = whereQuery + """ AND """
+        whereQuery = whereQuery + f"""UPPER(faa_artwork_title) LIKE '%{artworkTitle.upper()}%'"""
+        andFlag = True
     if workOnPaper:
         if andFlag:
-            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{workOnPaper.upper()}%'"""
-        else:
-            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{workOnPaper.upper()}%'""" 
-            andFlag = True
+            whereQuery = whereQuery + """ AND """
+        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{workOnPaper.upper()}%'"""
+        andFlag = True
     if sculpture:
         if andFlag:
-            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{sculpture.upper()}%'"""
-        else:
-            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{sculpture.upper()}%'""" 
-            andFlag = True
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{sculpture.upper()}%'"""
+        andFlag = True
     if painting:
         if andFlag:
-            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{painting.upper()}%'"""
-        else:
-            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{painting.upper()}%'"""
-            andFlag = True
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{painting.upper()}%'"""
+        andFlag = True
     if installation:
         if andFlag:
-            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{installation.upper()}%'"""
-        else:
-            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{installation.upper()}%'"""
-            andFlag = True
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{installation.upper()}%'"""
+        andFlag = True
     if photography:
         if andFlag:
-            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{photography.upper()}%'"""
-        else:
-            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{photography.upper()}%'"""
-            andFlag = True
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{photography.upper()}%'"""
+        andFlag = True
     if textTilesArt:
         if andFlag:
-            selectQuery = selectQuery + f""" AND UPPER(faa_artwork_category) LIKE '%{textTilesArt.upper()}%'"""
-        else:
-            selectQuery = selectQuery + f"""UPPER(faa_artwork_category) LIKE '%{textTilesArt.upper()}%'"""
-            andFlag = True
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{textTilesArt.upper()}%'"""
+        andFlag = True
     if selArtworkStart and selArtworkStart != '':
         if andFlag:
-            selectQuery = selectQuery + f""" AND faa_artwork_start_year = {selArtworkStart}"""
-        else:
-            selectQuery = selectQuery + f"""faa_artwork_start_year = {selArtworkStart}"""
-            andFlag = True
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""faa_artwork_start_year = {selArtworkStart}"""
+        andFlag = True
     if selArtworkEnd and selArtworkEnd != '':
         if andFlag:
-            selectQuery = selectQuery + f""" AND faa_artwork_end_year = {selArtworkEnd}"""
-        else:
-            selectQuery = selectQuery + f"""faa_artwork_end_year = {selArtworkEnd}"""
-            andFlag = True
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""faa_artwork_end_year = {selArtworkEnd}"""
+        andFlag = True
     if selAuctionHouse and selAuctionHouse != '':
         if andFlag:
-            selectQuery = selectQuery + f""" AND faa_artwork_end_year = {selArtworkEnd}"""
-        else:
-            selectQuery = selectQuery + f"""faa_artwork_end_year = {selArtworkEnd}"""
-            andFlag = True
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""UPPER(cah_auction_house_name) LIKE '%{selAuctionHouse.upper()}%'"""
+        andFlag = True
     if auctionLocation and auctionLocation != '':
-        pass
+        if andFlag:
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""UPPER(cah_auction_house_location) LIKE '%{auctionLocation.upper()}%'"""
+        andFlag = True
     if saleTitle and saleTitle != '':
-        pass
+        if andFlag:
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""UPPER(faac_auction_title) LIKE '%{saleTitle.upper()}%'"""
+        andFlag = True
     if auctionStartDate and auctionStartDate != '':
-        pass
+        if andFlag:
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""faac_auction_start_date = '{auctionStartDate}'"""
+        andFlag = True
     if auctionEndDate and auctionEndDate != '':
-        pass
+        if andFlag:
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""faac_auction_end_date = '{auctionEndDate}'"""
+        andFlag = True
     if saleCode and saleCode != '':
-        pass
-    print(selectQuery)
-    # connlist = connecttoDB()
-    # dbconn = connlist[0]
-    # cursor = connlist[1]
-    # cursor.execute(selectQuery)
-    # print(cursor.fetchall())
-    # connectionClose = disconnectDB(cursor, dbconn)
-    return artistName
+        if andFlag:
+            whereQuery = whereQuery + f""" AND """
+        whereQuery = whereQuery + f"""faac_auction_sale_code = '{saleCode}'"""
+    selectQuery = """SELECT * FROM fineart_artworks INNER JOIN fineart_lots ON fineart_lots.fal_artwork_ID = fineart_artworks.faa_artwork_ID INNER JOIN fineart_auction_calendar ON fineart_auction_calendar.faac_auction_ID = fineart_lots.fal_auction_ID INNER JOIN core_auction_houses ON core_auction_houses.cah_auction_house_ID = fineart_auction_calendar.faac_auction_house_ID WHERE """ + whereQuery
+    # print(selectQuery)
+    connlist = connecttoDB()
+    dbconn = connlist[0]
+    cursor = connlist[1]
+    cursor.execute(selectQuery)
+    searchData = cursor.fetchall()
+    connectionClose = disconnectDB(cursor, dbconn)
+    return searchData
 
 
 #@cache_page(CACHE_TTL)
