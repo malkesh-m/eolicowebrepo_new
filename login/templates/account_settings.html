@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="/static/css/autocomplete.css">
 
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css" />
+    <link rel="stylesheet" href="/static/css/new-style.css">
     <style>
         .owl-prev,
         .owl-next {
@@ -35,34 +37,34 @@
             display: block !important;
             border: 0px solid black;
         }
-        
+
         .owl-prev {
             left: -20px;
         }
-        
+
         .owl-next {
             right: -20px;
         }
-        
-        .owl-prev i,
-        .owl-next i {
-            transform: scale(2, 5);
-            color: #ccc;
-        }
-        
+
+            .owl-prev i,
+            .owl-next i {
+                transform: scale(2, 5);
+                color: #ccc;
+            }
+
         #frmsearchpdb {
             background-color: #f9f9f9 !important;
             padding: 20px !important;
             border-radius: 10px !important;
         }
-        
+
         .advanced-search-btn {
             background-color: #17a2b8;
             padding: 10px;
             color: #ffffff;
             border-radius: 5px;
         }
-        
+
         .p-tag-style {
             font-size: 16px;
             color: #555;
@@ -77,11 +79,11 @@
 
     <!--
 
-TemplateMo 571 Hexashop
+    TemplateMo 571 Hexashop
 
-https://templatemo.com/tm-571-hexashop
+    https://templatemo.com/tm-571-hexashop
 
--->
+    -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
@@ -152,7 +154,7 @@ https://templatemo.com/tm-571-hexashop
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
             // Register the handler
-            xmlhttp.onreadystatechange = function() {
+            xmlhttp.onreadystatechange = function () {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     context = JSON.parse(xmlhttp.responseText);
                     secheaderdiv = document.getElementById('sectionheaderdiv');
@@ -231,7 +233,7 @@ https://templatemo.com/tm-571-hexashop
             font-weight: bold;
             text-decoration: none;
         }
-        
+
         #cover {
             position: fixed;
             top: 0;
@@ -242,7 +244,7 @@ https://templatemo.com/tm-571-hexashop
             height: 100%;
             display: none;
         }
-        
+
         #adminScreen {
             height: 680px;
             width: 640px;
@@ -254,13 +256,13 @@ https://templatemo.com/tm-571-hexashop
             border: 5px solid #cccccc;
             border-radius: 10px;
         }
-        
-        #adminScreen:target,
-        #adminScreen:target+#cover {
-            display: block;
-            opacity: 2;
-        }
-        
+
+            #adminScreen:target,
+            #adminScreen:target + #cover {
+                display: block;
+                opacity: 2;
+            }
+
         .cancel {
             display: block;
             position: absolute;
@@ -276,7 +278,504 @@ https://templatemo.com/tm-571-hexashop
             font-weight: bold;
         }
     </style>
+    <style type="text/css">
+        #artworks_filter,
+        #artists_filter {
+            position: absolute;
+            right: 16px;
+            top: -38px;
+        }
 
+        #tab-artworks thead tr th,
+        #tab-artists thead tr th {
+            background-color: #363a40;
+            color: #fff;
+            text-align: center;
+        }
+
+        #tab-artworks div.dataTables_wrapper div.dataTables_filter label,
+        #tab-artists div.dataTables_wrapper div.dataTables_filter label {
+            justify-content: end;
+        }
+
+        #tab-artworks table.dataTable thead > tr > td.sorting,
+        #tab-artworks table.dataTable thead > tr > td.sorting_asc {
+            text-align: center;
+        }
+
+        #tab-artworks tbody tr td,
+        #tab-artists tbody tr td {
+            border-bottom: 0;
+            text-align: center;
+        }
+
+        .artists-chart h3 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .artists-chart .artists-box .chart p {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .artists-chart .artists-box span {
+            color: #636363;
+            font-size: 18px;
+            font-weight: 600;
+            display: block;
+        }
+
+        .artists-chart .artists-box h6 {
+            font-size: 18px;
+            font-weight: 600;
+            width: 190px;
+            margin-bottom: 0;
+        }
+
+        .artists-chart .artists-box .chart {
+            position: relative;
+        }
+
+        .artists-chart .artists-box {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .navbar.navbar-expand-md.navbar-light .nav-link {
+            color: #fff !important;
+        }
+
+        .navbar.navbar-expand-md.navbar-light {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #363a40;
+        }
+
+        .artists-chart .artists-box .chart canvas {
+            width: 100%;
+        }
+
+        @media (max-width:767px) {
+            #content {
+                padding: 0px !important;
+            }
+
+            #artworks_filter,
+            #artists_filter {
+                position: unset;
+            }
+        }
+
+        @media (min-width:768px) and (max-width:991px) {
+            .collapse:not(.show) {
+                display: none !important;
+            }
+
+            .navbar-expand-md .navbar-toggler {
+                display: inline-block;
+            }
+
+            .navbar-expand-md {
+                flex-flow: unset;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+                .navbar-expand-md .navbar-collapse {
+                    flex-basis: 100%;
+                    justify-content: center !important;
+                }
+
+                .navbar-expand-md .navbar-nav {
+                    flex-direction: column;
+                }
+        }
+
+        @media (min-width:991px) and (max-width:1399px) {
+            .collapse:not(.show) {
+                display: none !important;
+            }
+
+            .navbar-expand-md .navbar-toggler {
+                display: inline-block;
+            }
+
+            .navbar-expand-md {
+                flex-flow: unset;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+                .navbar-expand-md .navbar-collapse {
+                    flex-basis: 100%;
+                    justify-content: center !important;
+                }
+
+                .navbar-expand-md .navbar-nav {
+                    flex-direction: column;
+                }
+        }
+
+        @media (min-width: 1200px) and (max-width: 1399px) {
+            .artists-chart .artists-box h6 {
+                font-size: 16px;
+                width: 158px;
+            }
+        }
+
+        body {
+            background-color: #ffffff;
+        }
+
+        .sidenav {
+            /*height: 100%;
+                width: 340px;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                background-color: #111;
+                overflow-x: hidden;
+                padding-top: 20px;*/
+        }
+
+            .sidenav .bottom-menus {
+                bottom: 0;
+            }
+
+        .theme-color {
+            color: #7545f0;
+        }
+
+        .theme-bg-color {
+            background-color: #7545f0;
+        }
+
+        .theme-bg-color-secondary {
+            background-color: #fbeee5;
+        }
+
+        .nav-item {
+            font-weight: bold;
+        }
+
+        .artist_chart_label-text,
+        .artwork_chart_label-text {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            font-size: 1.5rem;
+        }
+
+        .artists-artworks-Datatable .row {
+            width: 100%;
+        }
+
+        .artists-artworks-Datatable li a {
+            color: #000;
+            background-color: #fff;
+            border: 1px solid #000;
+        }
+
+            .artists-artworks-Datatable li a:hover {
+                color: #000;
+            }
+
+            .artists-artworks-Datatable li a.active {
+                color: #fff;
+                background-color: #000000;
+            }
+
+        .table-img-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        #artistsSearch_tag_list li {
+            width: fit-content;
+            border: 1px solid #ccc;
+            margin: 10px 5px;
+            border-radius: 15px;
+            padding: 2px 10px;
+            list-style-type: none;
+            display: inline-flex;
+        }
+
+            #artistsSearch_tag_list li a {
+                margin-left: 20px;
+                color: #000;
+            }
+
+        #artistsSearch_tag_input {
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #fff6f1;
+            /*background-image: url(/static/images/searchicon.png);*/
+            background-position: 5px;
+            background-repeat: no-repeat;
+            padding: 5px;
+        }
+
+        .input_label {
+            position: relative;
+            bottom: -20px;
+            left: 15px;
+            background: #fff6f1;
+        }
+
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            transition: all 0.3s;
+        }
+
+            #sidebar.active {
+                margin-left: -250px;
+            }
+
+        a[data-toggle="collapse"] {
+            position: relative;
+        }
+
+        .dropdown-toggle::after {
+            display: block;
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
+        /* ---------------------------------------------------
+            CONTENT STYLE
+        ----------------------------------------------------- */
+
+        #content {
+            width: 100%;
+            padding: 20px;
+        }
+        /* ---------------------------------------------------
+            MEDIAQUERIES
+        ----------------------------------------------------- */
+
+        @media (max-width: 991px) {
+            #sidebarCollapse {
+                display: block !important;
+            }
+
+            #sidebar {
+                margin-left: -250px;
+            }
+
+                #sidebar.active {
+                    margin-left: 0;
+                }
+
+            #sidebarCollapse span {
+                display: none;
+            }
+        }
+
+        [class*="noty_theme__unify--v1"] {
+            box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            padding: 1.57143rem;
+        }
+
+        .noty_theme__unify--v1--dark {
+            background-color: #2e3c56;
+        }
+
+        .noty_theme__unify--v1--light {
+            background-color: #fff;
+            box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .noty_type__success.noty_theme__unify--v1 {
+            background-color: #1cc9e4;
+        }
+
+        .noty_type__info.noty_theme__unify--v1 {
+            background-color: #1d75e5;
+        }
+
+        .noty_type__error.noty_theme__unify--v1 {
+            background-color: #e62154;
+        }
+
+        .noty_type__warning.noty_theme__unify--v1 {
+            background-color: #e6a821;
+        }
+
+        .noty_body {
+            font-weight: 400;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        [class*="noty_theme__unify--v1"] .noty_body {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+
+        .noty_theme__unify--v1--light .noty_body {
+            color: #41464B;
+        }
+
+        .noty_body__icon {
+            position: relative;
+            display: inline-block;
+            color: #fff;
+            text-align: center;
+            border-radius: 50%;
+        }
+
+            .noty_body__icon::before {
+                display: block;
+            }
+
+            .noty_body__icon > i {
+                position: relative;
+                top: 50%;
+                display: block;
+                -webkit-transform: translateY(-50%);
+                -ms-transform: translateY(-50%);
+                transform: translateY(-50%);
+                z-index: 2;
+            }
+
+        .noty_theme__unify--v1 .noty_body__icon {
+            background-color: rgba(245, 249, 249, 0.2);
+        }
+
+        .noty_theme__unify--v1--dark .noty_body__icon {
+            background-color: rgba(245, 249, 249, 0.1);
+        }
+
+        .noty_theme__unify--v1--dark.noty_type__success .noty_body__icon {
+            color: #1cc9e4;
+        }
+
+        .noty_theme__unify--v1--dark.noty_type__info .noty_body__icon {
+            color: #1d75e5;
+        }
+
+        .noty_theme__unify--v1--dark.noty_type__error .noty_body__icon {
+            color: #e62154;
+        }
+
+        .noty_theme__unify--v1--dark.noty_type__warning .noty_body__icon {
+            color: #e6a821;
+        }
+
+        .noty_theme__unify--v1--light.noty_type__success .noty_body__icon {
+            background-color: rgba(28, 201, 228, 0.15);
+            color: #1cc9e4;
+        }
+
+        .noty_theme__unify--v1--light.noty_type__info .noty_body__icon {
+            background-color: rgba(29, 117, 229, 0.15);
+            color: #1d75e5;
+        }
+
+        .noty_theme__unify--v1--light.noty_type__error .noty_body__icon {
+            background-color: rgba(230, 33, 84, 0.15);
+            color: #e62154;
+        }
+
+        .noty_theme__unify--v1--light.noty_type__warning .noty_body__icon {
+            background-color: rgba(230, 168, 33, 0.15);
+            color: #e6a821;
+        }
+
+        [class*="noty_theme__unify--v1"] .noty_close_button {
+            top: 14px;
+            right: 14px;
+            width: 0.85714rem;
+            height: 0.85714rem;
+            line-height: 0.85714rem;
+            background-color: transparent;
+            font-weight: 300;
+            font-size: 1.71429rem;
+            color: #fff;
+            border-radius: 0;
+        }
+
+        .noty_theme__unify--v1--light .noty_close_button {
+            color: #cad6d6;
+        }
+
+        .noty_progressbar {
+            height: 0.5rem !important;
+        }
+
+        .noty_theme__unify--v1 .noty_progressbar {
+            background-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .noty_theme__unify--v1--dark.noty_type__success .noty_progressbar {
+            background-color: #1cc9e4;
+        }
+
+        .noty_theme__unify--v1--dark.noty_type__info .noty_progressbar {
+            background-color: #1d75e5;
+        }
+
+        .noty_theme__unify--v1--dark.noty_type__error .noty_progressbar {
+            background-color: #e62154;
+        }
+
+        .noty_theme__unify--v1--dark.noty_type__warning .noty_progressbar {
+            background-color: #e6a821;
+        }
+
+        .noty_theme__unify--v1--light.noty_type__success .noty_progressbar {
+            background-color: rgba(28, 201, 228, 0.15);
+        }
+
+        .noty_theme__unify--v1--light.noty_type__info .noty_progressbar {
+            background-color: rgba(29, 117, 229, 0.15);
+        }
+
+        .noty_theme__unify--v1--light.noty_type__error .noty_progressbar {
+            background-color: rgba(230, 33, 84, 0.15);
+        }
+
+        .noty_theme__unify--v1--light.noty_type__warning .noty_progressbar {
+            background-color: rgba(230, 168, 33, 0.15);
+        }
+
+        .g-mb-25 {
+            margin-bottom: 1.78571rem !important;
+        }
+    </style>
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
     <script src="/static/js/autocomplete.js"></script>
@@ -291,7 +790,7 @@ https://templatemo.com/tm-571-hexashop
             }
             loadingspan = document.getElementById('loading');
             // Register the handler
-            xmlhttp.onreadystatechange = function() {
+            xmlhttp.onreadystatechange = function () {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                     context = JSON.parse(xmlhttp.responseText);
                     searchresults = context['allsearchresults'];
@@ -380,7 +879,7 @@ https://templatemo.com/tm-571-hexashop
 <body onload="javascript:autocomplete(document.getElementById('pdbsearch'), pdb);">
 
     <!-- Sign up Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!--<div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -424,43 +923,49 @@ https://templatemo.com/tm-571-hexashop
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
-                                        receiving emails from ArtBidder.</p>
+                                    <p>
+                                        I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.
+                                    </p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
-                            </div>
-                            <!--
-                            <div class="form-group">
-                                <p class="or text-center">or</p>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
-                            </div>
-			    -->
-                            <div class="form-group text-center">
+                            </div>-->
+    <!--
+                <div class="form-group">
+                    <p class="or text-center">or</p>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                </div>
+    -->
+    <!--<div class="form-group text-center">
                                 <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
-                                        Service</a> apply.</p>
+                                <p>
+                                    This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">
+                                        Terms of
+                                        Service
+                                    </a> apply.
+                                </p>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+    <!--<div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -488,33 +993,33 @@ https://templatemo.com/tm-571-hexashop
                                 <label for="password">password</label>
                                 <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
-                            </div>
-                            <!-- <div class="form-group">
-                                <div class="check-input">
-                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
-                                </div>
-                            </div> -->
-                            <div class="form-group">
-                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
-                            </div>
-                            <!--
-                            <div class="form-group">
-                                <p class="or text-center">or</p>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with
-                                    Apple</a>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with
-                                    Google</a>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue
-                                    with Facebook</a>
-                            </div>
-			    -->
-                            <div class="form-group text-center">
+                            </div>-->
+    <!-- <div class="form-group">
+        <div class="check-input">
+            <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
+        </div>
+    </div> -->
+    <!--<div class="form-group">
+        <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
+    </div>-->
+    <!--
+                <div class="form-group">
+                    <p class="or text-center">or</p>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with
+                        Apple</a>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with
+                        Google</a>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue
+                        with Facebook</a>
+                </div>
+    -->
+    <!--<div class="form-group text-center">
                                 <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
@@ -522,10 +1027,10 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+    <!--<div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -550,8 +1055,10 @@ https://templatemo.com/tm-571-hexashop
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset
-                                    instructions</button>
+                                <button type="submit" value="submit" name="" class="btn btn-slider">
+                                    Send me reset
+                                    instructions
+                                </button>
                             </div>
                             <div class="form-group text-center">
                                 <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
@@ -561,9 +1068,8 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
     <!-- Sign in Modal -->
-
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -573,66 +1079,64 @@ https://templatemo.com/tm-571-hexashop
         </div>
     </div>
     <!-- ***** Preloader End ***** -->
-
-
     <!-- ***** Header Area Start ***** -->
-    <header class="header-area header-sticky">
+    <!--<header class="header-area header-sticky">
         <div class="container">
             <div class="row">
-                <div class="col-12">
-                    <!-- <nav class="main-nav">
-                        <a href="/login/index/" class="logo">
-                            <img src="/static/images/logo1.png">
-                        </a>
-                        <ul class="nav">
-                            <li class="scroll-to-section"><a href="/login/dashboard/">Dashboard</a></li>
-			    <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-			    <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-			    <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-			    <li class="scroll-to-section"><a href="/price/database/" class="active">Price Database</a></li>
-                            <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
-			{% if not user.is_authenticated %}
-			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-			{% else %}
-			    <li><a href="/login/logout/">Logout</a></li>
-			{% endif %}
+                <div class="col-12">-->
+    <!-- <nav class="main-nav">
+                <a href="/login/index/" class="logo">
+                    <img src="/static/images/logo1.png">
+                </a>
+                <ul class="nav">
+                    <li class="scroll-to-section"><a href="/login/dashboard/">Dashboard</a></li>
+        <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+        <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+        <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+        <li class="scroll-to-section"><a href="/price/database/" class="active">Price Database</a></li>
+                    <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
+    {% if not user.is_authenticated %}
+        <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+    {% else %}
+        <li><a href="/login/logout/">Logout</a></li>
+    {% endif %}
 
-                        </ul>        
-                        <a class='menu-trigger'>
-                            <span>Menu</span>
-                        </a>
-                    </nav> -->
-                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
-                        <a class="navbar-brand" href="/login/dashboard/">
-                            <!-- <img src="static/images/logo1.png"> -->
-                            ARTBIDER
-                        </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                            <ul class="navbar-nav mx-auto">
-                                <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
-                                </li>
-                                <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
-                                </li>
-                                <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
-                                </li>
-                                <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
-                                </li>
-                                <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
-                                </li>
+                </ul>
+                <a class='menu-trigger'>
+                    <span>Menu</span>
+                </a>
+            </nav> -->
+    <!--<nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
+        <a class="navbar-brand" href="/login/dashboard/">-->
+    <!-- <img src="static/images/logo1.png"> -->
+    <!--ARTBIDER
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="myNavbarToggler10">
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item scroll-to-section">
+                <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+            </li>
+            <li class="nav-item scroll-to-section">
+                <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+            </li>
+            <li class="nav-item scroll-to-section">
+                <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+            </li>
+            <li class="nav-item scroll-to-section">
+                <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+            </li>
+            <li class="nav-item scroll-to-section">
+                <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+            </li>
 
-                            </ul>
-                            <ul class="navbar-nav sm-icons mr-0">
-                                {% if not user.is_authenticated %}
-                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                                <li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+        </ul>
+        <ul class="navbar-nav sm-icons mr-0">
+            {% if not user.is_authenticated %}-->
+    <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+    <!--<li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
                                 <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                                 <li class="nav-item">
@@ -645,128 +1149,42 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-    </header>
+    </header>-->
     <!-- ***** Header Area End ***** -->
-
     <!-- ***** Main Banner Area Start ***** -->
-
     <!-- Carousel -->
-    {% comment %}
+    <!--{% comment %}
     <section class="testimonials">
-        <div class="container"> {% endcomment %}
-            <!-- <div class="row">
-        <div class="col-sm-12">
-          <div id="customers-testimonials" class="owl-carousel owl-theme">
-	    {% for d in carousel %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
-                <div class="item-details">
-			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
-			<h5>{{d.artworkname}}</h5>
-			<p>{{d.medium}}</p>
-			</a>
-		</div>
-              </div>
+        <div class="container">
+            {% endcomment %}-->
+    <!-- <div class="row">
+      <div class="col-sm-12">
+        <div id="customers-testimonials" class="owl-carousel owl-theme">
+      {% for d in carousel %}
+          <div class="item">
+            <div class="shadow-effect">
+              <img class="img-responsive" src="{{d.artworkimage}}" alt="" style='width:300px;height:100px;'>
+              <div class="item-details">
+          <a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
+          <h5>{{d.artworkname}}</h5>
+          <p>{{d.medium}}</p>
+          </a>
+      </div>
             </div>
-	    {% endfor %}
           </div>
+      {% endfor %}
         </div>
-      </div> -->
-            {% comment %} </div>
-    </section> {% endcomment %}
+      </div>
+    </div> -->
+    <!--{% comment %}
+        </div>
+    </section> {% endcomment %}-->
     <!-- END OF Carousels -->
-
     <!-- ***** Main Banner Area End ***** -->
 
 
 
-    <section class="mt-5">
-        <div class="container">
-            <div class="row pt-5 col-12">
-                <div class="col-12 mt-5 text-center">
-                    <h2>Account Setting Form</h2>
-                    <hr class="mt-1" style="width:320px; text-align:center;     border-top: 2px solid #c2a476;"><br>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Account Info</label>
-                                <input type="text" class="form-control" placeholder="Enter First Name">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">&nbsp;</label>
-                                <input type="text" class="form-control" placeholder="Enter Last Name">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Enter Email">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Enter Password">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Shipping Address</label>
-                                <select class="form-control">
-                                    <option></option>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <textarea class="form-control" placeholder="Address" rows="3"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter City" />
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter State">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter Postal Code">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter Phone Number" />
-                            </div>
-                            <button type="submit" class="btn btn-info btn-round">Save Changes</button>
-                        </div>
-                    </div>
-                    <div class="row mt-5">
-                        <div class="col-12">
-                            <h4>Current Subscription</h4>
-                            <p class="mt-4">Current subscription level</p>
-                            <p class="mt-2">You are registered user with no active subscription.</p>
-                            <button type="button" class="btn btn-info btn-round mt-3">Subscribe</button>
-                            <hr>
-                            <h4>Card Details</h4>
-                            <button type="button" class="btn btn-info btn-round mt-3">Add Card</button>
-                            <hr>
-                            <h4>SB hiosfff</h4>
-                            <button type="button" class="btn btn-info btn-round mt-3 mr-3">Add A New Card</button>
-                            <button type="button" class="btn btn-info btn-round mt-3">Subscription Payment</button>
-                        </div>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <div id="adminScreen">
         <a href="#" class="cancel">×</a>
@@ -775,9 +1193,270 @@ https://templatemo.com/tm-571-hexashop
     </div>
     <div id="cover">
     </div>
+    <section>
+        <div class="container-fluid pl-0">
+            <div class="row ">
+                <div class="col-md-12 d-flex pr-0">
+                    <nav id="sidebar" class="bg-dark p-4 text-light">
+                        <div class="sidebar-header mt-2 text-center">
+                            <a class="navbar-brand mx-auto" href="/login/dashboard/">
+                                <img src="/static/images/email-logo.jpeg" style="width: 100%;" alt="">
+                            </a>
+                        </div>
+
+                        <ul class="list-unstyled components">
+                            <li class="my-4">
+                                <a href="/login/dashboard/" class="text-light">
+                                    <i class="fa fa-dashboard"></i>&nbsp;My
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="my-4">
+                                <a href="/login/notifications/" class="text-light">
+                                    <i class="fa fa-bell"></i>&nbsp;My
+                                    Notifications
+                                </a>
+                            </li>
+                            <li class="my-4">
+                                <a href="/login/myArtist/" class="text-light">
+                                    <i class="fa fa-user"></i>&nbspMy
+                                    Artist
+                                </a>
+                            </li>
+                            <li class="my-4">
+                                <a href="/login/myArtwork/" class="text-light">
+                                    <i class="fa fa-paint-brush"></i>&nbspMy
+                                    Artwork
+                                </a>
+                            </li>
+                            <li class="my-4">
+                                <a href="/login/settings/" class="text-light">
+                                    <i class="fa fa-gear"></i>&nbspAccount
+                                    Setting
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="list-unstyled CTAs">
+                            <h5 class="text-uppercase my-4 pt-4"><i class="fa fa-headphones"></i>&nbsp;Contact Us</h5>
+                            <hr>
+                            <ul class="sidebar-menu">
+                                <!-- <li class="my-4"><a href="" class="text-light"><i class="fa fa-phone"></i>&nbsp;Call Us</a></li>
+                                <li class="my-4"><a href="" class="text-light"><i class="fa fa-comments-o"></i>&nbsp;Chat</a></li> -->
+                                <li class="my-4"><a href="" class="text-light"><i class="fa fa-fax"></i>&nbsp;Feedback</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <div id="content">
+                        <!-- <div> -->
+                        <nav class="navbar navbar-expand-md navbar-light">
+                            <button type="button" id="sidebarCollapse" class="btn btn-login btn-rouned p-2 px-3 m-0 d-none">
+                                <i class="fa fa-angle-double-right"></i>
+                            </button>
+                            <a class="nav-link font-weight-bold mb-0" href="#"><img src="/static/dashboard/Picture1.png" class="mr-2 " style="width: 50px; border-radius: 100px;"> @{{username}}</a>
+
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+
+                            <!-- Navbar links -->
+                            <div class="collapse navbar-collapse align-items-center justify-content-end" id="collapsibleNavbar">
+                                <ul class="navbar-nav align-items-center">
+                                    <li class="mr-4">
+                                        <div class="input-group">
+                                            <input type="search" class="form-control  rounded-0" name="search" placeholder="Select...">
+                                            <span class="input-group-text rounded-0">
+                                                <button type="button" class="btn border-0 p-0 rounded-right"><i class="fa fa-search"></i></button>
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/artist/index/">Artist</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/auctionhouse/index/">Auction Houses</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/auction/index/">Auction</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/price/database/">Price Database</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/price/database/">Price Plans</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/price/database/">Galleries</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/price/database/">Shows</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/price/database/">News</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="btn btn-login btn-rouned" onclick='javascript:logout();'>Logout</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                        <section class="mt-5">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h2 class="heading-style">Account Setting Form</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <form method="POST" name="frmpricefilter" id="" action="">
+                                            <div class="bg-form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="exampleInputEmail1">First Name</label>
+                                                            <input type="text" class="form-control" placeholder="Enter First Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="exampleInputEmail1">Last Name</label>
+                                                            <input type="text" class="form-control" placeholder="Enter Last Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label>Email</label>
+                                                            <input type="email" class="form-control" placeholder="Enter Email">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Password</label>
+                                                            <input type="password" class="form-control" placeholder="Enter Password">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Address</label>
+                                                            <textarea class="form-control" placeholder="Address" rows="3"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>State</label>
+                                                            <input type="text" class="form-control" placeholder="Enter State">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Zip  Code</label>
+                                                            <select class="form-control" id="exampleFormControlSelect1">
+                                                                <option selected> Enter Zip Code</option>
+                                                                <option>2</option>
+                                                                <option>3</option>
+                                                                <option>4</option>
+                                                                <option>5</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+
+                                                        <div class="form-group">
+                                                            <label>Country </label>
+                                                            <select class="form-control" id="exampleFormControlSelect1">
+                                                                <option selected> Enter Country </option>
+                                                                <option>2</option>
+                                                                <option>3</option>
+                                                                <option>4</option>
+                                                                <option>5</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label class="d-block">Mobile Number</label>
+                                                            <input type="text" id="mobile_code" class="form-control" placeholder="Phone Number" name="name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 text-center mt-4">
+                                                        <button type="submit" class="btn btn-login btn-round ml-0">Save Changes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div class="col-lg-6 mt-4 mt-lg-0">
+                                        <div class="card-list">
+                                            <div class="card-box">
+                                                <h4>Current Subscription</h4>
+                                                <p>Current subscription level</p>
+                                                <p>You are registered user with no active subscription.</p>
+                                                <button type="button" class="btn btn-login btn-rouned ml-0 mt-3">Subscribe</button>
+                                            </div>
+                                            <div class="card-box my-4">
+                                                <h4>Card Details</h4>
+                                                <button type="button" class="btn btn-login btn-rouned ml-0 mt-3">Add Card</button>
+                                            </div>
+                                            <div class="card-box">
+                                                <h4>Payment Options</h4>
+                                                <button type="button" class="btn btn-login btn-rouned ml-0 mt-3">Add A New Card</button>
+                                                <button type="button" class="btn btn-login btn-rouned mt-3 ml-0">Subscription Payment</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('.artists-artworks-Datatable a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                                $.fn.dataTable.tables({
+                                    visible: true,
+                                    api: true
+                                }).columns.adjust();
+                            });
+
+                            $('.artists-artworks-Datatable table.table').DataTable({
+                                "columns": [{
+                                    "width": "20%"
+                                },
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                                ],
+                                //ajax: 'array.txt',
+                                ajax: '',
+                                scrollY: 400,
+                                scrollCollapse: true,
+                                paging: false,
+                            });
+
+                            // Apply a search to the second table for the demo
+                            //$('#myTable2').DataTable().search('New York').draw();
+                        });
+
+
+                        $(document).ready(function () {
+                            $('#sidebarCollapse').on('click', function () {
+                                $('#sidebar').toggleClass('active');
+                                if ($('#sidebar').hasClass('active')) {
+                                    $(this).html('<i class="fa fa-close"></i>');
+                                } else {
+                                    $(this).html('<i class="fa fa-angle-double-right"></i>');
+                                }
+                            });
+                        });
+                    </script>
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- ***** Footer Start ***** -->
-    <footer>
+    <!--<footer>
         <div class="container">
             <div class="row">
                 <div class="col-lg-3">
@@ -832,16 +1511,11 @@ https://templatemo.com/tm-571-hexashop
                 </div>
             </div>
         </div>
-    </footer>
-
-
+    </footer>-->
     <!-- jQuery -->
     <script src="/static/js/jquery-2.1.0.min.js">
-        < />
-
-        <!-- Bootstrap -->
-        <
-        script src = "/static/js/popper.js" >
+    </script>
+    <script src="/static/js/popper.js">
     </script>
     <script src="/static/js/bootstrap.min.js"></script>
 
@@ -880,7 +1554,7 @@ https://templatemo.com/tm-571-hexashop
             input: '<input type="text" maxLength="20" placeholder="Search">'
         });
 
-        jQuery(document).ready(function($) {
+        jQuery(document).ready(function ($) {
             "use strict";
             $('#customers-testimonials').owlCarousel({
                 loop: true,
@@ -908,13 +1582,13 @@ https://templatemo.com/tm-571-hexashop
         });
     </script>
     <script>
-        $(function() {
+        $(function () {
             var selectedClass = "";
-            $("p").click(function() {
+            $("p").click(function () {
                 selectedClass = $(this).attr("data-rel");
                 $("#portfolio").fadeTo(50, 0.1);
                 $("#portfolio div").not("." + selectedClass).fadeOut();
-                setTimeout(function() {
+                setTimeout(function () {
                     $("." + selectedClass).fadeIn();
                     $("#portfolio").fadeTo(50, 1);
                 }, 500);
@@ -922,7 +1596,14 @@ https://templatemo.com/tm-571-hexashop
             });
         });
     </script>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
+    <script>
+        $("#mobile_code").intlTelInput({
+            initialCountry: "in",
+            separateDialCode: true,
+            // utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.4/js/utils.js"
+        });
+    </script>
 </body>
 
 </html>

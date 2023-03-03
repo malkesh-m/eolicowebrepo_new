@@ -8,7 +8,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-        rel="stylesheet">
+          rel="stylesheet">
+    <link href="/static/font/GT-Super/stylesheet.css"/>
 
     <title>ArtBidder Home</title>
 
@@ -79,7 +80,7 @@
                     }
                 }
             };
-            xmlhttp.open("GET", "/artist/showstats/?aid=" + aid + "&div_id=" + statsdivid); // Need to keep track of the div id values. 
+            xmlhttp.open("GET", "/artist/showstats/?aid=" + aid + "&div_id=" + statsdivid); // Need to keep track of the div id values.
             // Javascript runs separate threads for each call, so data is shared. So, javascript will not be able to keep track of data
             // returned and the corresponding div it should be placed in.
             xmlhttp.send();
@@ -100,7 +101,7 @@
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -123,24 +124,24 @@
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="regiUsername" name="username"
-                                    placeholder="Enter your full name" />
+                                       placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
                                 <input type="text" class="form-control" id="emailid" name="emailid"
-                                    placeholder="Enter your email address" />
+                                       placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
                                 <label for="password1">Password</label>
                                 <input type="password" class="form-control" id="password1" name="password1"
-                                    placeholder="Enter a password" />
+                                       placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
                             <div class="form-group">
                                 <label for="password2">Confirm Password</label>
                                 <input type="password" class="form-control" id="password2" name="password2"
-                                    placeholder="Re-type password" />
+                                       placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
@@ -148,38 +149,45 @@
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a
-                                            href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a
-                                            href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
-                                        receiving emails from ArtBidder.</p>
+                                    <p>
+                                        I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        receiving emails from ArtBidder.
+                                    </p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider"
-                                    onclick="javascript:doregister();">Sign up</button>
+                                        onclick="javascript:doregister();">
+                                    Sign up
+                                </button>
                             </div>
                             <!--
-                            <div class="form-group">
-                                <p class="or text-center">or</p>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
-                            </div>
-                            <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
-                            </div>
-			    -->
+                                        <div class="form-group">
+                                            <p class="or text-center">or</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                                        </div>
+                                        <div class="form-group">
+                                            <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                                        </div>
+                                        <div class="form-group">
+                                            <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                                        </div>
+                            -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                        data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>
+                                    Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
+                                                                data-toggle="modal" data-target="#exampleModal-login">Log In</a>
+                                </p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a
-                                        href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
-                                        Service</a> apply.</p>
+                                <p>
+                                    This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">
+                                        Terms of
+                                        Service
+                                    </a> apply.
+                                </p>
                             </div>
                         </form>
                     </div>
@@ -190,7 +198,7 @@
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
-        aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+         aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -213,12 +221,12 @@
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="loginUsername"
-                                    placeholder="Enter your username" />
+                                       placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
                                 <input type="password" class="form-control" name='passwd' id="passwd"
-                                    placeholder="Enter your password" />
+                                       placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <!-- <div class="form-group">
@@ -228,26 +236,36 @@
                             </div> -->
                             <div class="form-group">
                                 <button type="button" value="submit" name="" class="btn btn-slider"
-                                    onclick="javascript:dologin();">Log in</button>
+                                        onclick="javascript:dologin();">
+                                    Log in
+                                </button>
                             </div>
                             <div class="form-group">
                                 <p class="or text-center">or</p>
                             </div>
                             <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with
-                                    Apple</a>
+                                <a class="btn btn-slider">
+                                    <i class="fa fa-apple" aria-hidden="true"></i> Continue with
+                                    Apple
+                                </a>
                             </div>
                             <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with
-                                    Google</a>
+                                <a class="btn btn-slider">
+                                    <i class="fa fa-google" aria-hidden="true"></i> Continue with
+                                    Google
+                                </a>
                             </div>
                             <div class="form-group">
-                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue
-                                    with Facebook</a>
+                                <a class="btn btn-slider">
+                                    <i class="fa fa-facebook" aria-hidden="true"></i> Continue
+                                    with Facebook
+                                </a>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                        data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                                <p>
+                                    Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
+                                                              data-toggle="modal" data-target="#exampleModal-signup">Sign up</a>
+                                </p>
                             </div>
                         </form>
                     </div>
@@ -258,7 +276,7 @@
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+         aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -283,13 +301,17 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset
-                                    instructions</button>
+                                <button type="submit" value="submit" name="" class="btn btn-slider">
+                                    Send me reset
+                                    instructions
+                                </button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
-                                        data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
-                                        data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>
+                                    Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
+                                                            data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
+                                                                                                              data-toggle="modal" data-target="#exampleModal">Sign up</a>
+                                </p>
                             </div>
                         </form>
                     </div>
@@ -298,7 +320,6 @@
         </div>
     </div>
     <!-- Sign in Modal -->
-
     <!-- ***** Preloader Start ***** -->
     <div id="preloader">
         <div class="jumper">
@@ -308,28 +329,26 @@
         </div>
     </div>
     <!-- ***** Preloader End ***** -->
-
-
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky">
         <div class="container">
             <!-- <nav class="main-nav">
                         <a href="/login/index/" class="logo">
-			    ARTBIDDER
+                ARTBIDDER
                         </a>
                         <ul class="nav">
                          <li class="scroll-to-section"><a href="/login/dashboard/">Dashboard</a></li>
-			 <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
-			 <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
-			 <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
-			 <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
+             <li class="scroll-to-section"><a href="/artist/index/">Artists</a></li>
+             <li class="scroll-to-section"><a href="/auctionhouse/index/">Auction Houses</a></li>
+             <li class="scroll-to-section"><a href="/auction/index/">Auctions</a></li>
+             <li class="scroll-to-section"><a href="/price/database/">Price Database</a></li>
                          <li class="scroll-to-section"><a href="/price/plans/">Plans</a></li>
-			 {% if not user.is_authenticated %}
-			    <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
-			{% else %}
-			    <li><a href="/login/logout/">Logout</a></li>
-			{% endif %}
-                        </ul>        
+             {% if not user.is_authenticated %}
+                <li><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+            {% else %}
+                <li><a href="/login/logout/">Logout</a></li>
+            {% endif %}
+                        </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -346,7 +365,7 @@
                     </a>
                 </div>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                    aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                        aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
@@ -385,9 +404,13 @@
                     <ul class="navbar-nav sm-icons mr-0">
                         {% if not user.is_authenticated %}
                         <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                        <li class="nav-item text-start"><button type="button" class="btn btn-login btn-round"
-                                data-toggle="modal" data-target="#exampleModal-login"
-                                aria-controls="exampleModal-login">Login</button></li>
+                        <li class="nav-item text-start">
+                            <button type="button" class="btn btn-login btn-round"
+                                    data-toggle="modal" data-target="#exampleModal-login"
+                                    aria-controls="exampleModal-login">
+                                Login
+                            </button>
+                        </li>
                         {% else %}
                         <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                         {% endif %}
@@ -397,54 +420,47 @@
         </div>
     </header>
     <!-- ***** Header Area End ***** -->
-
     <!-- ***** Main Banner Area Start ***** -->
     <!--
-	<div id="Top-owl-carousel" class="owl-carousel owl-theme">
-		<div class="item"><img src="/static/images/slider-bg-1.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Aliquam tincidunt dolor</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
-		<div class="item"><img src="/static/images/slider-bg-2.jpg" class="img-fluid" alt=""><div class="rit-cap"><h2>Phasellus placerat</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
-		<div class="item"><img src="/static/images/slider-bg-3.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Maecenas molestie</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
-		
-	</div>
+    <div id="Top-owl-carousel" class="owl-carousel owl-theme">
+        <div class="item"><img src="/static/images/slider-bg-1.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Aliquam tincidunt dolor</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
+        <div class="item"><img src="/static/images/slider-bg-2.jpg" class="img-fluid" alt=""><div class="rit-cap"><h2>Phasellus placerat</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
+        <div class="item"><img src="/static/images/slider-bg-3.jpg" class="img-fluid" alt=""><div class="slide-cap"><h2>Maecenas molestie</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit. Fusce facilisis</p><a class="btn btn-slider" href="#">Explore</a></div></div>
+
+    </div>
     -->
-
-
     <!-- ------------------------------------------------------------------------------------------  -->
-
     <!-- Carousel -->
     {% comment %}
     <section class="testimonials" style='display:block;padding-top:100px;margin-top:20;'>
         <div class="container">
-            <div class="row"> {% endcomment %}
+            <div class="row">
+                {% endcomment %}
                 <!-- <div class="col-sm-12">
-          <div id="customers-testimonials" class="owl-carousel owl-theme">
-	    {% for d in carousel %}
-            <div class="item">
-              <div class="shadow-effect">
-                <img class="img-responsive" src="{{d.artworkimage}}" alt="">
-                <div class="item-details">
-			<a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
-			<h5>{{d.artworkname}}</h5>
-			<p>{{d.medium}}</p>
-			</a>
-		</div>
-              </div>
-            </div>
-	    {% endfor %}
-          </div>
-        </div> -->
+                  <div id="customers-testimonials" class="owl-carousel owl-theme">
+                {% for d in carousel %}
+                    <div class="item">
+                      <div class="shadow-effect">
+                        <img class="img-responsive" src="{{d.artworkimage}}" alt="">
+                        <div class="item-details">
+                    <a class="btn btn-slider" href="/artist/artworkdetails/?awid={{d.artworkid}}">
+                    <h5>{{d.artworkname}}</h5>
+                    <p>{{d.medium}}</p>
+                    </a>
+                </div>
+                      </div>
+                    </div>
+                {% endfor %}
+                  </div>
+                </div> -->
                 {% comment %}
             </div>
         </div>
     </section> {% endcomment %}
     <!-- END OF Carousels -->
-
     <!-- ***** Main Banner Area End ***** -->
-
     <!-- ***** Main Area Starts ***** -->
     <!-- ***** Explore Area Ends ***** -->
-
-
     {% if favourites.items|length > 0 %}
     <section class="section" id="men">
         <div class="container">
@@ -474,53 +490,63 @@
                                         <!-- <h6>{{favdata.4}}</h6> -->
                                     </a>
                                     {% if adminuser == 1 %}
-                                    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
-                                            onClick="javascript:t_editmuseum('{{favdata.3}}');">Edit</a></div>
+                                    <div>
+                                        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
+                                           onClick="javascript:t_editmuseum('{{favdata.3}}');">Edit</a>
+                                    </div>
                                     {% endif %} {% endif %} {% if favdata.0 == "artwork" %}
-                                    <a href="/artist/artworkdetails/?awid={{favdata.5}}"><img src="{{favdata.1}}"
-                                            alt=""></a>
+                                    <a href="/artist/artworkdetails/?awid={{favdata.5}}">
+                                        <img src="{{favdata.1}}"
+                                             alt="">
+                                    </a>
                                     <a href="/artist/artworkdetails/?awid={{favdata.5}}" style="color:#000000;">
                                         <h4>{{favname}}</h4>
                                         <h6>{{favdata.4}}</h6>
                                         <h6>{{favdata.3}}</h6>
                                     </a>
                                     {% if adminuser == 1 %}
-                                    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
-                                            onClick="javascript:t_editartwork('{{favdata.3}}');">Edit</a></div>
+                                    <div>
+                                        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
+                                           onClick="javascript:t_editartwork('{{favdata.3}}');">Edit</a>
+                                    </div>
                                     {% endif %} {% endif %} {% if favdata.0 == "auction" %}
-                                    <a href="/auction/showauction/?aucid={{favdata.3}}"><img src="{{favdata.4}}"
-                                            alt=""></a>
+                                    <a href="/auction/showauction/?aucid={{favdata.3}}">
+                                        <img src="{{favdata.4}}"
+                                             alt="">
+                                    </a>
                                     <a href="/auction/showauction/?aucid={{favdata.3}}" style="color:#000000;">
                                         <h4>{{favname}}</h4>
                                         <h6>{{favdata.1}}</h6>
                                         <h6>{{favdata.2}}</h6>
                                     </a>
                                     {% if adminuser == 1 %}
-                                    <div><a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
-                                            onClick="javascript:t_editauction('{{favdata.3}}');">Edit</a></div>
+                                    <div>
+                                        <a style="color:#000000;bgcolor:#ffffff;padding-left:10px;" href='#adminScreen'
+                                           onClick="javascript:t_editauction('{{favdata.3}}');">Edit</a>
+                                    </div>
                                     {% endif %} {% endif %}
                                 </div>
                             </div>
                             {% endfor %}
                         </div>
                         <!--
-                        <div class="owl-men-item owl-carousel">
-                            {% for ename, edata in events.items %}
-                            <div class="item">
-                                <div class="thumb">
-                                    <a href="/gallery/eventdetails/?gevid={{edata.3}}"><img src="{{edata.4}}" alt=""></a>
-                                </div>
-                                <div class="down-content">
-									<a href="/gallery/eventdetails/?gevid={{edata.3}}">
-										<h4>{{ename}}</h4>
-										<span>{{edata.1}}</span>
-										<span>{{edata.2}}</span>
-									</a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-			-->
+                                    <div class="owl-men-item owl-carousel">
+                                        {% for ename, edata in events.items %}
+                                        <div class="item">
+                                            <div class="thumb">
+                                                <a href="/gallery/eventdetails/?gevid={{edata.3}}"><img src="{{edata.4}}" alt=""></a>
+                                            </div>
+                                            <div class="down-content">
+                                                <a href="/gallery/eventdetails/?gevid={{edata.3}}">
+                                                    <h4>{{ename}}</h4>
+                                                    <span>{{edata.1}}</span>
+                                                    <span>{{edata.2}}</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                        -->
                         <div class="container">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -538,85 +564,85 @@
     <!-- ***** Explore Area Starts ***** -->
     <!-- <section class="section wrapper" id="explore">
         <div class="container">
-			<div class="row">
+            <div class="row">
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>Market News</h2>
                         <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-						<hr>
+                        <hr>
                     </div>
                 </div>
             </div>
-		   <div class="row">
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-03.jpg');">
-					<img class="card-img d-none" src="/static/images/men-03.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art Market</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">This New Code of Conduct for Collectors Aims to Encourage More Ethical Art Buying</a></h4>
-						  <small><i class="far fa-clock"></i> October 15, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Harley Wong</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-01.jpg');">
-					<img class="card-img d-none" src="/static/images/men-01.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">An-My Lê’s Ghostly Photographs Capture the Complex Consequences of War</a></h4>
-						  <small><i class="far fa-clock"></i> October 25, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Leah Gallant</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-			  
-			  <div class="col-md-4">
-				 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-03.jpg');">
-					<img class="card-img d-none" src="/static/images/men-03.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
-					<div class="card-img-overlay d-flex flex-column">
-					   <div class="card-body">
-						  <small class="card-meta mb-2">Art Market</small>
-						  <h4 class="card-title mt-0 "><a class="text-white" herf="#">This New Code of Conduct for Collectors Aims to Encourage More Ethical Art Buying</a></h4>
-						  <small><i class="far fa-clock"></i> October 15, 2020</small>
-					   </div>
-					   <div class="card-footer">
-						  <div class="media">
-							
-							 <div class="media-body">
-								<h6 class="my-0 text-white d-block">By: Harley Wong</h6>
-								
-							 </div>
-						  </div>
-					   </div>
-					</div>
-				 </div>
-			  </div>
-		   </div>
-		</div>
-		<div class="btn-box text-center">
-			<a class="btn btn-slider" href="#">Explore</a>
-		</div>
+           <div class="row">
+              <div class="col-md-4">
+                 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-03.jpg');">
+                    <img class="card-img d-none" src="/static/images/men-03.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
+                    <div class="card-img-overlay d-flex flex-column">
+                       <div class="card-body">
+                          <small class="card-meta mb-2">Art Market</small>
+                          <h4 class="card-title mt-0 "><a class="text-white" herf="#">This New Code of Conduct for Collectors Aims to Encourage More Ethical Art Buying</a></h4>
+                          <small><i class="far fa-clock"></i> October 15, 2020</small>
+                       </div>
+                       <div class="card-footer">
+                          <div class="media">
+
+                             <div class="media-body">
+                                <h6 class="my-0 text-white d-block">By: Harley Wong</h6>
+
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+              <div class="col-md-4">
+                 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-01.jpg');">
+                    <img class="card-img d-none" src="/static/images/men-01.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
+                    <div class="card-img-overlay d-flex flex-column">
+                       <div class="card-body">
+                          <small class="card-meta mb-2">Art</small>
+                          <h4 class="card-title mt-0 "><a class="text-white" herf="#">An-My Lê’s Ghostly Photographs Capture the Complex Consequences of War</a></h4>
+                          <small><i class="far fa-clock"></i> October 25, 2020</small>
+                       </div>
+                       <div class="card-footer">
+                          <div class="media">
+
+                             <div class="media-body">
+                                <h6 class="my-0 text-white d-block">By: Leah Gallant</h6>
+
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+
+              <div class="col-md-4">
+                 <div class="card text-white card-has-bg click-col" style="background-image:url('/static/images/men-03.jpg');">
+                    <img class="card-img d-none" src="/static/images/men-03.jpg" alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
+                    <div class="card-img-overlay d-flex flex-column">
+                       <div class="card-body">
+                          <small class="card-meta mb-2">Art Market</small>
+                          <h4 class="card-title mt-0 "><a class="text-white" herf="#">This New Code of Conduct for Collectors Aims to Encourage More Ethical Art Buying</a></h4>
+                          <small><i class="far fa-clock"></i> October 15, 2020</small>
+                       </div>
+                       <div class="card-footer">
+                          <div class="media">
+
+                             <div class="media-body">
+                                <h6 class="my-0 text-white d-block">By: Harley Wong</h6>
+
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+        <div class="btn-box text-center">
+            <a class="btn btn-slider" href="#">Explore</a>
+        </div>
     </section> -->
 
     <section class="section" id="women">
@@ -627,23 +653,190 @@
                         <h2 class="heading-style">Your Art Market Expert</h2>
                         <div class="input-group mb-3">
                             <input class='form-control  rounded-0' name='search' id='search' maxLength="200"
-                                placeholder="search..." />
+                                   placeholder="search..." />
                             <span class="input-group-text rounded-0">
-                                <button type="button" class="btn border-0 p-0 rounded-right"><i
-                                        class="fa fa-search"></i></button>
+                                <button type="button" class="btn border-0 p-0 rounded-right">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </span>
                         </div>
-                        <h4 class="p-tag-style">Search 500,000 artists, 10 million plus auctioned results, accross 1500
-                            auction houses </h4>
+                        <h4 class="p-tag-style">
+                            Search 500,000 artists, 10 million plus auctioned results, accross 1500
+                            auction houses
+                        </h4>
 
                         <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> -->
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="container-fluid py--80">
-            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+            <div id="myCarousel" class="carousel slide carousel-fade" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="mask flex-center">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col-md-7 col-12 order-md-1 order-2">
+                                        <h4>
+                                            Anteambulo Quincunx
+                                        </h4>
+                                        <h4 class="h5-style">
+                                            John Chamberlain
+                                        </h4>
+                                        <h4 class="h5-style mb-4">
+                                            USD 400,000 - 600,000
+                                        </h4>
+                                        <p class="mb-2">
+                                            New Now
+                                        </p>
+                                        <p class="mb-4">
+                                            Phillips, New York I 8 March 2023
+                                        </p>
+                                        <a href="#">View Auction</a>
+                                    </div>
+                                    <div class="col-md-5 col-12 order-md-2 order-1">
+                                        <div class="slider-img">
+                                            <img src="https://assets.phillips.com/image/upload/t_Website_LotDetailMainImage/v1677600689/auctions/NY010123/181948_001.jpg" class="mx-auto" alt="slide">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="mask flex-center">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col-md-7 col-12 order-md-1 order-2">
+                                        <h4>
+                                            Ada in front of 4PM
+                                        </h4>
+                                        <h4 class="h5-style">
+                                            Alex Katz
+                                        </h4>
+                                        <h4 class="h5-style mb-4">
+                                            USD 1,200,000 – 1,800,000
+                                        </h4>
+                                        <p class="mb-2">
+                                            Post-War To Present
+                                        </p>
+                                        <p class="mb-4">
+                                            Chrisite's, New York I 10 March 2023
+                                        </p>
+                                        <a href="#">View Auction</a>
+                                    </div>
+                                    <div class="col-md-5 col-12 order-md-2 order-1">
+                                        <div class="slider-img">
+                                            <img src="https://www.christies.com/img/LotImages/2023/NYR/2023_NYR_21759_0116_000(alex_katz_ada_in_front_of_4pm025108).jpg?maxwidth=1010&maxheight=650" class="mx-auto" alt="slide">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="mask flex-center">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col-md-7 col-12 order-md-1 order-2">
+                                        <h4>
+                                            Fillette au bateau, Maya
+                                        </h4>
+                                        <h4 class="h5-style">
+                                            Pablo Picasso
+                                        </h4>
+                                        <h4 class="h5-style mb-4">
+                                            GBP 12,000,000 - 18,000,000
+                                        </h4>
+                                        <p class="mb-2">
+                                            Modern & Contemporary Evening Auction
+                                        </p>
+                                        <p class="mb-4">
+                                            Sotheby's, London I 1 March 2023
+                                        </p>
+                                        <a href="#">View Auction</a>
+                                    </div>
+                                    <div class="col-md-5 col-12 order-md-2 order-1">
+                                        <div class="slider-img">
+                                            <img src="https://sothebys-md.brightspotcdn.com/dims4/default/9dccb68/2147483647/strip/true/crop/1637x2000+0+0/resize/800x977!/quality/90/?url=http%3A%2F%2Fsothebys-brightspot.s3.amazonaws.com%2Fmedia-desk%2Fwebnative%2Fimages%2F1e%2F01%2F087413a74576aa142cbbed6a41be%2F005l23002-ckscg-t3-01a-cropped.jpg" class="mx-auto" alt="slide">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="mask flex-center">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col-md-7 col-12 order-md-1 order-2">
+                                        <h4>
+                                            Miss Liberty
+                                        </h4>
+                                        <h4 class="h5-style">
+                                            Robert Colescott
+                                        </h4>
+                                        <h4 class="h5-style mb-4">
+                                            USD 5,000,000 - 7,000,000
+                                        </h4>
+                                        <p class="mb-2">
+                                            Post War & Contemporary Art
+                                        </p>
+                                        <p class="mb-4">
+                                            Bonhams, Los Angeles I 17 February 2023
+                                        </p>
+                                        <a href="#">View Auction</a>
+                                    </div>
+                                    <div class="col-md-5 col-12 order-md-2 order-1">
+                                        <div class="slider-img">
+                                            <img src="https://images2.bonhams.com/image?src=Images/live/2022-12/07/25282016-1-8.jpg&height=430&quality=90" class="mx-auto" alt="slide">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="mask flex-center">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col-md-7 col-12 order-md-1 order-2">
+                                        <h4>
+                                            Dancing Couple
+                                        </h4>
+                                        <h4 class="h5-style">
+                                            Fernando Botero
+                                        </h4>
+                                        <h4 class="h5-style mb-4">
+                                            USD 800,000 – 1,200,000
+                                        </h4>
+                                        <p class="mb-2">
+                                            Latin American Art
+                                        </p>
+                                        <p class="mb-4">
+                                            Christie's, New York I 9 March 2023
+                                        </p>
+                                        <a href="#">View Auction</a>
+                                    </div>
+                                    <div class="col-md-5 col-12 order-md-2 order-1">
+                                        <div class="slider-img">
+                                            <img src="https://www.christies.com/img/LotImages/2023/NYR/2023_NYR_21741_0016_000(fernando_botero_dancing_couple062526).jpg?maxwidth=1010&maxheight=650" class="mx-auto" alt="slide">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev"> <span class="carousel-control-prev-icon" aria-hidden="true"></span> <span class="sr-only">Previous</span> </a> <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next"> <span class="carousel-control-next-icon" aria-hidden="true"></span> <span class="sr-only">Next</span> </a>
+            </div>
+            <script>
+                $('#myCarousel').carousel({
+                    interval: 3000,
+                })
+            </script>
+            <!--<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <div class="row">
@@ -691,7 +884,7 @@
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="sr-only">Next</span>
                 </button>
-            </div>
+            </div>-->
         </div>
         <div class="latest-artists actions-result">
             <div class="container">
@@ -700,7 +893,9 @@
                     <p class="p-tag-style mb-4">Explore the list of <b>Top Preforming Artists</b> here</p>
                     <div class="home-demo">
                         <div class="owl-carousel owl-theme" id="getTrendingArtistId">
-                           
+
+
+
                             <!-- {% for trendingArtist in trendingArtists %}
                             <div class="item">
                                 <a href=/artist/details/?aid="{{ trendingArtist.fa_artist_ID }}" class="latest-card">
@@ -881,6 +1076,7 @@
                     <p class="p-tag-style mb-4">Explore the list of <b>upcoming auctions </b>here</p>
                     <div class="home-demo">
                         <div class="owl-carousel owl-theme" id="getUpcomingAuctionsId">
+
                             <!-- {% for upcomingAuction in upcomingAuctions %}
                             <div class="item">
                                 <a href="/auction/showauction/?aucid={{ upcomingAuction.faac_auction_ID }}"
@@ -1063,6 +1259,7 @@
                     <p class="p-tag-style mb-4">Explore the list of <b>auctions results </b>here</p>
                     <div class="home-demo">
                         <div class="owl-carousel owl-theme" id="getRecentAuctionsId">
+
                             <!-- {% for recentAuction in recentAuctions %}
                             <div class="item">
                                 <a href="/auction/showauction/?aucid={{ recentAuction.faac_auction_ID }}"
@@ -1253,28 +1450,33 @@
                         <div class="art-bider-content">
                             <h3>Explore Our Products</h3>
                             <h5>Price Database</h5>
-                            <p>Artbider offers a keyword-search to our comprehensive price database of over 10 million
+                            <p>
+                                Artbider offers a keyword-search to our comprehensive price database of over 10 million
                                 auctioned records with classified details – Title, Categories, Medium, Artwork Dates
                                 etc. You can access more than 500,000 artists records,
                                 with images, bio’s and art genre. Artbider covers more than 1500 auction houses
                                 globally.
                             </p>
                             <h5>Market Alerts</h5>
-                            <p>We send daily alerts of your favourite artists on their upcoming artworks and events. You
+                            <p>
+                                We send daily alerts of your favourite artists on their upcoming artworks and events. You
                                 will not be missing any of your favourite Auctions and Events now.
                             </p>
                             <h5>Latest Art Market Updates</h5>
-                            <p>Artbider keeps you ahead with the latest art market updates – Upcoming Auctions, News and
+                            <p>
+                                Artbider keeps you ahead with the latest art market updates – Upcoming Auctions, News and
                                 Events.
                             </p>
 
                             <h5>Collection Management</h5>
-                            <p>Add and save your favourite artworks and artists to your collection. Artbider allows you
+                            <p>
+                                Add and save your favourite artworks and artists to your collection. Artbider allows you
                                 to build and manage your own collection of your favourite Artworks, Artists and
                                 Auctions.
                             </p>
                             <h5>Artist Insights</h5>
-                            <p>Get the insights of your favourite artist annual performance – total lots sold, average
+                            <p>
+                                Get the insights of your favourite artist annual performance – total lots sold, average
                                 sold price, selling rate and more to make better and precise decisions.
                             </p>
                         </div>
@@ -1283,19 +1485,19 @@
                         <div class="row">
                             <div class="col-6 mb-4">
                                 <img src="/static/images/latestartmarketupdates.jpg" class="img-fluid fix-width"
-                                    style="border-radius: 10px;">
+                                     style="border-radius: 10px;">
                             </div>
                             <div class="col-6 mb-4">
                                 <img src="/static/images/collectionmanagement.jpg" class="img-fluid fix-width"
-                                    style="border-radius: 10px;">
+                                     style="border-radius: 10px;">
                             </div>
                             <div class="col-6">
                                 <img src="/static/images/artistinsights.jpg" class="img-fluid fix-width"
-                                    style="border-radius: 10px;">
+                                     style="border-radius: 10px;">
                             </div>
                             <div class="col-6">
                                 <img src="/static/images/emailalert.jpg" class="img-fluid fix-width"
-                                    style="border-radius: 10px;">
+                                     style="border-radius: 10px;">
                             </div>
                         </div>
                     </div>
@@ -1322,13 +1524,14 @@
                                 <div class="col-lg-5">
                                     <fieldset>
                                         <input name="email" type="text" id="email" pattern="[^ @]*@[^ @]*"
-                                            placeholder="Your Email Address" required="">
+                                               placeholder="Your Email Address" required="">
                                     </fieldset>
                                 </div>
                                 <div class="col-lg-2">
                                     <fieldset>
-                                        <button type="submit" id="form-submit" class="main-dark-button"><i
-                                                class="fa fa-paper-plane"></i></button>
+                                        <button type="submit" id="form-submit" class="main-dark-button">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </button>
                                     </fieldset>
                                 </div>
                             </div>
@@ -1347,8 +1550,11 @@
                                 <ul>
                                     <li>Work Hours:<br><span>07:30 AM - 9:30 PM Daily</span></li>
                                     <li>Email:<br><span>info@company.com</span></li>
-                                    <li>Social Media:<br><span><a href="#">Facebook</a>, <a href="#">Instagram</a>, <a
-                                                href="#">Behance</a>, <a href="#">Linkedin</a></span></li>
+                                    <li>
+                                        Social Media:<br><span>
+                                            <a href="#">Facebook</a>, <a href="#">Instagram</a>, <a href="#">Behance</a>, <a href="#">Linkedin</a>
+                                        </span>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -1492,7 +1698,7 @@
                             {% endfor %}
                         </div>
 
-                        
+
                         <div class="owl-men-item owl-carousel">
                             {% for aname, adata in artists.items %}
                             <div class="item">
@@ -1500,23 +1706,22 @@
                                     <a href="/artist/details/?aid={{adata.4}}"><img src="{{adata.2}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-									<a href="/artist/details/?aid={{adata.4}}">
-										<h4>{{aname}}</h4>
-										<span>{{adata.3}}</span>
+                                    <a href="/artist/details/?aid={{adata.4}}">
+                                        <h4>{{aname}}</h4>
+                                        <span>{{adata.3}}</span>
 
-									</a>
+                                    </a>
                                 </div>
                             </div>
                             {% endfor %}
-                            
+
                         </div>
-			
+
                     </div>
                 </div>
             </div>
         </div>
     </section>-->
-
     <!-- <section class="section" id="men">
         <div class="container">
             <div class="row">
@@ -1559,7 +1764,6 @@
             </div>
         </div>
     </section> -->
-
     <!-- <section class="section" id="men">
         <div class="container">
             <div class="row">
@@ -1621,11 +1825,11 @@
                                     <a href="/auction/details/?lid={{aucdata.lid}}"><img src="{{aucdata.coverimage}}" alt=""></a>
                                 </div>
                                 <div class="down-content">
-					<a href="/auction/details/?lid={{aucdata.lid}}">
-						<h4>{{aucname}}</h4>
-						<span>{{aucdata.description}}</span>
-					</a>
-					<a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
+                    <a href="/auction/details/?lid={{aucdata.lid}}">
+                        <h4>{{aucname}}</h4>
+                        <span>{{aucdata.description}}</span>
+                    </a>
+                    <a class="btn btn-slider" href="{{aucdata.auctionurl}}">Visit</a>
                                 </div>
                             </div>
                             {% endfor %}
@@ -1690,13 +1894,14 @@
                 </div>
                 <div class="col-lg-12">
                     <div class="under-footer">
-                        <p>Copyright © 2022. All Rights Reserved.
+                        <p>
+                            Copyright © 2022. All Rights Reserved.
 
-                        <ul>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                        </ul>
+                            <ul>
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                            </ul>
                     </div>
                 </div>
             </div>
@@ -1706,7 +1911,6 @@
 
     <!-- jQuery -->
     <!-- <script src="/static/js/jquery-2.1.0.min.js"></script> -->
-
     <!-- Bootstrap -->
     <!-- <script src="/static/js/popper.js"></script> -->
     <script src="/static/js/bootstrap.min.js"></script>
@@ -1724,7 +1928,6 @@
     <script src="/static/js/slick.js"></script> -->
     <!-- <script src="/static/js/lightbox.js"></script>
     <script src="/static/js/isotope.js"></script> -->
-
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
 

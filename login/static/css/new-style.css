@@ -1,7 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
+@font-face {
+    font-family: GT Super Medium;
+    src: url(/wp-content/themes/whitetailgin/media/dist/fonts/gt-super-medium/gt-super-medium.eot) format("embedded-opentype"),url(/wp-content/themes/whitetailgin/media/dist/fonts/gt-super-medium/gt-super-medium.woff2) format("woff2"),url(/wp-content/themes/whitetailgin/media/dist/fonts/gt-super-medium/gt-super-medium.woff) format("woff"),url(/wp-content/themes/whitetailgin/media/dist/fonts/gt-super-medium/gt-super-medium.ttf) format("truetype"),url(/wp-content/themes/whitetailgin/media/dist/fonts/gt-super-medium/gt-super-medium.svg) format("svg");
+    font-weight: 400;
+    font-style: normal
+}
 body {
-    font-family: 'Poppins', sans-serif !important;
+    font-family: 'GT Super Ds Trial Bd'!important;
 }
 
 .py--80 {
@@ -22,10 +27,13 @@ body {
     box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
 }
 
-.home-content h3 {
-    font-size: 30px;
-    font-weight: 600;
-}
+    .search-bg h4 {
+        color: #535f80;
+    }
+    .home-content h3 {
+        font-size: 30px;
+        font-weight: 600;
+    }
 
 .p-tag-style {
     font-size: 16px;
@@ -34,7 +42,7 @@ body {
 .heading-style {
     font-size: 30px !important;
     font-weight: 600 !important;
-    color: #000000 !important;
+    color: #081f62 !important;
     margin-bottom: 20px;
 }
 
@@ -63,7 +71,7 @@ body {
 }
 
 .header-area {
-    background-color: #f9f9f9 !important;
+    background-color: #E7e9f0 !important;
     border-bottom: none !important;
     height: auto !important;
 }
@@ -73,7 +81,7 @@ body {
 }
 
 .btn-login {
-    background-color: #000000;
+    background-color: #051747;
     color: #ffffff;
     padding: 4px 40px;
     font-size: 14px;
@@ -83,7 +91,7 @@ body {
 }
 
 .nav-link:hover {
-    color: #000000 !important;
+    color: #051747 !important;
 }
 
 .nav-link {
@@ -95,7 +103,7 @@ body {
 }
 
 .nav-link.active {
-    color: #000000 !important;
+    color: #051747 !important;
 }
 
 .home-content h6 {
@@ -278,7 +286,7 @@ body {
 }
 
 footer .under-footer a {
-    color: #717171;
+    color: #fff;
 }
 
 footer .under-footer a:hover {
@@ -370,14 +378,14 @@ footer .under-footer a:hover {
 
 .latest-artists .down-content span {
     font-size: 15px !important;
-    color: #a1a1a1;
+    color: #6576b6;
     font-weight: 500;
     display: block;
 }
 
 .latest-artists .down-content p {
     font-size: 14px;
-    color: #000000;
+    color: #051747;
     margin-bottom: 0;
     font-weight: 500;
     white-space: nowrap;
@@ -385,33 +393,33 @@ footer .under-footer a:hover {
 
 .latest-artists .down-content h5 {
     font-size: 18px;
-    color: #2a2a2a;
+    color: #535f80;
     font-weight: 700;
     margin-bottom: 8px;
 }
 
 .latest-artists .down-content h4 {
     font-size: 20px;
-    color: #2a2a2a;
+    color: #081f62;
     font-weight: 700;
     margin-bottom: 8px;
 }
 
 .latest-artists .down-content i {
-    color: #000000;
+    color: #051747;
 }
 
 .latest-artists .down-content {
     /* margin-top: 20px; */
     padding: 20px 0px 0;
-    background-color: #fff;
+    /*background-color: #fff;*/
     /* border-radius: 5px; */
 }
 
 .latest-card {
     padding: 20px;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: #e7e9f0;
     /* border: 1px solid rgb(246 246 246); */
     text-decoration: none;
     box-shadow: 0 2px 10px 3px rgb(0 0 0 / 15%);
@@ -425,7 +433,7 @@ footer .under-footer a:hover {
 
 .latest-artists .next-icon,
 .latest-artists .prev-icon {
-    background-color: #000000;
+    background-color: #051747;
     padding: 8px 7px 0;
 }
 
@@ -442,9 +450,12 @@ footer .under-footer a:hover {
     opacity: 1 !important;
 }
 
+.art-bider .art-bider-content h5{
+    color: #535f80;
+}
 .art-bider .art-bider-content p {
     font-size: 14px;
-    color: #505050;
+    color: #535f80;
     margin-bottom: 10px;
 }
 
@@ -461,7 +472,7 @@ footer .under-footer a:hover {
 .art-bider .art-bider-content h3 {
     font-size: 30px;
     font-weight: 600;
-    color: #000000;
+    color: #051747;
     margin-bottom: 20px;
 }
 
@@ -481,15 +492,15 @@ footer .under-footer a:hover {
 .subscribe .section-heading h2 {
     font-size: 34px;
     font-weight: 700;
-    color: #000000;
+    color: #051747;
 }
 
-.subscribe .section-heading span {
-    font-size: 14px;
-    color: #a1a1a1;
-    font-style: italic;
-    font-weight: 400;
-}
+    .subscribe .section-heading span {
+        font-size: 14px;
+        color: #535f80;
+        font-style: italic;
+        font-weight: 400;
+    }
 
 .subscribe form input {
     width: 100%;
@@ -511,7 +522,7 @@ footer .under-footer a:hover {
     display: inline-block;
     text-align: center;
     line-height: 44px;
-    background-color: #000000;
+    background-color: #051747;
     box-shadow: none;
     border: 1px solid transparent;
     color: #fff;
@@ -532,7 +543,7 @@ li {
 .subscribe ul li {
     font-size: 16px;
     font-weight: 700;
-    color: #2a2a2a;
+    color: #535f80;
 }
 
 .subscribe ul li {
@@ -540,12 +551,12 @@ li {
     display: block;
 }
 
-.subscribe ul li span,
-.subscribe ul li span a {
-    font-size: 14px;
-    font-weight: 400;
-    color: #aaa;
-}
+    .subscribe ul li span,
+    .subscribe ul li span a {
+        font-size: 14px;
+        font-weight: 400;
+        color: #535f80;
+    }
 
 .p-style {
     font-size: 14px !important;
@@ -558,7 +569,7 @@ li {
 .sub-heading-style {
     font-size: 25px !important;
     font-weight: 600 !important;
-    color: #000000 !important;
+    color: #051747 !important;
     margin-bottom: 20px;
 }
 
@@ -701,11 +712,12 @@ li {
     border-radius: 10px;
 }
 
-.img-box h4 {
-    font-size: 15px !important;
-    padding-top: 14px !important;
-    text-align: center;
-}
+    .img-box h4 {
+        font-size: 15px !important;
+        padding-top: 14px !important;
+        text-align: center;
+        color: #081f62;
+    }
 
 @media (max-width: 767px) {
     #frmsearchauctionhouses input[type=search] {
@@ -723,10 +735,11 @@ li {
     border-radius: 5px 5px 0 0;
 }
 
-.page-show h6 {
-    font-size: 13px;
-    font-weight: 600;
-}
+    .page-show h6 {
+        font-size: 13px;
+        color: #081f62;
+        font-weight: 600;
+    }
 
 .cate-tabs-content {
     background-color: #f9f9f9;
@@ -767,7 +780,7 @@ li {
 .latest-artists .down-content h6 span {
     font-size: 14px;
     font-weight: 600;
-    color: #000000;
+    color: #051747;
     display: inline-block !important;
 }
 
@@ -809,7 +822,7 @@ li {
 
 .show-more {
     font-size: 14px;
-    color: #000000;
+    color: #051747;
     text-decoration: underline !important;
 }
 
@@ -844,12 +857,12 @@ li {
 .artists-details .artists-details-content h4 {
     font-size: 22px;
     font-weight: 600;
-    color: #000000;
+    color: #051747;
 }
 
 .artists-details .artists-details-content h6 {
     font-size: 20px;
-    color: #000000;
+    color: #051747;
     margin-bottom: 10px;
 }
 
@@ -899,7 +912,7 @@ li {
 .artist-card h3 {
     font-size: 16px;
     font-weight: 600;
-    color: #000000;
+    color: #051747;
     margin-bottom: 4px;
 }
 
@@ -988,7 +1001,7 @@ li {
 .bg-form {
     background-color: #f9f9f9;
     padding: 20px;
-    border: 1.5px dashed #000000;
+    border: 1.5px dashed #051747;
     border-radius: 10px;
 }
 
@@ -1019,7 +1032,7 @@ li {
 .subscription-box h3 {
     font-weight: 600;
     font-size: 24px;
-    color: #000000;
+    color: #051747;
     margin-bottom: 10px;
 }
 
@@ -1033,7 +1046,7 @@ li {
 
 .subscription-box h6 {
     font-weight: 500;
-    color: #000000;
+    color: #051747;
     font-size: 18px;
     text-align: center;
     margin-bottom: 4px;
@@ -1136,3 +1149,390 @@ li {
         transform: rotate(360deg);
     }
 }
+.navbar-nav.sm-icons .btn {
+    background-color: #051747;
+    color: #ffffff;
+    padding: 4px 40px;
+    font-size: 14px;
+    font-weight: 600;
+    border:0;
+    border-radius:5px !important;
+    letter-spacing: 1px;
+}
+.navbar-nav.sm-icons{
+    align-items:center;
+}
+
+.list-unstyled a,
+.list-unstyled.components a {
+    font-size: 14px;
+}
+
+    .list-unstyled a i,
+    .list-unstyled.components a i {
+        font-size: 22px;
+        margin-right: 15px;
+        width: 20px;
+    }
+.list-unstyled h5 i{
+    display:none;
+}
+.notifications .notifications-box {
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+    .notifications .notifications-box .notifications-img img {
+        width: 100%;
+    }
+
+    .notifications .notifications-box span {
+        font-size: 15px;
+        color: #a1a1a1;
+        font-weight: 500;
+        display: block;
+    }
+
+    .notifications .notifications-box .notifications-content p {
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        height: auto;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .notifications .notifications-box .notifications-content h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .notifications .notifications-box .notifications-img {
+        height: 80px;
+        overflow: hidden;
+        width: 80px;
+        border-radius: 10px;
+    }
+
+.text-md-end {
+    text-align: end;
+}
+
+@media (max-width:767px) {
+    .text-md-end {
+        text-align: start;
+    }
+}
+.card-list .card-box {
+    background-color: #fff;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.15);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+    .card-list .card-box h4 {
+        font-weight: 600;
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+.iti.iti--allow-dropdown.iti--separate-dial-code{
+    width:100% !important;
+}
+#myCarousel .carousel-item .mask {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: auto;
+    width: 100%;
+    transform: translateY(-50%);
+    background-attachment: fixed;
+}
+
+#myCarousel h4 {
+    font-size: 50px;
+    margin-bottom: 15px;
+    color: #FFF;
+    line-height: 100%;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+#myCarousel p {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #d5d5d5;
+}
+
+#myCarousel .carousel-item a {
+    background: #535f80;
+    color: #ffffff;
+    padding: 10px 40px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 0;
+    border-radius: 5px !important;
+    letter-spacing: 1px;
+    display: inline-block;
+}
+
+
+
+#myCarousel .carousel-item h5,
+#myCarousel .carousel-item h6,
+#myCarousel .carousel-item h4 {
+    -webkit-animation-name: fadeInLeft;
+    animation-name: fadeInLeft;
+}
+
+#myCarousel .carousel-item p {
+    -webkit-animation-name: slideInRight;
+    animation-name: slideInRight;
+}
+
+#myCarousel .carousel-item a {
+    -webkit-animation-name: fadeInUp;
+    animation-name: fadeInUp;
+}
+
+#myCarousel .carousel-item .mask img {
+    -webkit-animation-name: slideInRight;
+    animation-name: slideInRight;
+    display: block;
+    height: auto;
+    max-width: 100%;
+}
+
+#myCarousel h4, #myCarousel p, #myCarousel a, #myCarousel .carousel-item .mask img {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1.2s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+#myCarousel .container {
+    max-width: 1430px;
+}
+
+#myCarousel .carousel-item {
+    height: 100%;
+    min-height: 550px;
+}
+
+#myCarousel {
+    position: relative;
+    z-index: 1;
+    background-color: #051747;
+}
+
+.carousel-control-next, .carousel-control-prev {
+    height: 40px;
+    width: 40px;
+    padding: 12px;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    background-color: #535f80;
+}
+
+
+.carousel-item {
+    position: relative;
+    display: none;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+    transition: -webkit-transform .6s ease;
+    transition: transform .6s ease;
+    transition: transform .6s ease,-webkit-transform .6s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+}
+
+.carousel-fade .carousel-item {
+    opacity: 0;
+    -webkit-transition-duration: .6s;
+    transition-duration: .6s;
+    -webkit-transition-property: opacity;
+    transition-property: opacity
+}
+
+    .carousel-fade .carousel-item-next.carousel-item-left, .carousel-fade .carousel-item-prev.carousel-item-right, .carousel-fade .carousel-item.active {
+        opacity: 1
+    }
+
+.carousel-fade .carousel-item-left.active, .carousel-fade .carousel-item-right.active {
+    opacity: 0
+}
+
+.carousel-fade .carousel-item-left.active, .carousel-fade .carousel-item-next, .carousel-fade .carousel-item-prev, .carousel-fade .carousel-item-prev.active, .carousel-fade .carousel-item.active {
+    -webkit-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0)
+}
+
+@supports (transform-style:preserve-3d) {
+    .carousel-fade .carousel-item-left.active, .carousel-fade .carousel-item-next, .carousel-fade .carousel-item-prev, .carousel-fade .carousel-item-prev.active, .carousel-fade .carousel-item.active {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0)
+    }
+}
+
+.carousel-fade .carousel-item-left.active, .carousel-fade .carousel-item-next, .carousel-fade .carousel-item-prev, .carousel-fade .carousel-item-prev.active, .carousel-fade .carousel-item.active {
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+}
+
+
+
+@-webkit-keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInLeft {
+    -webkit-animation-name: fadeInLeft;
+    animation-name: fadeInLeft;
+}
+
+@-webkit-keyframes fadeInUp {
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+    }
+
+    to {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInUp {
+    -webkit-animation-name: fadeInUp;
+    animation-name: fadeInUp;
+}
+
+@-webkit-keyframes slideInRight {
+    from {
+        -webkit-transform: translate3d(100%, 0, 0);
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        -webkit-transform: translate3d(100%, 0, 0);
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.slideInRight {
+    -webkit-animation-name: slideInRight;
+    animation-name: slideInRight;
+}
+
+.slider-img {
+    width: 600px;
+    height: 500px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#myCarousel .carousel-item p {
+    font-size: 26px;
+    color: #fff;
+    font-weight: 600;
+    line-height: 36px;
+    margin-bottom: 0;
+}
+
+#myCarousel .carousel-item h4 {
+    line-height: 55px;
+    font-size: 46px;
+}
+
+.h5-style {
+    font-size: 26px !important;
+}
+@media (max-width:767px){
+    .slider-img {
+        margin-bottom:20px;
+        width: 100%;
+        height: auto;
+    }
+    #myCarousel .carousel-item h4 {
+        font-size: 26px;
+        line-height: 32px;
+    }
+    .h5-style {
+        font-size: 18px !important;
+    }
+    #myCarousel .carousel-item p {
+        font-size: 18px;
+    }
+    #myCarousel .carousel-item {
+        min-height: 770px;
+    }
+}
+@media (min-width:768px) and (max-width:1499px){
+    .slider-img {
+        width: 100%;
+        height: auto;
+    }
+    }

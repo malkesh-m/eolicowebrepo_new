@@ -170,7 +170,7 @@ ul {
 p {
     font-size: 14px;
     line-height: 25px;
-    color: #2a2a2a;
+    color: #535f80;
 }
 
 
@@ -1058,22 +1058,22 @@ Women
     padding-top: 30px;
     position: relative;
     z-index: 3;
-    background-color: #fff;
+    /*background-color: #fff;*/
 }
 
 #women .item .down-content h4 {
     font-size: 22px;
-    color: #2a2a2a;
+    color: #081f62;
     font-weight: 700;
     margin-bottom: 8px;
 }
 
-#women .item .down-content span {
-    font-size: 18px;
-    color: #a1a1a1;
-    font-weight: 500;
-    display: block;
-}
+    #women .item .down-content span {
+        font-size: 18px;
+        color: #6576b6;
+        font-weight: 500;
+        display: block;
+    }
 
 #women .item .down-content ul.stars {
     position: absolute;
@@ -1145,19 +1145,19 @@ Women
     opacity: 0;
 }
 
-#women .owl-nav .owl-prev:before {
-    display: inline-block;
-    font-family: 'FontAwesome';
-    color: #2a2a2a;
-    font-size: 25px;
-    font-weight: 700;
-    content: '\f104';
-    width: 50px;
-    height: 50px;
-    background-color: transparent;
-    line-height: 48px;
-    border: 1px solid #2a2a2a;
-}
+    #women .owl-nav .owl-prev:before {
+        display: inline-block;
+        font-family: 'FontAwesome';
+        color: #051747;
+        font-size: 25px;
+        font-weight: 700;
+        content: '\f104';
+        width: 50px;
+        height: 50px;
+        background-color: transparent;
+        line-height: 48px;
+        border: 1px solid #2a2a2a;
+    }
 
 #women .owl-nav .owl-prev {
     opacity: 0.75;
@@ -1618,7 +1618,7 @@ footer
 footer {
     margin-top: 60px;
     padding: 60px 0px 30px 0px;
-    background-color: #2a2a2a;
+    background-color: #051747;
 }
 
 footer .logo {
@@ -2593,10 +2593,10 @@ footer .under-footer a:hover {
     border: 0;
 }
 
-#gal-Tab .nav-item a.nav-link.active {
-    color: #ffffff !important;
-    background-color: #000;
-}
+    #gal-Tab .nav-item a.nav-link.active {
+        color: #ffffff !important;
+        background-color: #081f62;
+    }
 
 .gl-dt-item {
     margin-bottom: 30px;
