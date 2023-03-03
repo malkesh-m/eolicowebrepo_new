@@ -51,336 +51,336 @@ htmlpattern02 = re.compile("\&lt;[^\&gt;]+\&gt;", re.DOTALL)
 def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    pagemap = {'a' : 1, 'b' : 2, 'c' : 3, 'd' : 4, 'e' : 5, 'f' : 6, 'g' : 7, 'h' : 8, 'i' : 9, 'j' : 10, 'k' : 11, 'l' : 12, 'm' : 13, 'n' : 14, 'o' : 15, 'p' : 16, 'q' : 17, 'r' : 18, 's' : 19, 't' : 20, 'u' : 21, 'v' : 22, 'w' : 23, 'x' : 24, 'y' : 25, 'z' : 26, '-' : -1}
-    pageno = "-"
-    if request.method == 'GET':
-        if 'page' in request.GET.keys():
-            pageno = str(request.GET['page'])
-    try:
-        page = pagemap[pageno]
-    except:
-        page = -1
-    chunksize = 3
-    rows = 4
-    featuredsize = 3
-    rowstartctr = int(abs(page)) * rows - rows
-    rowendctr = int(abs(page)) * rows
-    startctr = (chunksize * rows) * (int(abs(page)) -1) + featuredsize
-    endctr = (chunksize * rows) * int(abs(page)) + featuredsize
-    maxartworkstoconsider = 100
-    connlist = connecttoDB()
-    dbconn, cursor = connlist[0], connlist[1]
-    context = {}
-    featuredartists = []
-    uniqartistsnames = []
-    artistsstatisticalinfo = {}
-    try:
-        featuredartists = pickle.loads(redis_instance.get('at_featuredartists'))
-    except:
-        featuredartists = []
-    uniqartists = {}
-    if featuredartists.__len__() == 0:
-        """
-        try:
-            artist_view_sql = "create view featured_artists as select fa.fa_artist_ID as artist_id, fa.fa_artist_name as artist_name, fal.fal_lot_sale_price_USD as artist_price_usd, fa.fa_artist_name_prefix as prefix, fa.fa_artist_nationality as nationality, fa.fa_artist_birth_year as birthyear, fa.fa_artist_death_year as deathyear, fa.fa_artist_description as description, fa.fa_artist_aka as aka, fa.fa_artist_bio as bio, fa.fa_artist_image as artistimage, fa.fa_artist_genre as genre from fineart_artists fa, fineart_artworks faa, fineart_lots fal where fa.fa_artist_ID=faa.faa_artist_ID and faa.faa_artwork_ID=fal.fal_artwork_ID"
-            cursor.execute(artist_view_sql)
-            dbconn.commit()
-        except:
-            pass # We are here because the view exists. Do nothing.
-        whereclause = ""
-        if page != 1:
-            whereclause = "and artist_name like '" + str(pageno) + "%'"
-        getview_sql = "select artist_id, artist_name, sum(artist_price_usd) as price, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre from featured_artists where artistimage is not NULL and artistimage != '' %s group by artist_id order by price desc"%whereclause
+    # pagemap = {'a' : 1, 'b' : 2, 'c' : 3, 'd' : 4, 'e' : 5, 'f' : 6, 'g' : 7, 'h' : 8, 'i' : 9, 'j' : 10, 'k' : 11, 'l' : 12, 'm' : 13, 'n' : 14, 'o' : 15, 'p' : 16, 'q' : 17, 'r' : 18, 's' : 19, 't' : 20, 'u' : 21, 'v' : 22, 'w' : 23, 'x' : 24, 'y' : 25, 'z' : 26, '-' : -1}
+    # pageno = "-"
+    # if request.method == 'GET':
+    #     if 'page' in request.GET.keys():
+    #         pageno = str(request.GET['page'])
+    # try:
+    #     page = pagemap[pageno]
+    # except:
+    #     page = -1
+    # chunksize = 3
+    # rows = 4
+    # featuredsize = 3
+    # rowstartctr = int(abs(page)) * rows - rows
+    # rowendctr = int(abs(page)) * rows
+    # startctr = (chunksize * rows) * (int(abs(page)) -1) + featuredsize
+    # endctr = (chunksize * rows) * int(abs(page)) + featuredsize
+    # maxartworkstoconsider = 100
+    # connlist = connecttoDB()
+    # dbconn, cursor = connlist[0], connlist[1]
+    # context = {}
+    # featuredartists = []
+    # uniqartistsnames = []
+    # artistsstatisticalinfo = {}
+    # try:
+    #     featuredartists = pickle.loads(redis_instance.get('at_featuredartists'))
+    # except:
+    #     featuredartists = []
+    # uniqartists = {}
+    # if featuredartists.__len__() == 0:
+
+        # try:
+        #     artist_view_sql = "create view featured_artists as select fa.fa_artist_ID as artist_id, fa.fa_artist_name as artist_name, fal.fal_lot_sale_price_USD as artist_price_usd, fa.fa_artist_name_prefix as prefix, fa.fa_artist_nationality as nationality, fa.fa_artist_birth_year as birthyear, fa.fa_artist_death_year as deathyear, fa.fa_artist_description as description, fa.fa_artist_aka as aka, fa.fa_artist_bio as bio, fa.fa_artist_image as artistimage, fa.fa_artist_genre as genre from fineart_artists fa, fineart_artworks faa, fineart_lots fal where fa.fa_artist_ID=faa.faa_artist_ID and faa.faa_artwork_ID=fal.fal_artwork_ID"
+        #     cursor.execute(artist_view_sql)
+        #     dbconn.commit()
+        # except:
+        #     pass # We are here because the view exists. Do nothing.
+        # whereclause = ""
+        # if page != 1:
+        #     whereclause = "and artist_name like '" + str(pageno) + "%'"
+        # getview_sql = "select artist_id, artist_name, sum(artist_price_usd) as price, prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre from featured_artists where artistimage is not NULL and artistimage != '' %s group by artist_id order by price desc"%whereclause
         #print(getview_sql)
-        cursor.execute(getview_sql)
-        artistsqset = cursor.fetchall()
-        """
-        date1yearago = datetime.datetime.now() - datetime.timedelta(days=settings.YEARS_FOR_FEATURED_ARTIST*365)
-        featuredartistsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id, A.saledate FROM fa_featured_artists A where A.saledate > '%s' ORDER BY A.totalsoldprice DESC LIMIT %s OFFSET %s"%(date1yearago, endctr, startctr)
+        # cursor.execute(getview_sql)
+        # artistsqset = cursor.fetchall()
+
+        # date1yearago = datetime.datetime.now() - datetime.timedelta(days=settings.YEARS_FOR_FEATURED_ARTIST*365)
+        # featuredartistsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id, A.saledate FROM fa_featured_artists A where A.saledate > '%s' ORDER BY A.totalsoldprice DESC LIMIT %s OFFSET %s"%(date1yearago, endctr, startctr)
         #print(featuredartistsql)
-        cursor.execute(featuredartistsql)
-        artistsqset = cursor.fetchall()
+        # cursor.execute(featuredartistsql)
+        # artistsqset = cursor.fetchall()
         #artistsqset = FeaturedArtist.objects.all().order_by('-totalsoldprice')[0:endctr]
-        if page != -1:
-            artistnamestartswithsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A WHERE A.artist_name LIKE '" + str(pageno) + "%' or A.artist_name LIKE '" + str(pageno).upper() + "%' order by A.saledate desc" # TODO: Add condition based on saledate (in the past 12 months only)
-            cursor.execute(artistnamestartswithsql)
-            artistsqset = cursor.fetchall()
+        # if page != -1:
+        #     artistnamestartswithsql = "SELECT A.artist_id, A.artist_name, A.prefix, A.nationality, A.birthyear, A.deathyear, A.description, A.aka, A.bio, A.artistimage, A.genre, A.totalsoldprice, A.id FROM fa_featured_artists A WHERE A.artist_name LIKE '" + str(pageno) + "%' or A.artist_name LIKE '" + str(pageno).upper() + "%' order by A.saledate desc" # TODO: Add condition based on saledate (in the past 12 months only)
+        #     cursor.execute(artistnamestartswithsql)
+        #     artistsqset = cursor.fetchall()
             #artistsqset = FeaturedArtist.objects.filter(artist_name__istartswith=str(pageno)).order_by('-totalsoldprice')[0:endctr]
-        for artist in artistsqset:
-            artistid = artist[0]
-            if artistid in settings.BLACKLISTED_ARTISTS:
-                continue
-            artistname = artist[1]
-            if artistname == "Missing":
-                continue
-            price = artist[11]
-            if price is None:
-                price = 0.00
-            prefix = artist[2]
-            nationality = artist[3]
-            birthyear = artist[4]
-            deathyear = artist[5]
-            description = artist[6]
-            aka = artist[7]
-            bio = artist[8]
-            artistimage = settings.IMG_URL_PREFIX + str(artist[9])
-            if artist[9] is None or artist[9] == "":
-                artistimage = "/static/images/default_artist.jpg"
-            genre = artist[10]
-            if artistname not in uniqartists.keys():
-                uniqartists[artistname] = [artistid, artistname, float(price), prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre]
-            else:
-                l = uniqartists[artistname]
-                uniqartists[artistname] = l
-        uniqartistsnames = list(uniqartists.keys())
-        for artistname in uniqartistsnames[0:featuredsize]:
-            artist = uniqartists[artistname]
-            artistid = artist[0]
-            artistname = artist[1]
-            price = "{:,}".format(artist[2])
-            if not price or price is None:
-                price = 0.00
-            prefix = artist[3]
-            nationality = artist[4]
-            birthyear = artist[5]
-            deathyear = artist[6]
-            birthdeath = ""
-            if birthyear != "":
-                birthdeath = "b. " + str(birthyear)
-            if deathyear != "":
-                birthdeath = str(birthyear) + " - " + str(deathyear)
-            description = artist[7]
-            aka = artist[8]
-            bio = artist[9]
-            artistimage = str(artist[10])
-            genre = artist[11]
-            if nationality == "na":
-                nationality = ""
-            if birthyear == 0:
-                birthyear = ""
-            if prefix != "" and prefix != "na":
-                prefix = prefix + " "
-            # Check for follows and favourites
-            if request.user.is_authenticated:
-                #folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
-                folqset = favqset
-            else:
-                folqset = []
-                favqset = []
-            folflag = 0
-            if folqset.__len__() > 0:
-                folflag = 1
-            favflag = 0
-            if favqset.__len__() > 0:
-                favflag = 1
-            bdstring = str(birthyear)
-            if deathyear is not None:
-                bdstring = bdstring + " - " + str(deathyear)
-            else:
-                bdstring = "Born " + bdstring
-            d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
-            artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
-            #print(artworksql)
-            cursor.execute(artworksql)
-            artworkqset = cursor.fetchall()
-            if artworkqset.__len__() == 0:
-                d['artworkname'] = ""
-                d['artworkimage'] = ""
-                d['artworkdate'] = ""
-                d['awid'] = ""
-                d['atype'] = "0" # Artists with no related artwork
-            else:
-                d['artworkname'] = artworkqset[0][1]
-                d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkqset[0][3])
-                d['artworkdate'] = artworkqset[0][2]
-                d['awid'] = artworkqset[0][0]
-                d['atype'] = "1" # Artists with available related artwork
-            featuredartists.append(d)
-        try:
-            redis_instance.set('at_featuredartists', pickle.dumps(featuredartists))
-        except:
-            pass
-    else:
-        pass
-    context['featuredartists'] = featuredartists
-    allartists = []
-    rctr = 0
-    while rctr < rows:
-        allartists.append([]) # 'allartists' is a list of lists, and the inner list contains dicts specified by the variable 'd' below.
-        rctr += 1
-    rctr = 0
-    actr = 0
-    uniqueartists = {}
-    uniqueartworks = {}
-    try:
-        uniqueartists = pickle.loads(redis_instance.get('at_uniqueartists'))
-        uniqueartworks = pickle.loads(redis_instance.get('at_uniqueartworks'))
-        allartists = pickle.loads(redis_instance.get('at_allartists'))
-    except:
-        pass
-    #print("HERE...")
-    if allartists[0].__len__() == 0:
-        if uniqartistsnames.__len__() > featuredsize:
-            for artistname in uniqartistsnames[startctr:endctr]:
-                artist = uniqartists[artistname]
-                artistid = artist[0]
-                artistname = artist[1]
-                price = artist[2]
-                prefix = artist[3]
-                nationality = artist[4]
-                birthyear = artist[5]
-                deathyear = artist[6]
-                birthdeath = ""
-                if birthyear != "":
-                    birthdeath = "b. " + str(birthyear)
-                if deathyear != "":
-                    birthdeath = str(birthyear) + " - " + str(deathyear)
-                description = artist[7]
-                aka = artist[8]
-                bio = artist[9]
-                artistimage = str(artist[10])
-                genre = artist[11]
-                if nationality == "na":
-                    nationality = ""
-                if birthyear == 0:
-                    birthyear = ""
-                if prefix != "" and prefix != "na":
-                    prefix = prefix + " "
-                # Check for follows and favourites
-                if request.user.is_authenticated:
-                    #folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
-                    favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
-                    folqset = favqset
-                else:
-                    folqset = []
-                    favqset = []
-                folflag = 0
-                if folqset.__len__() > 0:
-                    folflag = 1
-                favflag = 0
-                if favqset.__len__() > 0:
-                    favflag = 1
-                bdstring = str(birthyear)
-                if deathyear is not None:
-                    bdstring = bdstring + " - " + str(deathyear)
-                else:
-                    bdstring = "Born " + bdstring
-                d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
-                artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
-                #print(artworksql1)
-                cursor.execute(artworksql1)
-                artworkqset1 = cursor.fetchall()
-                try: # Getting a stupid "Protocol error, expecting EOF" for artistid 90761...
-                    if artworkqset1.__len__() == 0:
-                        continue
-                except:
-                    continue
-                artworkobj = artworkqset1[0]
-                if artworkobj[1].title() not in uniqueartworks.keys():
-                    d['artworkname'] = artworkobj[1].title()
-                    d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkobj[3])
-                    d['artworkdate'] = artworkobj[2]
-                    d['awid'] = artworkobj[0]
-                    d['artworkmedium'] = artworkobj[4]
-                    uniqueartworks[artworkobj[1].title()] = 1
-                else:
-                    awctr = 0
-                    awfound = 0
-                    while awctr < artworkqset1.__len__() - 1: # Iterate over all artworks by the artist under consideration
-                        awctr += 1
-                        artworkobj2 = artworkqset1[awctr] # Starting from index 1
-                        if artworkobj2[1].title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
-                            if artworkobj2[3] == "":
-                                continue
-                            d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkobj2[3])
-                            d['artworkdate'] = artworkobj2[2]
-                            d['awid'] = artworkobj2[0]
-                            d['artworkmedium'] = artworkobj2[4]
-                            d['artworkname'] = artworkobj2[1].title()
-                            #print(artworkobj2[1].title())
-                            uniqueartworks[artworkobj2[1].title()] = 1
-                            awfound = 1
-                            break
-                    if awfound == 0: # Skip this artist if no new artworks could be found.
-                        continue
-                if actr < chunksize:
-                    l = allartists[rctr]
-                    l.append(d)
-                    allartists[rctr] = l
-                    actr += 1
-                else:
-                    actr = 0
-                    rctr += 1
-                if rctr == rows:
-                    break
-            try:
-                redis_instance.set('at_allartists', pickle.dumps(allartists))
-                redis_instance.set('at_uniqueartists', pickle.dumps(uniqueartists))
-                redis_instance.set('at_uniqueartworks', pickle.dumps(uniqueartworks))
-            except:
-                pass    
-    context['allartists'] = allartists
-    context['uniqueartists'] = uniqueartists
-    context['uniqueartworks'] = uniqueartworks
-    context['statisticalinfo'] = artistsstatisticalinfo
-    filterartists = []
-    try:
-        filterartists = pickle.loads(redis_instance.get('at_filterartists'))
-    except:
-        pass
-    if filterartists.__len__() == 0:
-        allartistsqset = FeaturedArtist.objects.all()[0:20000]
-        uniqueartistnames = {}
-        for artist in allartistsqset:
-            if artist.artist_name not in uniqueartistnames.keys():
-                uniqueartistnames[artist.artist_name] = 1
-            else:
-                continue
-            if artist.nationality != "" and artist.nationality is not None:
-                nationality = artist.nationality
-            else:
-                nationality = ""
-            if artist.birthyear != "" and artist.birthyear is not None and artist.birthyear != 0:
-                birthyear = str(artist.birthyear)
-            else:
-                birthyear = ""
-            if artist.deathyear != "" and artist.deathyear is not None and artist.deathyear != 0:
-                deathyear = str(artist.deathyear)
-            else:
-                deathyear = ""
-            artistinfo = ""
-            if nationality != "":
-                artistinfo = artist.artist_name + " (" + nationality + ", "
-            else:
-                artistinfo = artist.artist_name + " ("
-            if birthyear != "":
-                artistinfo = artistinfo + birthyear + " - "
-            else:
-                pass
-            if deathyear != "":
-                artistinfo = artistinfo + deathyear + ")"
-            else:
-                artistinfo = artistinfo + ")"
-            filterartists.append(artistinfo)
-        try:
-            redis_instance.set('at_filterartists', pickle.dumps(filterartists))
-        except:
-            pass
-    context['filterartists'] = filterartists
+        # for artist in artistsqset:
+        #     artistid = artist[0]
+        #     if artistid in settings.BLACKLISTED_ARTISTS:
+        #         continue
+        #     artistname = artist[1]
+        #     if artistname == "Missing":
+        #         continue
+        #     price = artist[11]
+        #     if price is None:
+        #         price = 0.00
+        #     prefix = artist[2]
+        #     nationality = artist[3]
+        #     birthyear = artist[4]
+        #     deathyear = artist[5]
+        #     description = artist[6]
+        #     aka = artist[7]
+        #     bio = artist[8]
+        #     artistimage = settings.IMG_URL_PREFIX + str(artist[9])
+        #     if artist[9] is None or artist[9] == "":
+        #         artistimage = "/static/images/default_artist.jpg"
+        #     genre = artist[10]
+        #     if artistname not in uniqartists.keys():
+        #         uniqartists[artistname] = [artistid, artistname, float(price), prefix, nationality, birthyear, deathyear, description, aka, bio, artistimage, genre]
+        #     else:
+        #         l = uniqartists[artistname]
+        #         uniqartists[artistname] = l
+        # uniqartistsnames = list(uniqartists.keys())
+        # for artistname in uniqartistsnames[0:featuredsize]:
+        #     artist = uniqartists[artistname]
+        #     artistid = artist[0]
+        #     artistname = artist[1]
+        #     price = "{:,}".format(artist[2])
+        #     if not price or price is None:
+        #         price = 0.00
+        #     prefix = artist[3]
+        #     nationality = artist[4]
+        #     birthyear = artist[5]
+        #     deathyear = artist[6]
+        #     birthdeath = ""
+        #     if birthyear != "":
+        #         birthdeath = "b. " + str(birthyear)
+        #     if deathyear != "":
+        #         birthdeath = str(birthyear) + " - " + str(deathyear)
+        #     description = artist[7]
+        #     aka = artist[8]
+        #     bio = artist[9]
+        #     artistimage = str(artist[10])
+        #     genre = artist[11]
+        #     if nationality == "na":
+        #         nationality = ""
+        #     if birthyear == 0:
+        #         birthyear = ""
+        #     if prefix != "" and prefix != "na":
+        #         prefix = prefix + " "
+        #     # Check for follows and favourites
+        #     if request.user.is_authenticated:
+        #         #folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
+        #         favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+        #         folqset = favqset
+        #     else:
+        #         folqset = []
+        #         favqset = []
+        #     folflag = 0
+        #     if folqset.__len__() > 0:
+        #         folflag = 1
+        #     favflag = 0
+        #     if favqset.__len__() > 0:
+        #         favflag = 1
+        #     bdstring = str(birthyear)
+        #     if deathyear is not None:
+        #         bdstring = bdstring + " - " + str(deathyear)
+        #     else:
+        #         bdstring = "Born " + bdstring
+        #     d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'totalsold' : str(price), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
+        #     artworksql = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1 from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
+        #     #print(artworksql)
+        #     cursor.execute(artworksql)
+        #     artworkqset = cursor.fetchall()
+        #     if artworkqset.__len__() == 0:
+        #         d['artworkname'] = ""
+        #         d['artworkimage'] = ""
+        #         d['artworkdate'] = ""
+        #         d['awid'] = ""
+        #         d['atype'] = "0" # Artists with no related artwork
+        #     else:
+        #         d['artworkname'] = artworkqset[0][1]
+        #         d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkqset[0][3])
+        #         d['artworkdate'] = artworkqset[0][2]
+        #         d['awid'] = artworkqset[0][0]
+        #         d['atype'] = "1" # Artists with available related artwork
+        #     featuredartists.append(d)
+        # try:
+        #     redis_instance.set('at_featuredartists', pickle.dumps(featuredartists))
+    #     except:
+    #         pass
+    # else:
+    #     pass
+    # context['featuredartists'] = featuredartists
+    # allartists = []
+    # rctr = 0
+    # while rctr < rows:
+    #     allartists.append([]) # 'allartists' is a list of lists, and the inner list contains dicts specified by the variable 'd' below.
+    #     rctr += 1
+    # rctr = 0
+    # actr = 0
+    # uniqueartists = {}
+    # uniqueartworks = {}
+    # try:
+    #     uniqueartists = pickle.loads(redis_instance.get('at_uniqueartists'))
+    #     uniqueartworks = pickle.loads(redis_instance.get('at_uniqueartworks'))
+    #     allartists = pickle.loads(redis_instance.get('at_allartists'))
+    # except:
+    #     pass
+    # #print("HERE...")
+    # if allartists[0].__len__() == 0:
+    #     if uniqartistsnames.__len__() > featuredsize:
+    #         for artistname in uniqartistsnames[startctr:endctr]:
+    #             artist = uniqartists[artistname]
+    #             artistid = artist[0]
+    #             artistname = artist[1]
+    #             price = artist[2]
+    #             prefix = artist[3]
+    #             nationality = artist[4]
+    #             birthyear = artist[5]
+    #             deathyear = artist[6]
+    #             birthdeath = ""
+    #             if birthyear != "":
+    #                 birthdeath = "b. " + str(birthyear)
+    #             if deathyear != "":
+    #                 birthdeath = str(birthyear) + " - " + str(deathyear)
+    #             description = artist[7]
+    #             aka = artist[8]
+    #             bio = artist[9]
+    #             artistimage = str(artist[10])
+    #             genre = artist[11]
+    #             if nationality == "na":
+    #                 nationality = ""
+    #             if birthyear == 0:
+    #                 birthyear = ""
+    #             if prefix != "" and prefix != "na":
+    #                 prefix = prefix + " "
+    #             # Check for follows and favourites
+    #             if request.user.is_authenticated:
+    #                 #folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
+    #                 favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists", reference_model_id=artistid)
+    #                 folqset = favqset
+    #             else:
+    #                 folqset = []
+    #                 favqset = []
+    #             folflag = 0
+    #             if folqset.__len__() > 0:
+    #                 folflag = 1
+    #             favflag = 0
+    #             if favqset.__len__() > 0:
+    #                 favflag = 1
+    #             bdstring = str(birthyear)
+    #             if deathyear is not None:
+    #                 bdstring = bdstring + " - " + str(deathyear)
+    #             else:
+    #                 bdstring = "Born " + bdstring
+    #             d = {'artistname' : artistname, 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(deathyear), 'about' : description, 'profileurl' : '', 'artistimage' : artistimage, 'aid' : str(artistid), 'birthdeath' : birthdeath, 'follow' : folflag, 'favourite' : favflag, 'bdstring' : bdstring}
+    #             artworksql1 = "select faa_artwork_ID, faa_artwork_title, faa_artwork_start_year, faa_artwork_image1, faa_artwork_material from fineart_artworks where faa_artist_ID=%s limit %s"%(artistid, maxartworkstoconsider)
+    #             #print(artworksql1)
+    #             cursor.execute(artworksql1)
+    #             artworkqset1 = cursor.fetchall()
+    #             try: # Getting a stupid "Protocol error, expecting EOF" for artistid 90761...
+    #                 if artworkqset1.__len__() == 0:
+    #                     continue
+    #             except:
+    #                 continue
+    #             artworkobj = artworkqset1[0]
+    #             if artworkobj[1].title() not in uniqueartworks.keys():
+    #                 d['artworkname'] = artworkobj[1].title()
+    #                 d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkobj[3])
+    #                 d['artworkdate'] = artworkobj[2]
+    #                 d['awid'] = artworkobj[0]
+    #                 d['artworkmedium'] = artworkobj[4]
+    #                 uniqueartworks[artworkobj[1].title()] = 1
+    #             else:
+    #                 awctr = 0
+    #                 awfound = 0
+    #                 while awctr < artworkqset1.__len__() - 1: # Iterate over all artworks by the artist under consideration
+    #                     awctr += 1
+    #                     artworkobj2 = artworkqset1[awctr] # Starting from index 1
+    #                     if artworkobj2[1].title() not in uniqueartworks.keys(): # Set flag if we have a new artwork
+    #                         if artworkobj2[3] == "":
+    #                             continue
+    #                         d['artworkimage'] = settings.IMG_URL_PREFIX + str(artworkobj2[3])
+    #                         d['artworkdate'] = artworkobj2[2]
+    #                         d['awid'] = artworkobj2[0]
+    #                         d['artworkmedium'] = artworkobj2[4]
+    #                         d['artworkname'] = artworkobj2[1].title()
+    #                         #print(artworkobj2[1].title())
+    #                         uniqueartworks[artworkobj2[1].title()] = 1
+    #                         awfound = 1
+    #                         break
+    #                 if awfound == 0: # Skip this artist if no new artworks could be found.
+    #                     continue
+    #             if actr < chunksize:
+    #                 l = allartists[rctr]
+    #                 l.append(d)
+    #                 allartists[rctr] = l
+    #                 actr += 1
+    #             else:
+    #                 actr = 0
+    #                 rctr += 1
+    #             if rctr == rows:
+    #                 break
+    #         try:
+    #             redis_instance.set('at_allartists', pickle.dumps(allartists))
+    #             redis_instance.set('at_uniqueartists', pickle.dumps(uniqueartists))
+    #             redis_instance.set('at_uniqueartworks', pickle.dumps(uniqueartworks))
+    #         except:
+    #             pass
+    # context['allartists'] = allartists
+    # context['uniqueartists'] = uniqueartists
+    # context['uniqueartworks'] = uniqueartworks
+    # context['statisticalinfo'] = artistsstatisticalinfo
+    # filterartists = []
+    # try:
+    #     filterartists = pickle.loads(redis_instance.get('at_filterartists'))
+    # except:
+    #     pass
+    # if filterartists.__len__() == 0:
+    #     allartistsqset = FeaturedArtist.objects.all()[0:20000]
+    #     uniqueartistnames = {}
+    #     for artist in allartistsqset:
+    #         if artist.artist_name not in uniqueartistnames.keys():
+    #             uniqueartistnames[artist.artist_name] = 1
+    #         else:
+    #             continue
+    #         if artist.nationality != "" and artist.nationality is not None:
+    #             nationality = artist.nationality
+    #         else:
+    #             nationality = ""
+    #         if artist.birthyear != "" and artist.birthyear is not None and artist.birthyear != 0:
+    #             birthyear = str(artist.birthyear)
+    #         else:
+    #             birthyear = ""
+    #         if artist.deathyear != "" and artist.deathyear is not None and artist.deathyear != 0:
+    #             deathyear = str(artist.deathyear)
+    #         else:
+    #             deathyear = ""
+    #         artistinfo = ""
+    #         if nationality != "":
+    #             artistinfo = artist.artist_name + " (" + nationality + ", "
+    #         else:
+    #             artistinfo = artist.artist_name + " ("
+    #         if birthyear != "":
+    #             artistinfo = artistinfo + birthyear + " - "
+    #         else:
+    #             pass
+    #         if deathyear != "":
+    #             artistinfo = artistinfo + deathyear + ")"
+    #         else:
+    #             artistinfo = artistinfo + ")"
+    #         filterartists.append(artistinfo)
+    #     try:
+    #         redis_instance.set('at_filterartists', pickle.dumps(filterartists))
+    #     except:
+    #         pass
+    # context['filterartists'] = filterartists
     #carouselentries = getcarouselinfo_new()
     #context['carousel'] = carouselentries
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
     else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
-    cursor.close()
-    dbconn.close() # Closing db connection. Don't want unwanted open connections.
-    template = loader.get_template('artist.html')
-    return HttpResponse(template.render(context, request))
+        context = {}
+        if request.user.is_authenticated and request.user.is_staff:
+            context['adminuser'] = 1
+        else:
+            context['adminuser'] = 0
+        if request.user:
+            userobj = request.user
+            context['username'] = userobj.username
+        template = loader.get_template('artist.html')
+        return HttpResponse(template.render(context, request))
 
 
 #@cache_page(CACHE_TTL)

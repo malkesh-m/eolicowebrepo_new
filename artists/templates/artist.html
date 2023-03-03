@@ -132,15 +132,15 @@
     <script src="/static/js/eolicoauth.js"></script>
     <script src="/static/js/autocomplete.js"></script>
     <!-- Autocomplete is inspired by the content in https://www.w3schools.com/howto/howto_js_autocomplete.asp -->
-    <script>
+    <!-- <script>
         artists = [{ %
                 for artistname in filterartists %
             }
             "{{artistname}}", { % endfor %
             }
         ]; // Should get populated during page load.
-    </script>
-    <script>
+    </script> -->
+    <!-- <script>
         function searchartist(page = 1) {
             searchkey = document.getElementById('artistsearch').value;
             loaderspan = document.getElementById("loader");
@@ -275,11 +275,11 @@
             statsdivelement = document.getElementById(statsdivid);
             statsdivelement.innerHTML = "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:showstats(" + aid + ", '" + statsdivid + "');\">Show Stats</a></h6>";
         }
-    </script>
+    </script> -->
 
 </head>
 
-<body onload="javascript:autocomplete(document.getElementById('artistsearch'), artists);">
+
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -619,9 +619,6 @@
         </div>
     </section>-->
     <!-- Carousel -->
-    {% comment %}
-    <section class="testimonials">
-        <div class="container"> {% endcomment %}
             <!-- <div class="row">
         <div class="col-sm-12">
           <div id="customers-testimonials" class="owl-carousel owl-theme">
@@ -641,9 +638,6 @@
           </div>
         </div>
       </div> -->
-            {% comment %}
-        </div>
-    </section> {% endcomment %}
     <!-- END OF Carousels -->
     <!------ Featured Artist ------->
     <section class="section gal-section" id="secsearchartist">
@@ -691,8 +685,8 @@
                     </form>
                     <!-- <a href="">View All</a> -->
                     <div class="col-sm-12">
-                        <ul class="leter-style text-center mt-3 justify-content-center">
-                            <li class="list-alfabat"><a href="/artist/index/?page=a">a</a></li>
+                        <ul class="leter-style text-center mt-3 justify-content-center" id="alphabetSearchUlId">
+                            <!-- <li class="list-alfabat"><a href="/artist/index/?page=a">a</a></li>
                             <li class="list-alfabat"><a href="/artist/index/?page=b">b</a></li>
                             <li class="list-alfabat"><a href="/artist/index/?page=c">c</a></li>
                             <li class="list-alfabat"><a href="/artist/index/?page=d">d</a></li>
@@ -717,7 +711,7 @@
                             <li class="list-alfabat"><a href="/artist/index/?page=w">w</a></li>
                             <li class="list-alfabat"><a href="/artist/index/?page=x">x</a></li>
                             <li class="list-alfabat"><a href="/artist/index/?page=y">y</a></li>
-                            <li class="list-alfabat"><a href="/artist/index/?page=z">z</a></li>
+                            <li class="list-alfabat"><a href="/artist/index/?page=z">z</a></li> -->
                         </ul>
                     </div>
                 </div>
@@ -781,8 +775,44 @@
                 </div>
             </div>
             <div class="latest-artists ">
-                <div class="row">
-                    <div class="col-md-4 mb-4">
+                <div class="row" id="getTrendingArtistId">
+                    <!-- <div class="col-md-4 mb-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="col-md-4 mb-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="col-md-4 mb-4">
+                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
+                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
+                            <div class="down-content">
+                                <div class="d-flex justify-content-between">
+                                    <h4>Pablo Picasso</h4>
+                                    <p>View Details</p>
+                                </div>
+                                <span>Spanish, 1881 - 1973</span>
+                            </div>
+                        </a>
+                    </div> -->
+                    <!-- <div class="col-md-4 mb-4">
                         <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
                             <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
                             <div class="down-content">
@@ -805,44 +835,8 @@
                                 <span>Spanish, 1881 - 1973</span>
                             </div>
                         </a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
-                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
-                            <div class="down-content">
-                                <div class="d-flex justify-content-between">
-                                    <h4>Pablo Picasso</h4>
-                                    <p>View Details</p>
-                                </div>
-                                <span>Spanish, 1881 - 1973</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
-                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
-                            <div class="down-content">
-                                <div class="d-flex justify-content-between">
-                                    <h4>Pablo Picasso</h4>
-                                    <p>View Details</p>
-                                </div>
-                                <span>Spanish, 1881 - 1973</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
-                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
-                            <div class="down-content">
-                                <div class="d-flex justify-content-between">
-                                    <h4>Pablo Picasso</h4>
-                                    <p>View Details</p>
-                                </div>
-                                <span>Spanish, 1881 - 1973</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-4">
+                    </div> -->
+                    <!-- <div class="col-md-4 mb-4">
                         <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
                             <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
                             <div class="down-content">
@@ -865,8 +859,8 @@
                                 <span>Spanish, 1881 - 1973</span>
                             </div>
                         </a>
-                    </div>
-                    <div class="col-md-4">
+                    </div> -->
+                    <!-- <div class="col-md-4">
                         <a href="/artist/details/?aid={{artistobj.aid}}" class="latest-card">
                             <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img">
                             <div class="down-content">
@@ -889,8 +883,8 @@
                                 <span>Spanish, 1881 - 1973</span>
                             </div>
                         </a>
-                    </div>
-                    <div class="col-12 text-center mt-4">
+                    </div> -->
+                    <div class="col-12 text-center mt-4" id="trendingArtistViewMoreId">
                         <button type="button" class="btn btn-login btn-round py-2">View More</button>
                     </div>
                     <!-- {% for artistobj in featuredartists %}
@@ -931,7 +925,7 @@
                                     {% if artistobj.follow == 0 %}
                                     <div id='follow_feat_{{forloop.counter}}'>
                                         <h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:follow({{artistobj.aid}}, 'follow_feat_{{forloop.counter}}');">Follow</a></h6>
-                                    </div> -->{% else %}
+                                    </div> -->
                     <!-- <div id='follow_feat_{{forloop.counter}}'>
 				<h6><a href="#/" style="color:#000000;bgcolor:#ffffff;" onclick="javascript:unfollow({{artistobj.aid}}, 'follow_feat_{{forloop.counter}}');">Following</a></h6>
 				</div> 
@@ -965,7 +959,7 @@
                     <div class="section-heading section-heading-2">
                         <h2>Contemporary Chinese Art</h2>
                         <span>
-                             <a href="">View All</a>
+                            <a href="">View All</a>
                         </span>
                     </div>
                 </div>
@@ -983,10 +977,10 @@
                                 </h4>
                                 
 				{% if artistobj.birthdate == '' %}
-                                  <h6>{{artistobj.nationality}}</h6>
+                <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <h6>{{artistobj.nationality}}</h6>
-				  <h6>{{artistobj.birthdeath}}</h6>
+				<h6>{{artistobj.nationality}}</h6>
+				<h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
 				
                             </a>
@@ -1052,10 +1046,10 @@
                                 </h4>
                                 
                                 {% if artistobj.birthdate == '' %}
-                                  <h6>{{artistobj.nationality}}</h6>
+                                <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <h6>{{artistobj.nationality}}</h6>
-				  <h6>{{artistobj.birthdeath}}</h6>
+				<h6>{{artistobj.nationality}}</h6>
+				<h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
 				
                             </a>
@@ -1121,10 +1115,10 @@
                                 </h4>
                                 
                                 {% if artistobj.birthdate == '' %}
-                                  <h6>{{artistobj.nationality}}</h6>
+                                <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <h6>{{artistobj.nationality}}</h6>
-				  <h6>{{artistobj.birthdeath}}</h6>
+				<h6>{{artistobj.nationality}}</h6>
+			    <h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
 				
                             </a>
@@ -1190,10 +1184,10 @@
                                 </h4>
                                 
                                 {% if artistobj.birthdate == '' %}
-                                  <h6>{{artistobj.nationality}}</h6>
+                                <h6>{{artistobj.nationality}}</h6>
 				{% else %}
-				  <h6>{{artistobj.nationality}}</h6>
-				  <h6>{{artistobj.birthdeath}}</h6>
+				<h6>{{artistobj.nationality}}</h6>
+				<h6>{{artistobj.birthdeath}}</h6>
 				{% endif %}
 				
                             </a>
@@ -1534,7 +1528,7 @@
             });
         });
     </script>
-
+    <script src="/static/js/artistAjaxCall.js"></script>
 </body>
 
 </html>

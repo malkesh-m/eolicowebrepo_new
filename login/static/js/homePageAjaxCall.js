@@ -28,7 +28,7 @@ function owlSlider(sliderId) {
 }
 
 function trendingArtistSlider() {
-    fetch('/login/getTrendingArtist/', {
+    fetch('/login/getTrendingArtist/?start=0&limit=6', {
         method: 'GET',
     })
         .then(response => response.json())
@@ -45,10 +45,11 @@ function trendingArtistSlider() {
                                 <h4 class="lineSplitSetter">${artistData.fa_artist_name}</h4>
                                 <p>View Details</p>
                             </div>
-                            <span>${artistData.fa_artist_nationality}, ${artistData.fa_artist_birth_year} - ${artistData.fa_artist_death_year}</span>
-                        </div>
-                    </a>
-                    </div>`
+                            <span>${artistData.fa_artist_nationality}, ${artistData.fa_artist_birth_year}` 
+                            if (artistData.fa_artist_death_year != 0) {
+                                htmlData = htmlData + ` - ${artistData.fa_artist_death_year}`
+                            }
+                            htmlData = htmlData + `</span></div></a></div>`
             });
             getTrendingArtistDiv.innerHTML = htmlData;
             owlSlider('#getTrendingArtistId')
