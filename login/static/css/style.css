@@ -171,6 +171,7 @@ p {
     font-size: 14px;
     line-height: 25px;
     color: #535f80;
+    font-family: Poppins !important;
 }
 
 
@@ -3235,10 +3236,10 @@ responsive
     padding: 0.75rem 0rem;
 }
 
-.sidebar-left .card-header a {
-    color: #2a2a2a;
-    text-transform: capitalize;
-}
+    .sidebar-left .card-header a {
+        color: #051747;
+        text-transform: capitalize;
+    }
 
 .sidebar-left .card-body {
     padding-top: 20px;
