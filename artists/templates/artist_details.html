@@ -336,7 +336,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="regiUsername" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
@@ -416,7 +416,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="loginUsername" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
@@ -636,11 +636,11 @@
                         <div class="tabbable d-flex align-items-center border-bottom justify-content-between">
                             <ul class="nav nav-tabs border-0" id="gal-Tab" role="tablist">
                                 <li class="nav-item mr-3">
-                                    <button class="nav-link" id="Overview-tab" data-toggle="tab" role="tab" aria-controls="Overview" aria-selected="false" onclick="pastUpcomingAuction(event, 'upcoming');">Upcoming
+                                    <button class="nav-link" id="Overview-tab" data-toggle="tab" role="tab" aria-controls="Overview" aria-selected="false" onclick="pastUpcomingAuction(event, 'upcoming', '');">Upcoming
                                         Auctions</button>
                                 </li>
                                 <li class="nav-item">
-                                    <button class="nav-link active" id="Works-tab" data-toggle="tab" role="tab" aria-controls="Works" aria-selected="false" onclick="pastUpcomingAuction(event, 'past');">Past Auctions</button>
+                                    <button class="nav-link active" id="Works-tab" data-toggle="tab" role="tab" aria-controls="Works" aria-selected="false" onclick="pastUpcomingAuction(event, 'past', '');">Past Auctions</button>
                                 </li>
                             </ul>
                             <div class="page-show p-0">
@@ -677,7 +677,7 @@
                                                                         </a>
                                                                     </div>
                                                                     <div id="collapseOne" class="collapse show " data-parent="#accordion">
-                                                                        <input class="form-control" type="text" value="">
+                                                                        <input class="form-control" type="text" id="artworkTitleTextId" onchange="filterAuction(event)">
                                                                     </div>
                                                                 </div>
                                                                 <div class="">
@@ -688,16 +688,16 @@
                                                                     </div>
                                                                     <div id="collapseTwo" class="collapse show " data-parent="#accordion">
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                                                            <label class="form-check-label" for="defaultCheck1">
+                                                                            <input class="form-check-input" type="checkbox" id="lotLowToHighCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="lowToHighCheckId">
                                                                                 Lot Number Low to High
                                                                             </label>
                                                                         </div>
                                                                     </div>
                                                                     <div id="collapseTwo" class="collapse show " data-parent="#accordion">
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Lot">
-                                                                            <label class="form-check-label" for="Lot">
+                                                                            <input class="form-check-input" type="checkbox" id="lotHighToLowCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="highToLowCheckId">
                                                                                 Lot Number High to Low
                                                                             </label>
                                                                         </div>
@@ -705,16 +705,16 @@
 
                                                                     <div id="collapseTwo" class="collapse show " data-parent="#accordion">
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="High">
-                                                                            <label class="form-check-label" for="High">
+                                                                            <input class="form-check-input" type="checkbox" id="priceLowToHighCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="priceLowToHighCheckId">
                                                                                 Price Low to High
                                                                             </label>
                                                                         </div>
                                                                     </div>
                                                                     <div id="collapseTwo" class="collapse show mb-4" data-parent="#accordion">
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Low">
-                                                                            <label class="form-check-label" for="Low">
+                                                                            <input class="form-check-input" type="checkbox" id="priceHighToLowCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="priceHighToLowCheckId">
                                                                                 Price High to Low
                                                                             </label>
                                                                         </div>
@@ -728,44 +728,44 @@
                                                                     </div>
                                                                     <div id="collapseThree" class="collapse show " data-parent="#accordion">
                                                                         <div class="form-check mb-2">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Sotheby">
-                                                                            <label class="form-check-label" for="Sotheby">
+                                                                            <input class="form-check-input" type="checkbox" id="paintingsCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="paintingsCheckId">
                                                                                 Paintings  
                                                                             </label>
                                                                         </div>
-                                                                        <div class="form-check">
+                                                                        <!-- <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox" value="" id="Christie">
                                                                             <label class="form-check-label" for="Christie">
                                                                                 Paintings  
                                                                             </label>
-                                                                        </div>
+                                                                        </div> -->
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Bonhams">
-                                                                            <label class="form-check-label" for="Bonhams">
+                                                                            <input class="form-check-input" type="checkbox" id="printsCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="printsCheckId">
                                                                                 Prints
                                                                             </label>
                                                                         </div>
-                                                                        <div class="form-check">
+                                                                        <!-- <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox" value="" id="Sotheby">
                                                                             <label class="form-check-label" for="Sotheby">
                                                                                 Photographs
                                                                             </label>
-                                                                        </div>
+                                                                        </div> -->
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Phillips">
-                                                                            <label class="form-check-label" for="Phillips">
+                                                                            <input class="form-check-input" type="checkbox" id="photographsCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="photographsCheckId">
                                                                                 Photographs
                                                                             </label>
                                                                         </div>
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Dorotheum">
-                                                                            <label class="form-check-label" for="Dorotheum">
+                                                                            <input class="form-check-input" type="checkbox" id="miniaturesCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="miniaturesCheckId">
                                                                                 Miniatures  
                                                                             </label>
                                                                         </div>
                                                                         <div class="form-check mb-4">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Dorotheum">
-                                                                            <label class="form-check-label" for="Dorotheum">
+                                                                            <input class="form-check-input" type="checkbox" id="othersCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="othersCheckId">
                                                                                 Others
                                                                             </label>
                                                                         </div>
@@ -779,26 +779,26 @@
                                                                     </div>
                                                                     <div id="collapseFour" class="collapse show mb-4" data-parent="#accordion">
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="London">
-                                                                            <label class="form-check-label" for="London">
+                                                                            <input class="form-check-input" type="checkbox" id="soldCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="soldCheckId">
                                                                                 Sold
                                                                             </label>
                                                                         </div>
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="NewYork">
-                                                                            <label class="form-check-label" for="NewYork">
+                                                                            <input class="form-check-input" type="checkbox" id="yetToBeSoldCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="yetToBeSoldCheckId">
                                                                                 Yet to be Sold
                                                                             </label>
                                                                         </div>
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Paris">
-                                                                            <label class="form-check-label" for="Paris">
+                                                                            <input class="form-check-input" type="checkbox" id="boughtInCehckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="boughtInCehckId">
                                                                                 Bought-in
                                                                             </label>
                                                                         </div>
                                                                         <div class="form-check mb-4">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Milan">
-                                                                            <label class="form-check-label" for="Milan">
+                                                                            <input class="form-check-input" type="checkbox" id="withdrawnCheckId" onchange="filterAuction(event)">
+                                                                            <label class="form-check-label" for="withdrawnCheckId">
                                                                                 Withdrawn
                                                                             </label>
                                                                         </div>
@@ -814,13 +814,13 @@
                                                                         <label class="form-check-label">
                                                                             From
                                                                         </label>
-                                                                        <input class="form-control" type="date" value="">
+                                                                        <input class="form-control" type="text" id="fromDateTextId" onchange="filterAuction(event)">
                                                                     </div>
                                                                     <div>
                                                                         <label class="form-check-label">
                                                                             To
                                                                         </label>
-                                                                        <input class="form-control" type="date" value="">
+                                                                        <input class="form-control" type="text" id="toDateTextId" onchange="filterAuction(event)">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1147,7 +1147,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
+                                    <!-- <div class="tab-pane fade" id="Works" role="tabpanel" aria-labelledby="Works-tab">
                                         <div class="row">
                                             <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
                                                 <div class="sidebar-left">
@@ -1635,7 +1635,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>

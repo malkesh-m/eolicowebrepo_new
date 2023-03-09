@@ -42,8 +42,8 @@ function htmlDataBinder(auctionData) {
     return htmlData
 }
 
-function upcomingAuctionDataSet(limit) {
-    fetch(`/artist/getArtistUpcomingAuctions/?aid=${artistId}&limit=${limit}`, {
+function upcomingAuctionDataSet(queryParams, limit) {
+    fetch(`/artist/getArtistUpcomingAuctions/?aid=${artistId}&${queryParams}limit=${limit}`, {
         method: 'GET',
     })
         .then(response => response.json())
@@ -56,8 +56,8 @@ function upcomingAuctionDataSet(limit) {
         })
 }
 
-function pastAuctionDataSet(limit) {
-    fetch(`/artist/getArtistPastAuctions/?aid=${artistId}&limit=${limit}`, {
+function pastAuctionDataSet(queryParams, limit) {
+    fetch(`/artist/getArtistPastAuctions/?aid=${artistId}&${queryParams}limit=${limit}`, {
         method: 'GET',
     })
         .then(response => response.json())
@@ -70,34 +70,98 @@ function pastAuctionDataSet(limit) {
         })
 }
 
-function pastUpcomingAuction(e, pastUpcomingStr) {
+function pastUpcomingAuction(e, pastUpcomingStr, queryParams) {
     pastUpcomingStrData = pastUpcomingStr
     let limit = document.querySelector('#inputGroupSelect01').value
     if (pastUpcomingStrData === 'past') {
-        pastAuctionDataSet(limit)
+        pastAuctionDataSet(queryParams, limit)
     }
     else if (pastUpcomingStrData === 'upcoming') {
-        upcomingAuctionDataSet(limit)
+        upcomingAuctionDataSet(queryParams, limit)
     }
 }
 
 function selectChange(e) {
     let limit = e.target.value
     if (pastUpcomingStrData === 'past') {
-        pastAuctionDataSet(limit)
+        pastAuctionDataSet('', limit)
     }
     else if (pastUpcomingStrData === 'upcoming') {
-        upcomingAuctionDataSet(limit)
+        upcomingAuctionDataSet('', limit)
     }
 }
 
-// function getArtistPastAuctions() {
-//     fetch(`/artist/getArtistPastAuctions/?aid=${artistId}&limit=50`, {
-//         method: 'GET',
-//     })
-//         .then(response => response.json())
-//         .then(body => {        })
-// }
+function filterAuction(e) {
+    const artworkTitleTextId = document.querySelector('#artworkTitleTextId')
+    const lotLowToHighCheckId = document.querySelector('#lotLowToHighCheckId')
+    const lotHighToLowCheckId = document.querySelector('#lotHighToLowCheckId')
+    const priceLowToHighCheckId = document.querySelector('#priceLowToHighCheckId')
+    const priceHighToLowCheckId = document.querySelector('#priceHighToLowCheckId')
+    const paintingsCheckId = document.querySelector('#paintingsCheckId')
+    const printsCheckId = document.querySelector('#printsCheckId')
+    const photographsCheckId = document.querySelector('#photographsCheckId')
+    const miniaturesCheckId = document.querySelector('#miniaturesCheckId')
+    const othersCheckId = document.querySelector('#othersCheckId')
+    const soldCheckId = document.querySelector('#soldCheckId')
+    const yetToBeSoldCheckId = document.querySelector('#yetToBeSoldCheckId')
+    const boughtInCehckId = document.querySelector('#boughtInCehckId')
+    const withdrawnCheckId = document.querySelector('#withdrawnCheckId')
+    const fromDateTextId = document.querySelector('#fromDateTextId')
+    const toDateTextId = document.querySelector('#toDateTextId')
+
+    let queryParams = ``
+
+    if (artworkTitleTextId.value) {
+        queryParams = queryParams + `artworkTitle=${artworkTitleTextId.value}&`
+    }
+    if (lotLowToHighCheckId.checked) {
+        queryParams = queryParams + `lotLowToHigh=true&`
+    }
+    if (lotHighToLowCheckId.checked) {
+        queryParams = queryParams + `lotHighToLow=true&`
+    }
+    if (priceLowToHighCheckId.checked) {
+        queryParams = queryParams + `priceLowToHigh=true&`
+    }
+    if (priceHighToLowCheckId.checked) {
+        queryParams = queryParams + `priceHighToLow=true&`
+    }
+    if (paintingsCheckId.checked) {
+        queryParams = queryParams + `paintings=paintings&`
+    }
+    if (printsCheckId.checked) {
+        queryParams = queryParams + `prints=prints&`
+    }
+    if (photographsCheckId.checked) {
+        queryParams = queryParams + `photographs=photographs&`
+    }
+    if (miniaturesCheckId.checked) {
+        queryParams = queryParams + `miniatures=miniatures&`
+    }
+    if (othersCheckId.checked) {
+        queryParams = queryParams + 'others=all&'
+    }
+    if (soldCheckId.checked) {
+        queryParams = queryParams + `sold=sold&`
+    }
+    if (yetToBeSoldCheckId.checked) {
+        queryParams = queryParams + `yetToBeSold=yet to be sold&`
+    }
+    if (boughtInCehckId.checked) {
+        queryParams = queryParams + `boughtIn=bought-in&`
+    }
+    if (withdrawnCheckId.checked) {
+        queryParams = queryParams + `withdrawn=withdrawn&`
+    }
+    if (fromDateTextId.value) {
+        queryParams = queryParams + `fromDate=${fromDateTextId.value}&`
+    }
+    if (toDateTextId.value) {
+        queryParams = queryParams + `toDate=${toDateTextId.value}&`
+    }
+
+    pastUpcomingAuction(e, pastUpcomingStrData , queryParams)
+}
 
 function getArtistDetails() {
     fetch(`/artist/getArtistDetails/?aid=${artistId}`, {
@@ -131,6 +195,6 @@ function getArtistDetails() {
 document.addEventListener('DOMContentLoaded', function () {
 
     getArtistDetails()
-    pastAuctionDataSet(50)
+    pastAuctionDataSet('', 50)
 
 })

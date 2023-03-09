@@ -841,13 +841,80 @@ def getArtistDetails(request):
         return HttpResponse(json.dumps(artistData, default=default))
 
 
+def pastUpcomingQueryCreator(request):
+    artworkTitle = request.GET.get('artworkTitle')
+    lotLowToHigh = request.GET.get('lotLowToHigh')
+    lotHighToLow = request.GET.get('lotHighToLow')
+    priceLowToHigh = request.GET.get('priceLowToHigh')
+    priceHighToLow = request.GET.get('priceHighToLow')
+    paintings = request.GET.get('paintings')
+    prints = request.GET.get('prints')
+    photographs = request.GET.get('photographs')
+    miniatures = request.GET.get('miniatures')
+    others = request.GET.get('others')
+    sold = request.GET.get('sold')
+    yetToBeSold = request.GET.get('yetToBeSold')
+    boughtIn = request.GET.get('boughtIn')
+    withdrawn = request.GET.get('withdrawn')
+    fromDate = request.GET.get('fromDate')
+    toDate = request.GET.get('toDate')
+
+    whereClause = ''
+    orderBy = ''
+    orderFlag = False
+
+    if artworkTitle:
+        whereClause += f""" AND faa_artwork_title LIKE '%{artworkTitle}%'"""
+    if paintings:
+        whereClause += f""" AND fal_lot_category = '{paintings}'"""
+    if prints:
+        whereClause += f""" AND fal_lot_category = '{prints}'"""
+    if photographs:
+        whereClause += f""" AND fal_lot_category = '{photographs}'"""
+    if miniatures:
+        whereClause += f""" AND fal_lot_category = '{miniatures}'"""
+    if others:
+        whereClause += f""" AND fal_lot_category != 'miniatures' AND fal_lot_category != 'photographs' AND fal_lot_category != 'prints' AND fal_lot_category != 'paintings'"""
+    if sold:
+        whereClause += f""" AND fal_lot_status = '{sold}'"""
+    if yetToBeSold:
+        whereClause += f""" AND fal_lot_status = '{yetToBeSold}'"""
+    if boughtIn:
+        whereClause += f""" AND fal_lot_status = '{boughtIn}'"""
+    if withdrawn:
+        whereClause += f""" AND fal_lot_status = '{withdrawn}'"""
+    if fromDate:
+        whereClause += f""" AND faa_artwork_start_year = {fromDate}"""
+    if toDate:
+        whereClause += f""" AND faa_artwork_end_year = {toDate}"""
+
+    if lotLowToHigh:
+        orderBy = f""" ORDER BY fal_lot_no"""
+        orderFlag = True
+    if lotHighToLow:
+        orderBy = f""" ORDER BY fal_lot_no DESC"""
+        orderFlag = True
+    if priceLowToHigh:
+        orderBy = f""" ORDER BY fal_lot_sale_price"""
+        orderFlag = True
+    if priceHighToLow:
+        orderBy = f""" ORDER BY fal_lot_sale_price DESC"""
+        orderFlag = True
+    if orderFlag is False:
+        orderBy = f""" ORDER BY faac_auction_start_date DESC"""
+
+    return whereClause + orderBy
+
+
 def getArtistPastAuctions(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     else:
         aId = request.GET.get('aid')
         limit = request.GET.get('limit')
-        pastAuctionSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_start_date  < '{datetime.datetime.now().date()}' AND fa_artist_ID = {aId} ORDER BY faac_auction_start_date DESC LIMIT {limit};"""
+        pastAuctionSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_start_date  < '{datetime.datetime.now().date()}' AND fa_artist_ID = {aId}"""
+        whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
+        pastAuctionSelectQuery = pastAuctionSelectQuery + whereClauseAndOrderBy + f""" LIMIT {limit};"""
         connList = connectToDb()
         connList[1].execute(pastAuctionSelectQuery)
         pastAuctionData = connList[1].fetchall()
@@ -861,7 +928,9 @@ def getArtistUpcomingAuctions(request):
     else:
         aId = request.GET.get('aid')
         limit = request.GET.get('limit')
-        upcomingAuctionSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_start_date  >= '{datetime.datetime.now().date()}' AND fa_artist_ID = {aId} ORDER BY faac_auction_start_date DESC LIMIT {limit};"""
+        upcomingAuctionSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_start_date  >= '{datetime.datetime.now().date()}' AND fa_artist_ID = {aId}"""
+        whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
+        upcomingAuctionSelectQuery = upcomingAuctionSelectQuery + whereClauseAndOrderBy + f""" LIMIT {limit};"""
         connList = connectToDb()
         connList[1].execute(upcomingAuctionSelectQuery)
         upcomingAuctionData = connList[1].fetchall()
