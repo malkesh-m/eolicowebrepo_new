@@ -2587,14 +2587,14 @@ footer .under-footer a:hover {
     border: none;
 }
 
-#gal-Tab .nav-item a.nav-link {
+#gal-Tab .nav-item .nav-link {
     color: #aeaeae !important;
     color: #aeaeae !important;
     padding: 8px 30px;
     border: 0;
 }
 
-    #gal-Tab .nav-item a.nav-link.active {
+    #gal-Tab .nav-item .nav-link.active {
         color: #ffffff !important;
         background-color: #081f62;
     }

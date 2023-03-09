@@ -912,10 +912,16 @@ li {
     display: block;
 }
 
+.artist-img img{
+width: 100%;
+}
 .artist-img {
     padding: 12px;
     background-color: #ececec;
     box-shadow: 0 0 5px 0 rgb(0 0 0 / 30%);
+    height: 384px;
+    overflow: hidden;
+    display: flex;
 }
 
 .artist-card {

@@ -572,15 +572,15 @@
 
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
-                                {% if not user.is_authenticated %}
-                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+                                <!-- {% if not user.is_authenticated %}
+                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> 
                                 <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
                                 <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                                 <li class="nav-item">
                                     <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
                                 </li>
-                                {% endif %}
+                                {% endif %} -->
                             </ul>
                         </div>
                     </nav>
@@ -594,8 +594,8 @@
             <div class="row align-items-center justify-content-between">
                 <div class="col-auto">
                     <div class="artists-details-img">
-                        <h3>Pablo Picasso</h3>
-                        <p>Spanish, 1881 - 1973</p>
+                        <h3 id="artistNameId"></h3>
+                        <p id="nationalityBirthDeathId"></p>
                     </div>
                 </div>
                 <div class="col-auto">
@@ -603,23 +603,25 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
-                    <img src="/static/images/ArtistResult.jpg" class="w-75 artist-img" alt="img">
+                <div class="col-md-4">
+                    <div class="artist-img">
+                        <img id="artistImageId" src=""  alt="img">
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 pl-md-5">
                     <div class="artists-details-content">
-                        <h4 class="mb-3">About Pablo Picasso</h4>
-                        <p class="mb-1">
-                            Pablo Picasso, in full Pablo Diego José Francisco de Paula Juan Nepomuceno Crispín Crispiniano María Remedios de la Santísima Trinidad Ruiz Picasso, also called (before 1901) Pablo Ruiz or Pablo Ruiz Picasso, (born October 25, 1881, Málaga, Spain—died
+                        <h4 class="mb-3" id="aboutNameId">About</h4>
+                        <p class="mb-1" id="artistBioId">
+                            <!-- Pablo Picasso, in full Pablo Diego José Francisco de Paula Juan Nepomuceno Crispín Crispiniano María Remedios de la Santísima Trinidad Ruiz Picasso, also called (before 1901) Pablo Ruiz or Pablo Ruiz Picasso, (born October 25, 1881, Málaga, Spain—died
                             April 8, 1973, Mougins, France), Spanish expatriate painter, sculptor, printmaker, ceramicist April 8, 1973, Mougins, France), Spanish expatriate painter, sculptor, printmaker, ceramicist April 8, 1973, Mougins, France), Spanish
-                            expatriate painter, sculptor, printmaker, ceramicist April 8, 1973, Mougins, France), Spanish expatriate painter, sculptor, printmaker, ceramicist
+                            expatriate painter, sculptor, printmaker, ceramicist April 8, 1973, Mougins, France), Spanish expatriate painter, sculptor, printmaker, ceramicist -->
                         </p>
                         <a href="#" class="mb-4">Read More</a>
                         <h6 class="mb-3">Artist Statistics</h6>
-                        <h5>Lots Sold Last Year : <span>29</span></h5>
-                        <h5>Selling Rate : <span>43.9394%</span></h5>
-                        <h5>Average Sale Price (USD): <span>26686.530303</span></h5>
-                        <h5>Sold Price Above Estimates : <span>142.535486%</span></h5>
+                        <h5>Lots Sold Last Year : <span id="lastYearSoldLotsId"></span></h5>
+                        <h5>Selling Rate : <span id="lastYearSellRateId"></span></h5>
+                        <h5>Average Sale Price (USD): <span id="lastYearAveSalePriceId"></span></h5>
+                        <h5>Sold Price Above Estimates : <span id="lastYearSoldPriceEstimatesId"></span></h5>
                     </div>
                 </div>
             </div>
@@ -634,19 +636,19 @@
                         <div class="tabbable d-flex align-items-center border-bottom justify-content-between">
                             <ul class="nav nav-tabs border-0" id="gal-Tab" role="tablist">
                                 <li class="nav-item mr-3">
-                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Upcoming
-                                        Auctions</a>
+                                    <button class="nav-link" id="Overview-tab" data-toggle="tab" role="tab" aria-controls="Overview" aria-selected="false" onclick="pastUpcomingAuction(event, 'upcoming');">Upcoming
+                                        Auctions</button>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Past Auctions</a>
+                                    <button class="nav-link active" id="Works-tab" data-toggle="tab" role="tab" aria-controls="Works" aria-selected="false" onclick="pastUpcomingAuction(event, 'past');">Past Auctions</button>
                                 </li>
                             </ul>
                             <div class="page-show p-0">
-                                <select class="custom-select" id="inputGroupSelect01" style="border: 0; background-color: transparent;">
-								<option selected>Par Page 50</option>
-								<option value="1">Par Page 100</option>
-								<option value="2">Par Page 150</option>
-								<option value="3">Par Page 200</option>
+                                <select class="custom-select" id="inputGroupSelect01" style="border: 0; background-color: transparent;" onchange="selectChange(event);">
+                                    <option value="50"selected>Par Page 50</option>
+                                    <option value="100">Par Page 100</option>
+                                    <option value="150">Par Page 150</option>
+                                    <option value="200">Par Page 200</option>
 							</select>
                             </div>
                         </div>
@@ -828,320 +830,318 @@
                                             </div>
                                             <div id="Overview" class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
                                                 <div class="row" id="pastauctions">
+                                                        <!-- <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
-
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                                        <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid=148454" class="latest-card">
-                                                                <div class="thumb">
-                                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
-                                                                </div>
-                                                                <div class="artist-card">
-                                                                    <h3>Title : <span>Le Passage du gué</span></h3>
-                                                                    <h3>Artist : <span>Theodore Rousseau</span></h3>
-                                                                    <h3 class="mb-3">Lot#309</h3>
+                                                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                            <div class="latest-artists">
+                                                                <a href="/auction/showauction/?aucid=148454" class="latest-card">
+                                                                    <div class="thumb">
+                                                                        <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                                                                    </div>
+                                                                    <div class="artist-card">
+                                                                        <h3>Title : <span>Le Passage du gué</span></h3>
+                                                                        <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                                                        <h3 class="mb-3">Lot#309</h3>
 
-                                                                    <h3>Medium : <span>oil on panel</span></h3>
-                                                                    <h3 class="mb-3">Category : <span>paintings</span>
-                                                                    </h3>
+                                                                        <h3>Medium : <span>oil on panel</span></h3>
+                                                                        <h3 class="mb-3">Category : <span>paintings</span>
+                                                                        </h3>
 
-                                                                    <h3>Contemporary Curated</h3>
-                                                                    <h3><span>Sotheby’s</span></h3>
-                                                                    <h3 class="mb-3"><span>1 March 2023 I London</span>
-                                                                    </h3>
+                                                                        <h3>Contemporary Curated</h3>
+                                                                        <h3><span>Sotheby’s</span></h3>
+                                                                        <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                                                        </h3>
 
-                                                                    <h3>Estimate : <span>Login to view</span></h3>
-                                                                    <h3>Price Sold : <span>Login to view</span></h3>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-
+                                                                        <h3>Estimate : <span>Login to view</span></h3>
+                                                                        <h3>Price Sold : <span>Login to view</span></h3>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        </div> -->
                                                 </div>
                                             </div>
                                         </div>
@@ -3392,6 +3392,7 @@
             }
         });
     </script>
+    <script src="/static/js/artistDetailsAjaxCall.js"></script>
 </body>
 
 </html>
