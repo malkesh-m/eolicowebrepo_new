@@ -132,15 +132,14 @@
     <script src="/static/js/eolicoauth.js"></script>
     <script src="/static/js/autocomplete.js"></script>
     <!-- Autocomplete is inspired by the content in https://www.w3schools.com/howto/howto_js_autocomplete.asp -->
-    <!-- <script>
-        artists = [{ %
-                for artistname in filterartists %
-            }
-            "{{artistname}}", { % endfor %
-            }
+    <script>
+        artists = [
+        {% for artistname in filterartists %}
+            "{{artistname}}", 
+        {% endfor %}
         ]; // Should get populated during page load.
-    </script> -->
-    <!-- <script>
+    </script>
+    <script>
         function searchartist(page = 1) {
             searchkey = document.getElementById('artistsearch').value;
             loaderspan = document.getElementById("loader");
@@ -153,8 +152,10 @@
             // Register the handler
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    loaderspan.innerHTML = "";
+                    loaderspan.style.display = "none";
                     context = JSON.parse(xmlhttp.responseText);
-                    featureddiv = document.getElementById('featuredartistsdiv');
+                    featureddiv = document.getElementById('featuredartistsdivId');
                     featureddiv.innerHTML = "";
                     searchtext = "";
                     alldiv0 = document.getElementById('allartistsdiv0');
@@ -169,11 +170,10 @@
                     alldiv3.innerHTML = "";
                     alldiv4.innerHTML = "";
                     alldiv5.innerHTML = "";
-                    pageheaderdiv = document.getElementById('pageheader');
+                    pageheaderdiv = document.getElementById('filterHeaderId');
                     pageheaderdiv.innerHTML = "<h2>Search Results for '" + searchkey + "'</h2><span>Browse over 100,000 artists</span>";
                     searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
                     searchartists = context['featuredartists'];
-                    adminuser = context['adminuser'];
                     pages = context['pages'];
                     for (var i = 0; i < searchartists.length; i++) {
                         artistobj = searchartists[i];
@@ -198,9 +198,7 @@
                             }
                         }
                         searchtext += "</a></div>";
-                        if (adminuser == 1) {
-                            searchtext += "<div><a style='color:#000000;bgcolor:#ffffff;' href='#adminScreen' onClick=\"javascript:t_editartist('" + artistobj.aid + "');\">Edit</a></div>";
-                        }
+                        
                         searchtext += "</div></div>";
                     }
                     searchtext += "</div></div><br/>";
@@ -219,7 +217,7 @@
                     paginationcontent += "</div>";
                     searchtext += paginationcontent;
                     featureddiv.innerHTML = searchtext;
-                    loaderspan.innerHTML = "";
+                    alert(searchtext);
                     //featureddiv.innerHTML = featureddiv.innerHTML.replace("<div class=\"row align-items-end\"></div></div>", "<div class=\"row align-items-end\">");
                     //alert(featureddiv.innerHTML);
                 }
@@ -229,7 +227,7 @@
             loaderspan.innerHTML = "<img src='/static/images/loading.gif'>";
         }
 
-
+	
         function showstats(aid, statsdivid) {
             statsdiv = document.getElementById(statsdivid);
             var xmlhttp;
@@ -274,12 +272,30 @@
         function hidestats(aid, statsdivid) {
             statsdivelement = document.getElementById(statsdivid);
             statsdivelement.innerHTML = "<h6><a href='#/' style='color:#000000;bgcolor:#ffffff;' onclick=\"javascript:showstats(" + aid + ", '" + statsdivid + "');\">Show Stats</a></h6>";
+        } 
+        
+        function getpredictivehints(){
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                 xmlhttp = new XMLHttpRequest();
+            } else {
+                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+             // Register the handler
+            xmlhttp.onreadystatechange = function() {
+              if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                  artists = JSON.parse(xmlhttp.responseText);
+                  autocomplete(document.getElementById('artistsearch'), artists);
+              }
+            };
+            xmlhttp.open("GET", "/artist/predictivehints/");
+            xmlhttp.send();
         }
-    </script> -->
+    </script>
 
 </head>
 
-
+<body onload="javascript:getpredictivehints();">
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -762,7 +778,7 @@
     </section> -->
     <!------ Featured Artist ------->
     <!-- ***** Main Banner Area End ***** -->
-    <section class="section py--80 pb-0" id='featuredartistsdiv'>
+    <section class="section py--80 pb-0" id='featuredartistsdivId'>
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -956,7 +972,8 @@
             </div>
     </section>
 
-    <!-- <section class="section gal-section br-none pdt-0" id='allartistsdiv0'>
+    <section class="section gal-section br-none pdt-0" id='allartistsdiv0'>
+        {% if allartists.0|length > 0 %}
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1024,8 +1041,10 @@
 
             </div>
         </div>
+        {% endif %}
     </section>
     <section class="section gal-section br-none pdt-0" id='allartistsdiv1'>
+        {% if allartists.1|length %}
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1093,8 +1112,10 @@
 
             </div>
         </div>
+        {% endif %}
     </section>
     <section class="section gal-section br-none pdt-0" id='allartistsdiv2'>
+        {% if allartists.2|length %}
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1162,8 +1183,10 @@
 
             </div>
         </div>
+        {% endif %}
     </section>
     <section class="section gal-section br-none pdt-0" id='allartistsdiv3'>
+        {% if  allartists.3|length %}
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1231,8 +1254,10 @@
 
             </div>
         </div>
+        {% endif %}
     </section>
     <section class="section gal-section br-none pdt-0" id='allartistsdiv4'>
+        {% if allartists.4|length %}
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1299,8 +1324,10 @@
                 {% endfor %}
             </div>
         </div>
+        {% endif %}
     </section>
     <section class="section gal-section br-none pdt-0" id='allartistsdiv5'>
+        {% if allartists.5|length %}
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1368,7 +1395,8 @@
 
             </div>
         </div>
-    </section> -->
+        {% endif %}
+    </section>
     <!-- <section class="download-app">
         <div class="container max-container">
             <div class="row">

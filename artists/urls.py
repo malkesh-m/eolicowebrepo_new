@@ -13,6 +13,7 @@ urlpatterns = [
     path('showstats/', views.showstats, name='showstats'),
     path('favourite/', views.addfavourite, name='addfavourite'),
     path('favouritework/', views.addfavouritework, name='addfavouritework'),
+    path('predictivehints/', views.getpredictivehints, name='getpredictivehints'),
 
     #     AJAX CALL
 
