@@ -128,13 +128,6 @@
     <script src="/static/js/autocomplete.js"></script>
 
     <script>
-         auctionhouses = [
-         {% for auctionhousename in filterauctionhouses %}
-             "{{auctionhousename}}", 
-         {% endfor %}
-         ]; // Should get populated during page load.
-    </script>
-    <script>
         function searchauctionhouse(page = 1) {
             searchkey = document.getElementById('auctionhousesearch').value;
             loaderspan = document.getElementById('loader');
@@ -208,11 +201,29 @@
              xmlhttp.open("GET", "/auctionhouse/search/?q=" + searchkey + "&page=" + page);
              xmlhttp.send();
         }
+        
+        function getpredictivehints(){
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                 xmlhttp = new XMLHttpRequest();
+            } else {
+                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+             // Register the handler
+            xmlhttp.onreadystatechange = function() {
+              if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                  auctionhouseslist = JSON.parse(xmlhttp.responseText);
+                  autocomplete(document.getElementById('auctionhousesearch'), auctionhouseslist);
+              }
+            };
+            xmlhttp.open("GET", "/auctionhouse/predictivehints/");
+            xmlhttp.send();
+        }
     </script>
 
 </head>
 
-<body onload="javascript:autocomplete(document.getElementById('auctionhousesearch'), auctionhouses);">
+<body onload="javascript:getpredictivehints();">
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -526,7 +537,7 @@
                     <div class="search-bg">
                         <div class="">
                             <h3 class="heading-style">Auction House Directory</h3>
-                            <form autocomplete="off" name='frmsearchauctionhouses' id='frmsearchauctionhouses' method='POST' action="">
+                            <form autocomplete="on" name='frmsearchauctionhouses' id='frmsearchauctionhouses' method='POST' action="">
                                 {% csrf_token %}
                                 <div class="autocomplete">
                                     <div class="row">

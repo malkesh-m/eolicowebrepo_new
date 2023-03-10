@@ -37,6 +37,30 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
 
+def getpredictivehints(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    filterauctionhouses = []
+    uniqauctionhouses = {}
+    try:
+        filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
+    except:
+        filterauctionhouses = []
+    if filterauctionhouses.__len__() == 0:
+        auctionhousesqset = AuctionHouse.objects.all()
+        for auctionhouse in auctionhousesqset:
+            if auctionhouse.housename not in uniqauctionhouses.keys():
+                auchousename = auctionhouse.housename
+                filterauctionhouses.append(auchousename)
+                uniqauctionhouses[auchousename] = 1
+        try:
+            redis_instance.set('ah_filterauctionhouses', pickle.dumps(filterauctionhouses))
+        except:
+            pass    
+    message = json.dumps(filterauctionhouses)
+    return HttpResponse(message)
+
+
 #@cache_page(CACHE_TTL)
 def index(request):
     if request.method != 'GET':
@@ -49,15 +73,12 @@ def index(request):
     rows = 12
     context = {}
     auctionhouses = [] # Auctions in various auction houses section.
-    filterauctionhouses = []
     uniqueauctions = {}
     connlist = connecttoDB()
     dbconn, cursor = connlist[0], connlist[1]
     try:
-        filterauctionhouses = pickle.loads(redis_instance.get('ah_filterauctionhouses'))
         auctionhouses = pickle.loads(redis_instance.get('ah_auctionhouses'))
     except:
-        filterauctionhouses = []
         auctionhouses = []
     if auctionhouses.__len__() == 0:
         auctionhousesqset = AuctionHouse.objects.all()
@@ -66,7 +87,6 @@ def index(request):
         showcounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for auctionhouse in auctionhousesqset:
             if auctionhouse.housename not in uniqauctionhouses.keys():
-                filterauctionhouses.append(auctionhouse.housename)
                 uniqauctionhouses[auctionhouse.housename] = 1
             if page != "":
                 if not auctionhouse.housename.startswith(page) and not auctionhouse.housename.startswith(page.upper()):
@@ -78,8 +98,6 @@ def index(request):
                     auchousepass = True
                     break
                 patternindex += 1
-            #print(auctionhouse.housename)
-            #print(patternindex)
             if auchousepass == False: # Auction houses that are not in our featured auctionhousenames would be skipped.
                 continue
             if showcounts[patternindex] > 0: # We show a maximum of 1 branches of an auction house.
@@ -112,11 +130,9 @@ def index(request):
             auctionhouses.append(d)
         try:
             redis_instance.set('ah_auctionhouses', pickle.dumps(auctionhouses))
-            redis_instance.set('ah_filterauctionhouses', pickle.dumps(filterauctionhouses))
         except:
             pass
     context['auctionhouses'] = auctionhouses
-    context['filterauctionhouses'] = filterauctionhouses
     cursor.close()
     dbconn.close()
     #carouselentries = getcarouselinfo_new()
@@ -625,9 +641,39 @@ def search(request):
     context = {}
     auctionhousesqset = AuctionHouse.objects.filter(housename__icontains=searchkey)[ahstart:ahend]
     auctionhousematches = []
+    auchouseidslist = []
+    for auctionhouse in auctionhousesqset:
+        auchouseid = auctionhouse.id
+        auchouseidslist.append(auchouseid)
+    allauctionsqset = Auction.objects.filter(auctionhouse_id__in=auchouseidslist).order_by('-auctionstartdate')[startctr:(ahend - ahstart) * maxauctionsperhouse]
+    auctionidslist = []
+    auctionsbyauctionhousesdict = {}
+    for auction in allauctionsqset:
+        aucid = auction.id
+        auctionidslist.append(aucid)
+        auchouseid = auction.auctionhouse_id
+        if str(auchouseid) not in auctionsbyauctionhousesdict.keys():
+            auctionsbyauctionhousesdict[str(auchouseid)] = [auction,]
+        else:
+            auctionslist = auctionsbyauctionhousesdict[str(auchouseid)]
+            auctionslist.append(auction)
+            auctionsbyauctionhousesdict[str(auchouseid)] = auctionslist
+    alllotsqset = Lot.objects.filter(auction_id__in=auctionidslist)
+    lotsbyauctionsdict = {}
+    for lot in alllotsqset:
+        auctionid = lot.auction_id
+        if str(auctionid) not in lotsbyauctionsdict.keys():
+            lotsbyauctionsdict[str(auctionid)] = [lot,]
+        else:
+            lotslist = lotsbyauctionsdict[str(auctionid)]
+            lotslist.append(lot)
+            lotsbyauctionsdict[str(auctionid)] = lotslist
     for auctionhouse in auctionhousesqset:
         housename = auctionhouse.housename
-        auctionsqset = Auction.objects.filter(auctionhouse_id=auctionhouse.id).order_by('-auctionstartdate')[startctr:endctr]
+        #print(housename + " - " + auctionhouse.location)
+        if str(auctionhouse.id) not in auctionsbyauctionhousesdict.keys():
+            continue
+        auctionsqset = auctionsbyauctionhousesdict[str(auctionhouse.id)]
         d = {'housename' : housename, 'houseurl' : auctionhouse.houseurl, 'description' : '', 'ahid' : auctionhouse.id, 'location' : auctionhouse.location}
         auctionslist = []
         coverimage = ""
@@ -644,7 +690,9 @@ def search(request):
                 coverimage = settings.IMG_URL_PREFIX + str(auction.coverimage)
                 d['coverimage'] = coverimage
             if auction.coverimage is None or auction.coverimage == "":
-                lotsqset = Lot.objects.filter(auction_id=auction.id)
+                if str(auction.id) not in lotsbyauctionsdict.keys():
+                    continue
+                lotsqset = lotsbyauctionsdict[str(auction.id)]
                 if lotsqset.__len__() < 1:
                     continue
                 maxlowestimate = lotsqset[0].lowestimateUSD

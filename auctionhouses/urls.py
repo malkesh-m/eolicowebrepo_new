@@ -8,7 +8,7 @@ urlpatterns = [
     path('follow/', views.follow, name='follow'),
     path('auctiondetails/', views.auctiondetails, name='auctiondetails'),
     path('search/', views.search, name='search'),
-
+    path('predictivehints/', views.getpredictivehints, name='getpredictivehints'),
     #     AJAX CALL
 
     path('getFeaturedAuctionHouses/', views.getFeaturedAuctionHouses, name='getFeaturedAuctionHouses'),
