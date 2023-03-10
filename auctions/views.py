@@ -34,7 +34,7 @@ from login.views import getcarouselinfo_new
 from auctions.models import Auction, Lot
 from artists.models import Artist, Artwork
 from auctionhouses.models import AuctionHouse
-from eolicowebsite.utils import connecttoDB, disconnectDB
+from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
 
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
@@ -43,6 +43,10 @@ from django.conf import settings
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
+
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.strftime("%d %b, %Y")
 
 
 def removecontrolcharacters(s):
@@ -57,191 +61,203 @@ def removecontrolcharacters(s):
 def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    page = "1"
-    if request.method == 'GET':
-        if 'page' in request.GET.keys():
-            page = str(request.GET['page'])
-    chunksize = 4
-    rows = 6
-    featuredsize = 4
-    maxpastauctions = 10
-    maxupcomingauctions = 4
-    maxpastauctionsperrow = 3
-    rowstartctr = int(page) * rows - rows
-    rowendctr = int(page) * rows
-    pastrowstartctr = int(page) * maxpastauctionsperrow * maxpastauctions - maxpastauctionsperrow * maxpastauctions
-    pastrowendctr = int(page) * maxpastauctionsperrow * maxpastauctions
-    startctr = (chunksize * rows) * (int(page) -1) + featuredsize
-    endctr = (chunksize * rows) * int(page) + featuredsize
+    # page = "1"
+    # if request.method == 'GET':
+        # if 'page' in request.GET.keys():
+            # page = str(request.GET['page'])
+    # chunksize = 4
+    # rows = 6
+    # featuredsize = 4
+    # maxpastauctions = 10
+    # maxupcomingauctions = 4
+    # maxpastauctionsperrow = 3
+    # rowstartctr = int(page) * rows - rows
+    # rowendctr = int(page) * rows
+    # pastrowstartctr = int(page) * maxpastauctionsperrow * maxpastauctions - maxpastauctionsperrow * maxpastauctions
+    # pastrowendctr = int(page) * maxpastauctionsperrow * maxpastauctions
+    # startctr = (chunksize * rows) * (int(page) -1) + featuredsize
+    # endctr = (chunksize * rows) * int(page) + featuredsize
+    # context = {}
+    # allauctions = {}
+    # featuredauctions = {}
+    # filterauctions = []
+    # try:
+    #     featuredauctions = pickle.loads(redis_instance.get('ac_featuredauctions'))
+    #     filterauctions = pickle.loads(redis_instance.get('ac_filterauctions'))
+    #     allauctions = pickle.loads(redis_instance.get('ac_allauctions'))
+    # except:
+    #     featuredauctions = {}
+    #     filterauctions = []
+    #     allauctions = {}
+    # curdatetime = datetime.datetime.now()
+    # curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
+    # connlist = connecttoDB()
+    # dbconn, cursor = connlist[0], connlist[1]
+    # if allauctions.__len__() == 0:
+    #     auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_lot_count > 0 or faac_auction_image != NULL order by faac_auction_start_date desc limit 100"
+    #     #print("auctionsql: %s"%auctionsql)
+    #     cursor.execute(auctionsql)
+    #     auctionsqset = cursor.fetchall()
+    #     try:
+    #         auctionhouseidslist = []
+    #         auctionauctionhousesdict = {}
+    #         for auction in auctionsqset[rowstartctr:]:
+    #             if type(auction[5]) == datetime.date and auction[5] <= curdate: # this is a past auction, so skip.
+    #                 continue
+    #             auchouseid = auction[3]
+    #             auctionhouseidslist.append(auchouseid)
+    #         auctionhousesqset = AuctionHouse.objects.filter(id__in=auctionhouseidslist)
+    #         for auchouse in auctionhousesqset:
+    #             auctionauctionhousesdict[str(auchouse.id)] = auchouse
+    #         aucctr = 0
+    #         for auction in auctionsqset[rowstartctr:]:
+    #             if featuredauctions.keys().__len__() > maxupcomingauctions:
+    #                 break
+    #             auctionname = auction[1]
+    #             #print(auctionname)
+    #             salecode = auction[2]
+    #             autocompleteauctionname = auctionname
+    #             autocompleteauctionname = autocompleteauctionname.replace('"', "")
+    #             autocompleteauctionname = removecontrolcharacters(autocompleteauctionname)
+    #             filterauctions.append(autocompleteauctionname)
+    #             if auction[5] <= curdate: # this is a past auction, so skip.
+    #                 continue
+    #             if aucctr > rowendctr:
+    #                 break
+    #             aucctr += 1
+    #             auctionurl = auction[4]
+    #             if auction[8] == "" or auction[8] is None:
+    #                 maxlowestimatelotsql = "select fal_lot_low_estimate_USD, fal_lot_image1 from fineart_lots where fal_auction_ID=%s and fal_lot_image1 != NULL and fal_lot_image1 != '' order by fal_lot_low_estimate_USD desc"%auction[0]
+    #                 try:
+    #                     cursor.execute(maxlowestimatelotsql)
+    #                     lotrecs = cursor.fetchall()
+    #                     # TODO: Might need to remove the conditional statement below.
+    #                     if lotrecs.__len__() == 0:
+    #                         continue
+    #                     lotimg = lotrecs[0][1]
+    #                     auction[8] = lotimg
+    #                 except:
+    #                     continue # TODO: Might need to change this statement to 'pass'.
+    #             auctionperiod = auction[5].strftime("%d %b, %Y")
+    #             aucenddate = auction[6]
+    #             if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+    #                 auctionperiod += " - " + str(aucenddate)
+    #             auctionhouse = None
+    #             auctionhousename, ahid, location = "", auction[3], ""
+    #             try:
+    #                 auctionhouse = auctionauctionhousesdict[str(auction[3])]
+    #                 auctionhousename = auctionhouse.housename
+    #                 location = auctionhouse.location
+    #             except:
+    #                 pass
+    #             # Check for favourites
+    #             if request.user.is_authenticated:
+    #                 favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction[0])
+    #             else:
+    #                 favqset = []
+    #             favflag = 0
+    #             if favqset.__len__() > 0:
+    #                 favflag = 1
+    #             d = {'auctionname' : auctionname, 'image' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
+    #             featuredauctions[auctionname] = d
+    #             if featuredauctions.keys().__len__() > chunksize:
+    #                 break
+    #     except:
+    #         pass
+    #     try:
+    #         redis_instance.set('ac_featuredauctions', pickle.dumps(featuredauctions))
+    #     except:
+    #         pass
+    #     pastauctionhouseidslist = []
+    #     pastauctionauctionhousesdict = {}
+    #     for auction in auctionsqset[pastrowstartctr:]:
+    #         if type(auction[5]) == datetime.date and auction[5] > curdate:
+    #             continue
+    #         auchouseid = auction[3]
+    #         pastauctionhouseidslist.append(auchouseid)
+    #     auctionhousesqset = AuctionHouse.objects.filter(id__in=pastauctionhouseidslist)
+    #     for auchouse in auctionhousesqset:
+    #         pastauctionauctionhousesdict[str(auchouse.id)] = auchouse
+    #     aucctr = 0
+    #     rctr = 0
+    #     allauctions['row0'] = []
+    #     for auction in auctionsqset[pastrowstartctr:]:
+    #         if auction[5] > curdate:
+    #             continue
+    #         auctionname = auction[1]
+    #         autocompleteauctionname = auctionname
+    #         autocompleteauctionname = autocompleteauctionname.replace('"', "")
+    #         autocompleteauctionname = removecontrolcharacters(autocompleteauctionname)
+    #         filterauctions.append(autocompleteauctionname)
+    #         auction_id = auction[0]
+    #         salecode = auction[2]
+    #         if auction[8] == "" or auction[8] is None:
+    #             maxlowestimatelotsql = "select fal_lot_low_estimate_USD, fal_lot_image1 from fineart_lots where fal_auction_ID=%s and fal_lot_image1 != NULL and fal_lot_image1 != '' order by fal_lot_low_estimate_USD desc"%auction_id
+    #             try:
+    #                 cursor.execute(maxlowestimatelotsql)
+    #                 lotrecs = cursor.fetchall()
+    #                 # TODO: Might need to remove the conditional statement below.
+    #                 if lotrecs.__len__() == 0:
+    #                     continue
+    #                 lotimg = lotrecs[0][1]
+    #                 auction[8] = lotimg
+    #             except:
+    #                 continue # TODO: Might need to change this statement to 'pass'.
+    #         if auctionname not in allauctions.keys():
+    #             allauctions[auctionname] = []
+    #         auctionperiod = auction[5].strftime("%d %b, %Y")
+    #         aucenddate = auction[6]
+    #         if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+    #             auctionperiod += " - " + str(aucenddate)
+    #         auctionhouse = None
+    #         auctionhousename, ahid, location = "", auction[3], ""
+    #         try:
+    #             auctionhouse = pastauctionauctionhousesdict[str(auction[3])]
+    #             auctionhousename = auctionhouse.housename
+    #             location = auctionhouse.location
+    #         except:
+    #             pass
+    #         # Check for favourites
+    #         if request.user.is_authenticated:
+    #             favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction[0])
+    #         else:
+    #             favqset = []
+    #         favflag = 0
+    #         if favqset.__len__() > 0:
+    #             favflag = 1
+    #         d = {'auctionname' : auctionname, 'image' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
+    #         if allauctions.keys().__len__() > maxpastauctionsperrow * maxpastauctions:
+    #             break
+    #         if aucctr % 3 == 0:
+    #             rctr += 1
+    #             allauctions['row' + str(rctr)] = []
+    #         allauctions['row' + str(rctr)].append(d)
+    #         aucctr += 1
+    #     #print(allauctions)
+    #     try:
+    #         redis_instance.set('ac_allauctions', pickle.dumps(allauctions))
+    #         redis_instance.set('ac_filterauctions', pickle.dumps(filterauctions))
+    #     except:
+    #         pass
+    # context['allauctions'] = allauctions
+    # context['filterauctions'] = filterauctions
+    # context['featuredauctions'] = featuredauctions
+    # cursor.close()
+    # dbconn.close()
+    # #carouselentries = getcarouselinfo_new()
+    # #context['carousel'] = carouselentries
+    # prevpage = int(page) - 1
+    # nextpage = int(page) + 1
+    # displayedprevpage1 = 0
+    # displayedprevpage2 = 0
+    # if prevpage > 0:
+    #     displayedprevpage1 = prevpage - 1
+    #     displayedprevpage2 = prevpage - 2
+    # displayednextpage1 = nextpage + 1
+    # displayednextpage2 = nextpage + 2
+    # firstpage = 1
+    # context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     context = {}
-    allauctions = {}
-    featuredauctions = {}
-    filterauctions = []
-    try:
-        featuredauctions = pickle.loads(redis_instance.get('ac_featuredauctions'))
-        filterauctions = pickle.loads(redis_instance.get('ac_filterauctions'))
-        allauctions = pickle.loads(redis_instance.get('ac_allauctions'))
-    except:
-        featuredauctions = {}
-        filterauctions = []
-        allauctions = {}
-    curdatetime = datetime.datetime.now()
-    curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
-    connlist = connecttoDB()
-    dbconn, cursor = connlist[0], connlist[1]
-    if allauctions.__len__() == 0:
-        auctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_house_ID, faac_auction_source, faac_auction_start_date, faac_auction_end_date, faac_auction_lot_count, faac_auction_image, faac_auction_published, faac_auction_record_created, faac_auction_record_updated, faac_auction_record_createdby, faac_auction_record_updatedby from fineart_auction_calendar where faac_auction_lot_count > 0 or faac_auction_image != NULL order by faac_auction_start_date desc limit 100"
-        #print("auctionsql: %s"%auctionsql)
-        cursor.execute(auctionsql)
-        auctionsqset = cursor.fetchall()
-        try:
-            auctionhouseidslist = []
-            auctionauctionhousesdict = {}
-            for auction in auctionsqset[rowstartctr:]:
-                if type(auction[5]) == datetime.date and auction[5] <= curdate: # this is a past auction, so skip.
-                    continue
-                auchouseid = auction[3]
-                auctionhouseidslist.append(auchouseid)
-            auctionhousesqset = AuctionHouse.objects.filter(id__in=auctionhouseidslist)
-            for auchouse in auctionhousesqset:
-                auctionauctionhousesdict[str(auchouse.id)] = auchouse
-            aucctr = 0
-            for auction in auctionsqset[rowstartctr:]:
-                if featuredauctions.keys().__len__() > maxupcomingauctions:
-                    break
-                auctionname = auction[1]
-                #print(auctionname)
-                salecode = auction[2]
-                autocompleteauctionname = auctionname
-                autocompleteauctionname = autocompleteauctionname.replace('"', "")
-                autocompleteauctionname = removecontrolcharacters(autocompleteauctionname)
-                filterauctions.append(autocompleteauctionname)
-                if auction[5] <= curdate: # this is a past auction, so skip.
-                    continue
-                if aucctr > rowendctr:
-                    break
-                aucctr += 1
-                auctionurl = auction[4]
-                if auction[8] == "" or auction[8] is None:
-                    maxlowestimatelotsql = "select fal_lot_low_estimate_USD, fal_lot_image1 from fineart_lots where fal_auction_ID=%s and fal_lot_image1 != NULL and fal_lot_image1 != '' order by fal_lot_low_estimate_USD desc"%auction[0]
-                    try:
-                        cursor.execute(maxlowestimatelotsql)
-                        lotrecs = cursor.fetchall()
-                        # TODO: Might need to remove the conditional statement below.
-                        if lotrecs.__len__() == 0:
-                            continue
-                        lotimg = lotrecs[0][1]
-                        auction[8] = lotimg
-                    except:
-                        continue # TODO: Might need to change this statement to 'pass'.
-                auctionperiod = auction[5].strftime("%d %b, %Y")
-                aucenddate = auction[6]
-                if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
-                    auctionperiod += " - " + str(aucenddate)
-                auctionhouse = None
-                auctionhousename, ahid, location = "", auction[3], ""
-                try:
-                    auctionhouse = auctionauctionhousesdict[str(auction[3])]
-                    auctionhousename = auctionhouse.housename
-                    location = auctionhouse.location
-                except:
-                    pass
-                # Check for favourites
-                if request.user.is_authenticated:
-                    favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction[0])
-                else:
-                    favqset = []
-                favflag = 0
-                if favqset.__len__() > 0:
-                    favflag = 1        
-                d = {'auctionname' : auctionname, 'image' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
-                featuredauctions[auctionname] = d
-                if featuredauctions.keys().__len__() > chunksize:
-                    break
-        except:
-            pass
-        try:
-            redis_instance.set('ac_featuredauctions', pickle.dumps(featuredauctions))
-        except:
-            pass
-        pastauctionhouseidslist = []
-        pastauctionauctionhousesdict = {}
-        for auction in auctionsqset[pastrowstartctr:]:
-            if type(auction[5]) == datetime.date and auction[5] > curdate:
-                continue
-            auchouseid = auction[3]
-            pastauctionhouseidslist.append(auchouseid)
-        auctionhousesqset = AuctionHouse.objects.filter(id__in=pastauctionhouseidslist)
-        for auchouse in auctionhousesqset:
-            pastauctionauctionhousesdict[str(auchouse.id)] = auchouse
-        aucctr = 0
-        rctr = 0
-        allauctions['row0'] = []
-        for auction in auctionsqset[pastrowstartctr:]:
-            if auction[5] > curdate:
-                continue
-            auctionname = auction[1]
-            autocompleteauctionname = auctionname
-            autocompleteauctionname = autocompleteauctionname.replace('"', "")
-            autocompleteauctionname = removecontrolcharacters(autocompleteauctionname)
-            filterauctions.append(autocompleteauctionname)
-            auction_id = auction[0]
-            salecode = auction[2]
-            if auction[8] == "" or auction[8] is None:
-                maxlowestimatelotsql = "select fal_lot_low_estimate_USD, fal_lot_image1 from fineart_lots where fal_auction_ID=%s and fal_lot_image1 != NULL and fal_lot_image1 != '' order by fal_lot_low_estimate_USD desc"%auction_id
-                try:
-                    cursor.execute(maxlowestimatelotsql)
-                    lotrecs = cursor.fetchall()
-                    # TODO: Might need to remove the conditional statement below.
-                    if lotrecs.__len__() == 0:
-                        continue
-                    lotimg = lotrecs[0][1]
-                    auction[8] = lotimg
-                except:
-                    continue # TODO: Might need to change this statement to 'pass'.
-            if auctionname not in allauctions.keys():
-                allauctions[auctionname] = []
-            auctionperiod = auction[5].strftime("%d %b, %Y")
-            aucenddate = auction[6]
-            if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
-                auctionperiod += " - " + str(aucenddate)
-            auctionhouse = None
-            auctionhousename, ahid, location = "", auction[3], ""
-            try:
-                auctionhouse = pastauctionauctionhousesdict[str(auction[3])]
-                auctionhousename = auctionhouse.housename
-                location = auctionhouse.location
-            except:
-                pass
-            # Check for favourites
-            if request.user.is_authenticated:
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction[0])
-            else:
-                favqset = []
-            favflag = 0
-            if favqset.__len__() > 0:
-                favflag = 1   
-            d = {'auctionname' : auctionname, 'image' : settings.IMG_URL_PREFIX + str(auction[8]), 'auctionhouse' : auctionhousename, 'auctionurl' : "", 'auctionperiod' : auctionperiod, 'aucid' : auction[0], 'ahid' : ahid, 'location' : location, 'favourite' : favflag, 'salecode' : salecode}
-            if allauctions.keys().__len__() > maxpastauctionsperrow * maxpastauctions:
-                break
-            if aucctr % 3 == 0:
-                rctr += 1
-                allauctions['row' + str(rctr)] = []
-            allauctions['row' + str(rctr)].append(d)
-            aucctr += 1
-        #print(allauctions)
-        try:
-            redis_instance.set('ac_allauctions', pickle.dumps(allauctions))
-            redis_instance.set('ac_filterauctions', pickle.dumps(filterauctions))
-        except:
-            pass
-    context['allauctions'] = allauctions
-    context['filterauctions'] = filterauctions
-    context['featuredauctions'] = featuredauctions
-    cursor.close()
-    dbconn.close()
-    #carouselentries = getcarouselinfo_new()
-    #context['carousel'] = carouselentries
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -249,19 +265,27 @@ def index(request):
     if request.user:
         userobj = request.user
         context['username'] = userobj.username
-    prevpage = int(page) - 1
-    nextpage = int(page) + 1
-    displayedprevpage1 = 0
-    displayedprevpage2 = 0
-    if prevpage > 0:
-        displayedprevpage1 = prevpage - 1
-        displayedprevpage2 = prevpage - 2
-    displayednextpage1 = nextpage + 1
-    displayednextpage2 = nextpage + 2
-    firstpage = 1
-    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     template = loader.get_template('auction.html')
     return HttpResponse(template.render(context, request))
+
+
+def getAuctionHousesOrLocations(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    start = request.GET.get('start')
+    limit = request.GET.get('limit')
+    houses = request.GET.get('houses')
+    locations = request.GET.get('locations')
+    auctionHousesSelectQuery = f"SELECT DISTINCT "
+    if houses:
+        auctionHousesSelectQuery += f"""cah_auction_house_name FROM `core_auction_houses` WHERE cah_auction_house_name != "Sotheby's" AND cah_auction_house_name != "Christie's" AND cah_auction_house_name != 'Bonhams' AND cah_auction_house_name != 'Phillips' AND cah_auction_house_name != '' LIMIT {limit} OFFSET {start};"""
+    if locations:
+        auctionHousesSelectQuery += f"""cah_auction_house_location FROM `core_auction_houses` WHERE cah_auction_house_location != 'London' AND cah_auction_house_location != 'NewYork' AND cah_auction_house_location != 'Paris' AND cah_auction_house_location != 'Milan' AND cah_auction_house_location != '' LIMIT 10 OFFSET {start};"""
+    connList = connectToDb()
+    connList[1].execute(auctionHousesSelectQuery)
+    auctionHousesSelectQuery = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(auctionHousesSelectQuery, default=default))
 
 
 #@cache_page(CACHE_TTL)
