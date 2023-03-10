@@ -132,13 +132,7 @@
     <script src="/static/js/eolicoauth.js"></script>
     <script src="/static/js/autocomplete.js"></script>
     <!-- Autocomplete is inspired by the content in https://www.w3schools.com/howto/howto_js_autocomplete.asp -->
-    <script>
-        artists = [
-        {% for artistname in filterartists %}
-            "{{artistname}}", 
-        {% endfor %}
-        ]; // Should get populated during page load.
-    </script>
+    
     <script>
         function searchartist(page = 1) {
             searchkey = document.getElementById('artistsearch').value;
@@ -155,69 +149,76 @@
                     loaderspan.innerHTML = "";
                     loaderspan.style.display = "none";
                     context = JSON.parse(xmlhttp.responseText);
-                    featureddiv = document.getElementById('featuredartistsdivId');
+                    featureddiv = document.getElementById('getTrendingArtistId');
                     featureddiv.innerHTML = "";
                     searchtext = "";
-                    alldiv0 = document.getElementById('allartistsdiv0');
-                    alldiv1 = document.getElementById('allartistsdiv1');
-                    alldiv2 = document.getElementById('allartistsdiv2');
-                    alldiv3 = document.getElementById('allartistsdiv3');
-                    alldiv4 = document.getElementById('allartistsdiv4');
-                    alldiv5 = document.getElementById('allartistsdiv5');
-                    alldiv0.innerHTML = "";
-                    alldiv1.innerHTML = "";
-                    alldiv2.innerHTML = "";
-                    alldiv3.innerHTML = "";
-                    alldiv4.innerHTML = "";
-                    alldiv5.innerHTML = "";
+                    //alldiv0 = document.getElementById('allartistsdiv0');
+                    //alldiv1 = document.getElementById('allartistsdiv1');
+                    //alldiv2 = document.getElementById('allartistsdiv2');
+                    //alldiv3 = document.getElementById('allartistsdiv3');
+                    //alldiv4 = document.getElementById('allartistsdiv4');
+                    //alldiv5 = document.getElementById('allartistsdiv5');
+                    //alldiv0.innerHTML = "";
+                    //alldiv1.innerHTML = "";
+                    //alldiv2.innerHTML = "";
+                    //alldiv3.innerHTML = "";
+                    //alldiv4.innerHTML = "";
+                    //alldiv5.innerHTML = "";
                     pageheaderdiv = document.getElementById('filterHeaderId');
-                    pageheaderdiv.innerHTML = "<h2>Search Results for '" + searchkey + "'</h2><span>Browse over 100,000 artists</span>";
-                    searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
+                    pageheaderdiv.innerHTML = "Search Results for '" + searchkey + "'";
+                    //searchtext += "<div class='container'><div class='row'><div class='col-lg-12'><div class='section-heading section-heading-2'><span>&nbsp;</span></div></div></div><div class='row align-items-end'>";
                     searchartists = context['featuredartists'];
                     pages = context['pages'];
                     for (var i = 0; i < searchartists.length; i++) {
                         artistobj = searchartists[i];
-                        searchtext += "<div class='col-sm-12 col-md-6 col-lg-3 col-xl-3'><div class='artist-category'>";
+                        searchtext += "<div class='col-md-4 mb-4'>";
                         if (artistobj.atype == '1') {
-                            searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artworkimage + "'></a></div>";
+                            searchtext += "<a href='/artist/details/?aid=" + artistobj.aid + "' class='latest-card'><img src='" + artistobj.artworkimage + "' class='card-img'>";
                         } else {
-                            searchtext += "<div class='thumb'><a href='/artist/details/?aid=" + artistobj.aid + "'><img src='" + artistobj.artistimage + "'></a></div>";
+                            searchtext += "<a href='/artist/details/?aid=" + artistobj.aid + "' class='latest-card'><img src='" + artistobj.artistimage + "' class='card-img'>";
                         }
-                        searchtext += "<div class='down-content'><a href='/artist/details/?aid=" + artistobj.aid + "' style='color:#000000;'><h4>" + artistobj.artistname + "</h4>";
+                        searchtext += "<div class='down-content'><div class='d-flex justify-content-between'><h4>" + artistobj.artistname + "</h4>";
                         if (artistobj.birthdate == '') {
-                            searchtext += "<h6>" + artistobj.nationality + "</h6>";
-                        } else {
+                            searchtext += "<p>" + artistobj.nationality + "</p>";
+                        } 
+                        else {
                             if (artistobj.deathdate == '0') {
-                                searchtext += "<h6>" + artistobj.nationality + " b." + artistobj.birthdate + "</h6>";
-                            } else {
+                                searchtext += "<p>" + artistobj.nationality + " b." + artistobj.birthdate + "</p>";
+                            } 
+                            else {
                                 if (artistobj.nationality != "") {
-                                    searchtext += "<h6>" + artistobj.nationality + ", " + artistobj.birthdate + " - " + artistobj.deathdate + "</h6>";
-                                } else {
-                                    searchtext += "<h6>" + artistobj.birthdate + " - " + artistobj.deathdate + "</h6>";
+                                    searchtext += "<p>" + artistobj.nationality + ", " + artistobj.birthdate + " - " + artistobj.deathdate + "</p>";
+                                } 
+                                else {
+                                    searchtext += "<p>" + artistobj.birthdate + " - " + artistobj.deathdate + "</p>";
                                 }
                             }
                         }
-                        searchtext += "</a></div>";
-                        
                         searchtext += "</div></div>";
+                        searchtext += "</a></div>";
                     }
-                    searchtext += "</div></div><br/>";
-                    paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
-                    if (pages.prevpage >= 1) {
-                        paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchartist(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                    //searchtext += "</div></div><br/>";
+                    paginationcontent = "";
+                    if(searchartists.length > 20 || pages.currentpage > 1){
+                        paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                        if (pages.prevpage >= 1) {
+                            paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchartist(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                        }
+                        paginationcontent += "</li>";
+                        if (pages.displayedprevpage2 > 0) {
+                            paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                        }
+                        if (pages.displayedprevpage1 > 0) {
+                            paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                        }
+                        paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchartist(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                        paginationcontent += "</div>";
                     }
-                    paginationcontent += "</li>";
-                    if (pages.displayedprevpage2 > 0) {
-                        paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
-                    }
-                    if (pages.displayedprevpage1 > 0) {
-                        paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
-                    }
-                    paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchartist(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchartist(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
-                    paginationcontent += "</div>";
-                    searchtext += paginationcontent;
+                    //searchtext += paginationcontent;
                     featureddiv.innerHTML = searchtext;
-                    alert(searchtext);
+                    paginationsection = document.getElementById('pagination');
+                    paginationsection.innerHTML = paginationcontent;
+                    //alert(searchtext);
                     //featureddiv.innerHTML = featureddiv.innerHTML.replace("<div class=\"row align-items-end\"></div></div>", "<div class=\"row align-items-end\">");
                     //alert(featureddiv.innerHTML);
                 }
@@ -971,7 +972,7 @@
                 </div>
             </div>
     </section>
-
+    <!--
     <section class="section gal-section br-none pdt-0" id='allartistsdiv0'>
         {% if allartists.0|length > 0 %}
         <div class="container">
@@ -1396,6 +1397,10 @@
             </div>
         </div>
         {% endif %}
+    </section> 
+    -->
+    <section id='pagination'>
+    
     </section>
     <!-- <section class="download-app">
         <div class="container max-container">

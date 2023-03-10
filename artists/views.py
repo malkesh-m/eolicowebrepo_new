@@ -378,6 +378,7 @@ def index(request):
     context['uniqueartists'] = uniqueartists
     context['uniqueartworks'] = uniqueartworks
     context['statisticalinfo'] = artistsstatisticalinfo
+    """
     filterartists = []
     try:
         filterartists = pickle.loads(redis_instance.get('at_filterartists'))
@@ -422,10 +423,9 @@ def index(request):
         except:
             pass
         context['filterartists'] = filterartists
+    """
         #carouselentries = getcarouselinfo_new()
         #context['carousel'] = carouselentries
-    else:
-        context = {}
     context['adminuser'] = 0
     if request.user:
         userobj = request.user
