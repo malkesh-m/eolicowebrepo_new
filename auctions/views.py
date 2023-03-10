@@ -13,7 +13,7 @@ from django.template.loader import get_template
 from django.core.mail import send_mail
 from django.contrib.sessions.backends.db import SessionStore
 from django.template import loader
-
+from artists.views import pastUpcomingQueryCreator
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.contrib.auth.models import User as djUser
@@ -283,9 +283,9 @@ def getAuctionHousesOrLocations(request):
         auctionHousesSelectQuery += f"""cah_auction_house_location FROM `core_auction_houses` WHERE cah_auction_house_location != 'London' AND cah_auction_house_location != 'NewYork' AND cah_auction_house_location != 'Paris' AND cah_auction_house_location != 'Milan' AND cah_auction_house_location != '' LIMIT 10 OFFSET {start};"""
     connList = connectToDb()
     connList[1].execute(auctionHousesSelectQuery)
-    auctionHousesSelectQuery = connList[1].fetchall()
+    auctionHousesData = connList[1].fetchall()
     disconnectDb(connList)
-    return HttpResponse(json.dumps(auctionHousesSelectQuery, default=default))
+    return HttpResponse(json.dumps(auctionHousesData, default=default))
 
 
 #@cache_page(CACHE_TTL)
@@ -756,134 +756,163 @@ def moreauctions(request):
 def showauction(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    aucid = ""
-    if request.method == 'GET':
-        if 'aucid' in request.GET.keys():
-            aucid = str(request.GET['aucid'])
-    if aucid == "":
-        return HttpResponse("ShowAuction: Required parameter (aucid) missing.")
-    page = "1"
-    if request.method == 'GET':
-        if 'page' in request.GET.keys():
-            page = str(request.GET['page'])
-    chunksize = 4
-    rows = 6
-    maxselectlots = 4
-    rowstartctr = int(page) * rows - rows
-    rowendctr = int(page) * rows
-    startctr = (chunksize * rows) * (int(page) -1)
-    endctr = (chunksize * rows) * int(page)
+    # aucid = ""
+    # if request.method == 'GET':
+    #     if 'aucid' in request.GET.keys():
+    #         aucid = str(request.GET['aucid'])
+    # if aucid == "":
+    #     return HttpResponse("ShowAuction: Required parameter (aucid) missing.")
+    # page = "1"
+    # if request.method == 'GET':
+    #     if 'page' in request.GET.keys():
+    #         page = str(request.GET['page'])
+    # chunksize = 4
+    # rows = 6
+    # maxselectlots = 4
+    # rowstartctr = int(page) * rows - rows
+    # rowendctr = int(page) * rows
+    # startctr = (chunksize * rows) * (int(page) -1)
+    # endctr = (chunksize * rows) * int(page)
+    # context = {}
+    # allartists = {}
+    # alllots = []
+    # selectlots = []
+    # nationalities = {}
+    # auctioninfo = {}
+    # curdatetime = datetime.datetime.now()
+    # curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
+    # connlist = connecttoDB()
+    # dbconn, cursor = connlist[0], connlist[1]
+    # auctionobj = None
+    # try:
+    #     auctionobj = Auction.objects.get(id=aucid)
+    # except:
+    #     return HttpResponse("Could not find auction identified by ID %s: %s"%(aucid, sys.exc_info()[1].__str__()))
+    # auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
+    # aucenddate = auctionobj.auctionenddate
+    # if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
+    #     auctionperiod += " - " + str(aucenddate)
+    # auctioninfo['auctionname'] = auctionobj.auctionname
+    # auctioninfo['auctionperiod'] = auctionperiod
+    # auctioninfo['auctionid'] = auctionobj.auctionid
+    # auctioninfo['coverimage'] = settings.IMG_URL_PREFIX + str(auctionobj.coverimage)
+    # lotcount = auctionobj.lotcount
+    # if not lotcount:
+    #     lotcount = 0
+    # auctioninfo['lotcount'] = lotcount
+    # auctioninfo['aucid'] = aucid
+    # housename, ahid = "", ""
+    # ahobj = None
+    # try:
+    #     ahobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
+    #     housename = ahobj.housename
+    #     ahid = ahobj.id
+    # except:
+    #     pass
+    # auctioninfo['auctionhouse'] = housename
+    # auctioninfo['ahid'] = ahid
+    # context['auctioninfo'] = auctioninfo
+    # # We won't be using redis cache in this controller function. It would be a drain on memory if we
+    # # start loading the lots info for every auction the user chooses to dig into.
+    # lotssql = "select fal_lot_ID, fal_lot_no, fal_sub_lot_no, fal_artwork_ID, fal_auction_ID, fal_lot_sale_date, fal_lot_material, fal_lot_size_details, fal_lot_height, fal_lot_width, fal_lot_depth, fal_lot_measurement_unit, fal_lot_category, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price, fal_lot_sale_price_USD, fal_lot_price_type, fal_lot_condition, fal_lot_status, fal_lot_provenance, fal_lot_published, fal_lot_image1, fal_lot_image2, fal_lot_image3, fal_lot_image4, fal_lot_image5, fal_lot_record_created, fal_lot_record_updated, fal_lot_record_createdby, fal_lot_record_updatedby, fal_lot_source from fineart_lots where fal_auction_ID=%s"%aucid
+    # cursor.execute(lotssql)
+    # alllotsqset = cursor.fetchall()
+    # if alllotsqset.__len__() == 0:
+    #     context['warning'] = "Could not find any lot/artwork information for '%s'"%auctionobj.auctionname
+    #     template = loader.get_template('showauction.html')
+    #     return HttpResponse(template.render(context, request))
+    # lotctr = 0
+    # artworkidslist = []
+    # lotartworksdict = {}
+    # artistidslist = []
+    # artworkartistsdict = {}
+    # for lotobj in alllotsqset:
+    #     artworkid = lotobj[3]
+    #     artworkidslist.append(artworkid)
+    # artworksqset = Artwork.objects.filter(id__in=artworkidslist)
+    # for artwork in artworksqset:
+    #     lotartworksdict[str(artwork.id)] = artwork
+    #     artistid = artwork.artist_id
+    #     artistidslist.append(artistid)
+    # artistsqset = Artist.objects.filter(id__in=artistidslist)
+    # for artist in artistsqset:
+    #     artworkartistsdict[str(artist.id)] = artist
+    # for lotobj in alllotsqset:
+    #     artwork = None
+    #     try:
+    #         artwork = lotartworksdict[str(lotobj[3])]
+    #     except:
+    #         continue # If we could not find the corresponding artwork, then we simply skip it.
+    #         # Ideally, we should be logging this somewhere, and it should be implemented later.
+    #     artistobj = None
+    #     try:
+    #         artistobj = artworkartistsdict[str(artwork.artist_id)]
+    #     except:
+    #         continue # Again, if artist could not be identified for the lot, we skip the lot entirely.
+    #         # This too should be logged. TO DO later.
+    #     artistnationality = artistobj.nationality
+    #     nationalities[artistnationality] = 1
+    #     artistname = artistobj.artistname
+    #     lottitle = artwork.artworkname
+    #     estimate = str(lotobj[16])
+    #     if lotobj[15] is not None and lotobj[15] > 0.00:
+    #         estimate += " - " + str(lotobj[15])
+    #     soldprice = str(lotobj[18])
+    #     # Check for favourites
+    #     if request.user.is_authenticated:
+    #         favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lotobj[3])
+    #     else:
+    #         favqset = []
+    #     favflag = 0
+    #     if favqset.__len__() > 0:
+    #         favflag = 1
+    #     d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj[6], 'size' : lotobj[7], 'image' : settings.IMG_URL_PREFIX + str(lotobj[24]), 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj[0], 'aid' : artistobj.id, 'lotno' : lotobj[1], 'category' : lotobj[12], 'soldprice' : soldprice, 'awid' : lotobj[3], 'favourite' : favflag}
+    #     if artistname not in allartists.keys():
+    #         allartists[artistname] = artistobj.id
+    #     alllots.append(d)
+    #     if lotctr < maxselectlots:
+    #         selectlots.append(d)
+    #     lotctr += 1
+    # cursor.close()
+    # dbconn.close()
+    # context['alllots'] = alllots
+    # context['selectlots'] = selectlots
+    # context['allartists'] = allartists
+    # context['nationalities'] = nationalities
     context = {}
-    allartists = {}
-    alllots = []
-    selectlots = []
-    nationalities = {}
-    auctioninfo = {}
-    curdatetime = datetime.datetime.now()
-    curdate = datetime.date(curdatetime.year, curdatetime.month, curdatetime.day)
-    connlist = connecttoDB()
-    dbconn, cursor = connlist[0], connlist[1]
-    auctionobj = None
-    try:
-        auctionobj = Auction.objects.get(id=aucid)
-    except:
-        return HttpResponse("Could not find auction identified by ID %s: %s"%(aucid, sys.exc_info()[1].__str__()))
-    auctionperiod = auctionobj.auctionstartdate.strftime("%d %b, %Y")
-    aucenddate = auctionobj.auctionenddate
-    if str(aucenddate) != "0000-00-00" and aucenddate != "01 Jan, 1":
-        auctionperiod += " - " + str(aucenddate)
-    auctioninfo['auctionname'] = auctionobj.auctionname
-    auctioninfo['auctionperiod'] = auctionperiod
-    auctioninfo['auctionid'] = auctionobj.auctionid
-    auctioninfo['coverimage'] = settings.IMG_URL_PREFIX + str(auctionobj.coverimage)
-    lotcount = auctionobj.lotcount
-    if not lotcount:
-        lotcount = 0
-    auctioninfo['lotcount'] = lotcount
-    auctioninfo['aucid'] = aucid
-    housename, ahid = "", ""
-    ahobj = None
-    try:
-        ahobj = AuctionHouse.objects.get(id=auctionobj.auctionhouse_id)
-        housename = ahobj.housename
-        ahid = ahobj.id
-    except:
-        pass
-    auctioninfo['auctionhouse'] = housename
-    auctioninfo['ahid'] = ahid
-    context['auctioninfo'] = auctioninfo
-    # We won't be using redis cache in this controller function. It would be a drain on memory if we 
-    # start loading the lots info for every auction the user chooses to dig into.
-    lotssql = "select fal_lot_ID, fal_lot_no, fal_sub_lot_no, fal_artwork_ID, fal_auction_ID, fal_lot_sale_date, fal_lot_material, fal_lot_size_details, fal_lot_height, fal_lot_width, fal_lot_depth, fal_lot_measurement_unit, fal_lot_category, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price, fal_lot_sale_price_USD, fal_lot_price_type, fal_lot_condition, fal_lot_status, fal_lot_provenance, fal_lot_published, fal_lot_image1, fal_lot_image2, fal_lot_image3, fal_lot_image4, fal_lot_image5, fal_lot_record_created, fal_lot_record_updated, fal_lot_record_createdby, fal_lot_record_updatedby, fal_lot_source from fineart_lots where fal_auction_ID=%s"%aucid
-    cursor.execute(lotssql)
-    alllotsqset = cursor.fetchall()
-    if alllotsqset.__len__() == 0:
-        context['warning'] = "Could not find any lot/artwork information for '%s'"%auctionobj.auctionname
-        template = loader.get_template('showauction.html')
-        return HttpResponse(template.render(context, request))
-    lotctr = 0
-    artworkidslist = []
-    lotartworksdict = {}
-    artistidslist = []
-    artworkartistsdict = {}
-    for lotobj in alllotsqset:
-        artworkid = lotobj[3]
-        artworkidslist.append(artworkid)
-    artworksqset = Artwork.objects.filter(id__in=artworkidslist)
-    for artwork in artworksqset:
-        lotartworksdict[str(artwork.id)] = artwork
-        artistid = artwork.artist_id
-        artistidslist.append(artistid)
-    artistsqset = Artist.objects.filter(id__in=artistidslist)
-    for artist in artistsqset:
-        artworkartistsdict[str(artist.id)] = artist
-    for lotobj in alllotsqset:
-        artwork = None
-        try:
-            artwork = lotartworksdict[str(lotobj[3])]
-        except:
-            continue # If we could not find the corresponding artwork, then we simply skip it.
-            # Ideally, we should be logging this somewhere, and it should be implemented later.
-        artistobj = None
-        try:
-            artistobj = artworkartistsdict[str(artwork.artist_id)]
-        except:
-            continue # Again, if artist could not be identified for the lot, we skip the lot entirely.
-            # This too should be logged. TO DO later.
-        artistnationality = artistobj.nationality
-        nationalities[artistnationality] = 1
-        artistname = artistobj.artistname
-        lottitle = artwork.artworkname
-        estimate = str(lotobj[16])
-        if lotobj[15] is not None and lotobj[15] > 0.00:
-            estimate += " - " + str(lotobj[15])
-        soldprice = str(lotobj[18])
-        # Check for favourites
-        if request.user.is_authenticated:
-            favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks", reference_model_id=lotobj[3])
-        else:
-            favqset = []
-        favflag = 0
-        if favqset.__len__() > 0:
-            favflag = 1   
-        d = {'lottitle' : lottitle, 'artist' : artistname, 'medium' : lotobj[6], 'size' : lotobj[7], 'image' : settings.IMG_URL_PREFIX + str(lotobj[24]), 'description' : artwork.description, 'estimate' : estimate, 'lid' : lotobj[0], 'aid' : artistobj.id, 'lotno' : lotobj[1], 'category' : lotobj[12], 'soldprice' : soldprice, 'awid' : lotobj[3], 'favourite' : favflag}
-        if artistname not in allartists.keys():
-            allartists[artistname] = artistobj.id
-        alllots.append(d)
-        if lotctr < maxselectlots:
-            selectlots.append(d)
-        lotctr += 1
-    cursor.close()
-    dbconn.close()
-    context['alllots'] = alllots
-    context['selectlots'] = selectlots
-    context['allartists'] = allartists
-    context['nationalities'] = nationalities
     if request.user:
         userobj = request.user
         context['username'] = userobj.username
     template = loader.get_template('showauction.html')
     return HttpResponse(template.render(context, request))
+
+
+def getAuctionDetails(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    auctionId = request.GET.get('aucid')
+    getAuctionSelectQuery = f"""SELECT faac_auction_start_date, faac_auction_image, cah_auction_house_name, cah_auction_house_location, cah_auction_house_country FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionId};"""
+    connList = connectToDb()
+    connList[1].execute(getAuctionSelectQuery)
+    getAuctionData = connList[1].fetchone()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(getAuctionData, default=default))
+
+
+def getAuctionArtworksData(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    auctionId = request.GET.get('aucid')
+    start = request.GET.get('start')
+    limit = request.GET.get('limit')
+    getAuctionArtworksSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionId}"""
+    whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
+    getAuctionArtworksSelectQuery += whereClauseAndOrderBy + f""" LIMIT {limit} OFFSET {start};"""
+    connList = connectToDb()
+    connList[1].execute(getAuctionArtworksSelectQuery)
+    getAuctionData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(getAuctionData, default=default))
 
 
 @csrf_exempt

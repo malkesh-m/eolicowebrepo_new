@@ -15,4 +15,6 @@ urlpatterns = [
     #     AJAX CALL
 
     path('getAuctionHousesOrLocations/', views.getAuctionHousesOrLocations, name='getAuctionHousesOrLocations'),
+    path('getAuctionDetails/', views.getAuctionDetails, name="getAuctionDetails"),
+    path('getAuctionArtworksData/', views.getAuctionArtworksData, name="getAuctionArtworksData"),
 ]
