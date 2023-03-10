@@ -1,6 +1,30 @@
 const workDataDiv =  document.querySelector('#Work')
 const collapseThreeDiv = document.querySelector('#collapseThree')
 const collapseFourDiv = document.querySelector('#collapseFour')
+let pastUpcomingStrData = 'past'
+
+function htmlDataBinder(recentAuctionData) {
+    let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 auctionData">
+                        <div class="latest-artists">
+                            <a href="/auction/showauction/?aucid=${recentAuctionData.faac_auction_ID}" class="latest-card">
+                                <div class="thumb">
+                                    <img src="https://f000.backblazeb2.com/file/fineart-images/${recentAuctionData.faac_auction_image}" class="card-img" alt="img">
+                                </div>
+                                <div class="down-content">
+                                    <h6><span>Sale Code:</span> ${recentAuctionData.faac_auction_sale_code}
+                                    </h6>
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <p class="auction-text p-0">${recentAuctionData.faac_auction_title}</p>
+                                        <p>View Lots</p>
+                                    </div>
+                                    <h5 class="mb-0 py-2">${recentAuctionData.cah_auction_house_name}</h5>
+                                    <span>${recentAuctionData.faac_auction_start_date} | ${recentAuctionData.cah_auction_house_location}</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>`
+    return htmlData
+}
 
 function pastTrendingAuctionSetter (queryParamas, start, limit) {
     fetch(`/login/getRecentAuctions/?start=${start}&${queryParamas}limit=${limit}`, {
@@ -10,25 +34,7 @@ function pastTrendingAuctionSetter (queryParamas, start, limit) {
         .then(body => {
             let htmlData = ''
             body.forEach(recentAuctionData => {
-                htmlData += `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 auctionData">
-                                <div class="latest-artists">
-                                    <a href="/auction/showauction/?aucid=${recentAuctionData.faac_auction_ID}" class="latest-card">
-                                        <div class="thumb">
-                                            <img src="https://f000.backblazeb2.com/file/fineart-images/${recentAuctionData.faac_auction_image}" class="card-img" alt="img">
-                                        </div>
-                                        <div class="down-content">
-                                            <h6><span>Sale Code:</span> ${recentAuctionData.faac_auction_sale_code}
-                                            </h6>
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <p class="auction-text p-0">${recentAuctionData.faac_auction_title}</p>
-                                                <p>View Lots</p>
-                                            </div>
-                                            <h5 class="mb-0 py-2">${recentAuctionData.cah_auction_house_name}</h5>
-                                            <span>${recentAuctionData.faac_auction_start_date} | ${recentAuctionData.cah_auction_house_location}</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>`
+                htmlData += htmlDataBinder(recentAuctionData)
             })
             workDataDiv.innerHTML =  `<div class="row" id='pastauctions'>
                                         ${htmlData}
@@ -40,6 +46,28 @@ function pastTrendingAuctionSetter (queryParamas, start, limit) {
                                     </div>`
         })
 }
+
+function upcomingAuctionSetter(queryParamas, start, limit) {
+    fetch(`/login/getUpcomingAuctions/?start=${start}&${queryParamas}limit=${limit}`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let htmlData = ''
+            body.forEach(recentAuctionData => {
+                htmlData += htmlDataBinder(recentAuctionData)
+            })
+            workDataDiv.innerHTML =  `<div class="row" id='pastauctions'>
+                                        ${htmlData}
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12 text-center">
+                                            <a class="btn btn-login btn-round ml-0" href="">View More</a>
+                                        </div>
+                                    </div>`
+        })
+}
+
 
 function filterAuction(e) {
     const auctionTitle = document.querySelector('#auctionTitle')
@@ -80,8 +108,19 @@ function filterAuction(e) {
     if (locationsStr) {
         queryParams += `locations=${locationsStr}&`
     }
-    start = document.querySelectorAll('.auctionData').length
-    pastTrendingAuctionSetter(queryParams, start, 50)
+    let start = document.querySelectorAll('.auctionData').length
+    let limit = document.querySelector('#inputGroupSelect01').value
+    if (pastUpcomingStrData === 'past') {
+        pastTrendingAuctionSetter(queryParams, start, limit)
+    }
+    else if (pastUpcomingStrData === 'upcoming') {
+        upcomingAuctionSetter(queryParams, start, limit)
+    }
+}
+
+function pastUpcomingAuction(e, pastUpcomingStr) {
+    pastUpcomingStrData = pastUpcomingStr
+    filterAuction(e)
 }
 
 function housesSetter(apiData) {

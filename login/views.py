@@ -519,9 +519,41 @@ def default(o):
 def getUpcomingAuctions(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
+    start = request.GET.get('start')
+    limit = request.GET.get('limit')
+    auctionTitle = request.GET.get('auctionTitle')
+    saleDate = request.GET.get('saleDate')
+    fromDate = request.GET.get('fromDate')
+    toDate = request.GET.get('toDate')
+    houses = request.GET.get('houses')
+    locations = request.GET.get('locations')
     todayDate = datetime.datetime.now().date()
     connList = connectToDb()
-    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{todayDate}' AND faac_auction_lot_count IS NOT NULL ORDER BY faac_auction_start_date DESC LIMIT 6;"""
+    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{todayDate}' AND faac_auction_lot_count IS NOT NULL"""
+    whereClause = """ """
+    orderByClause = """ ORDER BY """
+
+    if auctionTitle:
+        whereClause += f"""AND faac_auction_title like '%{auctionTitle}%' """
+    if saleDate:
+        orderByClause += """ faac_auction_start_date """
+    else:
+        orderByClause += """ faac_auction_start_date DESC """
+    if fromDate:
+        whereClause += f""" AND faac_auction_start_date = '{fromDate}' """
+    if toDate:
+        whereClause += f""" AND faac_auction_end_date = '{toDate}' """
+    if houses:
+        housesList = houses.split(',')
+        for housesName in housesList:
+            if housesName != '':
+                whereClause += f""" AND cah_auction_house_name = "{housesName}" """
+    if locations:
+        locationsList = locations.split(',')
+        for location in locationsList:
+            if location != '':
+                whereClause += f""" AND cah_auction_house_location = "{location}" """
+    upcomingAuctionSelectQuery += whereClause + orderByClause + f"""LIMIT {limit} OFFSET {start};"""
     connList[1].execute(upcomingAuctionSelectQuery)
     upcomingAuctionsData = connList[1].fetchall()
     disconnectDb(connList)
@@ -565,7 +597,6 @@ def getRecentAuctions(request):
             if location != '':
                 whereClause += f""" AND cah_auction_house_location = "{location}" """
     recentAuctionSelectQuery += whereClause + orderByClause + f"""LIMIT {limit} OFFSET {start};"""
-    print(recentAuctionSelectQuery)
     connList = connectToDb()
     connList[1].execute(recentAuctionSelectQuery)
     recentAuctionsData = connList[1].fetchall()
