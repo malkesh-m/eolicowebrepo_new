@@ -165,16 +165,15 @@
                          }
                          sectiontext += "<div class='col-sm-6 col-md-3 col-xl-2 mb-4'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label>";
                          for (var j = 0; j < auctionhouse.auctionslist.length; j++) {
-                                 auction = auctionhouse.auctionslist[j];
-                                 //sectiontext += "<div class='col-sm-6 col-md-3 col-xl-2 mb-4'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label>";
-                                 sectiontext += "<div class='img-box m-0'>";
-                                 sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "'><img src='" + auction.coverimage + "'></a>";
-                                 sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "'><div class='fea-show'><h3>" + auction.auctionname + "</h3>";
-                                 sectiontext += "<h4>" + auction.auctionperiod + "</h4>";
-                                 sectiontext += "<p>" + auction.location + "</p>";
-                                 sectiontext += "</a>";
-                                 sectiontext += "</div>";
-                                 
+                             auction = auctionhouse.auctionslist[j];
+                             //sectiontext += "<div class='col-sm-6 col-md-3 col-xl-2 mb-4'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label>";
+                             sectiontext += "<div class='img-box m-0'>";
+                             sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "'><img src='" + auction.coverimage + "'></a>";
+                             sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "'><div class='fea-show'><h3>" + auction.auctionname + "</h3>";
+                             sectiontext += "<h4>" + auction.auctionperiod + "</h4>";
+                             sectiontext += "<p>" + auction.location + "</p>";
+                             sectiontext += "</a>";
+                             sectiontext += "</div>";
                          }
                          sectiontext += "</div>";
                      }
