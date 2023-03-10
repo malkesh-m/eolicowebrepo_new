@@ -157,26 +157,34 @@
                      search_section.innerHTML = "";
                      loaderspan.innerHTML = "";
                      loaderspan.style.display = "none";
-                     sectiontext = "";
-                     for (var i = 0; i < auctionhousematches.length; i++) {
-                         auctionhouse = auctionhousematches[i];
-                         if (auctionhouse.auctionslist.length == 0) {
-                             continue;
-                         }
-                         sectiontext += "<div class='col-sm-6 col-md-3 col-xl-2 mb-4'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label>";
-                         for (var j = 0; j < auctionhouse.auctionslist.length; j++) {
-                             auction = auctionhouse.auctionslist[j];
-                             //sectiontext += "<div class='col-sm-6 col-md-3 col-xl-2 mb-4'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label>";
-                             sectiontext += "<div class='img-box m-0'>";
-                             sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "'><img src='" + auction.coverimage + "'></a>";
-                             sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "'><div class='fea-show'><h3>" + auction.auctionname + "</h3>";
-                             sectiontext += "<h4>" + auction.auctionperiod + "</h4>";
-                             sectiontext += "<p>" + auction.location + "</p>";
-                             sectiontext += "</a>";
-                             sectiontext += "</div>";
-                         }
-                         sectiontext += "</div>";
-                     }
+                     sectiontext = "<div class='container'><div class='row'><div class='section-heading section-heading-2 mrb-50'><h2>Search Results for '" + searchkey + "'</h2></div></div>";
+		    for(var i=0; i < auctionhousematches.length; i++){
+			auctionhouse = auctionhousematches[i];
+			if(auctionhouse.auctionslist.length == 0){
+			    continue;
+			}
+			sectiontext += "<div class='sub-head'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label></div>";
+			sectiontext += "<div class='row align-items-end'>";
+		        if(auctionhouse.auctionslist.length == 0){
+		            sectiontext += "<div class='column' style='padding-left:5px;'>No auctions found for this auction house / branch</div>";
+		        }
+		        else{
+			  for(var j=0; j < auctionhouse.auctionslist.length; j++){
+			    auction = auctionhouse.auctionslist[j];
+			    sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='" + auction.coverimage + "' style='width:100%'>";
+			    sectiontext += "<h4>" + auction.auctionname + "</h4>";
+			    sectiontext += "<h6 style='padding-left:10px;'>" + auction.auctionperiod + "</h6>";
+			    sectiontext += "<h6>" + auction.location + "</h6>";
+			    sectiontext += "</a>";
+			    if(adminuser == 1){
+			      sectiontext += "<div><a style='color:#000000;bgcolor:#ffffff;padding-left:10px;' href='#adminScreen' onClick='javascript:t_editauction(\"{{auction.aucid}}\");'>Edit</a></div>";
+			    }
+			    sectiontext += "</div></div>";
+			  }
+		        }
+			sectiontext += "</div><hr>";
+		    }
+                     //sectiontext += "</div>";
                      paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
                      if (pages.prevpage >= 1) {
                          paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchauctionhouse(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
