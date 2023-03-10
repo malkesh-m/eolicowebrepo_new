@@ -6,7 +6,7 @@ const artworkDataDiv = document.querySelector('#pastauctions')
 function htmlDataBinder(auctionData) {
     let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 artworkData">
                         <div class="latest-artists">
-                            <a href="/auction/showauction/?aucid=${auctionData.faac_auction_ID}" class="latest-card">
+                            <a href="/auction/details/?lid=${auctionData.fal_lot_ID}" class="latest-card">
                                 <div class="thumb">
                                     <img src="https://f000.backblazeb2.com/file/fineart-images/${auctionData.faa_artwork_image1}" class="card-img" alt="img">
                                 </div>
