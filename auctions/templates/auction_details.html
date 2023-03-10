@@ -84,6 +84,7 @@
 
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
+    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=632ac11776ed290012d9213d&product=inline-share-buttons' async='async'></script>
 
 </head>
 
@@ -111,7 +112,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="regiUsername" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
@@ -190,7 +191,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="loginUsername" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
@@ -369,11 +370,14 @@
             <div class="row align-items-end justify-content-between">
                 <div class="col-auto">
                     <div class="artists-details-img">
-                        <h3>Self Portrait</h3>
-                        <p class="mb-0">Lot #: 3</p>
+                        <h3 id="headerTitleId"></h3>
+                        <p class="mb-0" id="headerLotNoId"></p>
                     </div>
                 </div>
                 <div class="col-auto">
+                    <!-- share button -->
+                    <!-- <div class="sharethis-inline-share-buttons"></div>  -->
+                    <!-- share button -->
                     <div>
                         <a href="#"> <img src="/static/images/pdf.png" class="mr-2" style="width: 30px;" /></a>
                         <a href="#">
@@ -388,31 +392,31 @@
                     <div class="product-imgs">
                         <div class="img-display">
                             <div class="img-showcase">
-                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_1.jpg" alt="shoe image">
-                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
+                                <img id="image1Id" src="" alt="shoe image">
+                                <!-- <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
                                 <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg" alt="shoe image">
-                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image">
+                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image"> -->
                             </div>
                         </div>
                         <div class="img-select">
                             <div class="img-item">
                                 <a href="#" data-id="1">
-                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_1.jpg" alt="shoe image">
+                                    <img id="image2Id" class="lotImages" src="" alt="show image">
                                 </a>
                             </div>
                             <div class="img-item">
                                 <a href="#" data-id="2">
-                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
+                                    <img id="image3Id" class="lotImages" src="" alt="show image">
                                 </a>
                             </div>
                             <div class="img-item">
                                 <a href="#" data-id="3">
-                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg" alt="shoe image">
+                                    <img id="image4Id" class="lotImages" src="" alt="show image">
                                 </a>
                             </div>
                             <div class="img-item">
                                 <a href="#" data-id="4">
-                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image">
+                                    <img id="image5Id" class="lotImages" src="" alt="show image">
                                 </a>
                             </div>
                         </div>
@@ -422,9 +426,9 @@
                     <div class="artists-details-content">
                         <div class="d-md-flex justify-content-between mb-5">
                             <div>
-                                <h4 class="mb-2">Artist : <span>Gertrude Abercrombie</span></h4>
-                                <h4 class="mb-2">Title : <span>Self Portrait</span></h4>
-                                <h4 class="mb-3">Lot # 3 </h4>
+                                <h4 class="mb-2" id="artistId"></h4>
+                                <h4 class="mb-2" id="titleId"></h4>
+                                <h4 class="mb-3" id="lotNoId"></h4>
                             </div>
                             <div>
                                 <button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;  " type="button">Follow Artist</button>
@@ -432,14 +436,14 @@
                             </div>
                         </div>
 
-                        <h5 class="mb-3">Medium : <span>oil on masonite </span></h5>
-                        <h5 class="mb-3">Category : <span>paintings</span></h5>
-                        <h5 class="mb-3">Dimensions : <span>43.2 x 33 cm</span></h5>
-                        <h5 class="mb-5">Markings : <span>Signed and dated 1973.</span></h5>
+                        <h5 class="mb-3" id="mediumId"></h5>
+                        <h5 class="mb-3" id="categoryId"></h5>
+                        <h5 class="mb-3" id="dimensionsId"></h5>
+                        <h5 class="mb-5" id="markingId"></h5>
 
                         <h5 class="mb-3">Actions : <span>Contemporary Curated</span></h5>
-                        <h5 class="mb-3"><span>Sotheby’s, New York</span></h5>
-                        <h5 class="mb-5"><span>30th Sep, 2021</span></h5>
+                        <h5 class="mb-3" id="nameLocationId"></h5>
+                        <h5 class="mb-5" id="dateId"></h5>
 
                         <h5 class="mb-3">Estimates <span>Login to View</span></h5>
                         <h5>Sold Price <span>Login to View</span></h5>
@@ -459,28 +463,25 @@
                         <div class="action-content">
                             <div class="d-md-flex align-items-start mb-2">
                                 <h6>Provenance : </h6>
-                                <p class="pl-md-2"> Galerie Eva Presenhuber, ZurichAcquired from the above by the present owner </p>
+                                <p class="pl-md-2" id="provenanceId"></p>
                             </div>
                             <div class="d-md-flex align-items-start mb-2">
                                 <h6>Literature : </h6>
-                                <p class="pl-md-2"> Shara Hughes| Shara Hughes: Landscapes| New York| 2019| p. 15 (illustrated| p. 14)
+                                <p class="pl-md-2" id="literatureId">
                                 </p>
                             </div>
                             <div class="d-md-flex align-items-start mb-2">
                                 <h6>Exhibition : </h6>
                                 <div>
-                                    <p class="pl-md-2"> London| Gagosian Gallery| MARK TANSEY| December 10| 2009 - January 23| 2010| p. 83 (illustrated| p. 85; detail illustrated| pp. 86-89) </p>
-                                    <a href="#">Read More</a>
+                                    <p class="pl-md-2" id="exhibitionId"></p>
                                 </div>
                             </div>
                             <div class="d-md-flex align-items-start">
                                 <h6>Description : </h6>
                                 <div>
-                                    <p class="pl-md-2">
-                                        Property from an Important West Coast Collection Gertrude Abercrombie 1909 - 1977 Self Portrait signed oil on masonite 17 by 13 in. 43.2 by 33 cm. framed: 21½ by 17½ in. 54.6 by 44.5 cm. Executed circa 1935. The lot is sold in the condition it is in at
-                                        the time of sale
+                                    <p class="pl-md-2" id="descriptionId">
                                     </p>
-                                    <a href="#">Read More</a>
+                                    <a href="javascript:readMore('desc', '#descReadMoreId')" id="descReadMoreId">Read More</a>
                                 </div>
                             </div>
                         </div>
@@ -496,7 +497,9 @@
                 <div class="col-12 text-center">
                     <h3 class="heading-style">Related Art</h3>
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+            </div>
+            <div class="row" id="relatedLotsId">
+                <!-- <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
                     <div class="latest-artists">
                         <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
                             <div class="thumb">
@@ -651,7 +654,7 @@
                             </div>
                         </a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
@@ -1402,7 +1405,7 @@
             });
         });
     </script>
-
+    <script src="/static/js/lotDetailsAjaxCall.js"></script>
 </body>
 
 </html>

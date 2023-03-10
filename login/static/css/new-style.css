@@ -839,6 +839,8 @@ li {
 .show-more {
     font-size: 14px;
     color: #081f62;
+    border: none;
+    background: transparent;
     text-decoration: underline !important;
 }
 
@@ -1597,4 +1599,9 @@ b {
 }
 .artists-chart .artists-box h6 {
     color: #051747;
+}.nav-tabs .nav-item {
+    margin-bottom: 0px !important;
+}
+.lotImages {
+    height: 100px;
 }

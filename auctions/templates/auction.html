@@ -61,99 +61,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <script type='text/javascript'>
-        function dofilter(selectid) {
-            //alert("hi");
-            const artistsdict = {
-                { %
-                    for artist, lotslist in allartists.items %
-                }
-                "{{artist}}": Array({ %
-                        for lot in lotslist %
-                    }
-                    Array("{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}"), { % endfor %
-                    }
-                ),
-                { % endfor %
-                }
-            };
-            const auctionsdict = {
-                { %
-                    for auction, lotslist in allauctions.items %
-                }
-                "{{auction}}": Array({ %
-                        for lot in lotslist %
-                    }
-                    Array("{{lot.title}}", "{{lot.loturl}}", "{{lot.image}}", "{{lot.description}}", "{{lot.lid}}", "{{lot.artist}}"), { % endfor %
-                    }
-                ),
-                { % endfor %
-                }
-            };
-            sectiontag = document.getElementById("auctions");
-            selecttag = document.getElementById(selectid);
-            selectedoption = selecttag.options[selecttag.options.selectedIndex].value;
-            //alert(selectedoption);
-            html = "";
-            if (selectid == "byartists") {
-                for (artst in artistsdict) {
-                    lotslist = artistsdict[artst];
-                    starter = 0;
-                    for (var i = 0; i < lotslist.length; i++) {
-                        if (selectedoption != "1") {
-                            if (artst.toLowerCase() == selectedoption.toLowerCase()) {
-                                if (starter == 0) {
-                                    html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-                                    html += "<div class='container'><div class='row'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-                                    starter = 1;
-                                }
-                                html += "<div class='item'><div class='thumb text-center'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></a></div></div>";
-                            }
-                        } // if selectedoption != 1
-                        else {
-                            if (starter == 0) {
-                                html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + artst + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-                                html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-                                starter = 1;
-                            }
-                            html += "<div class='item'><div class='thumb text-center'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + artst + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";
-                        }
-                    } // for lotslist loop ends
-                    html += "</div></div></div></div></div></section>";
-                }
-            }
-            if (selectid == "byauctions") {
-                for (auction in auctionsdict) {
-                    //if(auction.toLowerCase() == selectedoption.toLowerCase()){
-                    lotslist = auctionsdict[auction];
-                    starter = 0;
-                    for (var i = 0; i < lotslist.length; i++) {
-                        if (selectedoption != "1") {
-                            if (auction.toLowerCase() == selectedoption.toLowerCase()) {
-                                if (starter == 0) {
-                                    html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-                                    html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-                                    starter = 1;
-                                }
-                                html += "<div class='item'><div class='thumb text-center'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";
-                            }
-                        } // if selectedoption != 1
-                        else {
-                            if (starter == 0) {
-                                html += "<section class='section gal-section'><div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='section-heading text-center'><h2>" + auction + "</h2><!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> --><hr></div></div> </div></div>";
-                                html += "<div class='container'><div class='row align-items-end'><div class='col-lg-12'><div class='men-item-carousel'><div class='owl-men-item owl-carousel' style='display:inline-block'>";
-                                starter = 1;
-                            }
-                            html += "<div class='item'><div class='thumb text-center'><a href='/auction/details/?lid=" + lotslist[i][4] + "'><img src='" + lotslist[i][2] + "' alt=''></a></div><div class='down-content'><a href='/auction/details/?lid=" + lotslist[i][4] + "'>		<h4>" + lotslist[i][0] + "</h4><span>" + lotslist[i][5] + "</span><!-- <a class='btn btn-slider' href='" + lotslist[i][1] + "'>Follow</a> --></div></div>";
-                        }
-                    } // for lotslist ends
-                    html += "</div></div></div></div></div></section>";
-                    //}
-                }
-            }
-            sectiontag.innerHTML = html;
-        }
-    </script>
+    
     <style type="text/css">
         .button {
             width: 150px;
@@ -211,14 +119,14 @@
     <script src="/static/js/editfromfront.js"></script>
     <script src="/static/js/autocomplete.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
-    <script>
+    <!-- <script>
         auctions = [{ %
                 for auctionname in filterauctions %
             }
             "{{auctionname}}", { % endfor %
             }
         ]; // Should get populated during page load.
-    </script>
+    </script> -->
     <script>
         function searchauction() {
             var xmlhttp;
@@ -269,7 +177,8 @@
     </script>
 </head>
 
-<body onload="javascript:autocomplete(document.getElementById('auctionsearch'), auctions);">
+<!-- <body onload="javascript:autocomplete(document.getElementById('auctionsearch'), auctions);"> -->
+<body>
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -293,7 +202,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="regiUsername" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
@@ -372,7 +281,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="loginUsername" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
@@ -542,20 +451,20 @@
     </header>
     <!-- ***** Header Area End ***** -->
     <!-- ***** Main Banner Area Start ***** -->
-    <!-- Carousel -->
-    {% comment %}
+    <!-- Carousel 
+ 
     <section class="testimonials">
-        <div class="container"> {% endcomment %}
+        <div class="container"> 
             <!-- <div class="row">
                <div class="col-sm-12">
                  <div id="customers-testimonials" class="owl-carousel owl-theme">
                
                  </div>
                </div>
-               </div> -->
-            {% comment %}
+               </div> 
+           
         </div>
-    </section> {% endcomment %}
+    </section>
     <!-- END OF Carousels -->
     <!-- <section class="section gal-section" id="searchauctionsection">
         <div class="container">
@@ -700,23 +609,23 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                        <div class="tabbable-responsive tabbable-responsive-new">
-                            <div class="tabbable d-flex align-items-center border-bottom justify-content-between">
-                                <ul class="nav nav-tabs border-0" id="gal-Tab" role="tablist">
-                                    <li class="nav-item mr-3">
-                                        <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Upcoming
-                                            Auctions</a>
-                                    </li>
-                                    <!-- <li class="nav-item">
-                           <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Past Auctions</a>
-                           </li> -->
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Past Auctions</a>
-                                    </li>
-                                </ul>
-                                <div class="page-show">
-                                    <h6>Per. Page : 50</h6>
-                                </div>
+                        <div class="tabbable d-flex align-items-center border-bottom justify-content-between">
+                            <ul class="nav nav-tabs border-0" id="gal-Tab" role="tablist">
+                                <li class="nav-item mr-3">
+                                    <button class="nav-link" id="Overview-tab" data-toggle="tab" role="tab" aria-controls="Overview" aria-selected="false" onclick="pastUpcomingAuction(event, 'upcoming');">Upcoming
+                                        Auctions</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link active" id="Works-tab" data-toggle="tab" role="tab" aria-controls="Works" aria-selected="false" onclick="pastUpcomingAuction(event, 'past');">Past Auctions</button>
+                                </li>
+                            </ul>
+                            <div class="page-show p-0">
+                                <select class="custom-select" id="inputGroupSelect01" style="border: 0; background-color: transparent;" onchange="filterAuction(event);">
+                                    <option value="50"selected>Par Page 50</option>
+                                    <option value="100">Par Page 100</option>
+                                    <option value="150">Par Page 150</option>
+                                    <option value="200">Par Page 200</option>
+							</select>
                             </div>
                         </div>
                     </div>
@@ -760,7 +669,7 @@
                                             <!-- </div> -->
                                             <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
                                                 <div class="sidebar-left">
-                                                    <form method="POST" name='frmotherfilter' id='frmotherfilter' action=''>
+                                                    <!-- <form method="" name='frmotherfilter' id='frmotherfilter' action=''> -->
                                                         <input type="hidden" name="csrfmiddlewaretoken" value="0tW5rfvBq4ZATXSUg0qnLlTgRuCF4xES6KOGQd8ARGv748a5CVBNuD6dogcl8lwx">
                                                         <div id="accordion" class="accordion">
                                                             <div class="card mb-0">
@@ -774,7 +683,7 @@
                                                                         </a>
                                                                     </div>
                                                                     <div id="collapseOne" class="collapse show mb-4" data-parent="#accordion">
-                                                                        <input class="form-control" type="text" value="">
+                                                                        <input class="form-control" type="text" id="auctionTitle" onblur="filterAuction(event)">
                                                                     </div>
                                                                 </div>
                                                                 <div class="">
@@ -785,7 +694,7 @@
                                                                     </div>
                                                                     <div id="collapseTwo" class="collapse show mb-4" data-parent="#accordion">
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                                                            <input class="form-check-input" type="checkbox" id="defaultCheck1" onblur="filterAuction(event)">
                                                                             <label class="form-check-label" for="defaultCheck1">
                                                                             Sale Date
                                                                         </label>
@@ -800,76 +709,56 @@
                                                                     </div>
                                                                     <div id="collapseThree" class="collapse show mb-4" data-parent="#accordion">
                                                                         <div class="form-check mb-2">
+                                                                            <input class="form-check-input forHousesCls" type="checkbox" value="Sotheby's" id="Sotheby" onblur="filterAuction(event)">
+                                                                            <label class="form-check-label" for="Sotheby">Sotheby’s</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input forHousesCls" type="checkbox" value="Christie's" id="Christie" onblur="filterAuction(event)">
+                                                                            <label class="form-check-label" for="Christie">Christie’s</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input forHousesCls" type="checkbox" value="Bonhams" id="Bonhams" onblur="filterAuction(event)">
+                                                                            <label class="form-check-label" for="Bonhams">Bonhams</label>
+                                                                        </div>
+                                                                        <!-- <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox" value="" id="Sotheby">
                                                                             <label class="form-check-label" for="Sotheby">
                                                                             Sotheby’s
                                                                         </label>
-                                                                        </div>
+                                                                        </div> -->
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Christie">
-                                                                            <label class="form-check-label" for="Christie">
-                                                                            Christie’s
-                                                                        </label>
+                                                                            <input class="form-check-input forHousesCls" type="checkbox" value="Phillips" id="Phillips" onblur="filterAuction(event)">
+                                                                            <label class="form-check-label" for="Phillips">Phillips</label>
                                                                         </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Bonhams">
-                                                                            <label class="form-check-label" for="Bonhams">
-                                                                            Bonhams
-                                                                        </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Sotheby">
-                                                                            <label class="form-check-label" for="Sotheby">
-                                                                            Sotheby’s
-                                                                        </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Phillips">
-                                                                            <label class="form-check-label" for="Phillips">
-                                                                            Phillips
-                                                                        </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Dorotheum">
-                                                                            <label class="form-check-label" for="Dorotheum">
-                                                                            Dorotheum
-                                                                        </label>
-                                                                        </div>
-                                                                        <a href="#" class="show-more">Show More</a>
+                                                                        <!-- <div class="form-check">
+                                                                            <input class="form-check-input" type="checkbox" value="Dorotheum" id="Dorotheum">
+                                                                            <label class="form-check-label" for="Dorotheum">Dorotheum</label>
+                                                                        </div> -->
+                                                                        <button id="housesShowMoreIdBtn" data-start="0" class="show-more" onclick="getauctionHouses(event, 'houses')">Show More</button>
                                                                     </div>
                                                                 </div>
                                                                 <div class="">
                                                                     <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-                                                                        <a class="card-title">
-                                                                        Auction Location
-                                                                    </a>
+                                                                        <a class="card-title">Auction Location</a>
                                                                     </div>
                                                                     <div id="collapseFour" class="collapse show mb-4" data-parent="#accordion">
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="London">
-                                                                            <label class="form-check-label" for="London">
-                                                                            London
-                                                                        </label>
+                                                                            <input class="form-check-input forLocationsCls" type="checkbox" value="London" id="London" onblur="filterAuction(event)">
+                                                                            <label class="form-check-label" for="London">London</label>
                                                                         </div>
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="NewYork">
-                                                                            <label class="form-check-label" for="NewYork">
-                                                                            New York
-                                                                        </label>
+                                                                            <input class="form-check-input forLocationsCls" type="checkbox" value="New York" id="NewYork" onblur="filterAuction(event)">
+                                                                            <label class="form-check-label" for="NewYork">New York</label>
                                                                         </div>
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Paris">
-                                                                            <label class="form-check-label" for="Paris">
-                                                                            Paris
-                                                                        </label>
+                                                                            <input class="form-check-input forLocationsCls" type="checkbox" value="Paris" id="Paris" onblur="filterAuction(event)">
+                                                                            <label class="form-check-label" for="Paris">Paris</label>
                                                                         </div>
                                                                         <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="" id="Milan">
-                                                                            <label class="form-check-label" for="Milan">
-                                                                            Milan
-                                                                        </label>
+                                                                            <input class="form-check-input forLocationsCls" type="checkbox" value="Milan" id="Milan" onblur="filterAuction(event)">
+                                                                            <label class="form-check-label" for="Milan">Milan</label>
                                                                         </div>
-                                                                        <a href="#" class="show-more">Show More</a>
+                                                                        <button id="locationsShowMoreIdBtn" data-start="0" class="show-more" onclick="getauctionHouses(event, 'locations')">Show More</button>
                                                                     </div>
                                                                 </div>
                                                                 <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
@@ -882,51 +771,32 @@
                                                                         <label class="form-check-label">
                                                                             From 
                                                                         </label>
-                                                                        <input class="form-control" type="date" value="">
+                                                                        <input class="form-control" type="date" id="fromDate" onblur="filterAuction(event)">
                                                                     </div>
                                                                     <div>
                                                                         <label class="form-check-label">
                                                                             To 
                                                                         </label>
-                                                                        <input class="form-control" type="date" value="">
+                                                                        <input class="form-control" type="date" id="toDate" onblur="filterAuction(event)">
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </form>
+                                                    <!-- </form> -->
                                                 </div>
                                             </div>
                                             <div id="Work" class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
-                                                <div class="row ">
-                                                    <!-- <div class="col-12 mb-4">
-                                                        <div class="auction-search">
-                                                            <form method="POST" name='frmtextfilter' id='frmtextfilter' action=''>
-                                                                {% csrf_token %}
-                                                                <input type="text" value="" name="txtfilter" id="txtfilter" placeholder="Search by artwork title, series, or description" />
-                                                                <button type="button" value="" name="btntextfilter" onclick="javascript:filterbytext();"><i
-                                                                        class="fa fa-search"
-                                                                        aria-hidden="true"></i></button><span id='searchstatus'></span>
-                                                                <input type='hidden' name='aid' value=''>
-                                                                <input type='hidden' name='pageno' value='1'>
-                                                            </form>
-                                                        </div>
-                                                    </div> -->
-                                                    <!-- <div class="col-lg-12">
-                                                        <div class="text-center">
-                                                            <h2 class="heading-style">Past Auctions</h2>
-                                                        </div>
-                                                    </div> -->
-                                                </div>
-                                                <div class="row" id='pastauctions'>
-                                                    {% for row, auctionlist in allauctions.items %} {% for auctiondict in auctionlist %}
-                                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                <!-- <div class="row ">
+                                                </div> -->
+                                                <!-- <div class="row" id='pastauctions'> -->
+                                                    <!-- <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
                                                         <div class="latest-artists">
                                                             <a href="/auction/showauction/?aucid={{auctiondict.aucid}}" class="latest-card">
                                                                 <div class="thumb">
                                                                     <img src="{{auctiondict.image}}" class="card-img" alt="img">
                                                                 </div>
                                                                 <div class="down-content">
-                                                                    <!-- <h6><span>Sale Code:</span> {{auctiondict.salecode}} -->
+                                                                    <h6><span>Sale Code:</span> {{auctiondict.salecode}}
                                                                     </h6>
                                                                     <div class="d-flex justify-content-between align-items-start">
                                                                         <p class="auction-text p-0">{{auctiondict.auctionname}}
@@ -940,6 +810,15 @@
                                                                 </div>
                                                             </a>
                                                         </div>
+                                                    </div> -->
+                                                <!-- </div> -->
+                                                <!-- <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <a class="btn btn-login btn-round ml-0" href="">View More</a>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+                                        <!-- </div> -->
 
 
                                                         <!-- <div class="artist-category ">
@@ -978,16 +857,7 @@
                                  </a>
                                  </div>
                                  </div> -->
-                                                    </div>
-                                                    {% endfor %} {% endfor %}
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <a class="btn btn-login btn-round ml-0" href="/auction/moreauctions/?atype=1">View More</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                    
                                         <!-- <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="section-heading section-heading-2 pdb-50">
@@ -1037,11 +907,11 @@
                                                     <a class="btn btn-primary" href="/auction/moreauctions/?atype=0">View More</a>
                                                 </div>
                                             </div>
-                                        </div> -->
+                                        </div> 
                                     </div>
-                                    <!-- End of new auctions gallery -->
-                                    <div class="tab-pane fade" id="Overview" role="tabpanel" aria-labelledby="Works-tab">
-                                        <div class="row">
+                                     End of new auctions gallery -->
+                                    <!-- <div class="tab-pane fade" id="Overview" role="tabpanel" aria-labelledby="Works-tab">
+                                        <div class="row"> -->
                                             <!-- <div class="col-sm-12"> -->
                                             <!-- <div class="auc-re">
                                                     <h3></h3>
@@ -1072,7 +942,7 @@
                            </div> -->
                                             <!-- </div> -->
                                             <!-- </div> -->
-                                            <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                            <!-- <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
                                                 <div class="sidebar-left">
                                                     <form method="POST" name='frmotherfilter' id='frmotherfilter' action=''>
                                                         <input type="hidden" name="csrfmiddlewaretoken" value="0tW5rfvBq4ZATXSUg0qnLlTgRuCF4xES6KOGQd8ARGv748a5CVBNuD6dogcl8lwx">
@@ -1209,9 +1079,9 @@
                                                         </div>
                                                     </form>
                                                 </div>
-                                            </div>
-                                            <div id="Work" class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
-                                                <div class="row ">
+                                            </div> -->
+                                            <!-- <div id="Work" class="col-sm-12 col-md-8 col-lg-9 col-xl-9"> -->
+                                                <!-- <div class="row ">
                                                     <div class="col-12 mb-4">
                                                         <div class="auction-search">
                                                             <form method="POST" name='frmtextfilter' id='frmtextfilter' action=''>
@@ -1230,30 +1100,30 @@
                                                             <h2 class="heading-style">Past Auctions</h2>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row" id='pastauctions'>
-                                                    {% for row, auctionlist in allauctions.items %} {% for auctiondict in auctionlist %}
+                                                </div> -->
+                                                <!-- <div class="row" id='pastauctions'>
+                                                     {% for row, auctionlist in allauctions.items %} {% for auctiondict in auctionlist %} 
                                                     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
                                                         <div class="latest-artists">
-                                                            <a href="/auction/showauction/?aucid={{auctiondict.aucid}}" class="latest-card">
+                                                            <a href="" class="latest-card">
                                                                 <div class="thumb">
-                                                                    <img src="{{auctiondict.image}}" class="card-img" alt="img">
+                                                                    <img src="" class="card-img" alt="img">
                                                                 </div>
                                                                 <div class="down-content">
-                                                                    <h6><span>Sale Code:</span> {{auctiondict.salecode}}
+                                                                    <h6><span>Sale Code:</span>
                                                                     </h6>
                                                                     <div class="d-flex justify-content-between align-items-center">
-                                                                        <h5 class="mb-0">{{auctiondict.auctionhouse}}
+                                                                        <h5 class="mb-0">
                                                                         </h5>
                                                                         <p>View Lots</p>
                                                                     </div>
-                                                                    <p class="auction-text">{{auctiondict.auctionname}}
+                                                                    <p class="auction-text">
                                                                     </p>
-                                                                    <span>{{auctiondict.auctionperiod}} |
-                                                                        {{auctiondict.location}}</span>
+                                                                    <span>
+                                                                        </span>
                                                                 </div>
                                                             </a>
-                                                        </div>
+                                                        </div> -->
 
 
                                                         <!-- <div class="artist-category ">
@@ -1291,9 +1161,9 @@
                                  <h4>Show More Lots</h4>
                                  </a>
                                  </div>
-                                 </div> -->
+                                 </div> 
                                                     </div>
-                                                    {% endfor %} {% endfor %}
+                                                     {% endfor %} {% endfor %}
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-12">
@@ -1303,7 +1173,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="auction-pagination">
+                                    <div class="auction-pagination">
                <nav aria-label="Page navigation example">
                    <ul class="pagination">
                        <li class="page-item">
@@ -1458,6 +1328,6 @@
                 });
             });
         </script>
+    <script src="/static/js/auctionAjaxCall.js"></script>
 </body>
-
 </html>

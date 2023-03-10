@@ -191,7 +191,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="regiUsername" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
@@ -271,7 +271,7 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="loginUsername" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
@@ -462,16 +462,16 @@
                 <div class="row">
                     <div class="col-md-2">
                         <div class="thumb-img">
-                            <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="artist-img" alt="img">
+                            <img src="" class="artist-img" alt="img" id="auctionImage">
                         </div>
                     </div>
                     <div class="col-md">
                         <div class="artists-details-content">
                             <h4 class="mb-3">Contemporary Curated</h4>
                             <h6 class="mb-3">Action Details</h6>
-                            <h5>Sotheby's</h5>
-                            <h5><span>New York, USA</span></h5>
-                            <h5><span>30 Sep, 2021</span></h5>
+                            <h5 id="auctionName"></h5>
+                            <h5><span id="auctionLocation"></span></h5>
+                            <h5><span id="auctionDate"></span></h5>
                         </div>
                     </div>
                 </div>
@@ -484,11 +484,11 @@
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="tabbable d-flex align-items-center border-bottom justify-content-end">
                         <div class="page-show p-0">
-                            <select class="custom-select" id="inputGroupSelect01" style="border: 0; background-color: transparent;">
-								<option selected>Par Page 50</option>
-								<option value="1">Par Page 100</option>
-								<option value="2">Par Page 150</option>
-								<option value="3">Par Page 200</option>
+                            <select class="custom-select" id="inputGroupSelect01" style="border: 0; background-color: transparent;" onchange="filterAuction(event)">
+								<option value="50" selected>Par Page 50</option>
+								<option value="100">Par Page 100</option>
+								<option value="150">Par Page 150</option>
+								<option value="200">Par Page 200</option>
 							</select>
                         </div>
                     </div>
@@ -513,154 +513,154 @@
                                                             <div class="">
                                                                 <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                                                                     <a class="card-title">
-																		Artwork Title
-																	</a>
+                                                                        Artwork Title
+                                                                    </a>
                                                                 </div>
                                                                 <div id="collapseOne" class="collapse show " data-parent="#accordion">
-                                                                    <input class="form-control" type="text" value="">
+                                                                    <input class="form-control" type="text" id="artworkTitleTextId" onchange="filterAuction(event)">
                                                                 </div>
                                                             </div>
                                                             <div class="">
                                                                 <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
                                                                     <a class="card-title">
-																		Sort By
-																	</a>
+                                                                        Sort By
+                                                                    </a>
                                                                 </div>
                                                                 <div id="collapseTwo" class="collapse show " data-parent="#accordion">
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                                                        <label class="form-check-label" for="defaultCheck1">
-																			Lot Number Low to High
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="lotLowToHighCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="lowToHighCheckId">
+                                                                            Lot Number Low to High
+                                                                        </label>
                                                                     </div>
                                                                 </div>
                                                                 <div id="collapseTwo" class="collapse show " data-parent="#accordion">
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Lot">
-                                                                        <label class="form-check-label" for="Lot">
-																			Lot Number High to Low
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="lotHighToLowCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="highToLowCheckId">
+                                                                            Lot Number High to Low
+                                                                        </label>
                                                                     </div>
                                                                 </div>
 
                                                                 <div id="collapseTwo" class="collapse show " data-parent="#accordion">
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="High">
-                                                                        <label class="form-check-label" for="High">
-																			Price Low to High
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="priceLowToHighCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="priceLowToHighCheckId">
+                                                                            Price Low to High
+                                                                        </label>
                                                                     </div>
                                                                 </div>
                                                                 <div id="collapseTwo" class="collapse show mb-4" data-parent="#accordion">
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Low">
-                                                                        <label class="form-check-label" for="Low">
-																			Price High to Low
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="priceHighToLowCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="priceHighToLowCheckId">
+                                                                            Price High to Low
+                                                                        </label>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="">
                                                                 <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
                                                                     <a class="card-title">
-																		Categories
-																	</a>
+                                                                        Categories
+                                                                    </a>
                                                                 </div>
                                                                 <div id="collapseThree" class="collapse show " data-parent="#accordion">
                                                                     <div class="form-check mb-2">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Sotheby">
-                                                                        <label class="form-check-label" for="Sotheby">
-																			Paintings &nbsp;
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="paintingsCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="paintingsCheckId">
+                                                                            Paintings  
+                                                                        </label>
                                                                     </div>
-                                                                    <div class="form-check">
+                                                                    <!-- <div class="form-check">
                                                                         <input class="form-check-input" type="checkbox" value="" id="Christie">
                                                                         <label class="form-check-label" for="Christie">
-																			Paintings &nbsp;
-																		</label>
-                                                                    </div>
+                                                                            Paintings  
+                                                                        </label>
+                                                                    </div> -->
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Bonhams">
-                                                                        <label class="form-check-label" for="Bonhams">
-																			Prints
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="printsCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="printsCheckId">
+                                                                            Prints
+                                                                        </label>
                                                                     </div>
-                                                                    <div class="form-check">
+                                                                    <!-- <div class="form-check">
                                                                         <input class="form-check-input" type="checkbox" value="" id="Sotheby">
                                                                         <label class="form-check-label" for="Sotheby">
-																			Photographs
-																		</label>
+                                                                            Photographs
+                                                                        </label>
+                                                                    </div> -->
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" id="photographsCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="photographsCheckId">
+                                                                            Photographs
+                                                                        </label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Phillips">
-                                                                        <label class="form-check-label" for="Phillips">
-																			Photographs
-																		</label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Dorotheum">
-                                                                        <label class="form-check-label" for="Dorotheum">
-																			Miniatures &nbsp;
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="miniaturesCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="miniaturesCheckId">
+                                                                            Miniatures  
+                                                                        </label>
                                                                     </div>
                                                                     <div class="form-check mb-4">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Dorotheum">
-                                                                        <label class="form-check-label" for="Dorotheum">
-																			Others
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="othersCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="othersCheckId">
+                                                                            Others
+                                                                        </label>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="">
                                                                 <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
                                                                     <a class="card-title">
-																		Lot Status
-																	</a>
+                                                                        Lot Status
+                                                                    </a>
                                                                 </div>
                                                                 <div id="collapseFour" class="collapse show mb-4" data-parent="#accordion">
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="London">
-                                                                        <label class="form-check-label" for="London">
-																			Sold
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="soldCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="soldCheckId">
+                                                                            Sold
+                                                                        </label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="NewYork">
-                                                                        <label class="form-check-label" for="NewYork">
-																			Yet to be Sold
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="yetToBeSoldCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="yetToBeSoldCheckId">
+                                                                            Yet to be Sold
+                                                                        </label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Paris">
-                                                                        <label class="form-check-label" for="Paris">
-																			Bought-in
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="boughtInCehckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="boughtInCehckId">
+                                                                            Bought-in
+                                                                        </label>
                                                                     </div>
                                                                     <div class="form-check mb-4">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="Milan">
-                                                                        <label class="form-check-label" for="Milan">
-																			Withdrawn
-																		</label>
+                                                                        <input class="form-check-input" type="checkbox" id="withdrawnCheckId" onchange="filterAuction(event)">
+                                                                        <label class="form-check-label" for="withdrawnCheckId">
+                                                                            Withdrawn
+                                                                        </label>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
                                                                 <a class="card-title">
-																	Artwork Creation Year
-																</a>
+                                                                    Artwork Creation Year
+                                                                </a>
                                                             </div>
                                                             <div id="collapseFive" class="collapse show" data-parent="#accordion">
                                                                 <div>
                                                                     <label class="form-check-label">
-																		From
-																	</label>
-                                                                    <input class="form-control" type="date" value="">
+                                                                        From
+                                                                    </label>
+                                                                    <input class="form-control" type="text" id="fromDateTextId" onchange="filterAuction(event)">
                                                                 </div>
                                                                 <div>
                                                                     <label class="form-check-label">
-																		To
-																	</label>
-                                                                    <input class="form-control" type="date" value="">
+                                                                        To
+                                                                    </label>
+                                                                    <input class="form-control" type="text" id="toDateTextId" onchange="filterAuction(event)">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -671,7 +671,7 @@
                                         <div id="Overview" class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
                                             <div class="row" id="pastauctions">
 
-                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                                <!-- <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
                                                     <div class="latest-artists">
                                                         <a href="/auction/showauction/?aucid=148454" class="latest-card">
                                                             <div class="thumb">
@@ -982,7 +982,7 @@
                                                             </div>
                                                         </a>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                             </div>
                                         </div>
@@ -1765,7 +1765,7 @@
             });
         });
     </script>
-
+    <script src="/static/js/auctionDetailsAjaxCall.js"></script>
 </body>
 
 </html>

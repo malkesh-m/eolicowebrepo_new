@@ -57,7 +57,7 @@ function trendingArtistSlider() {
 }
 
 function upcomingAuctionSlider() {
-    fetch('/login/getUpcomingAuctions/', {
+    fetch('/login/getUpcomingAuctions/?start=0&limit=6', {
         method: 'GET',
     })
         .then(response => response.json())
@@ -87,7 +87,7 @@ function upcomingAuctionSlider() {
 }
 
 function recentAuctionSlider() {
-    fetch('/login/getRecentAuctions/', {
+    fetch('/login/getRecentAuctions/?start=0&limit=6', {
         method: 'GET',
     })
         .then(response => response.json())
