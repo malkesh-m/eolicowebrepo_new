@@ -292,7 +292,7 @@ def getAuctionHousesOrLocations(request):
 def details(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    lid = None
+    # lid = None
     # if request.method == 'GET':
     #     if 'lid' in request.GET.keys():
     #         lid = str(request.GET['lid'])
@@ -507,6 +507,7 @@ def details(request):
     #         redis_instance.set('ac_allartists_%s'%lotobj.auction.id, pickle.dumps(allartists))
     #     except:
     #         pass
+    context = {}
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -516,6 +517,18 @@ def details(request):
         context['username'] = userobj.username
     template = loader.get_template('auction_details.html')
     return HttpResponse(template.render(context, request))
+
+
+def getLotDetails(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    lotId = request.GET.get('lid')
+    lotDetailsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, fal_lot_image1, fal_lot_image2, fal_lot_image3, fal_lot_image4, fal_lot_image5, fal_lot_provenance, faa_artwork_description, faa_artwork_exhibition, faa_artwork_literature, fal_lot_height, fal_lot_width, fal_lot_depth, fal_lot_measurement_unit, faa_artwork_material, faac_auction_ID, faa_artwork_category, faa_artwork_markings, fal_artwork_ID, faa_artwork_title, fa_artist_name, fal_lot_sale_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_ID = {lotId};"""
+    connList = connectToDb()
+    connList[1].execute(lotDetailsSelectQuery)
+    artworkDetailsData = connList[1].fetchone()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(artworkDetailsData, default=default))
     
 
 #@cache_page(CACHE_TTL)
@@ -913,6 +926,20 @@ def getAuctionArtworksData(request):
     getAuctionData = connList[1].fetchall()
     disconnectDb(connList)
     return HttpResponse(json.dumps(getAuctionData, default=default))
+
+
+def getRelatedLotsData(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    lotId = request.GET.get('lid')
+    relatedRangeStart = request.GET.get('relatedRangeStart')
+    relatedRangeEnd = request.GET.get('relatedRangeEnd')
+    getRelatedLotsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_ID BETWEEN {relatedRangeStart} AND {relatedRangeEnd} AND fal_lot_Id != {lotId};"""
+    connList = connectToDb()
+    connList[1].execute(getRelatedLotsSelectQuery)
+    getRelatedLots = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(getRelatedLots, default=default))
 
 
 @csrf_exempt

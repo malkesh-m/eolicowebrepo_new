@@ -17,4 +17,6 @@ urlpatterns = [
     path('getAuctionHousesOrLocations/', views.getAuctionHousesOrLocations, name='getAuctionHousesOrLocations'),
     path('getAuctionDetails/', views.getAuctionDetails, name="getAuctionDetails"),
     path('getAuctionArtworksData/', views.getAuctionArtworksData, name="getAuctionArtworksData"),
+    path('getLotDetails/', views.getLotDetails, name="getLotDetails"),
+    path('getRelatedLotsData/', views.getRelatedLotsData, name="getRelatedLotsData"),
 ]
