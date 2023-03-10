@@ -150,6 +150,83 @@
                      search_section.innerHTML = "";
                      loaderspan.innerHTML = "";
                      loaderspan.style.display = "none";
+                     sectiontext = "";
+                     totalauctions = 0;
+		    for(var i=0; i < auctionhousematches.length; i++){
+			auctionhouse = auctionhousematches[i];
+			if(auctionhouse.auctionslist.length == 0){
+			    continue;
+			}
+			//sectiontext += "<h3>" + auctionhouse.housename + ", " + auctionhouse.location + "</h3>";
+		        if(auctionhouse.auctionslist.length == 0){
+		            sectiontext += "<div class='column' style='padding-left:5px;'>No auctions found for this auction house / branch</div>";
+		        }
+		        else{
+			  for(var j=0; j < auctionhouse.auctionslist.length; j++){
+			    auction = auctionhouse.auctionslist[j];
+			    sectiontext += "<div class='col-md-4 mb-4'>";
+			    sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "' class='latest-card'><img src='" + auction.coverimage + "' class='card-img'>";
+			    sectiontext += "<div class='down-content'><div class='d-flex justify-content-between'>"
+			    sectiontext += "<h4>" + auction.auctionname + "</h4>";
+			    sectiontext += "<p style='padding-left:10px;'>" + auction.auctionperiod + "</p>";
+			    sectiontext += "<p>" + auction.location + "</p>";
+			    sectiontext += "</div></div></a>";
+			    
+			    sectiontext += "</div>";
+			    totalauctions++;
+			  }
+		        }
+		    }
+                     paginationcontent = "<div class='auction-pagination'>";
+                     if(totalauctions > 5 || pages.currentpage > 1){
+                         paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                         if (pages.prevpage >= 1) {
+                             paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchauctionhouse(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                         }
+                         paginationcontent += "</li>";
+                         if (pages.displayedprevpage2 > 0) {
+                             paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                         }
+                         if (pages.displayedprevpage1 > 0) {
+                             paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                         }
+                         paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                     }
+                     paginationsection = document.getElementById('pagination');
+                     paginationsection.innerHTML = paginationcontent + "</div>";
+                     search_section.innerHTML = sectiontext;
+                     loaderspan.innerHTML = "";
+                     loaderspan.style.display = "none";
+                 }
+             };
+             loaderspan.style.display = "";
+             loaderspan.innerHTML = "&nbsp;&nbsp;<img src='/static/images/loading.gif' style='padding-left:8px;'>"
+             xmlhttp.open("GET", "/auctionhouse/search/?q=" + searchkey + "&page=" + page);
+             xmlhttp.send();
+        }
+        
+        function searchauctionhouse_old(page = 1) {
+            searchkey = document.getElementById('auctionhousesearch').value;
+            loaderspan = document.getElementById('loader');
+             var xmlhttp;
+             if (window.XMLHttpRequest) {
+                 xmlhttp = new XMLHttpRequest();
+             } else {
+                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+             }
+             // Register the handler
+             xmlhttp.onreadystatechange = function() {
+                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                     contextdict = JSON.parse(xmlhttp.responseText);
+                     auctionhousematches = contextdict['auctionhousematches'];
+                     adminuser = contextdict['adminuser'];
+                     pages = contextdict['pages'];
+                     search_section = document.getElementById('featuredshowsDivId');
+                     featured_div = document.getElementById('contextheader');
+                     featured_div.innerHTML = "";
+                     search_section.innerHTML = "";
+                     loaderspan.innerHTML = "";
+                     loaderspan.style.display = "none";
                      sectiontext = "<div class='container'><div class='row'><div class='section-heading section-heading-2 mrb-50'><h2>Search Results for '" + searchkey + "'</h2></div></div>";
                      totalauctions = 0;
 		    for(var i=0; i < auctionhousematches.length; i++){
@@ -715,6 +792,8 @@
             </div>
         </div>
     </section> -->
+    <section class="pagination" id='pagination'>
+    </section>
     <!-- 
     <br /><br />
     <section class="download-app">
