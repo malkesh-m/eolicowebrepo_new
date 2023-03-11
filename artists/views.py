@@ -1186,7 +1186,8 @@ def search(request):
         featuredartists = []
     uniqartists = {}
     if featuredartists.__len__() == 0:
-        matchingartistsql = "select artist.fa_artist_ID, artist.fa_artist_name, artist.fa_artist_nationality, artist.fa_artist_birth_year, artist.fa_artist_death_year, artist.fa_artist_name_prefix, artist.fa_artist_description, artist.fa_artist_aka, artist.fa_artist_bio, artist.fa_artist_genre, artist.fa_artist_image, artwork.faa_artwork_ID, artwork.faa_artwork_title, artwork.faa_artwork_start_year, artwork.faa_artwork_end_year, artwork.faa_artwork_size_details, artwork.faa_artwork_material, artwork.faa_artwork_description, artwork.faa_artwork_image1 from fineart_artists artist, fineart_artworks artwork where artist.fa_artist_ID=artwork.faa_artist_ID and artist.fa_artist_name like '%s'"%searchedname
+        q = "%" + searchedname + "%"
+        matchingartistsql = "select artist.fa_artist_ID, artist.fa_artist_name, artist.fa_artist_nationality, artist.fa_artist_birth_year, artist.fa_artist_death_year, artist.fa_artist_name_prefix, artist.fa_artist_description, artist.fa_artist_aka, artist.fa_artist_bio, artist.fa_artist_genre, artist.fa_artist_image, artwork.faa_artwork_ID, artwork.faa_artwork_title, artwork.faa_artwork_start_year, artwork.faa_artwork_end_year, artwork.faa_artwork_size_details, artwork.faa_artwork_material, artwork.faa_artwork_description, artwork.faa_artwork_image1 from fineart_artists artist, fineart_artworks artwork where artist.fa_artist_ID=artwork.faa_artist_ID and artist.fa_artist_name like '%s'"%q
         cursor.execute(matchingartistsql)
         matchingrecs = cursor.fetchall()
         artistidslist = []
@@ -1228,7 +1229,6 @@ def search(request):
     else:
         pass
     context['featuredartists'] = featuredartists
-    
     #carouselentries = getcarouselinfo()
     #context['carousel'] = carouselentries
     prevpage = int(page) - 1
