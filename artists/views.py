@@ -987,12 +987,8 @@ def getArtistUpcomingAuctions(request):
 def follow(request):
     return HttpResponse("")
 
-
-def search(request):
-    """
-    This should return a json response containing a list of dicts.
-    The dict keys would be the attributes of an artist object.
-    """
+"""
+def search_old(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
     searchkey = None
@@ -1019,6 +1015,8 @@ def search(request):
     uniqartists = {}
     searchedname = searchkey.split("(")[0]
     searchedname = searchedname.strip()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
     try:
         featuredartists = pickle.loads(redis_instance.get('at_featuredartists_%s'%searchedname.lower()))
     except:
@@ -1087,6 +1085,7 @@ def search(request):
     else:
         pass
     context['featuredartists'] = featuredartists
+    
     filterartists = []
     try:
         filterartists = pickle.loads(redis_instance.get('at_filterartists'))
@@ -1126,6 +1125,110 @@ def search(request):
         except:
             pass
     context['filterartists'] = filterartists
+    
+    #carouselentries = getcarouselinfo()
+    #context['carousel'] = carouselentries
+    prevpage = int(page) - 1
+    nextpage = int(page) + 1
+    displayedprevpage1 = 0
+    displayedprevpage2 = 0
+    if prevpage > 0:
+        displayedprevpage1 = prevpage - 1
+        displayedprevpage2 = prevpage - 2
+    displayednextpage1 = nextpage + 1
+    displayednextpage2 = nextpage + 2
+    firstpage = 1
+    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    if request.user.is_authenticated and request.user.is_staff:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    return HttpResponse(json.dumps(context))
+"""
+    
+    
+def search(request):
+    """
+    This should return a json response containing a list of dicts.
+    The dict keys would be the attributes of an artist object.
+    """
+    if request.method != 'GET':
+        return HttpResponse(json.dumps({'err' : "Invalid method of call"}))
+    searchkey = None
+    if request.method == 'GET':
+        if 'q' in request.GET.keys():
+            searchkey = str(request.GET['q']).strip()
+    if not searchkey:
+        return HttpResponse(json.dumps({'err' : "Invalid Request: Request is missing search key"}))
+    #print(searchkey + " -------------------------------------")
+    pageno = 1
+    if request.method == 'GET':
+        if 'page' in request.GET.keys():
+            pageno = str(request.GET['page'])
+    page = int(pageno)
+    chunksize = 4
+    rows = 6
+    featuredsize = 120
+    rowstartctr = int(page) * rows - rows
+    rowendctr = int(page) * rows
+    startctr = (chunksize * rows) * (int(page) -1)
+    endctr = (chunksize * rows) * int(page)
+    context = {}
+    featuredartists = []
+    uniqartists = {}
+    searchedname = searchkey.split("(")[0]
+    searchedname = searchedname.strip()
+    connlist = connecttoDB()
+    dbconn, cursor = connlist[0], connlist[1]
+    try:
+        featuredartists = pickle.loads(redis_instance.get('at_featuredartists_%s'%searchedname.lower()))
+    except:
+        featuredartists = []
+    uniqartists = {}
+    if featuredartists.__len__() == 0:
+        matchingartistsql = "select artist.fa_artist_ID, artist.fa_artist_name, artist.fa_artist_nationality, artist.fa_artist_birth_year, artist.fa_artist_death_year, artist.fa_artist_name_prefix, artist.fa_artist_description, artist.fa_artist_aka, artist.fa_artist_bio, artist.fa_artist_genre, artist.fa_artist_image, artwork.faa_artwork_ID, artwork.faa_artwork_title, artwork.faa_artwork_start_year, artwork.faa_artwork_end_year, artwork.faa_artwork_size_details, artwork.faa_artwork_material, artwork.faa_artwork_description, artwork.faa_artwork_image1 from fineart_artists artist, fineart_artworks artwork where artist.fa_artist_ID=artwork.faa_artist_ID and artist.fa_artist_name like '%s'"%searchedname
+        cursor.execute(matchingartistsql)
+        matchingrecs = cursor.fetchall()
+        artistidslist = []
+        for artist in matchingrecs[startctr:endctr]:
+            artistidslist.append(artist[0])
+        for artist in matchingrecs[startctr:endctr]:
+            if artist[1].title() not in uniqartists.keys():
+                nationality = artist[2]
+                birthyear = artist[3]
+                if nationality == "na":
+                    nationality = ""
+                if birthyear == 0:
+                    birthyear = ""
+                prefix = ""
+                if artist[5] != "" and artist[5] != "na":
+                    prefix = artist[5] + " "
+                bdstring = str(artist[3])
+                if artist[4] is not None:
+                    bdstring = bdstring + " - " + str(artist[4])
+                else:
+                    bdstring = "Born " + bdstring
+                artistimage = artist[10]
+                if artistimage is None or artistimage == "":
+                    artistimage = "/static/images/default_artist.jpg"
+                else:
+                    artistimage = settings.IMG_URL_PREFIX + artist[10]
+                d = {'artistname' : artist[1].title(), 'nationality' : nationality, 'birthdate' : str(birthyear), 'deathdate' : str(artist[4]), 'about' : artist[6], 'profileurl' : '', 'artistimage' : str(artistimage), 'aid' : str(artist[0]), 'bdstring' : bdstring}
+                d['artworkname'] = artist[12]
+                d['artworkimage'] = settings.IMG_URL_PREFIX + str(artist[18])
+                d['artworkdate'] = artist[13]
+                d['awid'] = artist[11]
+                d['atype'] = "0"
+                featuredartists.append(d)
+                uniqartists[artist[1].title()] = 1
+        try:
+            redis_instance.set('at_featuredartists_%s'%searchkey.lower(), pickle.dumps(featuredartists))
+        except:
+            pass
+    else:
+        pass
+    context['featuredartists'] = featuredartists
+    
     #carouselentries = getcarouselinfo()
     #context['carousel'] = carouselentries
     prevpage = int(page) - 1
