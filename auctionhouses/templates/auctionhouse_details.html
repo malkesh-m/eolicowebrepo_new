@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
+        rel="stylesheet">
 
     <title>ArtBider Auction Houses</title>
 
@@ -23,6 +24,8 @@
 
     <link rel="stylesheet" href="/static/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/jquery.dropdown.min.css">
+    <link rel="stylesheet" href="/static/css/new-style.css">
+
 
     <style type="text/css">
         .button {
@@ -33,7 +36,7 @@
             font-weight: bold;
             text-decoration: none;
         }
-        
+
         #cover {
             position: fixed;
             top: 0;
@@ -44,7 +47,7 @@
             height: 100%;
             display: none;
         }
-        
+
         #adminScreen {
             height: 680px;
             width: 640px;
@@ -56,13 +59,13 @@
             border: 5px solid #cccccc;
             border-radius: 10px;
         }
-        
+
         #adminScreen:target,
         #adminScreen:target+#cover {
             display: block;
             opacity: 2;
         }
-        
+
         .cancel {
             display: block;
             position: absolute;
@@ -87,7 +90,8 @@
 <body>
 
     <!-- Sign up Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -109,21 +113,25 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="regiUsername" name="username"
+                                    placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
-                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
+                                <input type="text" class="form-control" id="emailid" name="emailid"
+                                    placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
                                 <label for="password1">Password</label>
-                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
+                                <input type="password" class="form-control" id="password1" name="password1"
+                                    placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
                             <div class="form-group">
                                 <label for="password2">Confirm Password</label>
-                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
+                                <input type="password" class="form-control" id="password2" name="password2"
+                                    placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
@@ -131,12 +139,15 @@
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a
+                                            href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a
+                                            href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
                                         receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider"
+                                    onclick="javascript:doregister();">Sign up</button>
                             </div>
                             <!--
                             <div class="form-group">
@@ -153,10 +164,13 @@
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
+                                        data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                                <p>This site is protected by reCAPTCHA and the Google <a
+                                        href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
+                                        Service</a> apply.</p>
                             </div>
                         </form>
                     </div>
@@ -166,7 +180,8 @@
     </div>
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
+        aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -188,11 +203,13 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="loginUsername"
+                                    placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
-                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
+                                <input type="password" class="form-control" name='passwd' id="passwd"
+                                    placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <!-- <div class="form-group">
@@ -201,7 +218,8 @@
                                 </div>
                             </div> -->
                             <div class="form-group">
-                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
+                                <button type="button" value="submit" name="" class="btn btn-slider"
+                                    onclick="javascript:dologin();">Log in</button>
                             </div>
                             <!--
                             <div class="form-group">
@@ -218,7 +236,8 @@
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
+                                        data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -228,7 +247,8 @@
     </div>
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -253,10 +273,13 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset
+                                    instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
+                                        data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
+                                        data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -315,31 +338,48 @@
                             <!-- <img src="static/images/logo1.png"> -->
                             ARTBIDER
                         </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                      </button>
-                        <div class="collapse navbar-collapse" id="myNavbarToggler10">
-                            <ul class="navbar-nav mx-auto">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
+                            <ul class="navbar-nav mr-0">
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/artist/index/">Artists</a>
+                                    <a class="nav-link " href="#">Home</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/auctionhouse/index/">Auction Houses</a>
+                                    <a class="nav-link active" href="/artist/index/">Artists</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/auction/index/">Auctions</a>
+                                    <a class="nav-link " href="/auctionhouse/index/">Auction Houses</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/price/database/">Price Database</a>
+                                    <a class="nav-link" href="/auction/index/">Auctions</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link font-weight-bold" href="/price/plans/">Price Plans</a>
+                                    <a class="nav-link" href="/price/database/">Price Database</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="/price/plans/">Price Plans</a>
+                                </li>
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Galleries</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#">Shows</a>
+                                </li>
+
+                                <li class="nav-item scroll-to-section">
+                                    <a class="nav-link" href="#"> News</a>
                                 </li>
 
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
                                 {% if not user.is_authenticated %}
-                                <li class="nav-item"><button type="button" class="btn btn-info btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                                <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
+                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
                                 <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                                 <li class="nav-item">
@@ -356,10 +396,10 @@
     <!-- ***** Header Area End ***** -->
 
     <!-- ***** Main Banner Area Start ***** -->
-    <section class="inner-top-banner"></section>
+    <!-- <section class="inner-top-banner"></section> -->
 
     <!-- ***** Main Banner Area End ***** -->
-    <section class="section gal-section gal-dtl-sec" id="">
+    <!-- <section class="section gal-section gal-dtl-sec" id="">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -376,8 +416,8 @@
                 </div>
             </div>
         </div>
-    </section>
-    <section class="category-tabs mrt-90">
+    </section> -->
+    <!-- <section class="category-tabs mrt-90">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -385,14 +425,16 @@
                         <div class="tabbable">
                             <ul class="nav nav-tabs" id="gal-Tab" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="false">Upcoming Auctions</a>
+                                    <a class="nav-link  active" id="Overview-tab" data-toggle="tab" href="#Overview"
+                                        role="tab" aria-controls="Overview" aria-selected="false">Upcoming Auctions</a>
                                 </li>
-                                <!-- <li class="nav-item">
+                                <li class="nav-item">
                                     <a class="nav-link" id="Events-tab" data-toggle="tab" href="#Events" role="tab" aria-controls="Events" aria-selected="true">Past Auctions</a>
-                                </li> -->
+                                </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab" aria-controls="Works" aria-selected="false">Past Auctions</a>
+                                    <a class="nav-link" id="Works-tab" data-toggle="tab" href="#Works" role="tab"
+                                        aria-controls="Works" aria-selected="false">Past Auctions</a>
                                 </li>
                             </ul>
                         </div>
@@ -404,14 +446,15 @@
                     <div class="cate-tabs-content mrt-90">
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview-tab">
+                                <div class="tab-pane fade show active" id="Overview" role="tabpanel"
+                                    aria-labelledby="Overview-tab">
 
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="section-heading section-heading-2 pdb-50">
                                                 <h2>Upcoming Auctions</h2>
                                                 <span>
-                                                    <!-- <a href="">View All</a> -->
+                                                    <a href="">View All</a>
                                                 </span>
                                             </div>
                                         </div>
@@ -425,8 +468,10 @@
                                         {% for auction in upcomingauctions %}
                                         <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                                             <div class="img-box">
-                                                <a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
-                                                <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+                                                <a href="/auction/showauction/?aucid={{auction.aucid}}"><img
+                                                        src="{{auction.auctionimage}}" alt=""></a>
+                                                <a href="/auction/showauction/?aucid={{auction.aucid}}"
+                                                    style="color:#000000;">
                                                     <h4>{{auction.auctionname}}</h4>
                                                     <h6>{{auction.auctionhousename}}</h6>
                                                     <h6>{{auction.aucperiod}}</h6>
@@ -444,7 +489,7 @@
                                             <div class="section-heading section-heading-2 pdb-50">
                                                 <h2>Past Auctions</h2>
                                                 <span>
-                                                    <!-- <a href="">View All</a> -->
+                                                    <a href="">View All</a>
                                                 </span>
                                             </div>
                                         </div>
@@ -458,8 +503,10 @@
                                         {% for auction in pastauctions %}
                                         <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3">
                                             <div class="img-box">
-                                                <a href="/auction/showauction/?aucid={{auction.aucid}}"><img src="{{auction.auctionimage}}" alt=""></a>
-                                                <a href="/auction/showauction/?aucid={{auction.aucid}}" style="color:#000000;">
+                                                <a href="/auction/showauction/?aucid={{auction.aucid}}"><img
+                                                        src="{{auction.auctionimage}}" alt=""></a>
+                                                <a href="/auction/showauction/?aucid={{auction.aucid}}"
+                                                    style="color:#000000;">
                                                     <h4>{{auction.auctionname}}</h4>
                                                     <h6>{{auction.auctionhousename}}</h6>
                                                     <h6>{{auction.aucperiod}}</h6>
@@ -476,9 +523,287 @@
                 </div>
             </div>
         </div>
+    </section> -->
+    <!--<section>
+         <section class="artists-details" style="padding-top: 140px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="thumb-img">
+                            <img src="https://f000.backblazeb2.com/file/fineart-images/null" class="artist-img"
+                                alt="img" id="auctionImage">
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="artists-details-content">
+                            <h4 class="mb-3" id="auctionHouseName">The European Art Sale Part I</h4>
+                            <h6 class="mb-3">Action Details</h6>
+                            <h5 id="auctionName">Sotheby's</h5>
+                            <h5><span id="auctionHouseLocation">New York, USA</span></h5>
+                            <h5><span id="auctionDate">27 Jan, 2023</span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> 
+    </section> -->
+    <section class="artists-details" style="padding-top: 120px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md">
+                    <h1 id="auctionHouseHeaderId"></h1>
+                </div>
+            </div>
+        </div>
     </section>
+    
+    <section class="category-tabs mt-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="tabbable d-flex align-items-center border-bottom justify-content-between">
+                        <ul class="nav nav-tabs border-0" id="gal-Tab" role="tablist">
+                            <li class="nav-item mr-3">
+                                <button class="nav-link" id="Overview-tab" data-toggle="tab" role="tab" aria-controls="Overview" aria-selected="false" onclick="pastUpcomingAuction(event, 'upcoming', '');">Upcoming
+                                    Auctions</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link active" id="Works-tab" data-toggle="tab" role="tab" aria-controls="Works" aria-selected="false" onclick="pastUpcomingAuction(event, 'past', '');">Past Auctions</button>
+                            </li>
+                        </ul>
+                        <div class="page-show p-0">
+                            <select class="custom-select" id="inputGroupSelect01" style="border: 0; background-color: transparent;" onchange="filterAuction(event);">
+                                <option value="50"selected>Par Page 50</option>
+                                <option value="100">Par Page 100</option>
+                                <option value="150">Par Page 150</option>
+                                <option value="200">Par Page 200</option>
+                        </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="cate-tabs-content">
+                        <div class="card-body">
+                            <div class="tab-content" id="upcomingauctions">
+                                <div class="tab-pane fade show active" id="Overview" role="tabpanel"
+                                    aria-labelledby="Overview-tab">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                            <div class="sidebar-left">
+                                                <!-- <form method="" name='frmotherfilter' id='frmotherfilter' action=''> -->
+                                                    <input type="hidden" name="csrfmiddlewaretoken" value="0tW5rfvBq4ZATXSUg0qnLlTgRuCF4xES6KOGQd8ARGv748a5CVBNuD6dogcl8lwx">
+                                                    <div id="accordion" class="accordion">
+                                                        <div class="card mb-0">
+                                                            <div class="">
+                                                                <h2 class="heading-style">Filtter</h2>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                                    <a class="card-title">
+                                                                        Auction Title
+                                                                    </a>
+                                                                </div>
+                                                                <div id="collapseOne" class="collapse show mb-4" data-parent="#accordion">
+                                                                    <input class="form-control" type="text" id="auctionTitleTextId" onblur="filterAuction(event)">
+                                                                </div>
+                                                            </div>
+                                                            <div class="">
+                                                                <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                                    <a class="card-title">
+                                                                    Sort By
+                                                                </a>
+                                                                </div>
+                                                                <div id="collapseTwo" class="collapse show mb-4" data-parent="#accordion">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" id="defaultCheck1" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="defaultCheck1">
+                                                                        Sale Date
+                                                                    </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- <div class="">
+                                                                <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                                    <a class="card-title">
+                                                                    Auction House
+                                                                </a>
+                                                                </div>
+                                                                <div id="collapseThree" class="collapse show mb-4" data-parent="#accordion">
+                                                                    <div class="form-check mb-2">
+                                                                        <input class="form-check-input forHousesCls" type="checkbox" value="Sotheby's" id="Sotheby" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="Sotheby">Sotheby’s</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input forHousesCls" type="checkbox" value="Christie's" id="Christie" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="Christie">Christie’s</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input forHousesCls" type="checkbox" value="Bonhams" id="Bonhams" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="Bonhams">Bonhams</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="Sotheby">
+                                                                        <label class="form-check-label" for="Sotheby">
+                                                                        Sotheby’s
+                                                                    </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input forHousesCls" type="checkbox" value="Phillips" id="Phillips" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="Phillips">Phillips</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="Dorotheum" id="Dorotheum">
+                                                                        <label class="form-check-label" for="Dorotheum">Dorotheum</label>
+                                                                    </div>
+                                                                    <button id="housesShowMoreIdBtn" data-start="0" class="show-more" onclick="getauctionHouses(event, 'houses')">Show More</button>
+                                                                </div>
+                                                            </div> -->
+                                                            <div class="">
+                                                                <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                                                                    <a class="card-title">Auction Location</a>
+                                                                </div>
+                                                                <div id="collapseFour" class="collapse show mb-4" data-parent="#accordion">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input forLocationsCls" type="checkbox" value="London" id="London" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="London">London</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input forLocationsCls" type="checkbox" value="New York" id="NewYork" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="NewYork">New York</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input forLocationsCls" type="checkbox" value="Paris" id="Paris" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="Paris">Paris</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input forLocationsCls" type="checkbox" value="Milan" id="Milan" onblur="filterAuction(event)">
+                                                                        <label class="form-check-label" for="Milan">Milan</label>
+                                                                    </div>
+                                                                    <button id="locationsShowMoreIdBtn" data-start="0" class="show-more" onclick="getauctionHouses(event, 'locations')">Show More</button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-header mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+                                                                <a class="card-title">
+                                                                    Sale Date
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapseFive" class="collapse show" data-parent="#accordion">
+                                                                <div>
+                                                                    <label class="form-check-label">
+                                                                        From 
+                                                                    </label>
+                                                                    <input class="form-control" type="date" id="fromDate" onblur="filterAuction(event)">
+                                                                </div>
+                                                                <div>
+                                                                    <label class="form-check-label">
+                                                                        To 
+                                                                    </label>
+                                                                    <input class="form-control" type="date" id="toDate" onblur="filterAuction(event)">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <!-- </form> -->
+                                            </div>
+                                        </div>
+                                        <div id="Overview" class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
+                                            <div class="row" id="pastauctions">
+                                                <!-- <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 auctionData">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/details/?lid=10875566" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/SothebysNewYorkN1114944953350_a.jpg"
+                                                                    class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>A Ship of the Russian Navy off the
+                                                                        Coast</span></h3>
+                                                                <h3>Artist : <span>Ivan Konstantinovich
+                                                                        Aivazovsky</span></h3>
+                                                                <h3 class="mb-3">Lot : 350</h3>
 
+                                                                <h3>Medium : <span>oil on card</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
 
+                                                                <h3>The European Art Sale Part I</h3>
+                                                                <h3><span>Sotheby's</span></h3>
+                                                                <h3 class="mb-3"><span>27 Jan, 2023 | New York</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 artworkData">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/details/?lid=10875567" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/SothebysNewYorkN1114944953351_a.jpg"
+                                                                    class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>Rough Seas</span></h3>
+                                                                <h3>Artist : <span>Montague Dawson</span></h3>
+                                                                <h3 class="mb-3">Lot : 351</h3>
+
+                                                                <h3>Medium : <span>oil on canvas</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>The European Art Sale Part I</h3>
+                                                                <h3><span>Sotheby's</span></h3>
+                                                                <h3 class="mb-3"><span>27 Jan, 2023 | New York</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 artworkData">
+                                                    <div class="latest-artists">
+                                                        <a href="/auction/details/?lid=10875568" class="latest-card">
+                                                            <div class="thumb">
+                                                                <img src="https://f000.backblazeb2.com/file/fineart-images/SothebysNewYorkN1114944953352_a.jpg"
+                                                                    class="card-img" alt="img">
+                                                            </div>
+                                                            <div class="artist-card">
+                                                                <h3>Title : <span>The Bonita of Boston</span></h3>
+                                                                <h3>Artist : <span>Montague Dawson</span></h3>
+                                                                <h3 class="mb-3">Lot : 352</h3>
+
+                                                                <h3>Medium : <span>oil on canvas</span></h3>
+                                                                <h3 class="mb-3">Category : <span>paintings</span>
+                                                                </h3>
+
+                                                                <h3>The European Art Sale Part I</h3>
+                                                                <h3><span>Sotheby's</span></h3>
+                                                                <h3 class="mb-3"><span>27 Jan, 2023 | New York</span>
+                                                                </h3>
+
+                                                                <h3>Estimate : <span>Login to view</span></h3>
+                                                                <h3>Price Sold : <span>Login to view</span></h3>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -580,13 +905,13 @@
         });
     </script>
     <script>
-        $(function() {
+        $(function () {
             var selectedClass = "";
-            $("p").click(function() {
+            $("p").click(function () {
                 selectedClass = $(this).attr("data-rel");
                 $("#portfolio").fadeTo(50, 0.1);
                 $("#portfolio div").not("." + selectedClass).fadeOut();
-                setTimeout(function() {
+                setTimeout(function () {
                     $("." + selectedClass).fadeIn();
                     $("#portfolio").fadeTo(50, 1);
                 }, 500);
@@ -594,7 +919,7 @@
             });
         });
     </script>
-
+    <script src="/static/js/auctionHouseDetailsAjaxCall.js"></script>
 </body>
 
 </html>

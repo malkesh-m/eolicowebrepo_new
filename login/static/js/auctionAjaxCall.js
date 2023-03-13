@@ -143,7 +143,7 @@ function locationsSetter(apiData) {
     let htmlData = collapseFourDiv.innerHTML
     apiData.forEach(auctionHousesData => {
         htmlData += `<div class="form-check">
-                        <input class="form-check-input forLocationsCls" type="checkbox" value="" id="${auctionHousesData.cah_auction_house_location}" onblur="filterAuction(event)">
+                        <input class="form-check-input forLocationsCls" type="checkbox" value="${auctionHousesData.cah_auction_house_location}" id="${auctionHousesData.cah_auction_house_location}" onblur="filterAuction(event)">
                         <label class="form-check-label" for="${auctionHousesData.cah_auction_house_location}">${auctionHousesData.cah_auction_house_location}</label>
                     </div>`
     })
@@ -155,7 +155,7 @@ function locationsSetter(apiData) {
 }
 
 async function getauctionHouses(e, housesOrLocationsStr) {
-    queryParams = ''
+    let queryParams = ''
     if (housesOrLocationsStr === 'houses') {
         start = e.target.dataset.start
         queryParams += `start=${start}&houses=true&`

@@ -21,7 +21,13 @@ const literatureId = document.querySelector('#literatureId')
 const exhibitionId = document.querySelector('#exhibitionId')
 const descriptionId = document.querySelector('#descriptionId')
 const relatedLotsId = document.querySelector('#relatedLotsId')
+const auctionTitle = document.querySelector('#auctionTitle')
+const estimatesId = document.querySelector('#estimatesId')
+const soldPriceId = document.querySelector('#soldPriceId')
 let descData = ''
+let exhibitionData = ''
+let literatureData = ''
+let provenanceData = ''
 let apiArtistId = undefined
 let apiCategory = undefined
 
@@ -49,8 +55,8 @@ function getRelatedLotsDataSetter(start) {
                                             <h3>${auctionData.faac_auction_title}</h3>
                                             <h3><span>${auctionData.cah_auction_house_name}</span></h3>
                                             <h3 class="mb-3"><span>${auctionData.faac_auction_start_date} | ${auctionData.cah_auction_house_location}</span></h3>
-                                            <h3>Estimate : <span>Login to view</span></h3>
-                                            <h3>Price Sold : <span>Login to view</span></h3>
+                                            <h3>Estimate : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>
+                                            <h3>Price Sold : <span>${auctionData.fal_lot_sale_price_USD}</span></h3>
                                         </div>
                                     </a>
                                 </div>
@@ -83,27 +89,173 @@ function getLotDetailsDataSetter() {
             artistId.innerHTML = `Artist : <span>${body.fa_artist_name}</span>`
             titleId.innerHTML = `Title : <span>${body.faa_artwork_title}</span>`
             headerLotNoId.innerHTML = lotNoId.innerHTML = `Lot : ${body.fal_lot_no}`
-            mediumId.innerHTML = `Medium : <span>${body.faa_artwork_material}</span>`
-            categoryId.innerHTML = `Category : <span>${body.faa_artwork_category}</span>`
+            auctionTitle.innerHTML = `Auction : <span>${body.faac_auction_title}</span>`
             dimensionsId.innerHTML = `Dimensions : <span>${body.fal_lot_height} x ${body.fal_lot_width} x ${body.fal_lot_depth} ${body.fal_lot_measurement_unit}</span></h5>`
-            markingId.innerHTML = `Markings : <span>${body.faa_artwork_markings}</span>`
             nameLocationId.innerHTML = `<span>${body.cah_auction_house_name}, ${body.cah_auction_house_location}</span>`
+            estimatesId.innerHTML = `Estimates <span>${body.fal_lot_low_estimate_USD} - ${body.fal_lot_high_estimate_USD}</span>`
+            soldPriceId.innerHTML = `Sold Price <span>${body.fal_lot_sale_price_USD}</span>`
             dateId.innerHTML = `<span>${body.fal_lot_sale_date}</span>`
-            provenanceId.innerHTML = body.fal_lot_provenance
-            literatureId.innerHTML = body.faa_artwork_literature
-            exhibitionId.innerHTML = body.faa_artwork_exhibition
-            descData = body.faa_artwork_description.replace('Description', '').replace(':', '').split('Provenance')[0]
-            descriptionId.innerHTML = descData.slice(0, 250)
+            
+            if (body.faa_artwork_material) {
+                mediumId.classList.add('mb-2')
+                mediumId.innerHTML = `Medium : <span>${body.faa_artwork_material}</span>`
+            }
+
+            if (body.faa_artwork_category) {
+                categoryId.classList.add('mb-3')
+                categoryId.innerHTML = `Category : <span>${body.faa_artwork_category}</span>`
+            }
+
+            if (body.faa_artwork_markings) {
+                markingId.classList.add('mb-5')
+                markingId.innerHTML = `Markings : <span>${body.faa_artwork_markings}</span>`
+            }
+
+            if (body.fal_lot_provenance) {
+                provenanceId.classList.add('mb-2')
+                provenanceData = body.fal_lot_provenance
+                if (provenanceData.length >= 250)
+                {
+                    provenanceId.innerHTML = `<h6>Provenance : </h6>
+                                                <div>
+                                                    <p class="pl-md-2">${provenanceData.slice(0, 250)}</p>
+                                                    <a href="javascript:readMore('provenance', 'more')" id="provenanceReadMoreId">Read More</a>
+                                                </div>`
+                }
+                else {
+                    provenanceId.innerHTML = `<h6>Provenance : </h6>
+                                                <div>
+                                                    <p class="pl-md-2">${provenanceData}</p>
+                                                </div>`
+                }
+            }
+            if (body.faa_artwork_literature) {
+                literatureId.classList.add('mb-2')
+                literatureData = body.faa_artwork_literature
+                if (literatureData.length >= 250)
+                {
+                    literatureId.innerHTML = `<h6>Literature : </h6>
+                                                <div>
+                                                    <p class="pl-md-2">${literatureData.slice(0, 250)}</p>
+                                                    <a href="javascript:readMore('literature', 'more')" id="literatureReadMoreId">Read More</a>
+                                                </div>`
+                }
+                else {
+                    literatureId.innerHTML = `<h6>Literature : </h6>
+                                                <div>
+                                                    <p class="pl-md-2">${literatureData}</p>
+                                                </div>`
+                }
+            }
+
+            if (body.faa_artwork_exhibition) {
+                exhibitionId.classList.add("mb-2")
+                exhibitionData = body.faa_artwork_exhibition
+                if (exhibitionData.length >= 250)
+                {
+                    exhibitionId.innerHTML = `<h6>Exhibition : </h6>
+                                                <div>
+                                                    <p class="pl-md-2">${exhibitionData.slice(0, 250)}</p>
+                                                    <a href="javascript:readMore('exhibition', 'more')" id="exhibiReadMoreId">Read More</a>
+                                                </div>`
+                }
+                else {
+                    exhibitionId.innerHTML = `<h6>Exhibition : </h6>
+                                                <div>
+                                                    <p class="pl-md-2">${exhibitionData}</p>
+                                                </div>`
+                }
+            }
+            
+            if (body.faa_artwork_description) {
+                descData = body.faa_artwork_description.replace('Description', '').replace(':', '').split('Provenance')[0].replaceAll('<br>', '')
+                descriptionId.classList.add('mb-2')
+                if (descData.length >= 250)
+                {
+                    descriptionId.innerHTML = `<h6>Description : </h6>
+                                                <div>
+                                                    <p class="pl-md-2">${descData.slice(0, 250)}</p>
+                                                    <a href="javascript:readMore('desc', 'more')" id="descReadMoreId">Read More</a>
+                                                </div>`
+                }
+                else {
+                    descriptionId.innerHTML = `<h6>Description : </h6>
+                                                <div>
+                                                    <p class="pl-md-2">${descData}</p>
+                                                </div>`
+                }
+            }
             getRelatedLotsDataSetter(0)
         })
 }
 
-function readMore(descExhibiStr, elementId) {
-    const aElement = document.querySelector(elementId)
-    if (descExhibiStr === 'desc') {
-        descriptionId.innerHTML = descData
+function readMore(descExhibiStr, readLessOrMore) {
+    if (readLessOrMore === 'more') {
+        if (descExhibiStr === 'desc') {
+            descriptionId.innerHTML = `<h6>Description : </h6>
+                                        <div>
+                                            <p class="pl-md-2">${descData}</p>
+                                            <a href="javascript:readMore('desc', 'less')" id="descReadMoreId">Read Less</a>
+                                        </div>`
+        }
+
+        if (descExhibiStr === 'exhibition') {
+            exhibitionId.innerHTML = `<h6>Exhibition : </h6>
+                                        <div>
+                                            <p class="pl-md-2">${exhibitionData}</p>
+                                            <a href="javascript:readMore('exhibition', 'less')" id="exhibiReadMoreId">Read Less</a>
+                                        </div>`
+        }
+        
+        if (descExhibiStr === 'literature') {
+            literatureId.innerHTML = `<h6>Literature : </h6>
+                                        <div>
+                                            <p class="pl-md-2">${literatureData}</p>
+                                            <a href="javascript:readMore('literature', 'less')" id="literatureReadMoreId">Read Less</a>
+                                        </div>`
+        }
+
+        if (descExhibiStr === 'provenance') {
+            provenanceId.innerHTML = `<h6>Provenance : </h6>
+                                        <div>
+                                            <p class="pl-md-2">${provenanceData}</p>
+                                            <a href="javascript:readMore('provenance', 'less')" id="provenanceReadMoreId">Read Less</a>
+                                        </div>`
+        }
     }
-    aElement.style.display = 'none'
+    else {
+        if (descExhibiStr === 'desc') {
+            descriptionId.innerHTML = `<h6>Description : </h6>
+                                        <div>
+                                            <p class="pl-md-2">${descData.slice(0, 250)}</p>
+                                            <a href="javascript:readMore('desc', 'more')" id="descReadMoreId">Read More</a>
+                                        </div>`
+        }
+
+        if (descExhibiStr === 'exhibition') {
+            exhibitionId.innerHTML = `<h6>Exhibition : </h6>
+                                        <div>
+                                            <p class="pl-md-2">${exhibitionData.slice(0, 250)}</p>
+                                            <a href="javascript:readMore('exhibition', 'more')" id="exhibiReadMoreId">Read More</a>
+                                        </div>`
+        }
+        
+        if (descExhibiStr === 'literature') {
+            literatureId.innerHTML = `<h6>Literature : </h6>
+                                        <div>
+                                            <p class="pl-md-2">${literatureData.slice(0, 250)}</p>
+                                            <a href="javascript:readMore('literature', 'more')" id="literatureReadMoreId">Read More</a>
+                                        </div>`
+        }
+
+        if (descExhibiStr === 'provenance') {
+            provenanceId.innerHTML = `<h6>Provenance : </h6>
+                                        <div>
+                                            <p class="pl-md-2">${provenanceData.slice(0, 250)}</p>
+                                            <a href="javascript:readMore('provenance', 'more')" id="provenanceReadMoreId">Read More</a>
+                                        </div>`
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {

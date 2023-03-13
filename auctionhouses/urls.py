@@ -13,4 +13,6 @@ urlpatterns = [
 
     path('getFeaturedAuctionHouses/', views.getFeaturedAuctionHouses, name='getFeaturedAuctionHouses'),
     path('getAuctionHouses/', views.getAuctionHouses, name='getAuctionHouses'),
+    path('getCurrentAuctionHouse/', views.getCurrentAuctionHouse, name="getCurrentAuctionHouse"),
+    # path('getPastAuctionData/', views.getPastAuctionData, name="getPastAuctionData"),
 ]
