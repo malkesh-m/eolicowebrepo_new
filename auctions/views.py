@@ -523,7 +523,7 @@ def getLotDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     lotId = request.GET.get('lid')
-    lotDetailsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, fal_lot_image1, fal_lot_image2, fal_lot_image3, fal_lot_image4, fal_lot_image5, fal_lot_provenance, faa_artwork_description, faa_artwork_exhibition, faa_artwork_literature, fal_lot_height, fal_lot_width, fal_lot_depth, fal_lot_measurement_unit, faa_artwork_material, faac_auction_ID, faa_artwork_category, faa_artwork_markings, fal_artwork_ID, faa_artwork_title, fa_artist_name, fal_lot_sale_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_ID = {lotId};"""
+    lotDetailsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, fal_lot_image1, fa_artist_ID, fal_lot_image2, fal_lot_image3, fal_lot_image4, fal_lot_image5, fal_lot_provenance, faa_artwork_description, faa_artwork_exhibition, faa_artwork_literature, fal_lot_height, fal_lot_width, fal_lot_depth, fal_lot_measurement_unit, faa_artwork_material, faac_auction_ID, faa_artwork_category, faa_artwork_markings, fal_artwork_ID, faa_artwork_title, fa_artist_name, fal_lot_sale_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_ID = {lotId};"""
     connList = connectToDb()
     connList[1].execute(lotDetailsSelectQuery)
     artworkDetailsData = connList[1].fetchone()
@@ -904,7 +904,7 @@ def getAuctionDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     auctionId = request.GET.get('aucid')
-    getAuctionSelectQuery = f"""SELECT faac_auction_start_date, faac_auction_image, cah_auction_house_name, cah_auction_house_location, cah_auction_house_country FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionId};"""
+    getAuctionSelectQuery = f"""SELECT faac_auction_start_date, faac_auction_title, faac_auction_image, cah_auction_house_name, cah_auction_house_location, cah_auction_house_country FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionId};"""
     connList = connectToDb()
     connList[1].execute(getAuctionSelectQuery)
     getAuctionData = connList[1].fetchone()
@@ -918,7 +918,7 @@ def getAuctionArtworksData(request):
     auctionId = request.GET.get('aucid')
     start = request.GET.get('start')
     limit = request.GET.get('limit')
-    getAuctionArtworksSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionId}"""
+    getAuctionArtworksSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faac_auction_title, faa_artwork_image1, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionId}"""
     whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
     getAuctionArtworksSelectQuery += whereClauseAndOrderBy + f""" LIMIT {limit} OFFSET {start};"""
     connList = connectToDb()
@@ -931,10 +931,12 @@ def getAuctionArtworksData(request):
 def getRelatedLotsData(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    lotId = request.GET.get('lid')
-    relatedRangeStart = request.GET.get('relatedRangeStart')
-    relatedRangeEnd = request.GET.get('relatedRangeEnd')
-    getRelatedLotsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_ID BETWEEN {relatedRangeStart} AND {relatedRangeEnd} AND fal_lot_Id != {lotId};"""
+    start = request.GET.get('start')
+    limit = request.GET.get('limit')
+    lotId = request.GET.get('lotId')
+    artistId = request.GET.get('artistId')
+    category = request.GET.get('category')
+    getRelatedLotsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faa_artwork_image1, faa_artwork_image1, faac_auction_title, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fa_artist_ID = {artistId} AND faa_artwork_category = '{category}' AND faa_artwork_image1 IS NOT NULL  AND faa_artwork_image1 != '' AND fal_lot_ID != {lotId} LIMIT {limit} OFFSET {start};"""
     connList = connectToDb()
     connList[1].execute(getRelatedLotsSelectQuery)
     getRelatedLots = connList[1].fetchall()

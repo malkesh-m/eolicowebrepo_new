@@ -11,8 +11,7 @@ function htmlDataBinder(recentAuctionData) {
                                     <img src="https://f000.backblazeb2.com/file/fineart-images/${recentAuctionData.faac_auction_image}" class="card-img" alt="img">
                                 </div>
                                 <div class="down-content">
-                                    <h6><span>Sale Code:</span> ${recentAuctionData.faac_auction_sale_code}
-                                    </h6>
+                                    
                                     <div class="d-flex justify-content-between align-items-start">
                                         <p class="auction-text p-0">${recentAuctionData.faac_auction_title}</p>
                                         <p>View Lots</p>

@@ -28,7 +28,7 @@ function htmlDataBinder(auctionData) {
                                     <h3 class="mb-3">Category : <span>${auctionData.faa_artwork_category}</span>
                                     </h3>
 
-                                    <h3>Contemporary Curated</h3>
+                                    <h3>${auctionData.faac_auction_title}</h3>
                                     <h3><span>${auctionData.cah_auction_house_name}</span></h3>
                                     <h3 class="mb-3"><span>${auctionData.faac_auction_start_date} | ${auctionData.cah_auction_house_location}</span>
                                     </h3>

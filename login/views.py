@@ -572,7 +572,7 @@ def getRecentAuctions(request):
     houses = request.GET.get('houses')
     locations = request.GET.get('locations')
     todayDate = datetime.datetime.now().date()
-    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{todayDate}' AND faac_auction_lot_count IS NOT NULL"""
+    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{todayDate}'"""
     whereClause = """ """
     orderByClause = """ ORDER BY """
 

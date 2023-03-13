@@ -19,7 +19,7 @@ function htmlDataBinder(auctionData) {
                                     <h3 class="mb-3">Category : <span>${auctionData.faa_artwork_category}</span>
                                     </h3>
 
-                                    <h3>Contemporary Curated</h3>
+                                    <h3>${auctionData.faac_auction_title}</h3>
                                     <h3><span>${auctionData.cah_auction_house_name}</span></h3>
                                     <h3 class="mb-3"><span>${auctionData.faac_auction_start_date} | ${auctionData.cah_auction_house_location}</span>
                                     </h3>
@@ -125,6 +125,7 @@ function getAuctionDetailsData() {
     })
         .then(response => response.json())
         .then(body => {
+            document.querySelector('#auctionTitle').innerHTML = body.faac_auction_title
             document.querySelector('#auctionImage').src = `https://f000.backblazeb2.com/file/fineart-images/${body.faac_auction_image}`
             document.querySelector('#auctionName').innerHTML = body.cah_auction_house_name
             document.querySelector('#auctionLocation').innerHTML = `${body.cah_auction_house_location}, ${body.cah_auction_house_country}`
