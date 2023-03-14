@@ -666,8 +666,8 @@
                                         <div class="input-group">
                                             <input type="search" class="form-control  rounded-0" name="search" placeholder="Select...">
                                             <span class="input-group-text rounded-0">
-                                              <button type="button" class="btn border-0 p-0 rounded-right"><i class="fa fa-search"></i></button>
-                                          </span>
+                                                <button type="button" class="btn border-0 p-0 rounded-right"><i class="fa fa-search"></i></button>
+                                            </span>
                                         </div>
                                     </li>
                                     <li class="nav-item">
@@ -722,19 +722,17 @@
                                                 <div class="col-md-6">
                                                     <div class="chart">
                                                         <canvas id="artist_chart"></canvas>
-                                                        <p>
-                                                            {{totalfavouriteartists}}
-                                                        </p>
+                                                        <p id="totalFollowedArtistId"></p>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="d-flex align-items-center h-100">
                                                         <div>
                                                             <div class="d-flex align-items-center justify-content-between">
-                                                                <h6>Followed This Week : </h6> <span>{{favouriteartistscurweek}}</span>
+                                                                <h6>Followed This Week : </h6> <span id="thisWeekFollowedArtistsId"></span>
                                                             </div>
                                                             <div class="d-flex align-items-center justify-content-between">
-                                                                <h6>Total Followed :</h6> <span>{{totalfavouriteartists}}</span>
+                                                                <h6>Total Followed :</h6> <span id="totalFollowedArtistsId"></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -751,25 +749,23 @@
                                                 <div class="col-md-6">
                                                     <div class="chart">
                                                         <canvas id="artwork_chart"></canvas>
-                                                        <p>
-                                                            {{totalfavouriteartworks}}
-                                                        </p>
+                                                        <p id="totalFollowedArtworksId"></p>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="d-flex align-items-center h-100">
                                                         <div>
                                                             <div class="d-flex align-items-center justify-content-between">
-                                                                <h6>Paintings : </h6><span>{{artwork_type_counts.painting}}</span>
+                                                                <h6>Paintings : </h6><span id="paintingsFollowedId"></span>
                                                             </div>
                                                             <div class="d-flex align-items-center justify-content-between">
-                                                                <h6>Prints : </h6><span>{{artwork_type_counts.print}}</span>
+                                                                <h6>Prints : </h6><span id="printsFollowedId"></span>
                                                             </div>
                                                             <div class="d-flex align-items-center justify-content-between">
-                                                                <h6>Works on Paper : </h6><span>{{artwork_type_counts.workonpaper}}</span>
+                                                                <h6>Works on Paper : </h6><span id="workOnPaperFollowedId"></span>
                                                             </div>
                                                             <div class="d-flex align-items-center justify-content-between">
-                                                                <h6>Sculptures : </h6><span>{{artwork_type_counts.sculpture}}</span>
+                                                                <h6>Sculptures : </h6><span id="sculpturesFollowedId"></span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -941,7 +937,7 @@
 
                                                 </thead>
                                                 <tbody>
-                                                    {% for artistobj in favourite_artists %}
+                                                    <!-- {% for artistobj in favourite_artists %}
                                                     <tr>
                                                         <td>{{artistobj.artistname}}</td>
                                                         <td>{{artistobj.totalartworks}}</td>
@@ -950,7 +946,7 @@
                                                         <td>{{artistobj.avgsaleprice}}</td>
                                                         <td>{{artistobj.avgsalepricelast12months}}</td>
                                                     </tr>
-                                                    {% endfor %}
+                                                    {% endfor %} -->
                                                 </tbody>
                                             </table>
                                         </div>
@@ -965,7 +961,9 @@
                                                         <th>High Estimate</th>
                                                         <th>Sold Price</th>
                                                     </tr>
-                                                    {% for artworkobj in favourite_artworks %}
+                                                </thead>
+                                                <tbody>
+                                                    <!-- {% for artworkobj in favourite_artworks %}
                                                     <tr>
                                                         <td>{{artworkobj.artworkname}}</td>
                                                         <td>{{artworkobj.artistname}}</td>
@@ -974,8 +972,8 @@
                                                         <td>US$ {{artworkobj.highestimate}}</td>
                                                         <td>US$ {{artworkobj.soldprice}}</td>
                                                     </tr>
-                                                    {% endfor %}
-                                                </thead>
+                                                    {% endfor %} -->
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -1033,7 +1031,7 @@
         </div>
     </section>
 
-
+<script src="/static/js/dashboardAjaxCall.js"></script>
 
 </body>
 

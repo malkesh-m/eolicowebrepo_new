@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.template.context_processors import csrf
 from django.views.generic import View
-from django.http import HttpResponseBadRequest, HttpResponse , HttpResponseRedirect, HttpRequest
+from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect, HttpRequest
 from django.urls import reverse
 from django.template import RequestContext
 from django.db.models import Q
@@ -23,9 +23,9 @@ import simplejson as json
 import redis
 import pickle
 import urllib
-#from gallery.models import Gallery, Event
-#from museum.models import Museum, MuseumEvent, MuseumPieces
-from login.models import User, Session, Favourite, EmailAlerts #,WebConfig, Carousel, Follow
+# from gallery.models import Gallery, Event
+# from museum.models import Museum, MuseumEvent, MuseumPieces
+from login.models import User, Session, Favourite, EmailAlerts  # ,WebConfig, Carousel, Follow
 from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
@@ -35,9 +35,11 @@ from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconne
 from django.views.decorators.cache import cache_page
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.conf import settings
+
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
+
 
 def myArtist(request):
     if request.method != 'GET':
@@ -67,6 +69,7 @@ def myArtworkDetails(request):
     else:
         artistId = request.GET.get('awid')
         return render(request, 'myArtworkDetails.html')
+
 
 """
 def getcarouselinfo():
@@ -112,8 +115,8 @@ def termsAndCondition(request):
 
 def getcarouselinfo_new():
     entrieslist = []
-    entriescount = int(os.environ.get('WEBSITE_CAROUSEL_ENTRIES_COUNT', '5')) # Default value: 5
-    #print("############## " + str(entriescount) + " ########################")
+    entriescount = int(os.environ.get('WEBSITE_CAROUSEL_ENTRIES_COUNT', '5'))  # Default value: 5
+    # print("############## " + str(entriescount) + " ########################")
     try:
         entrieslist = pickle.loads(redis_instance.get('com_carouselentries'))
     except:
@@ -123,7 +126,8 @@ def getcarouselinfo_new():
         dbconn = connlist[0]
         cursor = connlist[1]
         # Find the 'entriescount' number of artworks sold in last 1 month ordered by decreasing values of 'fal_lot_low_estimate_USD'.
-        carouselsql = "select lot.fal_artwork_ID, artwork.faa_artwork_title, artwork.faa_artist_ID, lot.fal_auction_ID, lot.fal_lot_high_estimate_USD, lot.fal_lot_low_estimate_USD, lot.fal_lot_sale_price_USD, lot.fal_lot_material, lot.fal_lot_size_details, lot.fal_lot_provenance, lot.fal_lot_image1, lot.fal_lot_sale_date from fineart_lots lot, fineart_artworks artwork where lot.fal_artwork_ID = artwork.faa_artwork_ID and lot.fal_lot_image1 <> '' and lot.fal_lot_sale_date > DATE_ADD(NOW(), INTERVAL -%s DAY) order by lot.fal_lot_low_estimate_USD desc limit %s"%(settings.CAROUSEL_DAYS, entriescount)
+        carouselsql = "select lot.fal_artwork_ID, artwork.faa_artwork_title, artwork.faa_artist_ID, lot.fal_auction_ID, lot.fal_lot_high_estimate_USD, lot.fal_lot_low_estimate_USD, lot.fal_lot_sale_price_USD, lot.fal_lot_material, lot.fal_lot_size_details, lot.fal_lot_provenance, lot.fal_lot_image1, lot.fal_lot_sale_date from fineart_lots lot, fineart_artworks artwork where lot.fal_artwork_ID = artwork.faa_artwork_ID and lot.fal_lot_image1 <> '' and lot.fal_lot_sale_date > DATE_ADD(NOW(), INTERVAL -%s DAY) order by lot.fal_lot_low_estimate_USD desc limit %s" % (
+        settings.CAROUSEL_DAYS, entriescount)
         cursor.execute(carouselsql)
         carouselrecords = cursor.fetchall()
         for rec in carouselrecords:
@@ -140,10 +144,12 @@ def getcarouselinfo_new():
             artimg = str(rec[10])
             imagewebpath = settings.IMG_URL_PREFIX + str(artimg)
             saledate = rec[11]
-            d = {'artworkid' : awid, 'artworkname' : awtitle, 'artistid' : artistid, 'auctionid' : aucid, 'highestimate' : highestimate, 'lowestimate' : lowestimate, 'soldprice' : soldprice, 'medium' : medium, 'sizedetails' : size, 'provenance' : prov, 'artworkimage' : imagewebpath, 'saledate' : saledate}
+            d = {'artworkid': awid, 'artworkname': awtitle, 'artistid': artistid, 'auctionid': aucid,
+                 'highestimate': highestimate, 'lowestimate': lowestimate, 'soldprice': soldprice, 'medium': medium,
+                 'sizedetails': size, 'provenance': prov, 'artworkimage': imagewebpath, 'saledate': saledate}
             entrieslist.append(d)
-        cursor.close() # close db cursor
-        dbconn.close() # close db connection.
+        cursor.close()  # close db cursor
+        dbconn.close()  # close db connection.
         try:
             redis_instance.set('com_carouselentries', pickle.dumps(entrieslist))
         except:
@@ -155,7 +161,7 @@ def show(request):
     return HttpResponseRedirect("/login/index/")
 
 
-#@cache_page(CACHE_TTL)
+# @cache_page(CACHE_TTL)
 def index(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
@@ -191,9 +197,9 @@ def index(request):
         auctionidsstr = "(" + ",".join(favauctionslist) + ")"
         if favauctionslist.__len__() == 0:
             auctionidsstr = "()"
-        favartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_description, fa_artist_image from fineart_artists where fa_artist_ID in %s"%artistidsstr
-        favartworksql = "select artworkid, artworkname, sizedetails, lotimage1, medium, artist_id, artist_name from fa_artwork_lot_artist where artworkid in %s"%artworkidsstr
-        favauctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_start_date, faac_auction_end_date, faac_auction_house_ID, faac_auction_image from fineart_auction_calendar where faac_auction_ID in %s"%auctionidsstr
+        favartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_description, fa_artist_image from fineart_artists where fa_artist_ID in %s" % artistidsstr
+        favartworksql = "select artworkid, artworkname, sizedetails, lotimage1, medium, artist_id, artist_name from fa_artwork_lot_artist where artworkid in %s" % artworkidsstr
+        favauctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_start_date, faac_auction_end_date, faac_auction_house_ID, faac_auction_image from fineart_auction_calendar where faac_auction_ID in %s" % auctionidsstr
         if artistidsstr != "()":
             cursor.execute(favartistsql)
             favartistsrecords = cursor.fetchall()
@@ -243,8 +249,8 @@ def index(request):
                     medium = artwork[4]
                     awid = artwork[0]
                     artistname = artwork[6]
-                    #artist = Artist.objects.get(id=artist_id)
-                    #artistname = artist.artistname
+                    # artist = Artist.objects.get(id=artist_id)
+                    # artistname = artist.artistname
                     favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
                 except:
                     pass
@@ -601,12 +607,54 @@ def getRecentAuctions(request):
             if location != '':
                 whereClause += f""" AND cah_auction_house_location = "{location}" """
     recentAuctionSelectQuery += whereClause + orderByClause + f"""LIMIT {limit} OFFSET {start};"""
-    print(recentAuctionSelectQuery)
     connList = connectToDb()
     connList[1].execute(recentAuctionSelectQuery)
     recentAuctionsData = connList[1].fetchall()
     disconnectDb(connList)
     return HttpResponse(json.dumps(recentAuctionsData, default=default))
+
+
+@login_required(login_url='/login/show/')
+def getFollowedArtists(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    # if not request.user.is_authenticated:
+    #     return HttpResponseRedirect("/login/index/")
+    getFollowedArtistsSelectQuery = f"""SELECT COUNT(user_id) as user_artist_followed_counts FROM `user_favorites` WHERE reference_table = 'fineart_artists' AND user_id = {request.user.id}"""
+    connList = connectToDb()
+    connList[1].execute(getFollowedArtistsSelectQuery)
+    followedArtistsData = connList[1].fetchone()
+    getFollowedArtistsSelectQuery += f""" AND created BETWEEN '{datetime.datetime.now() - datetime.timedelta(days=7)}' AND '{datetime.datetime.now()}';"""
+    connList[1].execute(getFollowedArtistsSelectQuery)
+    thisWeekFollowedArtists = connList[1].fetchone()
+    disconnectDb(connList)
+    data = {'user_artist_followed_counts': followedArtistsData['user_artist_followed_counts'], 'this_week_followed_artist_counts': thisWeekFollowedArtists['user_artist_followed_counts']}
+    return HttpResponse(json.dumps(data))
+
+
+@login_required(login_url='/login/show/')
+def getFollowedArtworks(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    getFollowedArtworksSelectQuery = f"""SELECT COUNT(user_id) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.user.id} AND reference_table = 'fineart_artworks'"""
+    forPaintingsFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'paintings'"""
+    forSculpturesFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'sculptures'"""
+    forPrintsFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'prints'"""
+    forWorkOnPaperFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'works on paper'"""
+    connList = connectToDb()
+    connList[1].execute(getFollowedArtworksSelectQuery)
+    totalFollowedData = connList[1].fetchone()
+    connList[1].execute(forPaintingsFollowed)
+    forPaintingsFollowedData = connList[1].fetchone()
+    connList[1].execute(forSculpturesFollowed)
+    forSculpturesFollowedData = connList[1].fetchone()
+    connList[1].execute(forPrintsFollowed)
+    forPrintsFollowedData = connList[1].fetchone()
+    connList[1].execute(forWorkOnPaperFollowed)
+    forWorkOnPaperFollowedData = connList[1].fetchone()
+    disconnectDb(connList)
+    data = {'user_artwork_followed_counts': totalFollowedData['totalFollowed'], 'forPaintingsFollowed': forPaintingsFollowedData['totalFollowed'], 'forSculpturesFollowed': forSculpturesFollowedData['totalFollowed'], 'forPrintsFollowed': forPrintsFollowedData['totalFollowed'], 'forWorkOnPaperFollowed': forWorkOnPaperFollowedData['totalFollowed']}
+    return HttpResponse(json.dumps(data))
 
 
 def signup(request):
@@ -618,20 +666,20 @@ def signup(request):
         password2 = request.POST.get('password2').strip()
         # Validate user inputs here...
         if username == "":
-            return HttpResponse(json.dumps({'error' : 'Username cannot be empty string'}))
+            return HttpResponse(json.dumps({'error': 'Username cannot be empty string'}))
         emailPattern = re.compile("^\w+\.?\w*@\w+\.\w{3,4}$")
         eps = re.search(emailPattern, email)
         if not eps:
-            return HttpResponse(json.dumps({'error' : 'Email entered is not valid'}))
+            return HttpResponse(json.dumps({'error': 'Email entered is not valid'}))
         if raw_password != password2:
-            return HttpResponse(json.dumps({'error' : 'Passwords do not match'}))
+            return HttpResponse(json.dumps({'error': 'Passwords do not match'}))
         try:
             newuser = djUser.objects.create_user(username=username, email=email, password=raw_password)
             user = authenticate(username=username, password=raw_password)
             login(request, user)
         except:
-            return HttpResponse(json.dumps({'error' : sys.exc_info()[1].__str__()})) 
-        return HttpResponse(json.dumps({'error' : ''})) # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
+            return HttpResponse(json.dumps({'error': sys.exc_info()[1].__str__()}))
+        return HttpResponse(json.dumps({'error': ''}))  # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
     else:
         context = {}
     return render(request, 'registration.html', context)
@@ -649,7 +697,7 @@ def dologin(request):
             login(request, user)
         else:
             return HttpResponse(None)
-        return HttpResponseRedirect("/login/index/") # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
+        return HttpResponseRedirect("/login/index/")  # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
     else:
         return HttpResponse("Invalid request method")
 
@@ -667,12 +715,13 @@ def showprofile(request):
 
 def checkloginstatus(request):
     if request.user.is_authenticated:
-        return HttpResponse(True) 
+        return HttpResponse(True)
     else:
-        return HttpResponse(False) 
+        return HttpResponse(False)
+
+    # @cache_page(CACHE_TTL)
 
 
-#@cache_page(CACHE_TTL)
 def about(request):
     if request.method == 'GET':
         """
@@ -688,7 +737,7 @@ def about(request):
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
         """
-        context = {'aboutcontent' : ''}
+        context = {'aboutcontent': ''}
         if request.user.is_authenticated and request.user.is_staff:
             context['adminuser'] = 1
         else:
@@ -699,7 +748,7 @@ def about(request):
         return HttpResponse("Incorrect request method")
 
 
-#@cache_page(CACHE_TTL)
+# @cache_page(CACHE_TTL)
 def contactus(request):
     if request.method == 'GET':
         """
@@ -715,7 +764,7 @@ def contactus(request):
         carouselentries = getcarouselinfo()
         context['carousel'] = carouselentries
         """
-        context = {'contactus' : ''}
+        context = {'contactus': ''}
         if request.user.is_authenticated and request.user.is_staff:
             context['adminuser'] = 1
         else:
@@ -729,9 +778,9 @@ def contactus(request):
 @login_required(login_url="/login/show/")
 def followartist(request):
     if request.method != 'POST':
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
     if not request.user.is_authenticated:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
     userobj = request.user
     sessionkey = request.session.session_key
     aid, divid = None, None
@@ -748,12 +797,13 @@ def followartist(request):
     if 'div_id' in requestdict.keys():
         divid = requestdict['div_id'].replace("'", "")
     if not aid or not divid:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
     artist = None
     try:
         artist = Artist.objects.get(id=aid)
     except:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Operation failed! Can't proceed without an artist.
+        return HttpResponse(
+            json.dumps({'msg': 0, 'div_id': divid, 'aid': aid}))  # Operation failed! Can't proceed without an artist.
     # Check if there is any existing record for this artist/user combination 
     follow = None
     try:
@@ -765,20 +815,20 @@ def followartist(request):
     follow.artist = artist
     follow.user = userobj
     follow.user_session_key = sessionkey
-    follow.status = True # Explicitly set it True, just in case we had an existing record with a False value.
+    follow.status = True  # Explicitly set it True, just in case we had an existing record with a False value.
     try:
         follow.save()
-        return HttpResponse(json.dumps({'msg' : 1, 'div_id' : divid, 'aid' : aid})) # Successfully following...
+        return HttpResponse(json.dumps({'msg': 1, 'div_id': divid, 'aid': aid}))  # Successfully following...
     except:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Failed again.
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': divid, 'aid': aid}))  # Failed again.
 
 
 @login_required(login_url="/login/show/")
 def unfollowartist(request):
     if request.method != 'POST':
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
     if not request.user.is_authenticated:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
     userobj = request.user
     sessionkey = request.session.session_key
     aid, divid = None, None
@@ -795,31 +845,31 @@ def unfollowartist(request):
     if 'div_id' in requestdict.keys():
         divid = requestdict['div_id'].replace("'", "")
     if not aid or not divid:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aid' : ''})) # Operation failed!
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
     artist = None
     try:
         artist = Artist.objects.get(id=aid)
     except:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Operation failed! Can't proceed without an artist.
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': divid, 'aid': aid}))  # Operation failed! Can't proceed without an artist.
     followqset = Follow.objects.filter(artist=artist, user=request.user)
     follow = None
     if followqset.__len__() > 0:
         follow = followqset[0]
     else:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # The user was not following this artist.
-    follow.status = False # This means user left the artist.
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': divid, 'aid': aid}))  # The user was not following this artist.
+    follow.status = False  # This means user left the artist.
     follow.user_session_key = sessionkey
     try:
         follow.save()
-        return HttpResponse(json.dumps({'msg' : 1, 'div_id' : divid, 'aid' : aid})) # Successfully left...
+        return HttpResponse(json.dumps({'msg': 1, 'div_id': divid, 'aid': aid}))  # Successfully left...
     except:
-        return HttpResponse(json.dumps({'msg' : 0, 'div_id' : divid, 'aid' : aid})) # Failed again.
+        return HttpResponse(json.dumps({'msg': 0, 'div_id': divid, 'aid': aid}))  # Failed again.
 
 
 @login_required(login_url="/login/show/")
 def morefollows(request):
     if request.method != 'GET':
-        return HttpResponse(json.dumps({'msg' : 0, 'aid' : ''})) # Operation failed!
+        return HttpResponse(json.dumps({'msg': 0, 'aid': ''}))  # Operation failed!
     page = 1
     if 'page' in request.GET.keys():
         page = request.GET['page']
@@ -850,7 +900,10 @@ def morefollows(request):
     displayednextpage1 = nextpage + 1
     displayednextpage2 = nextpage + 2
     firstpage = 1
-    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    context['pages'] = {'prevpage': prevpage, 'nextpage': nextpage, 'firstpage': firstpage,
+                        'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
+                        'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
+                        'currentpage': int(page)}
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -862,7 +915,7 @@ def morefollows(request):
 @login_required(login_url="/login/show/")
 def morefavourites(request):
     if request.method != 'GET':
-        return HttpResponse(json.dumps({'msg' : 0, 'aid' : ''})) # Operation failed!
+        return HttpResponse(json.dumps({'msg': 0, 'aid': ''}))  # Operation failed!
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login/index/")
     page = 1
@@ -932,7 +985,10 @@ def morefavourites(request):
     displayednextpage1 = nextpage + 1
     displayednextpage2 = nextpage + 2
     firstpage = 1
-    context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
+    context['pages'] = {'prevpage': prevpage, 'nextpage': nextpage, 'firstpage': firstpage,
+                        'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
+                        'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
+                        'currentpage': int(page)}
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
@@ -947,190 +1003,191 @@ def morefavourites(request):
 @login_required(login_url="/login/show/")
 def dashboard(request):
     if request.method != 'GET':
-        return HttpResponse(json.dumps({'err' : 'Invalid method of call',})) # Operation failed!
+        return HttpResponse(json.dumps({'err': 'Invalid method of call'}))  # Operation failed!
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login/index/")
-        #return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
+        # return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
     userobj = request.user
     sessionkey = request.session.session_key
-    page = 1
-    if 'page' in request.GET.keys():
-        try:
-            page = int(request.GET['page'])
-        except:
-            pass
-    chunksize = 10 # per page we will show 10 artists and artworks that the user has added as favourites.
-    startctr = page * chunksize - chunksize
-    endctr = page * chunksize
-    favourite_artworks = []
-    favourite_artists = []
-    favourite_auctions = []
-    artistsidlist = []
-    artworksidlist = []
-    auctionsidlist = []
-    artwork_type_counts = {'painting' : 0, 'sculpture' : 0, 'print' : 0, 'workonpaper' : 0}
-    context = {}
-    totalfavouriteartists = 0
-    favouriteartistscurweek = 0
-    totalfavouriteartworks = 0
-    favouriteartworkscurweek = 0
-    totalfavouriteauctions = 0
-    favouriteauctionscurweek = 0
-    curdate = datetime.datetime.now()
-    datelastweek = curdate - datetime.timedelta(days=7)
-    connlist = connecttoDB()
-    dbconn, cursor = connlist[0], connlist[1]
-    allfavouritesqset = Favourite.objects.filter(user=userobj).order_by("-updated")
-    for fav in allfavouritesqset:
-        favtype = fav.reference_model
-        if favtype == "fineart_artists":
-            favmodelid = fav.reference_model_id
-            artistsidlist.append(favmodelid)
-            totalfavouriteartists += 1
-            if fav.created > datelastweek:
-                favouriteartistscurweek += 1
-        elif favtype == "fineart_artworks":
-            favmodelid = fav.reference_model_id
-            artworksidlist.append(favmodelid)
-            totalfavouriteartworks += 1
-            if fav.created > datelastweek:
-                favouriteartworkscurweek += 1
-        elif favtype == "fineart_auction_calendar":
-            favmodelid = fav.reference_model_id
-            auctionsidlist.append(favmodelid)
-            totalfavouriteauctions += 1
-            if fav.created > datelastweek:
-                favouriteauctionscurweek += 1
-    favartistsqset = Artist.objects.filter(id__in=artistsidlist)
-    favartworksqset = Artwork.objects.filter(id__in=artworksidlist)
-    favauctionsqset = Auction.objects.filter(id__in=auctionsidlist)
-    for favartist in favartistsqset:
-        favartistid = favartist.id
-        # Get all artworks by this artist
-        lotartistqset = LotArtist.objects.filter(artist_id=favartistid)
-        artistartworkcount = list(lotartistqset).__len__()
-        curdate = datetime.datetime.now()
-        datenow = datetime.date(curdate.year, curdate.month,curdate.day)
-        date12monthsago = datenow - datetime.timedelta(days=365)
-        artworksoldlast12months = 0
-        artworksoldtotal = 0
-        totalsoldusd = 0.00
-        totalsoldusdlast12months = 0.00
-        artistname = ''
-        for lotartist in lotartistqset:
-            if lotartist.saledate > date12monthsago:
-                artworksoldlast12months += 1
-                try:
-                    totalsoldusdlast12months += float(lotartist.artist_price_usd)
-                except:
-                    pass
-            if lotartist.lotstatus == "sold":
-                artworksoldtotal += 1
-                try:
-                    totalsoldusd += float(lotartist.artist_price_usd)
-                except:
-                    pass
-            artistname = lotartist.artist_name
-        sellingratefloat = 'NA'
-        if float(artistartworkcount ) > 0:
-            sellingratefloat = "{:.3f}".format(artworksoldtotal/artistartworkcount)
-        avgsalepricefloat = 'NA'
-        if float(artworksoldtotal) > 0:
-            avgsalepricefloat = "{:.2f}".format(totalsoldusd/artworksoldtotal)
-        avgsalepricelast12monthsfloat = 'NA'
-        if float(artworksoldlast12months) > 0:
-            avgsalepricelast12monthsfloat = "{:.2f}".format(totalsoldusdlast12months/artworksoldlast12months)
-        d = {'totalartworks' : artistartworkcount, 'artistname' : artistname, 'artistid' : favartistid, 'totalartworkssold' : artworksoldtotal, 'artworkssoldlast12months' : artworksoldlast12months, 'sellingrate' : sellingratefloat, 'avgsaleprice' : avgsalepricefloat, 'avgsalepricelast12months' : avgsalepricelast12monthsfloat}
-        favourite_artists.append(d)
-    for favartwork in favartworksqset:
-        artworkname = favartwork.artworkname
-        artworkid = favartwork.id
-        medium = favartwork.medium
-        if favartwork.category == "paintings":
-            artwork_type_counts['painting'] += 1
-        elif favartwork.category == "works on paper":
-            artwork_type_counts['workonpaper'] += 1
-        elif favartwork.category == "prints":
-            artwork_type_counts['print'] += 1
-        elif favartwork.category == "sculptures":
-            artwork_type_counts['sculpture'] += 1
-        sizedetails = favartwork.sizedetails
-        artworkimage = ""
-        if favartwork.image1 is not None:
-            artworkimage = settings.IMG_URL_PREFIX + str(favartwork.image1)
-        lotqset = LotArtist.objects.filter(artworkid=artworkid)
-        lowestimateusd, highestimateusd, soldpriceusd = 0.00, 0.00, 0.00
-        artistname = ""
-        if list(lotqset).__len__() > 0:
-            try:
-                lowestimateusd = float(lotqset[0].lowestimate)
-            except:
-                pass
-            try:
-                highestimateusd = float(lotqset[0].highestimate)
-            except:
-                pass
-            try:
-                soldpriceusd = float(lotqset[0].artist_price_usd)
-            except:
-                pass
-            artistname = lotqset[0].artist_name
-        d = {'artworkname' : artworkname, 'artistname' : artistname, 'artworkid' : artworkid, 'medium' : medium, 'size' : sizedetails, 'lowestimate' : lowestimateusd, 'highestimate' : highestimateusd, 'soldprice' : soldpriceusd, 'artworkimage' : artworkimage}
-        favourite_artworks.append(d)
-    for favauction in favauctionsqset:
-        auctionname = favauction.auctionname
-        auctionperiod = favauction.auctionstartdate.strftime('%d %b, %Y')
-        if type(favauction.auctionenddate) is datetime.date and favauction.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 0001" and favauction.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 1":
-            auctionperiod += " - " + favauction.auctionenddate.strftime('%d %b, %Y')
-        lotcount = favauction.lotcount
-        coverimage = favauction.coverimage
-        auchouseobj = AuctionHouse.objects.get(id=favauction.auctionhouse_id) # This is a relatively smaller table, so querying it while iterating favourite auctions shouldn't take much time.
-        auctionhousename = auchouseobj.housename
-        d = {'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'lotcount' : lotcount, 'auctionhousename' : auctionhousename, 'auctionid' : favauction.id}
-        favourite_auctions.append(d)
-    emailalerts = []
-    emailalerts_artist = 0
-    emailalerts_artwork = 0
-    try:
-        emailalertsqset = EmailAlerts.objects.filter(user=userobj)
-        for emailalertobj in emailalertsqset:
-            d = {'emailcontent' : emailalertobj.emailcontent, 'emaildate' : emailalertobj.emaildate, 'emailstatus' : emailalertobj.sendstatus, 'emailtype' : emailalertobj.emailtype}
-            emailalerts.append(d)
-            if emailalertobj.emailtype == 'artist':
-                emailalerts_artist += 1
-            elif emailalertobj.emailtype == 'artwork':
-                emailalerts_artwork += 1
-            else:
-                pass
-    except:
-        pass
-    cursor.close()
-    dbconn.close()
-    context['favourite_artists'] = favourite_artists
-    context['favourite_artworks'] = favourite_artworks
-    context['artwork_type_counts'] = artwork_type_counts
-    context['favourite_auctions'] = favourite_auctions
-    context['totalfavouriteartists'] = totalfavouriteartists
-    context['favouriteartistscurweek'] = favouriteartistscurweek
-    context['totalfavouriteartworks'] = totalfavouriteartworks
-    context['favouriteartworkscurweek'] = favouriteartworkscurweek
-    context['totalfavouriteauctions'] = totalfavouriteauctions
-    context['favouriteauctionscurweek'] = favouriteauctionscurweek
-    context['emailalerts'] = emailalerts
-    context['emailalerts_artwork'] = emailalerts_artwork
-    context['emailalerts_artist'] = emailalerts_artist
+    context = dict()
+    # page = 1
+    # if 'page' in request.GET.keys():
+    #     try:
+    #         page = int(request.GET['page'])
+    #     except:
+    #         pass
+    # chunksize = 10 # per page we will show 10 artists and artworks that the user has added as favourites.
+    # startctr = page * chunksize - chunksize
+    # endctr = page * chunksize
+    # favourite_artworks = []
+    # favourite_artists = []
+    # favourite_auctions = []
+    # artistsidlist = []
+    # artworksidlist = []
+    # auctionsidlist = []
+    # artwork_type_counts = {'painting' : 0, 'sculpture' : 0, 'print' : 0, 'workonpaper' : 0}
+    # context = {}
+    # totalfavouriteartists = 0
+    # favouriteartistscurweek = 0
+    # totalfavouriteartworks = 0
+    # favouriteartworkscurweek = 0
+    # totalfavouriteauctions = 0
+    # favouriteauctionscurweek = 0
+    # curdate = datetime.datetime.now()
+    # datelastweek = curdate - datetime.timedelta(days=7)
+    # connlist = connecttoDB()
+    # dbconn, cursor = connlist[0], connlist[1]
+    # allfavouritesqset = Favourite.objects.filter(user=userobj).order_by("-updated")
+    # for fav in allfavouritesqset:
+    #     favtype = fav.reference_model
+    #     if favtype == "fineart_artists":
+    #         favmodelid = fav.reference_model_id
+    #         artistsidlist.append(favmodelid)
+    #         totalfavouriteartists += 1
+    #         if fav.created > datelastweek:
+    #             favouriteartistscurweek += 1
+    #     elif favtype == "fineart_artworks":
+    #         favmodelid = fav.reference_model_id
+    #         artworksidlist.append(favmodelid)
+    #         totalfavouriteartworks += 1
+    #         if fav.created > datelastweek:
+    #             favouriteartworkscurweek += 1
+    #     elif favtype == "fineart_auction_calendar":
+    #         favmodelid = fav.reference_model_id
+    #         auctionsidlist.append(favmodelid)
+    #         totalfavouriteauctions += 1
+    #         if fav.created > datelastweek:
+    #             favouriteauctionscurweek += 1
+    # favartistsqset = Artist.objects.filter(id__in=artistsidlist)
+    # favartworksqset = Artwork.objects.filter(id__in=artworksidlist)
+    # favauctionsqset = Auction.objects.filter(id__in=auctionsidlist)
+    # for favartist in favartistsqset:
+    #     favartistid = favartist.id
+    #     # Get all artworks by this artist
+    #     lotartistqset = LotArtist.objects.filter(artist_id=favartistid)
+    #     artistartworkcount = list(lotartistqset).__len__()
+    #     curdate = datetime.datetime.now()
+    #     datenow = datetime.date(curdate.year, curdate.month,curdate.day)
+    #     date12monthsago = datenow - datetime.timedelta(days=365)
+    #     artworksoldlast12months = 0
+    #     artworksoldtotal = 0
+    #     totalsoldusd = 0.00
+    #     totalsoldusdlast12months = 0.00
+    #     artistname = ''
+    #     for lotartist in lotartistqset:
+    #         if lotartist.saledate > date12monthsago:
+    #             artworksoldlast12months += 1
+    #             try:
+    #                 totalsoldusdlast12months += float(lotartist.artist_price_usd)
+    #             except:
+    #                 pass
+    #         if lotartist.lotstatus == "sold":
+    #             artworksoldtotal += 1
+    #             try:
+    #                 totalsoldusd += float(lotartist.artist_price_usd)
+    #             except:
+    #                 pass
+    #         artistname = lotartist.artist_name
+    #     sellingratefloat = 'NA'
+    #     if float(artistartworkcount ) > 0:
+    #         sellingratefloat = "{:.3f}".format(artworksoldtotal/artistartworkcount)
+    #     avgsalepricefloat = 'NA'
+    #     if float(artworksoldtotal) > 0:
+    #         avgsalepricefloat = "{:.2f}".format(totalsoldusd/artworksoldtotal)
+    #     avgsalepricelast12monthsfloat = 'NA'
+    #     if float(artworksoldlast12months) > 0:
+    #         avgsalepricelast12monthsfloat = "{:.2f}".format(totalsoldusdlast12months/artworksoldlast12months)
+    #     d = {'totalartworks' : artistartworkcount, 'artistname' : artistname, 'artistid' : favartistid, 'totalartworkssold' : artworksoldtotal, 'artworkssoldlast12months' : artworksoldlast12months, 'sellingrate' : sellingratefloat, 'avgsaleprice' : avgsalepricefloat, 'avgsalepricelast12months' : avgsalepricelast12monthsfloat}
+    #     favourite_artists.append(d)
+    # for favartwork in favartworksqset:
+    #     artworkname = favartwork.artworkname
+    #     artworkid = favartwork.id
+    #     medium = favartwork.medium
+    #     if favartwork.category == "paintings":
+    #         artwork_type_counts['painting'] += 1
+    #     elif favartwork.category == "works on paper":
+    #         artwork_type_counts['workonpaper'] += 1
+    #     elif favartwork.category == "prints":
+    #         artwork_type_counts['print'] += 1
+    #     elif favartwork.category == "sculptures":
+    #         artwork_type_counts['sculpture'] += 1
+    #     sizedetails = favartwork.sizedetails
+    #     artworkimage = ""
+    #     if favartwork.image1 is not None:
+    #         artworkimage = settings.IMG_URL_PREFIX + str(favartwork.image1)
+    #     lotqset = LotArtist.objects.filter(artworkid=artworkid)
+    #     lowestimateusd, highestimateusd, soldpriceusd = 0.00, 0.00, 0.00
+    #     artistname = ""
+    #     if list(lotqset).__len__() > 0:
+    #         try:
+    #             lowestimateusd = float(lotqset[0].lowestimate)
+    #         except:
+    #             pass
+    #         try:
+    #             highestimateusd = float(lotqset[0].highestimate)
+    #         except:
+    #             pass
+    #         try:
+    #             soldpriceusd = float(lotqset[0].artist_price_usd)
+    #         except:
+    #             pass
+    #         artistname = lotqset[0].artist_name
+    #     d = {'artworkname' : artworkname, 'artistname' : artistname, 'artworkid' : artworkid, 'medium' : medium, 'size' : sizedetails, 'lowestimate' : lowestimateusd, 'highestimate' : highestimateusd, 'soldprice' : soldpriceusd, 'artworkimage' : artworkimage}
+    #     favourite_artworks.append(d)
+    # for favauction in favauctionsqset:
+    #     auctionname = favauction.auctionname
+    #     auctionperiod = favauction.auctionstartdate.strftime('%d %b, %Y')
+    #     if type(favauction.auctionenddate) is datetime.date and favauction.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 0001" and favauction.auctionenddate.strftime('%d %b, %Y') != "01 Jan, 1":
+    #         auctionperiod += " - " + favauction.auctionenddate.strftime('%d %b, %Y')
+    #     lotcount = favauction.lotcount
+    #     coverimage = favauction.coverimage
+    #     auchouseobj = AuctionHouse.objects.get(id=favauction.auctionhouse_id) # This is a relatively smaller table, so querying it while iterating favourite auctions shouldn't take much time.
+    #     auctionhousename = auchouseobj.housename
+    #     d = {'auctionname' : auctionname, 'auctionperiod' : auctionperiod, 'lotcount' : lotcount, 'auctionhousename' : auctionhousename, 'auctionid' : favauction.id}
+    #     favourite_auctions.append(d)
+    # emailalerts = []
+    # emailalerts_artist = 0
+    # emailalerts_artwork = 0
+    # try:
+    #     emailalertsqset = EmailAlerts.objects.filter(user=userobj)
+    #     for emailalertobj in emailalertsqset:
+    #         d = {'emailcontent' : emailalertobj.emailcontent, 'emaildate' : emailalertobj.emaildate, 'emailstatus' : emailalertobj.sendstatus, 'emailtype' : emailalertobj.emailtype}
+    #         emailalerts.append(d)
+    #         if emailalertobj.emailtype == 'artist':
+    #             emailalerts_artist += 1
+    #         elif emailalertobj.emailtype == 'artwork':
+    #             emailalerts_artwork += 1
+    #         else:
+    #             pass
+    # except:
+    #     pass
+    # cursor.close()
+    # dbconn.close()
+    # context['favourite_artists'] = favourite_artists
+    # context['favourite_artworks'] = favourite_artworks
+    # context['artwork_type_counts'] = artwork_type_counts
+    # context['favourite_auctions'] = favourite_auctions
+    # context['totalfavouriteartists'] = totalfavouriteartists
+    # context['favouriteartistscurweek'] = favouriteartistscurweek
+    # context['totalfavouriteartworks'] = totalfavouriteartworks
+    # context['favouriteartworkscurweek'] = favouriteartworkscurweek
+    # context['totalfavouriteauctions'] = totalfavouriteauctions
+    # context['favouriteauctionscurweek'] = favouriteauctionscurweek
+    # context['emailalerts'] = emailalerts
+    # context['emailalerts_artwork'] = emailalerts_artwork
+    # context['emailalerts_artist'] = emailalerts_artist
     context['username'] = userobj.username
     template = loader.get_template('dashboard.html')
     return HttpResponse(template.render(context, request))
-    
+
 
 @login_required(login_url="/login/show/")
 def notifications(request):
     if request.method != 'GET':
-        return HttpResponse(json.dumps({'err' : 'Invalid method of call',})) # Operation failed!
+        return HttpResponse(json.dumps({'err': 'Invalid method of call', }))  # Operation failed!
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login/index/")
-        #return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
+        # return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
     userobj = request.user
     sessionkey = request.session.session_key
     context = {}
@@ -1144,7 +1201,7 @@ def notifications(request):
 def acctsettings(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login/index/")
-        #return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
+        # return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
     userobj = request.user
     sessionkey = request.session.session_key
     context = {}
@@ -1153,9 +1210,5 @@ def acctsettings(request):
     if request.method == 'GET':
         template = loader.get_template('account_settings.html')
         return HttpResponse(template.render(context, request))
-    elif request.method == 'POST': # User is trying to save account settings
+    elif request.method == 'POST':  # User is trying to save account settings
         pass
-
-
-
-

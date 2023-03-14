@@ -29,5 +29,7 @@ urlpatterns = [
     path('getTrendingArtist/', views.getTrendingArtist, name="getTrendingArtist"),
     path('getUpcomingAuctions/', views.getUpcomingAuctions, name="getUpcomingAuctions"),
     path('getRecentAuctions/', views.getRecentAuctions, name="getRecentAuctions"),
+    path('getFollowedArtists/', views.getFollowedArtists, name='getFollowedArtists'),
+    path('getFollowedArtworks/', views.getFollowedArtworks, name='getFollowedArtworks'),
 ]
 

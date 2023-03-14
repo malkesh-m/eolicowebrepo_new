@@ -24,8 +24,16 @@ function htmlDataBinder(auctionData) {
                                     <h3 class="mb-3"><span>${auctionData.faac_auction_start_date} | ${auctionData.cah_auction_house_location}</span>
                                     </h3>
 
-                                    <h3>Estimate : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>
-                                    <h3>Price Sold : <span>${auctionData.fal_lot_sale_price_USD}</span></h3>
+                                    <h3>Estimate : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_low_estimate} - ${auctionData.fal_lot_high_estimate}</span></h3>
+                                    <h3>Estimate USD : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>`
+                                    if (auctionData.fal_lot_sale_price == 0) {
+                                        htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
+                                    }
+                                    else {
+                                        htmlData += `<h3>Price Sold : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_sale_price}</span></h3>
+                                                    <h3>Price Sold USD : <span>${auctionData.fal_lot_sale_price_USD}</span></h3>`
+                                    }
+                                htmlData += `
                                 </div>
                             </a>
                         </div>
