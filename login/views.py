@@ -12,6 +12,7 @@ from django.template import Template, Context
 from django.template.loader import get_template
 from django.core.mail import send_mail
 from django.contrib.sessions.backends.db import SessionStore
+from threading import Thread
 from django.template import loader
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
@@ -630,6 +631,49 @@ def getFollowedArtists(request):
     disconnectDb(connList)
     data = {'user_artist_followed_counts': followedArtistsData['user_artist_followed_counts'], 'this_week_followed_artist_counts': thisWeekFollowedArtists['user_artist_followed_counts']}
     return HttpResponse(json.dumps(data))
+
+
+@login_required(login_url='/login/show/')
+def getMyArtistsDetails(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    getMyArtistsIdSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name FROM `user_favorites` INNER JOIN `fineart_artists` ON referenced_table_id = fa_artist_ID WHERE user_id = {request.user.id} AND reference_table = 'fineart_artists';"""
+    connList = connectToDb()
+    connList[1].execute(getMyArtistsIdSelectQuery)
+    getMyArtistsData = connList[1].fetchall()
+    disconnectDb(connList)
+    dataList = []
+
+    def dataSelector(getMyArtistData):
+        getTotalArtworkSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkData FROM fineart_artworks WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+        connList = connectToDb()
+        connList[1].execute(getTotalArtworkSelectQuery)
+        getTotalArtworkData = connList[1].fetchone()
+        getAverageSellingRateSelectQuery = f"""SELECT COUNT(fal_artwork_ID) AS totalSoldArtworkData FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+        connList[1].execute(getAverageSellingRateSelectQuery)
+        getTotalSoldArtworkData = connList[1].fetchone()
+        getAverageSellingRate = (int(getTotalSoldArtworkData['totalSoldArtworkData']) * 100) / int(getTotalArtworkData['totalArtworkData'])
+        getAverageSellingPriceSelectQuery = f"""SELECT AVG(fal_lot_sale_price) AS averageSellingPrice FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+        connList[1].execute(getAverageSellingPriceSelectQuery)
+        getAverageSellingPrice = connList[1].fetchone()
+        getAverageSellingPriceIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price) averageSellingPriceIn12Month FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        connList[1].execute(getAverageSellingPriceIn12MonthSelectQuery)
+        getAverageSellingPriceIn12Month = connList[1].fetchone()
+        getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        connList[1].execute(getTotalArtworkSoldIn12MonthSelectQuery)
+        getTotalArtworkSoldIn12Month = connList[1].fetchone()
+        disconnectDb(connList)
+        if getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'] is None:
+            getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'] = 'NA'
+        dataList.append({'artistId': getMyArtistData['fa_artist_ID'], 'artistName': getMyArtistData['fa_artist_name'], 'totalArtworkData': getTotalArtworkData['totalArtworkData'], 'averageSellingRate': getAverageSellingRate, 'averageSellingPrice': getAverageSellingPrice['averageSellingPrice'], 'averageSellingPriceInLast12Month': getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'], 'totalArtworkSoldInLast12Month': getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month']})
+    myThreadList = []
+    for getMyArtistData in getMyArtistsData:
+        thread = Thread(target=dataSelector, args=(getMyArtistData, ))
+        thread.start()
+        myThreadList.append(thread)
+    for myThread in myThreadList:
+        myThread.join()
+    return HttpResponse(json.dumps(dataList))
 
 
 @login_required(login_url='/login/show/')

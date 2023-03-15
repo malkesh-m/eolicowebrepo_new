@@ -31,5 +31,6 @@ urlpatterns = [
     path('getRecentAuctions/', views.getRecentAuctions, name="getRecentAuctions"),
     path('getFollowedArtists/', views.getFollowedArtists, name='getFollowedArtists'),
     path('getFollowedArtworks/', views.getFollowedArtworks, name='getFollowedArtworks'),
+    path('getMyArtistsDetails/', views.getMyArtistsDetails, name='getMyArtistsDetails'),
 ]
 

@@ -6,6 +6,28 @@ const paintingsFollowedId = document.querySelector('#paintingsFollowedId')
 const printsFollowedId = document.querySelector('#printsFollowedId')
 const workOnPaperFollowedId = document.querySelector('#workOnPaperFollowedId')
 const sculpturesFollowedId = document.querySelector('#sculpturesFollowedId')
+const artistTableBodyId = document.querySelector('#artistTableBodyId')
+
+function getMyArtistsDetailsSetter() {
+    fetch('/login/getMyArtistsDetails/', {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let htmlData = ''
+            body.forEach(artistData => {
+                htmlData += `<tr>
+                                <td>${artistData.artistName}</td>
+                                <td>${artistData.totalArtworkData}</td>
+                                <td>${artistData.averageSellingPrice}</td>
+                                <td>${artistData.averageSellingRate}%</td>
+                                <td>${artistData.averageSellingPriceInLast12Month}</td>
+                                <td>${artistData.totalArtworkSoldInLast12Month}</td>
+                            </tr>`
+            })
+            artistTableBodyId.innerHTML = htmlData
+        })
+}
 
 function getFollowedArtistsCounter() {
     fetch('/login/getFollowedArtists/', {
@@ -35,4 +57,5 @@ function getFollowedArtworksCounter() {
 document.addEventListener('DOMContentLoaded', function () {
     getFollowedArtistsCounter()
     getFollowedArtworksCounter()
+    getMyArtistsDetailsSetter()
 })
