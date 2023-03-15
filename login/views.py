@@ -168,111 +168,111 @@ def index(request):
         return HttpResponse("Invalid method of call")
     chunksize = 3
     context = {}
-    if request.user.is_authenticated:
-        connlist = connecttoDB()
-        dbconn = connlist[0]
-        cursor = connlist[1]
-        favouritesdict = {}
-        favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
-        favartistsdict = {}
-        favartistslist = []
-        favartworksdict = {}
-        favartworkslist = []
-        favauctionsdict = {}
-        favauctionslist = []
-        for fav in favsqset:
-            favtype = fav.reference_model
-            favmodelid = fav.reference_model_id
-            if favtype == "fineart_artists":
-                favartistslist.append(str(favmodelid))
-            elif favtype == "fineart_artworks":
-                favartworkslist.append(str(favmodelid))
-            elif favtype == "fineart_auction_calendar":
-                favauctionslist.append(str(favmodelid))
-        artistidsstr = "(" + ",".join(favartistslist) + ")"
-        if favartistslist.__len__() == 0:
-            artistidsstr = "()"
-        artworkidsstr = "(" + ",".join(favartworkslist) + ")"
-        if favartworkslist.__len__() == 0:
-            artworkidsstr = "()"
-        auctionidsstr = "(" + ",".join(favauctionslist) + ")"
-        if favauctionslist.__len__() == 0:
-            auctionidsstr = "()"
-        favartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_description, fa_artist_image from fineart_artists where fa_artist_ID in %s" % artistidsstr
-        favartworksql = "select artworkid, artworkname, sizedetails, lotimage1, medium, artist_id, artist_name from fa_artwork_lot_artist where artworkid in %s" % artworkidsstr
-        favauctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_start_date, faac_auction_end_date, faac_auction_house_ID, faac_auction_image from fineart_auction_calendar where faac_auction_ID in %s" % auctionidsstr
-        if artistidsstr != "()":
-            cursor.execute(favartistsql)
-            favartistsrecords = cursor.fetchall()
-        else:
-            favartistsrecords = []
-        if artworkidsstr != "()":
-            cursor.execute(favartworksql)
-            favartworksrecords = cursor.fetchall()
-        else:
-            favartworksrecords = []
-        if auctionidsstr != "()":
-            cursor.execute(favauctionsql)
-            favauctionsrecords = cursor.fetchall()
-        else:
-            favauctionsrecords = []
-        for favartistrec in favartistsrecords:
-            artistid = str(favartistrec[0])
-            favartistsdict[artistid] = favartistrec
-        for favartworkrec in favartworksrecords:
-            artworkid = str(favartworkrec[0])
-            favartworksdict[artworkid] = favartworkrec
-        for favauctionrec in favauctionsrecords:
-            auctionid = str(favauctionrec[0])
-            favauctionsdict[auctionid] = favauctionrec
-        for fav in favsqset:
-            favtype = fav.reference_model
-            if favtype == "fineart_artists":
-                favmodelid = fav.reference_model_id
-                try:
-                    artist = favartistsdict[str(favmodelid)]
-                    artistname = artist[1]
-                    aimg = settings.IMG_URL_PREFIX + str(artist[4])
-                    anat = artist[2]
-                    aid = artist[0]
-                    about = artist[3]
-                    favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
-                except:
-                    pass
-            elif favtype == "fineart_artworks":
-                favmodelid = fav.reference_model_id
-                try:
-                    artwork = favartworksdict[str(favmodelid)]
-                    artworkname = artwork[1]
-                    artist_id = artwork[5]
-                    artworkimg = settings.IMG_URL_PREFIX + str(artwork[3])
-                    size = artwork[2]
-                    medium = artwork[4]
-                    awid = artwork[0]
-                    artistname = artwork[6]
-                    # artist = Artist.objects.get(id=artist_id)
-                    # artistname = artist.artistname
-                    favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
-                except:
-                    pass
-            elif favtype == "fineart_auction_calendar":
-                favmodelid = fav.reference_model_id
-                try:
-                    auction = favauctionsdict[str(favmodelid)]
-                    auctionname = auction[1]
-                    period = auction[2].strftime("%d %b, %Y")
-                    aucenddate = auction[3]
-                    if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
-                        period = period + " - " + str(aucenddate)
-                    auchouseid = auction[4]
-                    auchouseobj = AuctionHouse.objects.get(id=auchouseid)
-                    housename = auchouseobj.housename
-                    aucid = auction[0]
-                    aucimg = settings.IMG_URL_PREFIX + str(auction[5])
-                    favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
-                except:
-                    pass
-        context['favourites'] = favouritesdict
+    # if request.user.is_authenticated:
+    #     connlist = connecttoDB()
+    #     dbconn = connlist[0]
+    #     cursor = connlist[1]
+    #     favouritesdict = {}
+    #     favsqset = Favourite.objects.filter(user=request.user).order_by("-updated")
+    #     favartistsdict = {}
+    #     favartistslist = []
+    #     favartworksdict = {}
+    #     favartworkslist = []
+    #     favauctionsdict = {}
+    #     favauctionslist = []
+    #     for fav in favsqset:
+    #         favtype = fav.reference_model
+    #         favmodelid = fav.reference_model_id
+    #         if favtype == "fineart_artists":
+    #             favartistslist.append(str(favmodelid))
+    #         elif favtype == "fineart_artworks":
+    #             favartworkslist.append(str(favmodelid))
+    #         elif favtype == "fineart_auction_calendar":
+    #             favauctionslist.append(str(favmodelid))
+    #     artistidsstr = "(" + ",".join(favartistslist) + ")"
+    #     if favartistslist.__len__() == 0:
+    #         artistidsstr = "()"
+    #     artworkidsstr = "(" + ",".join(favartworkslist) + ")"
+    #     if favartworkslist.__len__() == 0:
+    #         artworkidsstr = "()"
+    #     auctionidsstr = "(" + ",".join(favauctionslist) + ")"
+    #     if favauctionslist.__len__() == 0:
+    #         auctionidsstr = "()"
+    #     favartistsql = "select fa_artist_ID, fa_artist_name, fa_artist_nationality, fa_artist_description, fa_artist_image from fineart_artists where fa_artist_ID in %s" % artistidsstr
+    #     favartworksql = "select artworkid, artworkname, sizedetails, lotimage1, medium, artist_id, artist_name from fa_artwork_lot_artist where artworkid in %s" % artworkidsstr
+    #     favauctionsql = "select faac_auction_ID, faac_auction_title, faac_auction_start_date, faac_auction_end_date, faac_auction_house_ID, faac_auction_image from fineart_auction_calendar where faac_auction_ID in %s" % auctionidsstr
+    #     if artistidsstr != "()":
+    #         cursor.execute(favartistsql)
+    #         favartistsrecords = cursor.fetchall()
+    #     else:
+    #         favartistsrecords = []
+    #     if artworkidsstr != "()":
+    #         cursor.execute(favartworksql)
+    #         favartworksrecords = cursor.fetchall()
+    #     else:
+    #         favartworksrecords = []
+    #     if auctionidsstr != "()":
+    #         cursor.execute(favauctionsql)
+    #         favauctionsrecords = cursor.fetchall()
+    #     else:
+    #         favauctionsrecords = []
+    #     for favartistrec in favartistsrecords:
+    #         artistid = str(favartistrec[0])
+    #         favartistsdict[artistid] = favartistrec
+    #     for favartworkrec in favartworksrecords:
+    #         artworkid = str(favartworkrec[0])
+    #         favartworksdict[artworkid] = favartworkrec
+    #     for favauctionrec in favauctionsrecords:
+    #         auctionid = str(favauctionrec[0])
+    #         favauctionsdict[auctionid] = favauctionrec
+    #     for fav in favsqset:
+    #         favtype = fav.reference_model
+    #         if favtype == "fineart_artists":
+    #             favmodelid = fav.reference_model_id
+    #             try:
+    #                 artist = favartistsdict[str(favmodelid)]
+    #                 artistname = artist[1]
+    #                 aimg = settings.IMG_URL_PREFIX + str(artist[4])
+    #                 anat = artist[2]
+    #                 aid = artist[0]
+    #                 about = artist[3]
+    #                 favouritesdict[artistname] = ["artist", aimg, anat, aid, about]
+    #             except:
+    #                 pass
+    #         elif favtype == "fineart_artworks":
+    #             favmodelid = fav.reference_model_id
+    #             try:
+    #                 artwork = favartworksdict[str(favmodelid)]
+    #                 artworkname = artwork[1]
+    #                 artist_id = artwork[5]
+    #                 artworkimg = settings.IMG_URL_PREFIX + str(artwork[3])
+    #                 size = artwork[2]
+    #                 medium = artwork[4]
+    #                 awid = artwork[0]
+    #                 artistname = artwork[6]
+    #                 # artist = Artist.objects.get(id=artist_id)
+    #                 # artistname = artist.artistname
+    #                 favouritesdict[artworkname] = ["artwork", artworkimg, size, medium, artistname, awid, artist_id]
+    #             except:
+    #                 pass
+    #         elif favtype == "fineart_auction_calendar":
+    #             favmodelid = fav.reference_model_id
+    #             try:
+    #                 auction = favauctionsdict[str(favmodelid)]
+    #                 auctionname = auction[1]
+    #                 period = auction[2].strftime("%d %b, %Y")
+    #                 aucenddate = auction[3]
+    #                 if str(aucenddate) != "0000-00-00" and str(aucenddate) != "01 Jan, 1":
+    #                     period = period + " - " + str(aucenddate)
+    #                 auchouseid = auction[4]
+    #                 auchouseobj = AuctionHouse.objects.get(id=auchouseid)
+    #                 housename = auchouseobj.housename
+    #                 aucid = auction[0]
+    #                 aucimg = settings.IMG_URL_PREFIX + str(auction[5])
+    #                 favouritesdict[auctionname] = ["auction", period, housename, aucid, aucimg, auchouseid]
+    #             except:
+    #                 pass
+    #     context['favourites'] = favouritesdict
     # artistsdict = {}
     # try:
     #     artistsdict = pickle.loads(redis_instance.get('h_artistsdict'))
@@ -653,13 +653,13 @@ def getMyArtistsDetails(request):
         connList[1].execute(getAverageSellingRateSelectQuery)
         getTotalSoldArtworkData = connList[1].fetchone()
         getAverageSellingRate = (int(getTotalSoldArtworkData['totalSoldArtworkData']) * 100) / int(getTotalArtworkData['totalArtworkData'])
-        getAverageSellingPriceSelectQuery = f"""SELECT AVG(fal_lot_sale_price) AS averageSellingPrice FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+        getAverageSellingPriceSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) AS averageSellingPrice FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
         connList[1].execute(getAverageSellingPriceSelectQuery)
         getAverageSellingPrice = connList[1].fetchone()
-        getAverageSellingPriceIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price) averageSellingPriceIn12Month FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        getAverageSellingPriceIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) averageSellingPriceIn12Month FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
         connList[1].execute(getAverageSellingPriceIn12MonthSelectQuery)
         getAverageSellingPriceIn12Month = connList[1].fetchone()
-        getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
         connList[1].execute(getTotalArtworkSoldIn12MonthSelectQuery)
         getTotalArtworkSoldIn12Month = connList[1].fetchone()
         disconnectDb(connList)
@@ -680,7 +680,7 @@ def getMyArtistsDetails(request):
 def getMyArtworksDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_id = cah_auction_house_ID WHERE reference_table = 'fineart_artworks' AND user_id = {request.user.id};"""
+    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_id = cah_auction_house_ID WHERE reference_table = 'fineart_artworks' AND user_id = {request.user.id};"""
     connList = connectToDb()
     connList[1].execute(getMyArtworksDetailsSelectQuery)
     getMyArtworksDetailsData = connList[1].fetchall()
