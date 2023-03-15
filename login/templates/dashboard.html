@@ -57,7 +57,15 @@
             color: #fff;
             text-align: center;
         }
-        
+        .highcharts-figure .highcharts-container {
+            height: 200px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .highcharts-credits {
+            display: none;
+        }
         #tab-artworks div.dataTables_wrapper div.dataTables_filter label,
         #tab-artists div.dataTables_wrapper div.dataTables_filter label {
             justify-content: end;
@@ -109,7 +117,7 @@
         
         .artists-chart .artists-box {
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-            background-color: #f9f9f9;
+            background-color: #fff;
             padding: 20px;
             border-radius: 10px;
         }
@@ -625,16 +633,36 @@
                         </div>
 
                         <ul class="list-unstyled components">
-                            <li class="my-4"><a href="/login/dashboard/" class="text-light"><i class="fa fa-dashboard"></i>&nbsp;My
-                  Dashboard</a></li>
-                            <li class="my-4"><a href="/login/notifications/" class="text-light"><i class="fa fa-bell"></i>&nbsp;My
-                  Notifications</a></li>
-                            <li class="my-4"><a href="/login/myArtist/" class="text-light"><i class="fa fa-user"></i>&nbspMy
-                  Artist</a></li>
-                            <li class="my-4"><a href="/login/myArtwork/" class="text-light"><i class="fa fa-paint-brush"></i>&nbspMy
-                  Artwork</a></li>
-                            <li class="my-4"><a href="/login/settings/" class="text-light"><i class="fa fa-gear"></i>&nbspAccount
-                  Setting</a></li>
+                            <li class="my-4">
+                                <a href="/login/dashboard/" class="text-light">
+                                    <i class="fa fa-dashboard"></i>&nbsp;My
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="my-4">
+                                <a href="/login/notifications/" class="text-light">
+                                    <i class="fa fa-bell"></i>&nbsp;My
+                                    Notifications
+                                </a>
+                            </li>
+                            <li class="my-4">
+                                <a href="/login/myArtist/" class="text-light">
+                                    <i class="fa fa-user"></i>&nbspMy
+                                    Artist
+                                </a>
+                            </li>
+                            <li class="my-4">
+                                <a href="/login/myArtwork/" class="text-light">
+                                    <i class="fa fa-paint-brush"></i>&nbspMy
+                                    Artwork
+                                </a>
+                            </li>
+                            <li class="my-4">
+                                <a href="/login/settings/" class="text-light">
+                                    <i class="fa fa-gear"></i>&nbspAccount
+                                    Setting
+                                </a>
+                            </li>
                         </ul>
 
                         <div class="list-unstyled CTAs">
@@ -642,7 +670,7 @@
                             <hr>
                             <ul class="sidebar-menu">
                                 <!-- <li class="my-4"><a href="" class="text-light"><i class="fa fa-phone"></i>&nbsp;Call Us</a></li>
-                        <li class="my-4"><a href="" class="text-light"><i class="fa fa-comments-o"></i>&nbsp;Chat</a></li> -->
+                                <li class="my-4"><a href="" class="text-light"><i class="fa fa-comments-o"></i>&nbsp;Chat</a></li> -->
                                 <li class="my-4"><a href="" class="text-light"><i class="fa fa-fax"></i>&nbsp;Feedback</a></li>
                             </ul>
                         </div>
@@ -651,13 +679,13 @@
                         <!-- <div> -->
                         <nav class="navbar navbar-expand-md navbar-light">
                             <button type="button" id="sidebarCollapse" class="btn btn-login btn-rouned p-2 px-3 m-0 d-none">
-                <i class="fa fa-angle-double-right"></i>
-              </button>
+                                <i class="fa fa-angle-double-right"></i>
+                            </button>
                             <a class="nav-link font-weight-bold mb-0" href="#"><img src="/static/dashboard/Picture1.png" class="mr-2 " style="width: 50px; border-radius: 100px;"> @{{username}}</a>
 
                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                <span class="navbar-toggler-icon"></span>
-              </button>
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
 
                             <!-- Navbar links -->
                             <div class="collapse navbar-collapse align-items-center justify-content-end" id="collapsibleNavbar">
@@ -700,7 +728,7 @@
                                 </ul>
                             </div>
                         </nav>
-                        <!-- 
+                        <!--
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="example searchTags_section">
@@ -720,9 +748,17 @@
                                         <div class="artists-box">
                                             <div class="row">
                                                 <div class="col-md-6">
+                                                    <div class="d-flex align-items-start">
+                                                        <h5 class="mb-0 pr-3">
+                                                            Total Artists :
+                                                        </h5>
+                                                        <span id="totalFollowedArtistId"></span>
+                                                    </div>
                                                     <div class="chart">
-                                                        <canvas id="artist_chart"></canvas>
-                                                        <p id="totalFollowedArtistId"></p>
+
+                                                        <figure class="highcharts-figure">
+                                                            <div id="Artists"></div>
+                                                        </figure>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -747,9 +783,16 @@
                                         <div class="artists-box">
                                             <div class="row">
                                                 <div class="col-md-6">
+                                                    <div class="d-flex align-items-start">
+                                                        <h5 class="mb-0 pr-3">
+                                                            Total Artworks :
+                                                        </h5>
+                                                        <span id="totalFollowedArtworksId"></span>
+                                                    </div>
                                                     <div class="chart">
-                                                        <canvas id="artwork_chart"></canvas>
-                                                        <p id="totalFollowedArtworksId"></p>
+                                                        <figure class="highcharts-figure">
+                                                            <div id="Artworks"></div>
+                                                        </figure>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -838,78 +881,77 @@
                                 </div>
                             </div>
                         </div> -->
-
                         <!-- <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        Success
+                                <div class="g-brd-around g-brd-gray-light-v7 g-rounded-4 g-pa-15 g-pa-20--md g-mb-30">
+                                    <h4 class="d-flex align-self-center text-uppercase g-font-size-12 g-font-size-default--md g-color-black g-mb-20">
+                                        Artists Notifications</h4>
+                                    {% for email in emailalerts %} {% if email.emailtype == 'artist' %}
+                                    <div class="noty_bar noty_type__success noty_theme__unify--v1--light g-mb-25">
+                                        <div class="noty_body">
+                                            <div class="g-mr-20">
+                                                <div class="noty_body__icon">
+                                                    <i class="hs-admin-check"></i>{{email.emaildate}}
+                                                </div>
+                                            </div>
+                                            {% if email.emailstatus %}
+                                            <div>{{email.emailcontent}}</div>
+                                            {% else %}
+                                            <div style='color:#aa0000;'>{{email.emailcontent}}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endif %} {% endfor %} {% if emailalerts_artist == 0 %}
+                                    <div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
+                                        <div class="noty_body">
+                                            <div class="g-mr-20">
+                                                <div class="noty_body__icon">
+                                                    <i class="hs-admin-info"></i>
+                                                </div>
+                                            </div>
+                                            <div>None sent as yet.</div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
                             <div class="col-md-6">
-                                Success
-                        <div class="g-brd-around g-brd-gray-light-v7 g-rounded-4 g-pa-15 g-pa-20--md g-mb-30">
-                            <h4 class="d-flex align-self-center text-uppercase g-font-size-12 g-font-size-default--md g-color-black g-mb-20">
-                                Artists Notifications</h4>
-                            {% for email in emailalerts %} {% if email.emailtype == 'artist' %}
-                            <div class="noty_bar noty_type__success noty_theme__unify--v1--light g-mb-25">
-                                <div class="noty_body">
-                                    <div class="g-mr-20">
-                                        <div class="noty_body__icon">
-                                            <i class="hs-admin-check"></i>{{email.emaildate}}
+                                Info
+                                <div class="g-brd-around g-brd-gray-light-v7 g-rounded-4 g-pa-15 g-pa-20--md g-mb-30">
+                                    <h4 class="d-flex align-self-center text-uppercase g-font-size-12 g-font-size-default--md g-color-black g-mb-20">
+                                        Artworks Notifications</h4>
+                                    {% for email in emailalerts %} {% if email.emailtype == 'artwork' %}
+                                    <div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
+                                        <div class="noty_body">
+                                            <div class="g-mr-20">
+                                                <div class="noty_body__icon">
+                                                    <i class="hs-admin-info"></i>{{email.emaildate}}
+                                                </div>
+                                            </div>
+                                            {% if email.emailstatus %}
+                                            <div>{{email.emailcontent}}</div>
+                                            {% else %}
+                                            <div style='color:#aa0000;'>{{email.emailcontent}}</div>
+                                            {% endif %}
                                         </div>
                                     </div>
-                                    {% if email.emailstatus %}
-                                    <div>{{email.emailcontent}}</div>
-                                    {% else %}
-                                    <div style='color:#aa0000;'>{{email.emailcontent}}</div>
+                                    {% endif %} {% endfor %} {% if emailalerts_artwork == 0 %}
+                                    <div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
+                                        <div class="noty_body">
+                                            <div class="g-mr-20">
+                                                <div class="noty_body__icon">
+                                                    <i class="hs-admin-info"></i>
+                                                </div>
+                                            </div>
+                                            <div>None sent as yet.</div>
+                                        </div>
+                                    </div>
                                     {% endif %}
                                 </div>
+                                End Info
                             </div>
-                            {% endif %} {% endfor %} {% if emailalerts_artist == 0 %}
-                            <div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
-                                <div class="noty_body">
-                                    <div class="g-mr-20">
-                                        <div class="noty_body__icon">
-                                            <i class="hs-admin-info"></i>
-                                        </div>
-                                    </div>
-                                    <div>None sent as yet.</div>
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        Info
-                        <div class="g-brd-around g-brd-gray-light-v7 g-rounded-4 g-pa-15 g-pa-20--md g-mb-30">
-                            <h4 class="d-flex align-self-center text-uppercase g-font-size-12 g-font-size-default--md g-color-black g-mb-20">
-                                Artworks Notifications</h4>
-                            {% for email in emailalerts %} {% if email.emailtype == 'artwork' %}
-                            <div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
-                                <div class="noty_body">
-                                    <div class="g-mr-20">
-                                        <div class="noty_body__icon">
-                                            <i class="hs-admin-info"></i>{{email.emaildate}}
-                                        </div>
-                                    </div>
-                                    {% if email.emailstatus %}
-                                    <div>{{email.emailcontent}}</div>
-                                    {% else %}
-                                    <div style='color:#aa0000;'>{{email.emailcontent}}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endif %} {% endfor %} {% if emailalerts_artwork == 0 %}
-                            <div class="noty_bar noty_type__info noty_theme__unify--v1--light g-mb-25">
-                                <div class="noty_body">
-                                    <div class="g-mr-20">
-                                        <div class="noty_body__icon">
-                                            <i class="hs-admin-info"></i>
-                                        </div>
-                                    </div>
-                                    <div>None sent as yet.</div>
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                        End Info
-                    </div>
-                </div> -->
+                        </div> -->
 
                         <div class="container-fluid mt-5">
                             <div class="">
@@ -1030,8 +1072,560 @@
             </div>
         </div>
     </section>
-<script src="/static/js/dashboardAjaxCall.js"></script>
+    <script src="/static/js/dashboardAjaxCall.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script>
+        // Create the chart
+        Highcharts.chart('Artists', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: '',
+            },
+            subtitle: {
+                text: '',
+            },
 
+            accessibility: {
+                announceNewData: {
+                    enabled: true
+                },
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}: {point.y:.1f}%'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+            },
+
+            series: [
+                {
+                    name: 'Browsers',
+                    colorByPoint: true,
+                    data: [
+                        {
+                            name: 'Chrome',
+                            y: 61.04,
+                            drilldown: 'Chrome'
+                        },
+                        {
+                            name: 'Safari',
+                            y: 9.47,
+                            drilldown: 'Safari'
+                        },
+                        {
+                            name: 'Edge',
+                            y: 9.32,
+                            drilldown: 'Edge'
+                        },
+                        {
+                            name: 'Firefox',
+                            y: 8.15,
+                            drilldown: 'Firefox'
+                        },
+                        {
+                            name: 'Other',
+                            y: 11.02,
+                            drilldown: null
+                        }
+                    ]
+                }
+            ],
+            drilldown: {
+                series: [
+                    {
+                        name: 'Chrome',
+                        id: 'Chrome',
+                        data: [
+                            [
+                                'v97.0',
+                                36.89
+                            ],
+                            [
+                                'v96.0',
+                                18.16
+                            ],
+                            [
+                                'v95.0',
+                                0.54
+                            ],
+                            [
+                                'v94.0',
+                                0.7
+                            ],
+                            [
+                                'v93.0',
+                                0.8
+                            ],
+                            [
+                                'v92.0',
+                                0.41
+                            ],
+                            [
+                                'v91.0',
+                                0.31
+                            ],
+                            [
+                                'v90.0',
+                                0.13
+                            ],
+                            [
+                                'v89.0',
+                                0.14
+                            ],
+                            [
+                                'v88.0',
+                                0.1
+                            ],
+                            [
+                                'v87.0',
+                                0.35
+                            ],
+                            [
+                                'v86.0',
+                                0.17
+                            ],
+                            [
+                                'v85.0',
+                                0.18
+                            ],
+                            [
+                                'v84.0',
+                                0.17
+                            ],
+                            [
+                                'v83.0',
+                                0.21
+                            ],
+                            [
+                                'v81.0',
+                                0.1
+                            ],
+                            [
+                                'v80.0',
+                                0.16
+                            ],
+                            [
+                                'v79.0',
+                                0.43
+                            ],
+                            [
+                                'v78.0',
+                                0.11
+                            ],
+                            [
+                                'v76.0',
+                                0.16
+                            ],
+                            [
+                                'v75.0',
+                                0.15
+                            ],
+                            [
+                                'v72.0',
+                                0.14
+                            ],
+                            [
+                                'v70.0',
+                                0.11
+                            ],
+                            [
+                                'v69.0',
+                                0.13
+                            ],
+                            [
+                                'v56.0',
+                                0.12
+                            ],
+                            [
+                                'v49.0',
+                                0.17
+                            ]
+                        ]
+                    },
+                    {
+                        name: 'Safari',
+                        id: 'Safari',
+                        data: [
+                            [
+                                'v15.3',
+                                0.1
+                            ],
+                            [
+                                'v15.2',
+                                2.01
+                            ],
+                            [
+                                'v15.1',
+                                2.29
+                            ],
+                            [
+                                'v15.0',
+                                0.49
+                            ],
+                            [
+                                'v14.1',
+                                2.48
+                            ],
+                            [
+                                'v14.0',
+                                0.64
+                            ],
+                            [
+                                'v13.1',
+                                1.17
+                            ],
+                            [
+                                'v13.0',
+                                0.13
+                            ],
+                            [
+                                'v12.1',
+                                0.16
+                            ]
+                        ]
+                    },
+                    {
+                        name: 'Edge',
+                        id: 'Edge',
+                        data: [
+                            [
+                                'v97',
+                                6.62
+                            ],
+                            [
+                                'v96',
+                                2.55
+                            ],
+                            [
+                                'v95',
+                                0.15
+                            ]
+                        ]
+                    },
+                    {
+                        name: 'Firefox',
+                        id: 'Firefox',
+                        data: [
+                            [
+                                'v96.0',
+                                4.17
+                            ],
+                            [
+                                'v95.0',
+                                3.33
+                            ],
+                            [
+                                'v94.0',
+                                0.11
+                            ],
+                            [
+                                'v91.0',
+                                0.23
+                            ],
+                            [
+                                'v78.0',
+                                0.16
+                            ],
+                            [
+                                'v52.0',
+                                0.15
+                            ]
+                        ]
+                    }
+                ]
+            }
+        });
+        
+    </script>
+    <script>
+        // Create the chart
+        Highcharts.chart('Artworks', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: '',
+            },
+            subtitle: {
+                text: '',
+            },
+
+            accessibility: {
+                announceNewData: {
+                    enabled: true
+                },
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}: {point.y:.1f}%'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+            },
+
+            series: [
+                {
+                    name: 'Browsers',
+                    colorByPoint: true,
+                    data: [
+                        {
+                            name: 'Chrome',
+                            y: 61.04,
+                            drilldown: 'Chrome'
+                        },
+                        {
+                            name: 'Safari',
+                            y: 9.47,
+                            drilldown: 'Safari'
+                        },
+                        {
+                            name: 'Edge',
+                            y: 9.32,
+                            drilldown: 'Edge'
+                        },
+                        {
+                            name: 'Firefox',
+                            y: 8.15,
+                            drilldown: 'Firefox'
+                        },
+                        {
+                            name: 'Other',
+                            y: 11.02,
+                            drilldown: null
+                        }
+                    ]
+                }
+            ],
+            drilldown: {
+                series: [
+                    {
+                        name: 'Chrome',
+                        id: 'Chrome',
+                        data: [
+                            [
+                                'v97.0',
+                                36.89
+                            ],
+                            [
+                                'v96.0',
+                                18.16
+                            ],
+                            [
+                                'v95.0',
+                                0.54
+                            ],
+                            [
+                                'v94.0',
+                                0.7
+                            ],
+                            [
+                                'v93.0',
+                                0.8
+                            ],
+                            [
+                                'v92.0',
+                                0.41
+                            ],
+                            [
+                                'v91.0',
+                                0.31
+                            ],
+                            [
+                                'v90.0',
+                                0.13
+                            ],
+                            [
+                                'v89.0',
+                                0.14
+                            ],
+                            [
+                                'v88.0',
+                                0.1
+                            ],
+                            [
+                                'v87.0',
+                                0.35
+                            ],
+                            [
+                                'v86.0',
+                                0.17
+                            ],
+                            [
+                                'v85.0',
+                                0.18
+                            ],
+                            [
+                                'v84.0',
+                                0.17
+                            ],
+                            [
+                                'v83.0',
+                                0.21
+                            ],
+                            [
+                                'v81.0',
+                                0.1
+                            ],
+                            [
+                                'v80.0',
+                                0.16
+                            ],
+                            [
+                                'v79.0',
+                                0.43
+                            ],
+                            [
+                                'v78.0',
+                                0.11
+                            ],
+                            [
+                                'v76.0',
+                                0.16
+                            ],
+                            [
+                                'v75.0',
+                                0.15
+                            ],
+                            [
+                                'v72.0',
+                                0.14
+                            ],
+                            [
+                                'v70.0',
+                                0.11
+                            ],
+                            [
+                                'v69.0',
+                                0.13
+                            ],
+                            [
+                                'v56.0',
+                                0.12
+                            ],
+                            [
+                                'v49.0',
+                                0.17
+                            ]
+                        ]
+                    },
+                    {
+                        name: 'Safari',
+                        id: 'Safari',
+                        data: [
+                            [
+                                'v15.3',
+                                0.1
+                            ],
+                            [
+                                'v15.2',
+                                2.01
+                            ],
+                            [
+                                'v15.1',
+                                2.29
+                            ],
+                            [
+                                'v15.0',
+                                0.49
+                            ],
+                            [
+                                'v14.1',
+                                2.48
+                            ],
+                            [
+                                'v14.0',
+                                0.64
+                            ],
+                            [
+                                'v13.1',
+                                1.17
+                            ],
+                            [
+                                'v13.0',
+                                0.13
+                            ],
+                            [
+                                'v12.1',
+                                0.16
+                            ]
+                        ]
+                    },
+                    {
+                        name: 'Edge',
+                        id: 'Edge',
+                        data: [
+                            [
+                                'v97',
+                                6.62
+                            ],
+                            [
+                                'v96',
+                                2.55
+                            ],
+                            [
+                                'v95',
+                                0.15
+                            ]
+                        ]
+                    },
+                    {
+                        name: 'Firefox',
+                        id: 'Firefox',
+                        data: [
+                            [
+                                'v96.0',
+                                4.17
+                            ],
+                            [
+                                'v95.0',
+                                3.33
+                            ],
+                            [
+                                'v94.0',
+                                0.11
+                            ],
+                            [
+                                'v91.0',
+                                0.23
+                            ],
+                            [
+                                'v78.0',
+                                0.16
+                            ],
+                            [
+                                'v52.0',
+                                0.15
+                            ]
+                        ]
+                    }
+                ]
+            }
+        });
+        
+    </script>
 </body>
 
 </html>
