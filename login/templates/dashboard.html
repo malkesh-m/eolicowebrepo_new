@@ -9,25 +9,26 @@
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
-
-    <script src="/static/js/editfromfront.js"></script>
-    <script src="/static/js/eolicoauth.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/static/css/new-style.css">
 
     <script src="/static/js/jquery-2.1.0.min.js"></script>
 
     <!-- <script src="/static/js/popper.js"></script> -->
     <script src="/static/js/bootstrap.min.js"></script>
 
+    <script src="/static/js/editfromfront.js"></script>
+    <script src="/static/js/eolicoauth.js"></script>
+
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js'></script>
     <!-- <script src="/static/js/custom.js"></script> -->
     <!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap.min.css">
 
     <!-- <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
     <!-- <script type="text/javascript" language="javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap.min.js"></script>
-    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 
     <script type="text/javascript" src="/static/js/jquery.tag.js"></script>
     <script type="text/javascript">
@@ -41,7 +42,6 @@
 
         }
     </script>
-    <link rel="stylesheet" href="/static/css/new-style.css">
 
     <style type="text/css">
         #artworks_filter,
@@ -526,89 +526,89 @@
         }
     </style>
     <script>
-        $(document).ready(function() {
+        // $(document).ready(function() {
 
             /* chart.js chart examples */
 
             // chart colors
-            var colors = ['#979997', '#45d49c', '#e36038', '#f9ca6f'];
+            // var colors = ['#979997', '#45d49c', '#e36038', '#f9ca6f'];
 
             /* 3 donut charts */
-            var donutOptions = {
-                cutoutPercentage: 85,
-                legend: {
-                    position: 'bottom',
-                    padding: 0,
-                    labels: {
-                        pointStyle: 'circle',
-                        usePointStyle: true
-                    }
-                }
-            };
+            // var donutOptions = {
+            //     cutoutPercentage: 85,
+            //     legend: {
+            //         position: 'bottom',
+            //         padding: 0,
+            //         labels: {
+            //             pointStyle: 'circle',
+            //             usePointStyle: true
+            //         }
+            //     }
+            // };
 
             // donut 1
-            var chDonutData1 = {
-                labels: ['This Week', 'Prior Weeks'],
-                datasets: [{
-                    backgroundColor: colors.slice(0, 2),
-                    borderWidth: 0,
-                    // label: 'My First Dataset',
-                    data: [{
-                        {
-                            favouriteartistscurweek
-                        }
-                    }, {
-                        {
-                            totalfavouriteartists
-                        }
-                    }]
-                }]
-            };
+            // var chDonutData1 = {
+            //     labels: ['This Week', 'Prior Weeks'],
+            //     datasets: [{
+            //         backgroundColor: colors.slice(0, 2),
+            //         borderWidth: 0,
+            //         // label: 'My First Dataset',
+            //         data: [{
+            //             {
+            //                 favouriteartistscurweek
+            //             }
+            //         }, {
+            //             {
+            //                 totalfavouriteartists
+            //             }
+            //         }]
+            //     }]
+            // };
 
-            var artist_chart = document.getElementById("artist_chart");
-            if (artist_chart) {
-                new Chart(artist_chart, {
-                    type: 'pie',
-                    data: chDonutData1,
-                    options: donutOptions
-                });
-            }
+            // var artist_chart = document.getElementById("artist_chart");
+            // if (artist_chart) {
+            //     new Chart(artist_chart, {
+            //         type: 'pie',
+            //         data: chDonutData1,
+            //         options: donutOptions
+            //     });
+            // }
 
             // donut 2
-            var chDonutData2 = {
-                labels: ['2-Dim', '3-Dim'],
-                datasets: [{
-                    backgroundColor: colors.slice(2, 4),
-                    borderWidth: 0,
-                    data: [{
-                        {
-                            artwork_type_counts.painting
-                        }
-                    } + {
-                        {
-                            artwork_type_counts.print
-                        }
-                    } + {
-                        {
-                            artwork_type_counts.workonpaper
-                        }
-                    }, {
-                        {
-                            artwork_type_counts.sculpture
-                        }
-                    }]
-                }]
-            };
-            var artwork_chart = document.getElementById("artwork_chart");
-            if (artwork_chart) {
-                new Chart(artwork_chart, {
-                    type: 'pie',
-                    data: chDonutData2,
-                    options: donutOptions
-                });
-            }
+            // var chDonutData2 = {
+            //     labels: ['2-Dim', '3-Dim'],
+            //     datasets: [{
+            //         backgroundColor: colors.slice(2, 4),
+            //         borderWidth: 0,
+            //         data: [{
+            //             {
+            //                 artwork_type_counts.painting
+            //             }
+            //         } + {
+            //             {
+            //                 artwork_type_counts.print
+            //             }
+            //         } + {
+            //             {
+            //                 artwork_type_counts.workonpaper
+            //             }
+            //         }, {
+            //             {
+            //                 artwork_type_counts.sculpture
+            //             }
+            //         }]
+            //     }]
+            // };
+            // var artwork_chart = document.getElementById("artwork_chart");
+            // if (artwork_chart) {
+            //     new Chart(artwork_chart, {
+            //         type: 'pie',
+            //         data: chDonutData2,
+            //         options: donutOptions
+            //     });
+            // }
 
-        });
+        // });
     </script>
 </head>
 
@@ -914,7 +914,7 @@
                         <div class="container-fluid mt-5">
                             <div class="">
                                 <div class="artists-artworks-Datatable">
-                                    <ul class="nav nav-tabs border-0" role="tablist">
+                                    <ul class="nav nav-tabs border-0 mb-2" role="tablist">
                                         <li class="active">
                                             <a href="#tab-artists" data-toggle="tab" class="ml-0 py-2 btn btn-login btn-rouned active">Artists</a>
                                         </li>
@@ -956,13 +956,13 @@
                                                     <tr>
                                                         <th>Artwork Name</th>
                                                         <th>Artist Name</th>
-                                                        <th>Material</th>
-                                                        <th>Low Estimate</th>
-                                                        <th>High Estimate</th>
+                                                        <th>Category</th>
+                                                        <th>Estimate</th>
                                                         <th>Sold Price</th>
+                                                        <th>Sale Details</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody id="artworksTableBodyId">
                                                     <!-- {% for artworkobj in favourite_artworks %}
                                                     <tr>
                                                         <td>{{artworkobj.artworkname}}</td>
@@ -1030,7 +1030,6 @@
             </div>
         </div>
     </section>
-
 <script src="/static/js/dashboardAjaxCall.js"></script>
 
 </body>

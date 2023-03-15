@@ -637,7 +637,7 @@ def getFollowedArtists(request):
 def getMyArtistsDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getMyArtistsIdSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name FROM `user_favorites` INNER JOIN `fineart_artists` ON referenced_table_id = fa_artist_ID WHERE user_id = {request.user.id} AND reference_table = 'fineart_artists';"""
+    getMyArtistsIdSelectQuery = f"""SELECT DISTINCT(fa_artist_ID) AS fa_artist_ID, fa_artist_name FROM `user_favorites` INNER JOIN `fineart_artists` ON referenced_table_id = fa_artist_ID WHERE user_id = {request.user.id} AND reference_table = 'fineart_artists';"""
     connList = connectToDb()
     connList[1].execute(getMyArtistsIdSelectQuery)
     getMyArtistsData = connList[1].fetchall()
@@ -645,7 +645,7 @@ def getMyArtistsDetails(request):
     dataList = []
 
     def dataSelector(getMyArtistData):
-        getTotalArtworkSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkData FROM fineart_artworks WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+        getTotalArtworkSelectQuery = f"""SELECT COUNT(DISTINCT(faa_artwork_ID)) AS totalArtworkData FROM fineart_artworks WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
         connList = connectToDb()
         connList[1].execute(getTotalArtworkSelectQuery)
         getTotalArtworkData = connList[1].fetchone()
@@ -665,7 +665,7 @@ def getMyArtistsDetails(request):
         disconnectDb(connList)
         if getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'] is None:
             getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'] = 'NA'
-        dataList.append({'artistId': getMyArtistData['fa_artist_ID'], 'artistName': getMyArtistData['fa_artist_name'], 'totalArtworkData': getTotalArtworkData['totalArtworkData'], 'averageSellingRate': getAverageSellingRate, 'averageSellingPrice': getAverageSellingPrice['averageSellingPrice'], 'averageSellingPriceInLast12Month': getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'], 'totalArtworkSoldInLast12Month': getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month']})
+        dataList.append({'artistId': getMyArtistData['fa_artist_ID'], 'artistName': getMyArtistData['fa_artist_name'], 'totalArtworkData': getTotalArtworkData['totalArtworkData'], 'averageSellingRate': round(getAverageSellingRate, 2), 'averageSellingPrice': round(getAverageSellingPrice['averageSellingPrice'], 2), 'averageSellingPriceInLast12Month': getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'], 'totalArtworkSoldInLast12Month': getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month']})
     myThreadList = []
     for getMyArtistData in getMyArtistsData:
         thread = Thread(target=dataSelector, args=(getMyArtistData, ))
@@ -677,10 +677,22 @@ def getMyArtistsDetails(request):
 
 
 @login_required(login_url='/login/show/')
+def getMyArtworksDetails(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_id = cah_auction_house_ID WHERE reference_table = 'fineart_artworks' AND user_id = {request.user.id};"""
+    connList = connectToDb()
+    connList[1].execute(getMyArtworksDetailsSelectQuery)
+    getMyArtworksDetailsData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(getMyArtworksDetailsData, default=default))
+
+
+@login_required(login_url='/login/show/')
 def getFollowedArtworks(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getFollowedArtworksSelectQuery = f"""SELECT COUNT(user_id) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.user.id} AND reference_table = 'fineart_artworks'"""
+    getFollowedArtworksSelectQuery = f"""SELECT COUNT(DISTINCT(referenced_table_id)) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.user.id} AND reference_table = 'fineart_artworks'"""
     forPaintingsFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'paintings'"""
     forSculpturesFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'sculptures'"""
     forPrintsFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'prints'"""
