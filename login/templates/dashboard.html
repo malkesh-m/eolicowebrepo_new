@@ -76,7 +76,9 @@
         #tab-artworks table.dataTable thead>tr>td.sorting_asc {
             text-align: center;
         }
-        
+        .forAlign {
+            text-align: center !important;
+        }
         #tab-artworks tbody tr td,
         #tab-artists tbody tr td {
             border-bottom: 0;
@@ -747,7 +749,7 @@
                                 <div class="col-xl-6 mb-4 mb-xl-0">
                                     <div class="artists-chart">
                                         <h3>Artists</h3>
-                                        <div class="artists-box">
+                                        <div class="artists-box pb-5">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="d-flex align-items-start">
@@ -761,7 +763,7 @@
                                                         <!-- <figure class="highcharts-figure">
                                                             <div id="Artists"></div>
                                                         </figure> -->
-                                                        <canvas id="Artits" style="width:100%;max-width:600px; margin: auto;"></canvas>
+                                                        <canvas id="Artits" style="width:100%;max-width:540px; margin: auto;"></canvas>
                                                     <!-- </div> -->
                                                 </div>
                                                 <!-- <div class="col-md-6">
@@ -977,8 +979,9 @@
                                                         <th>Total Artworks</th>
                                                         <th>Average Selling Price</th>
                                                         <th>Average Selling Rate</th>
+                                                        <th>Total Artworks sold Last 12 months</th>
                                                         <th>Average Selling Price last 12 months</th>
-                                                        <th>Average Selling Rate last 12 months</th>
+                                                        <th>Average Selling Rate Last 12 months</th>
                                                     </tr>
 
                                                 </thead>

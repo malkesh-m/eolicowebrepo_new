@@ -619,17 +619,24 @@ def getRecentAuctions(request):
 def getFollowedArtists(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    # if not request.user.is_authenticated:
-    #     return HttpResponseRedirect("/login/index/")
     getFollowedArtistsSelectQuery = f"""SELECT COUNT(user_id) as user_artist_followed_counts FROM `user_favorites` WHERE reference_table = 'fineart_artists' AND user_id = {request.user.id}"""
+    data = {}
+
+    def getFollowedThisWeekData(followedArtistsSelectQuery):
+        followedThisWeekSelectQuery = followedArtistsSelectQuery + f""" AND created BETWEEN '{datetime.datetime.now() - datetime.timedelta(days=7)}' AND '{datetime.datetime.now()}';"""
+        connList = connectToDb()
+        connList[1].execute(followedThisWeekSelectQuery)
+        thisWeekFollowedArtists = connList[1].fetchone()
+        disconnectDb(connList)
+        data['this_week_followed_artist_counts'] = thisWeekFollowedArtists['user_artist_followed_counts']
+    thread = Thread(target=getFollowedThisWeekData, args=(getFollowedArtistsSelectQuery,))
+    thread.start()
     connList = connectToDb()
     connList[1].execute(getFollowedArtistsSelectQuery)
     followedArtistsData = connList[1].fetchone()
-    getFollowedArtistsSelectQuery += f""" AND created BETWEEN '{datetime.datetime.now() - datetime.timedelta(days=7)}' AND '{datetime.datetime.now()}';"""
-    connList[1].execute(getFollowedArtistsSelectQuery)
-    thisWeekFollowedArtists = connList[1].fetchone()
     disconnectDb(connList)
-    data = {'user_artist_followed_counts': followedArtistsData['user_artist_followed_counts'], 'this_week_followed_artist_counts': thisWeekFollowedArtists['user_artist_followed_counts']}
+    data['user_artist_followed_counts'] = followedArtistsData['user_artist_followed_counts']
+    thread.join()
     return HttpResponse(json.dumps(data))
 
 
@@ -659,13 +666,17 @@ def getMyArtistsDetails(request):
         getAverageSellingPriceIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) averageSellingPriceIn12Month FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
         connList[1].execute(getAverageSellingPriceIn12MonthSelectQuery)
         getAverageSellingPriceIn12Month = connList[1].fetchone()
-        getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
         connList[1].execute(getTotalArtworkSoldIn12MonthSelectQuery)
         getTotalArtworkSoldIn12Month = connList[1].fetchone()
+        getTotalArtworkIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        connList[1].execute(getTotalArtworkIn12MonthSelectQuery)
+        getTotalArtworkIn12Month = connList[1].fetchone()
+        getAverageSellingRateIn12Month = 0
+        if int(getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month']) != 0:
+            getAverageSellingRateIn12Month = (int(getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month'] * 100) / int(getTotalArtworkIn12Month['totalArtworkIn12Month']))
         disconnectDb(connList)
-        if getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'] is None:
-            getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'] = 'NA'
-        dataList.append({'artistId': getMyArtistData['fa_artist_ID'], 'artistName': getMyArtistData['fa_artist_name'], 'totalArtworkData': getTotalArtworkData['totalArtworkData'], 'averageSellingRate': round(getAverageSellingRate, 2), 'averageSellingPrice': round(getAverageSellingPrice['averageSellingPrice'], 2), 'averageSellingPriceInLast12Month': getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'], 'totalArtworkSoldInLast12Month': getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month']})
+        dataList.append({'artistId': getMyArtistData['fa_artist_ID'], 'artistName': getMyArtistData['fa_artist_name'], 'totalArtworkData': getTotalArtworkData['totalArtworkData'], 'averageSellingRate': getAverageSellingRate, 'averageSellingPrice': getAverageSellingPrice['averageSellingPrice'], 'averageSellingPriceInLast12Month': getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'], 'totalArtworkSoldInLast12Month': getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month'], 'averageSellingRateIn12Month': getAverageSellingRateIn12Month})
     myThreadList = []
     for getMyArtistData in getMyArtistsData:
         thread = Thread(target=dataSelector, args=(getMyArtistData, ))
@@ -692,24 +703,81 @@ def getMyArtworksDetails(request):
 def getFollowedArtworks(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
+    data = {}
     getFollowedArtworksSelectQuery = f"""SELECT COUNT(DISTINCT(referenced_table_id)) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.user.id} AND reference_table = 'fineart_artworks'"""
-    forPaintingsFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'paintings'"""
-    forSculpturesFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'sculptures'"""
-    forPrintsFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'prints'"""
-    forWorkOnPaperFollowed = getFollowedArtworksSelectQuery + f""" AND faa_artwork_category = 'works on paper'"""
+
+    def forPaintings(followedArtworksSelectQuery):
+        forPaintingsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'paintings'"""
+        connList = connectToDb()
+        connList[1].execute(forPaintingsFollowed)
+        forPaintingsFollowedData = connList[1].fetchone()
+        disconnectDb(connList)
+        data['forPaintingsFollowed'] = forPaintingsFollowedData['totalFollowed']
+
+    def forSculptures(followedArtworksSelectQuery):
+        forSculpturesFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'sculptures'"""
+        connList = connectToDb()
+        connList[1].execute(forSculpturesFollowed)
+        forSculpturesFollowedData = connList[1].fetchone()
+        disconnectDb(connList)
+        data['forSculpturesFollowed'] = forSculpturesFollowedData['totalFollowed']
+
+    def forPrints(followedArtworksSelectQuery):
+        forPrintsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'prints'"""
+        connList = connectToDb()
+        connList[1].execute(forPrintsFollowed)
+        forPrintsFollowedData = connList[1].fetchone()
+        disconnectDb(connList)
+        data['forPrintsFollowed'] = forPrintsFollowedData['totalFollowed']
+
+    def forWorkOnPaper(followedArtworksSelectQuery):
+        forWorkOnPaperFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'works on paper'"""
+        connList = connectToDb()
+        connList[1].execute(forWorkOnPaperFollowed)
+        forWorkOnPaperFollowedData = connList[1].fetchone()
+        disconnectDb(connList)
+        data['forWorkOnPaperFollowed'] = forWorkOnPaperFollowedData['totalFollowed']
+
+    def forMiniatures(followedArtworksSelectQuery):
+        forMiniaturesFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'miniatures'"""
+        connList = connectToDb()
+        connList[1].execute(forMiniaturesFollowed)
+        forMiniaturesFollowedData = connList[1].fetchone()
+        disconnectDb(connList)
+        data['forMiniaturesFollowed'] = forMiniaturesFollowedData['totalFollowed']
+
+    def forPhotographs(followedArtworksSelectQuery):
+        forPhotographsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'photographs'"""
+        connList = connectToDb()
+        connList[1].execute(forPhotographsFollowed)
+        forPhotographsFollowedData = connList[1].fetchone()
+        disconnectDb(connList)
+        data['forPhotographsFollowed'] = forPhotographsFollowedData['totalFollowed']
+
+    threadForPaintings = Thread(target=forPaintings, args=(getFollowedArtworksSelectQuery, ))
+    threadForPaintings.start()
+    threadForSculptures = Thread(target=forSculptures, args=(getFollowedArtworksSelectQuery,))
+    threadForSculptures.start()
+    threadForPrints = Thread(target=forPrints, args=(getFollowedArtworksSelectQuery,))
+    threadForPrints.start()
+    threadForWorkOnPaper = Thread(target=forWorkOnPaper, args=(getFollowedArtworksSelectQuery,))
+    threadForWorkOnPaper.start()
+    threadForMiniatures = Thread(target=forMiniatures, args=(getFollowedArtworksSelectQuery,))
+    threadForMiniatures.start()
+    threadForPhotographs = Thread(target=forPhotographs, args=(getFollowedArtworksSelectQuery,))
+    threadForPhotographs.start()
     connList = connectToDb()
     connList[1].execute(getFollowedArtworksSelectQuery)
     totalFollowedData = connList[1].fetchone()
-    connList[1].execute(forPaintingsFollowed)
-    forPaintingsFollowedData = connList[1].fetchone()
-    connList[1].execute(forSculpturesFollowed)
-    forSculpturesFollowedData = connList[1].fetchone()
-    connList[1].execute(forPrintsFollowed)
-    forPrintsFollowedData = connList[1].fetchone()
-    connList[1].execute(forWorkOnPaperFollowed)
-    forWorkOnPaperFollowedData = connList[1].fetchone()
     disconnectDb(connList)
-    data = {'user_artwork_followed_counts': totalFollowedData['totalFollowed'], 'forPaintingsFollowed': forPaintingsFollowedData['totalFollowed'], 'forSculpturesFollowed': forSculpturesFollowedData['totalFollowed'], 'forPrintsFollowed': forPrintsFollowedData['totalFollowed'], 'forWorkOnPaperFollowed': forWorkOnPaperFollowedData['totalFollowed']}
+    data['user_artwork_followed_counts'] = totalFollowedData['totalFollowed']
+    threadForPaintings.join()
+    threadForSculptures.join()
+    threadForPrints.join()
+    threadForWorkOnPaper.join()
+    threadForMiniatures.join()
+    threadForPhotographs.join()
+    # data = {'user_artwork_followed_counts': totalFollowedData['totalFollowed'], 'forPaintingsFollowed': forPaintingsFollowedData['totalFollowed'], 'forSculpturesFollowed': forSculpturesFollowedData['totalFollowed'], 'forPrintsFollowed': forPrintsFollowedData['totalFollowed'], 'forWorkOnPaperFollowed': forWorkOnPaperFollowedData['totalFollowed'], 'forPhotographsFollowed': forPhotographsFollowedData['totalFollowed'], 'forMiniaturesFollowed': forMiniaturesFollowedData['totalFollowed']}
     return HttpResponse(json.dumps(data))
 
 

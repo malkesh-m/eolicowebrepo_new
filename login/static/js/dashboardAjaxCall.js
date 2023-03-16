@@ -1,11 +1,5 @@
-// const totalFollowedArtistsId = document.querySelector('#totalFollowedArtistsId')
-// const thisWeekFollowedArtistsId = document.querySelector('#thisWeekFollowedArtistsId')
 const totalFollowedArtistId  = document.querySelector('#totalFollowedArtistId')
 const totalFollowedArtworksId = document.querySelector('#totalFollowedArtworksId')
-// const paintingsFollowedId = document.querySelector('#paintingsFollowedId')
-// const printsFollowedId = document.querySelector('#printsFollowedId')
-// const workOnPaperFollowedId = document.querySelector('#workOnPaperFollowedId')
-// const sculpturesFollowedId = document.querySelector('#sculpturesFollowedId')
 const artistTableBodyId = document.querySelector('#artistTableBodyId')
 const artworksTableBodyId = document.querySelector('#artworksTableBodyId')
 
@@ -21,7 +15,7 @@ function getMyArtworksDetailsSetter() {
                                 <td>${artworkData.faa_artwork_title}</td>
                                 <td>${artworkData.fa_artist_name}</td>
                                 <td>${artworkData.faa_artwork_category}</td>
-                                <td><strong>${artworkData.cah_auction_house_currency_code}: </strong>`
+                                <td class="forAlign"><strong>${artworkData.cah_auction_house_currency_code}: </strong>`
                                 if(artworkData.fal_lot_low_estimate) {
                                     htmlData += `${artworkData.fal_lot_low_estimate}`
                                 }
@@ -50,7 +44,7 @@ function getMyArtworksDetailsSetter() {
                                     htmlData += `0`
                                 }
                                 htmlData += `</td>
-                                <td><strong>${artworkData.cah_auction_house_currency_code}: </strong>`
+                                <td class="forAlign"><strong>${artworkData.cah_auction_house_currency_code}: </strong>`
                                 if(artworkData.fal_lot_sale_price) {
                                     htmlData += `${artworkData.fal_lot_sale_price}`
                                 }
@@ -111,11 +105,12 @@ function getMyArtistsDetailsSetter() {
             body.forEach(artistData => {
                 htmlData += `<tr>
                                 <td>${artistData.artistName}</td>
-                                <td>${artistData.totalArtworkData}</td>
-                                <td><strong>USD: </strong>${artistData.averageSellingPrice}</td>
-                                <td>${artistData.averageSellingRate}%</td>
-                                <td>${artistData.averageSellingPriceInLast12Month}</td>
-                                <td>${artistData.totalArtworkSoldInLast12Month}</td>
+                                <td class="forAlign">${artistData.totalArtworkData}</td>
+                                <td class="forAlign"><strong>USD: </strong>${artistData.averageSellingPrice}</td>
+                                <td class="forAlign">${artistData.averageSellingRate}%</td>
+                                <td class="forAlign">${artistData.totalArtworkSoldInLast12Month}</td>
+                                <td class="forAlign">${artistData.averageSellingPriceInLast12Month}</td>
+                                <td class="forAlign">${artistData.averageSellingRateIn12Month}%</td>
                             </tr>`
             })
             artistTableBodyId.innerHTML = htmlData 
@@ -130,10 +125,9 @@ function getFollowedArtistsCounter() {
         .then(response => response.json())
         .then(body => {
             totalFollowedArtistId.innerHTML = body.user_artist_followed_counts
-            // thisWeekFollowedArtistsId.innerHTML = body.this_week_followed_artist_counts
             let xValues = [`Total Followed: ${body.user_artist_followed_counts}`, `Followed This Week: ${body.this_week_followed_artist_counts}`]
             let yValues = [body.user_artist_followed_counts, body.this_week_followed_artist_counts]
-            let barColors = ["#2b5797", "#00aba9"]
+            let barColors = ["#85C1E9", "#F8C471"]
             chartMaker("Artits", xValues, yValues, barColors)
         })
 }
@@ -145,24 +139,17 @@ function getFollowedArtworksCounter() {
         .then(response => response.json())
         .then(body => {
             totalFollowedArtworksId.innerHTML = body.user_artwork_followed_counts
-            // paintingsFollowedId.innerHTML = body.forPaintingsFollowed
-            // printsFollowedId.innerHTML = body.forPrintsFollowed
-            // workOnPaperFollowedId.innerHTML = body.forWorkOnPaperFollowed
-            // sculpturesFollowedId.innerHTML = body.forSculpturesFollowed
-            let xValues = [`Paintings: ${body.forPaintingsFollowed}`, `Prints: ${body.forPrintsFollowed}`, `Works on Paper: ${body.forWorkOnPaperFollowed}`, `Sculptures: ${body.forSculpturesFollowed}`]
-            let yValues = [body.forPaintingsFollowed, body.forPrintsFollowed, body.forWorkOnPaperFollowed, body.forSculpturesFollowed]
-            let barColors = ["#00aba9", "#2b5797", "#e8c3b9", "#1e7145"]
+            let otherValues = body.user_artwork_followed_counts - (body.forPaintingsFollowed + body.forPrintsFollowed + body.forWorkOnPaperFollowed + body.forSculpturesFollowed + body.forPhotographsFollowed + body.forMiniaturesFollowed)
+            let xValues = [`Paintings: ${body.forPaintingsFollowed}`, `Prints: ${body.forPrintsFollowed}`, `Works on Paper: ${body.forWorkOnPaperFollowed}`, `Sculptures: ${body.forSculpturesFollowed}`, `Photographs: ${body.forPhotographsFollowed}`, `Miniatures: ${body.forMiniaturesFollowed}`, `Others: ${otherValues}`]
+            let yValues = [body.forPaintingsFollowed, body.forPrintsFollowed, body.forWorkOnPaperFollowed, body.forSculpturesFollowed, body.forPhotographsFollowed, body.forMiniaturesFollowed, otherValues]
+            let barColors = ["#76D7C4", "#7FB3D5", "#F7DC6F", "#AF7AC5", "#F5B041", "#5499C7", "#5D6D7E"]
             chartMaker("Artworks", xValues, yValues, barColors)
         })
 }
 
-async function dataBinder() {
+document.addEventListener('DOMContentLoaded', function () {
     getFollowedArtistsCounter()
     getFollowedArtworksCounter()
     getMyArtistsDetailsSetter()
     getMyArtworksDetailsSetter()
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    dataBinder()
 })
