@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="/static/css/autocomplete.css">
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .owl-prev,
         .owl-next {
@@ -399,11 +400,10 @@ https://templatemo.com/tm-571-hexashop
             }
         }
     </script>
-
 </head>
 
-<body onload="javascript:autocomplete(document.getElementById('pdbsearch'), pdb);">
-
+<!-- <body onload="javascript:autocomplete(document.getElementById('pdbsearch'), pdb);"> -->
+<body>
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -427,7 +427,7 @@ https://templatemo.com/tm-571-hexashop
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="regiUsername" name="username" placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
@@ -507,7 +507,7 @@ https://templatemo.com/tm-571-hexashop
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="username" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='loginUsername' id="username" placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
@@ -756,8 +756,8 @@ https://templatemo.com/tm-571-hexashop
                 <div class="col-12 text-center">
                     <div class="section-heading">
                         <span class='input-group justify-content-center'>
-                            <div>Space for content on why you should subscribe to ADS
-                                database</div>
+                            <!-- <div>Space for content on why you should subscribe to ADS
+                                database</div> -->
                         </span>
                     </div>
                 </div>
@@ -779,15 +779,15 @@ https://templatemo.com/tm-571-hexashop
                             <div class='row'>
                                 <div class='col-lg-6'>
                                     <div class="mb-4">
-                                        <label>Artist's Name:</label>
+                                        <label>Artist's Name</label>
                                         <input type="text" class="form-control" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name" />
                                     </div>
                                     <div class="mb-4">
-                                        <label>Artwork Title:</label>
+                                        <label>Artwork Title</label>
                                         <input type="text" class="form-control" id="txttitle" name="txttitle" value="" placeholder="Filter by title" />
                                     </div>
                                     <div class="mb-4">
-                                        <label>Category:</label>
+                                        <label>Category</label>
                                         <div class="d-flex align-items-center mb-3">
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal">
@@ -797,8 +797,12 @@ https://templatemo.com/tm-571-hexashop
                                                 <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood">
                                                 <label class="form-check-label  flex-nowrap" for="Sculpture-tow">Sculpture</label>
                                             </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas">
+                                                <label class="form-check-label" for="Painting-two">Painting</label>
+                                            </div>
                                         </div>
-                                        <div class="d-flex align-items-center mb-3">
+                                        <!-- <div class="d-flex align-items-center mb-3">
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas">
                                                 <label class="form-check-label" for="Painting-two">Painting</label>
@@ -807,7 +811,7 @@ https://templatemo.com/tm-571-hexashop
                                                 <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation">
                                                 <label class="form-check-label" for="Installation">Installation </label>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="d-flex align-items-center">
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid">
@@ -815,65 +819,128 @@ https://templatemo.com/tm-571-hexashop
                                             </div>
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric">
-                                                <label class="form-check-label" for="texttile-arts">Textile arts </label>
+                                                <label class="form-check-label" for="texttile-arts">Textile arts</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation">
+                                                <label class="form-check-label" for="Installation">Installation</label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="mb-4">
-                                        <label>Artwork Start:</label>
-                                        <select name='sel_artwork_start' id='sel_artwork_start' class='form-control'>
+                                        <label>Artwork Start</label>
+                                        <input type="text" class="form-control" id="sel_artwork_start" name="sel_artwork_start" value="" placeholder="Filter by artwork start year" />
+                                        <!-- <select name='sel_artwork_start' id='sel_artwork_start' class='form-control'>
                                         {% for syk, syr in artwork_year_list.items %}
                                         <option value="{{syk}}">{{syr}}</option>
                                         {%endfor %}
-                                    </select>
+                                    </select> -->
                                     </div>
-                                    <div>
-                                        <label>Artwork End:</label>
-                                        <select name='sel_artwork_end' id='sel_artwork_end' class='form-control'>
+                                    <div class="mb-4">
+                                        <label>Artwork End</label>
+                                        <input type="text" class="form-control" id="sel_artwork_end" name="sel_artwork_end" value="" placeholder="Filter by artwork start end" />
+                                        <!-- <select name='sel_artwork_end' id='sel_artwork_end' class='form-control'>
                                         {% for syk, syr in artwork_year_list.items %}
                                         <option value="{{syk}}">{{syr}}</option>
                                         {%endfor %}
-                                    </select>
+                                    </select> -->
+                                    </div>
+                                    <div class="mb-4">
+                                        <label>Sale Start Date</label>
+                                        <input type="date" class="form-control" id="dtauctionstartdate" name="dtauctionstartdate" value="" placeholder="">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="mb-4">
-                                        <label>Auction House:</label>
-                                        <select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' size=4 multiple>
+                                        <label>Auction House</label>
+                                        <!-- <input type="text" class="form-control" id="sel_auctionhouses" name="sel_auctionhouses" value="" placeholder="Filter by auction house" /> -->
+                                        <select id="sel_auctionhouses" class=" form-control js-example-basic-single js-states" data-placeholder="Select Auction House" name="sel_auctionhouses"></select>
+                                    </div>
+                                        <!-- <select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' size=4 multiple>
                                         {% for auctionhouse, ahid in auctionhouses.items %}
                                         <option value='{{ahid}}'>{{auctionhouse}}</option>
                                         {% endfor %}
-                                    </select>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label>Auction Location:</label>
-                                        <input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" value="" placeholder="Auction location">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label>Sale Title:</label>
-                                        <input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" value="" placeholder="Sale title">
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-4">
-                                                <label>Sale Start Date:</label>
-                                                <input type="date" class="form-control" id="dtauctionstartdate" name="dtauctionstartdate" value="" placeholder="">
+                                    </select> -->
+                                    <!-- <div class="mb-4">
+                                        <label>Lot Status:</label>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="soldCheckId">
+                                                <label class="form-check-label" for="soldCheckId">
+                                                    Sold
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="yetToBeSoldCheckId">
+                                                <label class="form-check-label" for="yetToBeSoldCheckId">
+                                                    Yet to be Sold
+                                                </label>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-4">
-                                                <label>Sale End Date:</label>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="boughtInCehckId">
+                                                <label class="form-check-label" for="boughtInCehckId">
+                                                    Bought-in
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="withdrawnCheckId">
+                                                <label class="form-check-label" for="withdrawnCheckId">
+                                                    Withdrawn
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="mb-4">
+                                        <label>Auction Location</label>
+                                        <input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" value="" placeholder="Filter by auction location">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label>Lot Status</label>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="soldCheckId">
+                                                <label class="form-check-label" for="soldCheckId">Sold</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="yetToBeSoldCheckId">
+                                                <label class="form-check-label" for="yetToBeSoldCheckId">Yet to be Sold</label>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="boughtInCehckId">
+                                                <label class="form-check-label" for="boughtInCehckId">Bought-in</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="withdrawnCheckId">
+                                                <label class="form-check-label" for="withdrawnCheckId">Withdrawn</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label>Sale Title</label>
+                                        <input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" value="" placeholder="Filter by sale title">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label>Sale Code</label>
+                                        <input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value="" placeholder="Filter by sale code">
+                                    </div>
+                                    <!-- <div class="row"> -->
+                                        <!-- <div class="col-lg-6"> -->
+                                            
+                                        <!-- </div> -->
+                                        <!-- <div class="col-lg-6"> -->
+                                            <div>
+                                                <label>Sale End Date</label>
                                                 <input type="date" class="form-control" id="dtauctionenddate" name="dtauctionenddate" value="" placeholder="">
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label>Sale Code:</label>
-                                        <input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value="" placeholder="Sale code">
-                                    </div>
+                                        <!-- </div> -->
+                                    <!-- </div> -->
                                 </div>
                                 <div class="col-12 text-center mt-4">
-                                    <input type="button" class="btn btn-login btn-round ml-0" id="btnsearch" name="btnsearch" value="Search" aria-expanded="true" onclick="javascript:filterresults();">
+                                    <input type="submit" class="btn btn-login btn-round ml-0" id="btnsearch" name="btnsearch" value="Search" aria-expanded="true">
                                     <span id='loadingspan'></span>
                                     <input type='reset' name='rstbtn' id='rstbtn' value='Clear' class='btn btn-login btn-round' style="background-color: #555;">
                                 </div>
@@ -959,10 +1026,10 @@ https://templatemo.com/tm-571-hexashop
 					</div>
 					<div id="collapse0" class="card-body collapse" >
 						
-						 <div class="form-text">
-						  <label class="form-check-label" for="txtartistname">
-						  	<input type="text" class="form-text-input" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name">
-						  </label>
+						<div class="form-text">
+					        <label class="form-check-label" for="txtartistname">
+						        <input type="text" class="form-text-input" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name">
+						    </label>
 						</div>
 						
 					</div>
@@ -1280,6 +1347,7 @@ https://templatemo.com/tm-571-hexashop
     <script src="/static/js/lightbox.js"></script>
     <script src="/static/js/isotope.js"></script>
     <script src="/static/js/jquery.dropdown.min.js"></script>
+    <script src="/static/js/select2.min.js"></script>
 
     <!-- Global Init -->
     <script src="/static/js/custom.js"></script>
@@ -1345,7 +1413,7 @@ https://templatemo.com/tm-571-hexashop
             });
         });
     </script>
-
+    <script src="/static/js/priceDatabaseAjaxCall.js"></script>
 </body>
 
 </html>

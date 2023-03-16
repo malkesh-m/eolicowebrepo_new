@@ -29,19 +29,21 @@ function getMyArtworksDetailsSetter() {
                                 else {
                                     htmlData += `0`
                                 }
-                                htmlData += `<br> <strong>USD </strong>`
-                                if(artworkData.fal_lot_low_estimate_USD) {
-                                    htmlData += `${artworkData.fal_lot_low_estimate_USD}`
-                                }
-                                else {
-                                    htmlData += `0`
-                                }
-                                htmlData += `- `
-                                if(artworkData.fal_lot_high_estimate_USD) {
-                                    htmlData += `${artworkData.fal_lot_high_estimate_USD}`
-                                }
-                                else {
-                                    htmlData += `0`
+                                if (artworkData.cah_auction_house_currency_code !== 'USD') {
+                                    htmlData += `<br> <strong>USD </strong>`
+                                    if(artworkData.fal_lot_low_estimate_USD) {
+                                        htmlData += `${artworkData.fal_lot_low_estimate_USD}`
+                                    }
+                                    else {
+                                        htmlData += `0`
+                                    }
+                                    htmlData += `- `
+                                    if(artworkData.fal_lot_high_estimate_USD) {
+                                        htmlData += `${artworkData.fal_lot_high_estimate_USD}`
+                                    }
+                                    else {
+                                        htmlData += `0`
+                                    }
                                 }
                                 htmlData += `</td>
                                 <td class="forAlign"><strong>${artworkData.cah_auction_house_currency_code} </strong>`
@@ -51,12 +53,14 @@ function getMyArtworksDetailsSetter() {
                                 else {
                                     htmlData += `Unsold`
                                 }
-                                htmlData += `<br> <strong>USD </strong> `
-                                if (artworkData.fal_lot_sale_price_USD) {
-                                    htmlData += `${artworkData.fal_lot_sale_price_USD}`
-                                }
-                                else {
-                                    htmlData += 'Unsold'
+                                if (artworkData.cah_auction_house_currency_code !== 'USD') {
+                                    htmlData += `<br> <strong>USD </strong> `
+                                    if (artworkData.fal_lot_sale_price_USD) {
+                                        htmlData += `${artworkData.fal_lot_sale_price_USD}`
+                                    }
+                                    else {
+                                        htmlData += 'Unsold'
+                                    }
                                 }
                                 htmlData += `</td>
                                 <td><strong>Lot No:</strong> ${artworkData.fal_lot_no} <br> <strong>Sale Title:</strong> ${artworkData.faac_auction_title} <br> <strong>Sale Name:</strong> ${artworkData.cah_auction_house_name} <br> <strong>Sale Location:</strong> ${artworkData.cah_auction_house_location} <br> <strong>Sale Date:</strong> ${artworkData.fal_lot_sale_date}</td>
