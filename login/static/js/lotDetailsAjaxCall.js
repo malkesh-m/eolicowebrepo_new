@@ -57,14 +57,24 @@ function getRelatedLotsDataSetter(start) {
                                             <h3>${auctionData.faac_auction_title}</h3>
                                             <h3><span>${auctionData.cah_auction_house_name}</span></h3>
                                             <h3 class="mb-3"><span>${auctionData.faac_auction_start_date} | ${auctionData.cah_auction_house_location}</span></h3>
-                                            <h3>Estimate : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_low_estimate} - ${auctionData.fal_lot_high_estimate}</span></h3>
-                                            <h3>Estimate USD : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>`
-                                            if (auctionData.fal_lot_sale_price == 0) {
-                                                htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
+                                            <h3>Estimate : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_low_estimate} - ${auctionData.fal_lot_high_estimate}</span></h3>`
+                                            if (auctionData.cah_auction_house_currency_code === 'USD') {
+                                                if (auctionData.fal_lot_sale_price == 0) {
+                                                    htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
+                                                }
+                                                else {
+                                                htmlData += `<h3>Price Sold : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_sale_price}</span></h3>`
+                                                }
                                             }
                                             else {
-                                                htmlData += `<h3>Price Sold : <span>${auctionData.fal_lot_sale_price}</span></h3>
-                                                            <h3>Price Sold USD : <span>${auctionData.fal_lot_sale_price_USD}</span></h3>`
+                                                htmlData += `<h3>Estimate USD : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>`
+                                                if (auctionData.fal_lot_sale_price == 0) {
+                                                    htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
+                                                }
+                                                else {
+                                                    htmlData += `<h3>Price Sold : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_sale_price}</span></h3>
+                                                                <h3>Price Sold USD : <span>${auctionData.fal_lot_sale_price_USD}</span></h3>`
+                                                }
                                             }
                                         htmlData += `
                                         </div>
@@ -103,13 +113,24 @@ function getLotDetailsDataSetter() {
             dimensionsId.innerHTML = `Dimensions : <span>${body.fal_lot_height} x ${body.fal_lot_width} x ${body.fal_lot_depth} ${body.fal_lot_measurement_unit}</span></h5>`
             nameLocationId.innerHTML = `<span>${body.cah_auction_house_name}, ${body.cah_auction_house_location}</span>`
             estimatesId.innerHTML = `Estimates <span>${body.cah_auction_house_currency_code} ${body.fal_lot_low_estimate} - ${body.fal_lot_high_estimate}</span>`
-            estimatesUSDId.innerHTML = `Estimates USD <span>${body.fal_lot_low_estimate_USD} - ${body.fal_lot_high_estimate_USD}</span>`
-            if (body.fal_lot_sale_price == 0) {
-                soldPriceId.innerHTML = `Sold Price <span>Unsold</span>`
+            // estimatesUSDId.innerHTML = `Estimates USD <span>${body.fal_lot_low_estimate_USD} - ${body.fal_lot_high_estimate_USD}</span>`
+            if (body.cah_auction_house_currency_code === 'USD') {
+                if (body.fal_lot_sale_price == 0) {
+                    soldPriceId.innerHTML = `Sold Price <span>Unsold</span>`
+                }
+                else {
+                    soldPriceId.innerHTML = `Sold Price <span>${body.cah_auction_house_currency_code} ${body.fal_lot_sale_price}</span>`
+                }
             }
             else {
-                soldPriceId.innerHTML = `Sold Price <span>${body.cah_auction_house_currency_code} ${body.fal_lot_sale_price}</span>`
-                soldPriceUSDId.innerHTML = `Sold Price USD <span>${body.fal_lot_sale_price_USD}</span>`
+                estimatesUSDId.innerHTML = `Estimates USD <span>${body.fal_lot_low_estimate_USD} - ${body.fal_lot_high_estimate_USD}</span>`
+                if (body.fal_lot_sale_price == 0) {
+                    soldPriceId.innerHTML = `Sold Price <span>Unsold</span>`
+                }
+                else {
+                    soldPriceId.innerHTML = `Sold Price <span>${body.cah_auction_house_currency_code} ${body.fal_lot_sale_price}</span>`
+                    soldPriceUSDId.innerHTML = `Sold Price USD <span>${body.fal_lot_sale_price_USD}</span>`
+                }
             }
             dateId.innerHTML = `<span>${body.fal_lot_sale_date}</span>`
             
