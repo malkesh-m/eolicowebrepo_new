@@ -360,7 +360,7 @@
                 <!-- ARTBIDDER -->
                 <!-- </a> -->
                 <div class="navbar-brand">
-                    <a class="navbar-brand" href="/login/dashboard/">
+                    <a class="navbar-brand" href="/">
                         <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
                     </a>
                 </div>
@@ -371,7 +371,7 @@
                 <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
                     <ul class="navbar-nav mr-0">
                         <li class="nav-item scroll-to-section">
-                            <a class="nav-link active" href="#">Home</a>
+                            <a class="nav-link active" href="/">Home</a>
                         </li>
                         <li class="nav-item scroll-to-section">
                             <a class="nav-link" href="/artist/index/">Artists</a>
@@ -404,15 +404,12 @@
                     <ul class="navbar-nav sm-icons mr-0">
                         {% if not user.is_authenticated %}
                         <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                        <li class="nav-item text-start">
-                            <button type="button" class="btn btn-login btn-round"
-                                    data-toggle="modal" data-target="#exampleModal-login"
-                                    aria-controls="exampleModal-login">
-                                Login
-                            </button>
-                        </li>
+                        <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                         {% else %}
                         <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
+                        <li class="nav-item">
+                            <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                        </li>
                         {% endif %}
                     </ul>
                 </div>

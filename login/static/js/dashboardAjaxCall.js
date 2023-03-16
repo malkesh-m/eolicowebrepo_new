@@ -14,8 +14,8 @@ function getMyArtworksDetailsSetter() {
                 htmlData += `<tr>
                                 <td>${artworkData.faa_artwork_title}</td>
                                 <td>${artworkData.fa_artist_name}</td>
-                                <td>${artworkData.faa_artwork_category}</td>
-                                <td class="forAlign"><strong>${artworkData.cah_auction_house_currency_code}: </strong>`
+                                <td class="forAlign">${artworkData.faa_artwork_category}</td>
+                                <td class="forAlign"><strong>${artworkData.cah_auction_house_currency_code} </strong>`
                                 if(artworkData.fal_lot_low_estimate) {
                                     htmlData += `${artworkData.fal_lot_low_estimate}`
                                 }
@@ -29,7 +29,7 @@ function getMyArtworksDetailsSetter() {
                                 else {
                                     htmlData += `0`
                                 }
-                                htmlData += `<br> <strong>USD: </strong>`
+                                htmlData += `<br> <strong>USD </strong>`
                                 if(artworkData.fal_lot_low_estimate_USD) {
                                     htmlData += `${artworkData.fal_lot_low_estimate_USD}`
                                 }
@@ -44,14 +44,14 @@ function getMyArtworksDetailsSetter() {
                                     htmlData += `0`
                                 }
                                 htmlData += `</td>
-                                <td class="forAlign"><strong>${artworkData.cah_auction_house_currency_code}: </strong>`
+                                <td class="forAlign"><strong>${artworkData.cah_auction_house_currency_code} </strong>`
                                 if(artworkData.fal_lot_sale_price) {
                                     htmlData += `${artworkData.fal_lot_sale_price}`
                                 }
                                 else {
                                     htmlData += `Unsold`
                                 }
-                                htmlData += `<br> <strong>USD:</strong> `
+                                htmlData += `<br> <strong>USD </strong> `
                                 if (artworkData.fal_lot_sale_price_USD) {
                                     htmlData += `${artworkData.fal_lot_sale_price_USD}`
                                 }
@@ -106,7 +106,7 @@ function getMyArtistsDetailsSetter() {
                 htmlData += `<tr>
                                 <td>${artistData.artistName}</td>
                                 <td class="forAlign">${artistData.totalArtworkData}</td>
-                                <td class="forAlign"><strong>USD: </strong>${artistData.averageSellingPrice}</td>
+                                <td class="forAlign"><strong>USD </strong>${artistData.averageSellingPrice}</td>
                                 <td class="forAlign">${artistData.averageSellingRate}%</td>
                                 <td class="forAlign">${artistData.totalArtworkSoldInLast12Month}</td>
                                 <td class="forAlign">${artistData.averageSellingPriceInLast12Month}</td>

@@ -506,25 +506,30 @@
                               <span>Menu</span>
                           </a>
                       </nav> -->
-                    <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
-                        <a class="navbar-brand" href="/login/dashboard/">
-                            <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
-                            <!-- <img src="static/images/logo1.png"> -->
-                            <!-- ARTBIDER -->
-                        </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                      <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
+                        <!-- <a class="navbar-brand" href="/login/dashboard/"> -->
+                        <!-- <img src="static/images/newLogo.png"> -->
+                        <!-- ARTBIDDER -->
+                        <!-- </a> -->
+                        <div class="navbar-brand">
+                            <a class="navbar-brand" href="/">
+                                <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
+                            </a>
+                        </div>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
+                                aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
                             <ul class="navbar-nav mr-0">
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link " href="#">Home</a>
+                                    <a class="nav-link" href="/">Home</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link active" href="/artist/index/">Artists</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link " href="/auctionhouse/index/">Auction Houses</a>
+                                    <a class="nav-link" href="/auctionhouse/index/">Auction Houses</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="/auction/index/">Auctions</a>
@@ -538,15 +543,15 @@
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="#">Galleries</a>
                                 </li>
-
+        
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="#">Shows</a>
                                 </li>
-
+        
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="#"> News</a>
                                 </li>
-
+        
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
                                 {% if not user.is_authenticated %}
