@@ -18,7 +18,6 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.contrib.auth.models import User as djUser, AnonymousUser
 from django.contrib.auth.decorators import login_required
-
 import os, sys, re, time, datetime
 import simplejson as json
 import redis
@@ -31,7 +30,6 @@ from auctions.models import Auction, Lot
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
 from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
-
 # Caching related imports and variables
 from django.views.decorators.cache import cache_page
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
@@ -41,35 +39,155 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.strftime("%d %b, %Y")
 
+
+def pastUpcomingQueryCreator(request):
+    artworkTitle = request.GET.get('artworkTitle')
+    lotLowToHigh = request.GET.get('lotLowToHigh')
+    lotHighToLow = request.GET.get('lotHighToLow')
+    priceLowToHigh = request.GET.get('priceLowToHigh')
+    priceHighToLow = request.GET.get('priceHighToLow')
+    paintings = request.GET.get('paintings')
+    prints = request.GET.get('prints')
+    photographs = request.GET.get('photographs')
+    miniatures = request.GET.get('miniatures')
+    others = request.GET.get('others')
+    sold = request.GET.get('sold')
+    yetToBeSold = request.GET.get('yetToBeSold')
+    boughtIn = request.GET.get('boughtIn')
+    withdrawn = request.GET.get('withdrawn')
+    fromDate = request.GET.get('fromDate')
+    toDate = request.GET.get('toDate')
+
+    whereClause = ''
+    orderBy = ''
+    orderFlag = False
+
+    if artworkTitle:
+        whereClause += f""" AND faa_artwork_title LIKE '%{artworkTitle}%'"""
+    if paintings:
+        whereClause += f""" AND fal_lot_category = '{paintings}'"""
+    if prints:
+        whereClause += f""" AND fal_lot_category = '{prints}'"""
+    if photographs:
+        whereClause += f""" AND fal_lot_category = '{photographs}'"""
+    if miniatures:
+        whereClause += f""" AND fal_lot_category = '{miniatures}'"""
+    if others:
+        whereClause += f""" AND fal_lot_category != 'miniatures' AND fal_lot_category != 'photographs' AND fal_lot_category != 'prints' AND fal_lot_category != 'paintings'"""
+    if sold:
+        whereClause += f""" AND fal_lot_status = '{sold}'"""
+    if yetToBeSold:
+        whereClause += f""" AND fal_lot_status = '{yetToBeSold}'"""
+    if boughtIn:
+        whereClause += f""" AND fal_lot_status = '{boughtIn}'"""
+    if withdrawn:
+        whereClause += f""" AND fal_lot_status = '{withdrawn}'"""
+    if fromDate:
+        whereClause += f""" AND faa_artwork_start_year = {fromDate}"""
+    if toDate:
+        whereClause += f""" AND faa_artwork_end_year = {toDate}"""
+
+    if lotLowToHigh:
+        orderBy = f""" ORDER BY fal_lot_no"""
+        orderFlag = True
+    if lotHighToLow:
+        orderBy = f""" ORDER BY fal_lot_no DESC"""
+        orderFlag = True
+    if priceLowToHigh:
+        orderBy = f""" ORDER BY fal_lot_sale_price"""
+        orderFlag = True
+    if priceHighToLow:
+        orderBy = f""" ORDER BY fal_lot_sale_price DESC"""
+        orderFlag = True
+    if orderFlag is False:
+        orderBy = f""" ORDER BY faac_auction_start_date DESC"""
+
+    return whereClause + orderBy
+
+
+@login_required(login_url='/login/show/')
 def myArtist(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
-        return render(request, 'myArtist.html')
+        userobj = request.user
+        sessionkey = request.session.session_key
+        context = {}
+        context['username'] = userobj.username
+        return render(request, 'myArtist.html', context)
 
 
+@login_required(login_url='/login/show/')
+def getMyArtists(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    start = request.GET.get('start')
+    limit = request.GET.get('limit')
+    getMyArtistsSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `user_favorites` ON fa_artist_ID = referenced_table_id WHERE reference_table = 'fineart_artists' AND user_id = {request.user.id} LIMIT {limit} OFFSET {start};"""
+    connList = connectToDb()
+    connList[1].execute(getMyArtistsSelectQuery)
+    myArtistsData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(myArtistsData, default=default))
+
+
+
+@login_required(login_url='/login/show/')
 def myArtistDetails(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
         artistId = request.GET.get('aid')
-        return render(request, 'myArtistDetails.html')
+        userobj = request.user
+        sessionkey = request.session.session_key
+        context = {}
+        context['username'] = userobj.username
+        return render(request, 'myArtistDetails.html', context)
 
 
+@login_required(login_url='/login/show/')
 def myArtwork(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
-        return render(request, 'myArtwork.html')
+        userobj = request.user
+        sessionkey = request.session.session_key
+        context = {}
+        context['username'] = userobj.username
+        return render(request, 'myArtwork.html', context)
 
 
+@login_required(login_url='/login/show/')
+def getMyArtworks(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    start = request.GET.get('start')
+    limit = request.GET.get('limit')
+    getMyArtworksSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID INNER JOIN `user_favorites` ON faa_artwork_ID = referenced_table_id WHERE reference_table = 'fineart_artworks' AND user_id = {request.user.id}"""
+    whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
+    getMyArtworksSelectQuery += whereClauseAndOrderBy + f""" LIMIT {limit} OFFSET {start};"""
+    connList = connectToDb()
+    connList[1].execute(getMyArtworksSelectQuery)
+    myArtworksData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(myArtworksData, default=default))
+
+
+@login_required(login_url='/login/show/')
 def myArtworkDetails(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
         artistId = request.GET.get('awid')
-        return render(request, 'myArtworkDetails.html')
+        userobj = request.user
+        sessionkey = request.session.session_key
+        context = {}
+        context['username'] = userobj.username
+        return render(request, 'myArtworkDetails.html', context)
 
 
 """
@@ -518,9 +636,6 @@ def getTrendingArtist(request):
     return HttpResponse(json.dumps(trendingArtistData))
 
 
-def default(o):
-    if isinstance(o, (datetime.date, datetime.datetime)):
-        return o.strftime("%d %b, %Y")
 
 
 def getUpcomingAuctions(request):

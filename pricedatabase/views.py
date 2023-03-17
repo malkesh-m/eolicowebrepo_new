@@ -22,12 +22,13 @@ import urllib
 import MySQLdb
 import unicodedata, itertools
 import decimal
-
+from django.views.decorators.csrf import csrf_exempt
 # from gallery.models import Gallery, Event
 from login.models import User, Session, Favourite  # ,WebConfig, Carousel, Follow
 from login.views import getcarouselinfo_new
 # from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
 from auctions.models import Auction, Lot
+from login.views import default
 from auctionhouses.models import AuctionHouse
 from artists.models import Artist, Artwork, FeaturedArtist
 from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
@@ -51,99 +52,124 @@ def removecontrolcharacters(s):
 
 
 def advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture, painting, installation, photography,
-                               textTilesArt, selArtworkStart, selArtworkEnd, selAuctionHouse, auctionLocation,
-                               saleTitle, auctionStartDate, auctionEndDate, saleCode):
+                               miniaturesArt, textTilesArt, others, selArtworkStart, selArtworkEnd, selAuctionHouse, auctionLocation,
+                               saleTitle, auctionStartDate, auctionEndDate, saleCode, soldCheckId, yetToBeSoldCheckId, boughtInCheckId, withdrawnCheckId, start, limit):
     andFlag = False
     whereQuery = ""
-    if artistName and artistName != '':
-        whereQuery = whereQuery + f"""faa_artist_ID IN (SELECT fa_artist_ID FROM fineart_artists WHERE UPPER(fa_artist_name) LIKE '%{artistName.upper()}%')"""
+    if artistName:
+        whereQuery += f"""faa_artist_ID IN (SELECT fa_artist_ID FROM fineart_artists WHERE fa_artist_name LIKE '%{artistName}%')"""
         andFlag = True
-    if artworkTitle and artworkTitle != '':
+    if artworkTitle:
         if andFlag:
-            whereQuery = whereQuery + """ AND """
-        whereQuery = whereQuery + f"""UPPER(faa_artwork_title) LIKE '%{artworkTitle.upper()}%'"""
+            whereQuery += """ AND """
+        whereQuery += f"""faa_artwork_title LIKE '%{artworkTitle}%'"""
         andFlag = True
     if workOnPaper:
         if andFlag:
-            whereQuery = whereQuery + """ AND """
-        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{workOnPaper.upper()}%'"""
+            whereQuery += """ AND """
+        whereQuery += f"""faa_artwork_category LIKE '%{workOnPaper}%'"""
         andFlag = True
     if sculpture:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{sculpture.upper()}%'"""
+            whereQuery += f""" AND """
+        whereQuery += f"""faa_artwork_category LIKE '%{sculpture}%'"""
         andFlag = True
     if painting:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{painting.upper()}%'"""
+            whereQuery += f""" AND """
+        whereQuery += f"""faa_artwork_category LIKE '%{painting}%'"""
         andFlag = True
     if installation:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{installation.upper()}%'"""
+            whereQuery += f""" AND """
+        whereQuery += f"""faa_artwork_category LIKE '%{installation}%'"""
         andFlag = True
     if photography:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{photography.upper()}%'"""
+            whereQuery += f""" AND """
+        whereQuery += f"""faa_artwork_category LIKE '%{photography}%'"""
+        andFlag = True
+    if miniaturesArt:
+        if andFlag:
+            whereQuery += f""" AND """
+        whereQuery += f"""faa_artwork_category LIKE '%{miniaturesArt}%'"""
         andFlag = True
     if textTilesArt:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""UPPER(faa_artwork_category) LIKE '%{textTilesArt.upper()}%'"""
+            whereQuery += """ AND """
+        whereQuery += f"""faa_artwork_category LIKE '%{textTilesArt}%'"""
         andFlag = True
-    if selArtworkStart and selArtworkStart != '':
+    if others:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""faa_artwork_start_year = {selArtworkStart}"""
+            whereQuery += """ AND """
+        whereQuery += f"""faa_artwork_category LIKE '%{others}%'"""
+        andFlag = True
+    if selArtworkStart:
+        if andFlag:
+            whereQuery += f""" AND """
+        whereQuery += f"""faa_artwork_start_year = {selArtworkStart}"""
         andFlag = True
     if selArtworkEnd and selArtworkEnd != '':
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""faa_artwork_end_year = {selArtworkEnd}"""
+            whereQuery += f""" AND """
+        whereQuery += f"""faa_artwork_end_year = {selArtworkEnd}"""
         andFlag = True
-    if selAuctionHouse and selAuctionHouse != '':
+    if soldCheckId:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""UPPER(cah_auction_house_name) LIKE '%{selAuctionHouse.upper()}%'"""
+            whereQuery += f""" AND """
+        whereQuery += f"""fal_lot_status = '{soldCheckId}'"""
         andFlag = True
-    if auctionLocation and auctionLocation != '':
+    if yetToBeSoldCheckId:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""UPPER(cah_auction_house_location) LIKE '%{auctionLocation.upper()}%'"""
+            whereQuery += """ AND """
+        whereQuery += f"""fal_lot_status = '{yetToBeSoldCheckId}'"""
+    if boughtInCheckId:
+        if andFlag:
+            whereQuery += """ AND """
+        whereQuery += f"""fal_lot_status = '{boughtInCheckId}'"""
+    if withdrawnCheckId:
+        if andFlag:
+            whereQuery += """ AND """
+        whereQuery += f"""fal_lot_status = '{withdrawnCheckId}'"""
+    if selAuctionHouse:
+        if andFlag:
+            whereQuery += f""" AND """
+        whereQuery += f"""cah_auction_house_name LIKE '%{selAuctionHouse}%'"""
+        andFlag = True
+    if auctionLocation:
+        if andFlag:
+            whereQuery += f""" AND """
+        whereQuery += f"""cah_auction_house_location LIKE '%{auctionLocation}%'"""
         andFlag = True
     if saleTitle and saleTitle != '':
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""UPPER(faac_auction_title) LIKE '%{saleTitle.upper()}%'"""
+            whereQuery += f""" AND """
+        whereQuery += f"""faac_auction_title LIKE '%{saleTitle}%'"""
         andFlag = True
-    if auctionStartDate and auctionStartDate != '':
+    if auctionStartDate:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""faac_auction_start_date = '{auctionStartDate}'"""
+            whereQuery += f""" AND """
+        whereQuery += f"""faac_auction_start_date = '{auctionStartDate}'"""
         andFlag = True
-    if auctionEndDate and auctionEndDate != '':
+    if auctionEndDate:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""faac_auction_end_date = '{auctionEndDate}'"""
+            whereQuery += f""" AND """
+        whereQuery += f"""faac_auction_end_date = '{auctionEndDate}'"""
         andFlag = True
-    if saleCode and saleCode != '':
+    if saleCode:
         if andFlag:
-            whereQuery = whereQuery + f""" AND """
-        whereQuery = whereQuery + f"""faac_auction_sale_code = '{saleCode}'"""
-    selectQuery = """SELECT * FROM fineart_artworks INNER JOIN fineart_lots ON fineart_lots.fal_artwork_ID = fineart_artworks.faa_artwork_ID INNER JOIN fineart_auction_calendar ON fineart_auction_calendar.faac_auction_ID = fineart_lots.fal_auction_ID INNER JOIN core_auction_houses ON core_auction_houses.cah_auction_house_ID = fineart_auction_calendar.faac_auction_house_ID WHERE """ + whereQuery
-    # print(selectQuery)
-    connlist = connecttoDB()
-    dbconn = connlist[0]
-    cursor = connlist[1]
-    cursor.execute(selectQuery)
-    searchData = cursor.fetchall()
-    connectionClose = disconnectDB(cursor, dbconn)
+            whereQuery += f""" AND """
+        whereQuery += f"""faac_auction_sale_code = '{saleCode}'"""
+    selectQuery = """SELECT * FROM fineart_artworks INNER JOIN fineart_lots ON fineart_lots.fal_artwork_ID = fineart_artworks.faa_artwork_ID INNER JOIN fineart_auction_calendar ON fineart_auction_calendar.faac_auction_ID = fineart_lots.fal_auction_ID INNER JOIN core_auction_houses ON core_auction_houses.cah_auction_house_ID = fineart_auction_calendar.faac_auction_house_ID WHERE """ + whereQuery + f"""LIMIT {limit} OFFSET {start}"""
+    connList = connectToDb()
+    connList[1].execute(selectQuery)
+    searchData = connList[1].fetchall()
+    disconnectDb(connList)
     return searchData
 
 
 # @cache_page(CACHE_TTL)
+@csrf_exempt
 def index(request):
     if request.method == 'POST':
         artistName = request.POST.get('txtartistname')
@@ -153,7 +179,9 @@ def index(request):
         painting = request.POST.get('medium3')
         installation = request.POST.get('medium4')
         photography = request.POST.get('medium5')
-        textTilesArt = request.POST.get('medium6')
+        miniaturesArt = request.POST.get('medium6')
+        textTilesArt = request.POST.get('medium7')
+        others = request.POST.get('medium8')
         selArtworkStart = request.POST.get('sel_artwork_start')
         selArtworkEnd = request.POST.get('sel_artwork_end')
         selAuctionHouse = request.POST.get('sel_auctionhouses')
@@ -162,11 +190,17 @@ def index(request):
         auctionStartDate = request.POST.get('dtauctionstartdate')
         auctionEndDate = request.POST.get('dtauctionenddate')
         saleCode = request.POST.get('txtsalecode')
+        soldCheckId = request.POST.get('soldCheckId')
+        yetToBeSoldCheckId = request.POST.get('yetToBeSoldCheckId')
+        boughtInCheckId = request.POST.get('boughtInCehckId')
+        withdrawnCheckId = request.POST.get('withdrawnCheckId')
+        start = request.GET.get('start')
+        limit = request.GET.get('limit')
         advanceSearchData = advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture, painting,
-                                                       installation, photography, textTilesArt, int(selArtworkStart),
-                                                       int(selArtworkEnd), selAuctionHouse, auctionLocation, saleTitle,
-                                                       auctionStartDate, auctionEndDate, saleCode)
-        return HttpResponse('hi')
+                                                       installation, photography, miniaturesArt, textTilesArt, others, selArtworkStart,
+                                                       selArtworkEnd, selAuctionHouse, auctionLocation, saleTitle,
+                                                       auctionStartDate, auctionEndDate, saleCode, soldCheckId, yetToBeSoldCheckId, boughtInCheckId, withdrawnCheckId, start, limit)
+        return HttpResponse(json.dumps(advanceSearchData, default=default))
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     # page = "1"
@@ -358,11 +392,45 @@ def searchAuctionHouses(request):
     auctionHouseSelectQuery = f"""SELECT DISTINCT(cah_auction_house_name) AS cah_auction_house_name FROM core_auction_houses"""
     if searchKeyword:
         auctionHouseSelectQuery += f""" WHERE cah_auction_house_name LIKE '%{searchKeyword}%'"""
+    else:
+        auctionHouseSelectQuery += f""" LIMIT 100 OFFSET 0"""
     connList = connectToDb()
     connList[1].execute(auctionHouseSelectQuery)
     auctionAuctionHouseData = connList[1].fetchall()
     disconnectDb(connList)
     return HttpResponse(json.dumps(auctionAuctionHouseData))
+
+
+def searchArtists(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    searchKeyword = request.GET.get('search')
+    artistSearchQuery = f"""SELECT DISTINCT(fa_artist_name) as fa_artist_name FROM fineart_artists"""
+    if searchKeyword:
+        artistSearchQuery += f""" WHERE fa_artist_name LIKE '%{searchKeyword}%'"""
+    else:
+        artistSearchQuery += """ LIMIT 100 OFFSET 0"""
+    connList = connectToDb()
+    connList[1].execute(artistSearchQuery)
+    artistsData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(artistsData))
+
+
+def searchArtworks(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    searchKeyword = request.GET.get('search')
+    artworkSelectQuery = f"""SELECT DISTINCT(faa_artwork_title) AS faa_artwork_title FROM fineart_artworks"""
+    if searchKeyword:
+        artworkSelectQuery += f""" WHERE faa_artwork_title LIKE '%{searchKeyword}%'"""
+    else:
+        artworkSelectQuery += """ LIMIT 100 OFFSET 0"""
+    connList = connectToDb()
+    connList[1].execute(artworkSelectQuery)
+    artworksData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(artworksData))
 
 
 def details(request):

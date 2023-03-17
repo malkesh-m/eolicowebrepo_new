@@ -623,22 +623,22 @@
                 <div class="col-md-12 d-flex pr-0">
                     <nav id="sidebar" class="bg-dark p-4 text-light">
                         <div class="sidebar-header mt-2 text-center">
-                            <a class="navbar-brand mx-auto" href="/login/dashboard/">
+                            <a class="navbar-brand mx-auto" href="/">
                                 <img src="/static/images/email-logo.jpeg" style="width: 100%;" alt="">
                             </a>
                         </div>
 
                         <ul class="list-unstyled components">
                             <li class="my-4"><a href="/login/dashboard/" class="text-light"><i class="fa fa-dashboard"></i>&nbsp;My
-                  Dashboard</a></li>
+                    Dashboard</a></li>
                             <li class="my-4"><a href="/login/notifications/" class="text-light"><i class="fa fa-bell"></i>&nbsp;My
-                  Notifications</a></li>
+                    Notifications</a></li>
                             <li class="my-4"><a href="/login/myArtist/" class="text-light"><i class="fa fa-user"></i>&nbspMy
-                  Artist</a></li>
+                    Artists</a></li>
                             <li class="my-4"><a href="/login/myArtwork/" class="text-light"><i class="fa fa-paint-brush"></i>&nbspMy
-                  Artwork</a></li>
+                    Artworks</a></li>
                             <li class="my-4"><a href="/login/settings/" class="text-light"><i class="fa fa-gear"></i>&nbspAccount
-                  Setting</a></li>
+                    Setting</a></li>
                         </ul>
 
                         <div class="list-unstyled CTAs">
@@ -653,64 +653,67 @@
                     </nav>
                     <div id="content">
                         <!-- <div> -->
-                        <nav class="navbar navbar-expand-md navbar-light">
-                            <button type="button" id="sidebarCollapse" class="btn btn-login btn-rouned p-2 px-3 m-0 d-none">
-                <i class="fa fa-angle-double-right"></i>
-              </button>
-                            <a class="nav-link font-weight-bold mb-0" href="#"><img src="/static/dashboard/Picture1.png" class="mr-2 " style="width: 50px; border-radius: 100px;"> @{{username}}</a>
-
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-
-                            <!-- Navbar links -->
-                            <div class="collapse navbar-collapse align-items-center justify-content-end" id="collapsibleNavbar">
-                                <ul class="navbar-nav align-items-center">
-                                    <li class="mr-4">
-                                        <div class="input-group">
-                                            <input type="search" class="form-control  rounded-0" name="search" placeholder="Select...">
-                                            <span class="input-group-text rounded-0">
-                                              <button type="button" class="btn border-0 p-0 rounded-right"><i class="fa fa-search"></i></button>
-                                          </span>
-                                        </div>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/artist/index/">Artist</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/auctionhouse/index/">Auction Houses</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/auction/index/">Auction</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/price/database/">Price Database</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/price/database/">Price Plans</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/price/database/">Galleries</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/price/database/">Shows</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/price/database/">News</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <button class="btn btn-login btn-rouned" onclick='javascript:logout();'>Logout</button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </nav>
+                            <nav class="navbar navbar-expand-md navbar-light">
+                                <button type="button" id="sidebarCollapse" class="btn btn-login btn-rouned p-2 px-3 m-0 d-none">
+                    <i class="fa fa-angle-double-right"></i>
+                  </button>
+                                <a class="nav-link font-weight-bold mb-0" href="/login/dashboard/"><img src="/static/dashboard/Picture1.png" class="mr-2 " style="width: 50px; border-radius: 100px;"> @{{username}}</a>
+    
+                                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+    
+                                <!-- Navbar links -->
+                                <div class="collapse navbar-collapse align-items-center justify-content-end" id="collapsibleNavbar">
+                                    <ul class="navbar-nav align-items-center">
+                                        <li class="mr-4">
+                                            <div class="input-group">
+                                                <input type="search" class="form-control  rounded-0" name="search" placeholder="Select...">
+                                                <span class="input-group-text rounded-0">
+                                                  <button type="button" class="btn border-0 p-0 rounded-right"><i class="fa fa-search"></i></button>
+                                              </span>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/">Home</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/artist/index/">Artist</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/auctionhouse/index/">Auction Houses</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/auction/index/">Auction</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/price/database/">Price Database</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/price/database/">Price Plans</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/price/database/">Galleries</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/price/database/">Shows</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/price/database/">News</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <button class="btn btn-login btn-rouned" onclick='javascript:logout();'>Logout</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
                         <section class="artists-details pt-5">
                             <div class="container-fluid">
                                 <div class="row align-items-end justify-content-between">
                                     <div class="col-auto">
                                         <div class="artists-details-img">
-                                            <h3>Self Portrait</h3>
-                                            <p class="mb-0">Lot #: 3</p>
+                                            <h3 id="headerTitleId"></h3>
+                                            <p class="mb-0" id="headerLotNoId"></p>
                                         </div>
                                     </div>
                                     <div class="col-auto">
@@ -728,31 +731,31 @@
                                         <div class="product-imgs">
                                             <div class="img-display">
                                                 <div class="img-showcase">
-                                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_1.jpg" alt="shoe image">
-                                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
+                                                    <img id="image1Id" src="" alt="shoe image">
+                                                    <!-- <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
                                                     <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg" alt="shoe image">
-                                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image">
+                                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image"> -->
                                                 </div>
                                             </div>
                                             <div class="img-select">
                                                 <div class="img-item">
                                                     <a href="#" data-id="1">
-                                                        <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_1.jpg" alt="shoe image">
+                                                        <img id="image2Id" class="lotImages" src="" alt="show image">
                                                     </a>
                                                 </div>
                                                 <div class="img-item">
                                                     <a href="#" data-id="2">
-                                                        <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
+                                                        <img id="image3Id" class="lotImages" src="" alt="show image">
                                                     </a>
                                                 </div>
                                                 <div class="img-item">
                                                     <a href="#" data-id="3">
-                                                        <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg" alt="shoe image">
+                                                        <img id="image4Id" class="lotImages" src="" alt="show image">
                                                     </a>
                                                 </div>
                                                 <div class="img-item">
                                                     <a href="#" data-id="4">
-                                                        <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image">
+                                                        <img id="image5Id" class="lotImages" src="" alt="show image">
                                                     </a>
                                                 </div>
                                             </div>
@@ -762,9 +765,9 @@
                                         <div class="artists-details-content">
                                             <div class="d-md-flex justify-content-between mb-4">
                                                 <div>
-                                                    <h4 class="mb-2">Artist : <span>Gertrude Abercrombie</span></h4>
-                                                    <h4 class="mb-2">Title : <span>Self Portrait</span></h4>
-                                                    <h4 class="mb-3">Lot # 3 </h4>
+                                                    <h4 class="mb-2" id="artistId"></h4>
+                                                    <h4 class="mb-2" id="titleId"></h4>
+                                                    <h4 class="mb-3" id="lotNoId"></h4>
                                                 </div>
                                                 <div>
                                                     <button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;  " type="button">Unfollow Artist</button>
@@ -772,17 +775,19 @@
                                                 </div>
                                             </div>
 
-                                            <h5 class="mb-3">Medium : <span>oil on masonite </span></h5>
-                                            <h5 class="mb-3">Category : <span>paintings</span></h5>
-                                            <h5 class="mb-3">Dimensions : <span>43.2 x 33 cm</span></h5>
-                                            <h5 class="mb-4">Markings : <span>Signed and dated 1973.</span></h5>
+                                            <h5 id="mediumId"></h5>
+                                            <h5 id="categoryId"></h5>
+                                            <h5 class="mb-3" id="dimensionsId"></h5>
+                                            <h5 id="markingId"></h5>
 
-                                            <h5 class="mb-3">Actions : <span>Contemporary Curated</span></h5>
-                                            <h5 class="mb-3"><span>Sotheby’s, New York</span></h5>
-                                            <h5 class="mb-4"><span>30th Sep, 2021</span></h5>
+                                            <h5 class="mb-3" id="auctionTitle"></h5>
+                                            <h5 class="mb-3" id="nameLocationId"></h5>
+                                            <h5 class="mb-5" id="dateId"></h5>
 
-                                            <h5 class="mb-3">Estimates <span>Login to View</span></h5>
-                                            <h5>Sold Price <span>Login to View</span></h5>
+                                            <h5 class="mb-3" id="estimatesId"></h5>
+                                            <h5 class="mb-3" id="estimatesUSDId"></h5>
+                                            <h5 class="mb-3" id="soldPriceId"></h5>
+                                            <h5 id="soldPriceUSDId"></h5>
 
 
                                         </div>
@@ -797,31 +802,17 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="action-content">
-                                                <div class="d-md-flex align-items-start mb-2">
-                                                    <h6>Provenance : </h6>
-                                                    <p class="pl-md-2"> Galerie Eva Presenhuber, ZurichAcquired from the above by the present owner </p>
+                                                <div class="d-md-flex align-items-start" id="provenanceId">
+                                                    
                                                 </div>
-                                                <div class="d-md-flex align-items-start mb-2">
-                                                    <h6>Literature : </h6>
-                                                    <p class="pl-md-2"> Shara Hughes| Shara Hughes: Landscapes| New York| 2019| p. 15 (illustrated| p. 14)
-                                                    </p>
+                                                <div class="d-md-flex align-items-start" id="literatureId">
+                                                    
                                                 </div>
-                                                <div class="d-md-flex align-items-start mb-2">
-                                                    <h6>Exhibition : </h6>
-                                                    <div>
-                                                        <p class="pl-md-2"> London| Gagosian Gallery| MARK TANSEY| December 10| 2009 - January 23| 2010| p. 83 (illustrated| p. 85; detail illustrated| pp. 86-89) </p>
-                                                        <a href="#">Read More</a>
-                                                    </div>
+                                                <div class="d-md-flex align-items-start" id="exhibitionId">
+                                                    
                                                 </div>
-                                                <div class="d-md-flex align-items-start">
-                                                    <h6>Description : </h6>
-                                                    <div>
-                                                        <p class="pl-md-2">
-                                                            Property from an Important West Coast Collection Gertrude Abercrombie 1909 - 1977 Self Portrait signed oil on masonite 17 by 13 in. 43.2 by 33 cm. framed: 21½ by 17½ in. 54.6 by 44.5 cm. Executed circa 1935. The lot is sold in the condition it is in at
-                                                            the time of sale
-                                                        </p>
-                                                        <a href="#">Read More</a>
-                                                    </div>
+                                                <div class="d-md-flex align-items-start" id="descriptionId">
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -831,12 +822,14 @@
                             </div>
                         </section>
                         <section class="pt-5">
-                            <div class="container ml-0">
+                            <div class="container">
                                 <div class="row">
-                                    <div class="col-12 text-start">
-                                        <h3 class="heading-style">Related Art</h3>
+                                    <div class="col-12 text-center">
+                                        <h3 class="heading-style">Similar Artworks</h3>
                                     </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                                </div>
+                                <div class="row" id="relatedLotsId">
+                                    <!-- <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
                                         <div class="latest-artists">
                                             <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
                                                 <div class="thumb">
@@ -846,16 +839,16 @@
                                                     <h3>Title : <span>Le Passage du gué</span></h3>
                                                     <h3>Artist : <span>Theodore Rousseau</span></h3>
                                                     <h3 class="mb-3">Lot#309</h3>
-
+                    
                                                     <h3>Medium : <span>oil on panel</span></h3>
                                                     <h3 class="mb-3">Category : <span>paintings</span>
                                                     </h3>
-
+                    
                                                     <h3>Contemporary Curated</h3>
                                                     <h3><span>Sotheby’s</span></h3>
                                                     <h3 class="mb-3"><span>1 March 2023 I London</span>
                                                     </h3>
-
+                    
                                                     <h3>Estimate : <span>Login to view</span></h3>
                                                     <h3>Price Sold : <span>Login to view</span></h3>
                                                 </div>
@@ -872,16 +865,16 @@
                                                     <h3>Title : <span>Le Passage du gué</span></h3>
                                                     <h3>Artist : <span>Theodore Rousseau</span></h3>
                                                     <h3 class="mb-3">Lot#309</h3>
-
+                    
                                                     <h3>Medium : <span>oil on panel</span></h3>
                                                     <h3 class="mb-3">Category : <span>paintings</span>
                                                     </h3>
-
+                    
                                                     <h3>Contemporary Curated</h3>
                                                     <h3><span>Sotheby’s</span></h3>
                                                     <h3 class="mb-3"><span>1 March 2023 I London</span>
                                                     </h3>
-
+                    
                                                     <h3>Estimate : <span>Login to view</span></h3>
                                                     <h3>Price Sold : <span>Login to view</span></h3>
                                                 </div>
@@ -898,16 +891,16 @@
                                                     <h3>Title : <span>Le Passage du gué</span></h3>
                                                     <h3>Artist : <span>Theodore Rousseau</span></h3>
                                                     <h3 class="mb-3">Lot#309</h3>
-
+                    
                                                     <h3>Medium : <span>oil on panel</span></h3>
                                                     <h3 class="mb-3">Category : <span>paintings</span>
                                                     </h3>
-
+                    
                                                     <h3>Contemporary Curated</h3>
                                                     <h3><span>Sotheby’s</span></h3>
                                                     <h3 class="mb-3"><span>1 March 2023 I London</span>
                                                     </h3>
-
+                    
                                                     <h3>Estimate : <span>Login to view</span></h3>
                                                     <h3>Price Sold : <span>Login to view</span></h3>
                                                 </div>
@@ -924,16 +917,16 @@
                                                     <h3>Title : <span>Le Passage du gué</span></h3>
                                                     <h3>Artist : <span>Theodore Rousseau</span></h3>
                                                     <h3 class="mb-3">Lot#309</h3>
-
+                    
                                                     <h3>Medium : <span>oil on panel</span></h3>
                                                     <h3 class="mb-3">Category : <span>paintings</span>
                                                     </h3>
-
+                    
                                                     <h3>Contemporary Curated</h3>
                                                     <h3><span>Sotheby’s</span></h3>
                                                     <h3 class="mb-3"><span>1 March 2023 I London</span>
                                                     </h3>
-
+                    
                                                     <h3>Estimate : <span>Login to view</span></h3>
                                                     <h3>Price Sold : <span>Login to view</span></h3>
                                                 </div>
@@ -950,16 +943,16 @@
                                                     <h3>Title : <span>Le Passage du gué</span></h3>
                                                     <h3>Artist : <span>Theodore Rousseau</span></h3>
                                                     <h3 class="mb-3">Lot#309</h3>
-
+                    
                                                     <h3>Medium : <span>oil on panel</span></h3>
                                                     <h3 class="mb-3">Category : <span>paintings</span>
                                                     </h3>
-
+                    
                                                     <h3>Contemporary Curated</h3>
                                                     <h3><span>Sotheby’s</span></h3>
                                                     <h3 class="mb-3"><span>1 March 2023 I London</span>
                                                     </h3>
-
+                    
                                                     <h3>Estimate : <span>Login to view</span></h3>
                                                     <h3>Price Sold : <span>Login to view</span></h3>
                                                 </div>
@@ -976,21 +969,24 @@
                                                     <h3>Title : <span>Le Passage du gué</span></h3>
                                                     <h3>Artist : <span>Theodore Rousseau</span></h3>
                                                     <h3 class="mb-3">Lot#309</h3>
-
+                    
                                                     <h3>Medium : <span>oil on panel</span></h3>
                                                     <h3 class="mb-3">Category : <span>paintings</span>
                                                     </h3>
-
+                    
                                                     <h3>Contemporary Curated</h3>
                                                     <h3><span>Sotheby’s</span></h3>
                                                     <h3 class="mb-3"><span>1 March 2023 I London</span>
                                                     </h3>
-
+                    
                                                     <h3>Estimate : <span>Login to view</span></h3>
                                                     <h3>Price Sold : <span>Login to view</span></h3>
                                                 </div>
                                             </a>
                                         </div>
+                                    </div> -->
+                                    <div class="col-12 text-center mt-4" id="relatedArtworkViewMoreId">
+                                        <button type="button" class="btn btn-login btn-round py-2" onclick="getRelatedLotsDataSetter(0)">View More</button>
                                     </div>
                                 </div>
                             </div>
@@ -1064,7 +1060,7 @@
             </div>
         </div>
     </section>
-
+    <script src="/static/js/lotDetailsAjaxCall.js"></script>
 
 
 </body>

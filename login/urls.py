@@ -33,5 +33,7 @@ urlpatterns = [
     path('getFollowedArtworks/', views.getFollowedArtworks, name='getFollowedArtworks'),
     path('getMyArtistsDetails/', views.getMyArtistsDetails, name='getMyArtistsDetails'),
     path('getMyArtworksDetails/', views.getMyArtworksDetails, name="getMyArtworksDetails"),
+    path('getMyArtists/', views.getMyArtists, name='getMyArtists'),
+    path('getMyArtworks/', views.getMyArtworks, name='getMyArtworks'),
 ]
 

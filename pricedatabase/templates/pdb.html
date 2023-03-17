@@ -779,27 +779,35 @@ https://templatemo.com/tm-571-hexashop
                             <div class='row'>
                                 <div class='col-lg-6'>
                                     <div class="mb-4">
-                                        <label>Artist's Name</label>
-                                        <input type="text" class="form-control" id="txtartistname" name="txtartistname" value="" placeholder="Search by artist name" />
+                                        <label>Artist Name</label>
+                                        <!-- <input type="text" class="form-control" id="txtartistname" name="txtartistname" placeholder="Search by artist name" /> -->
+                                        <select id="txtartistname" class="js-example-basic-single form-control select2-container step2-select" data-placeholder="Select Artist" name="txtartistname">
+                                        </select>
                                     </div>
                                     <div class="mb-4">
-                                        <label>Artwork Title</label>
-                                        <input type="text" class="form-control" id="txttitle" name="txttitle" value="" placeholder="Filter by title" />
+                                        <label>Artwork Name</label>
+                                        <!-- <input type="text" class="form-control" id="txttitle" name="txttitle" placeholder="Filter by title" /> -->
+                                        <select id="txttitle" class="js-example-basic-single form-control select2-container step2-select" data-placeholder="Select Artwork" name="txttitle">
+                                        </select>
                                     </div>
                                     <div class="mb-4">
                                         <label>Category</label>
                                         <div class="d-flex align-items-center mb-3">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="paper|etch|charcoal">
-                                                <label class="form-check-label" for="Design-tow">Work on Paper</label>
+                                                <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="paintings">
+                                                <label class="form-check-label" for="medium3">Painting</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="stone|marble|bronze|brass|gold|wood">
-                                                <label class="form-check-label  flex-nowrap" for="Sculpture-tow">Sculpture</label>
+                                                <input type="checkbox" class="form-check-input" id="medium2" name="medium2" value="sculptures">
+                                                <label class="form-check-label  flex-nowrap" for="medium2">Sculpture</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="medium3" name="medium3" value="painting|oil|canvas">
-                                                <label class="form-check-label" for="Painting-two">Painting</label>
+                                                <input type="checkbox" class="form-check-input" id="medium1" name="medium1" value="prints">
+                                                <label class="form-check-label" for="medium1">Prints</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium7" name="medium7" value="textiles">
+                                                <label class="form-check-label" for="medium1">Textiles</label>
                                             </div>
                                         </div>
                                         <!-- <div class="d-flex align-items-center mb-3">
@@ -814,21 +822,25 @@ https://templatemo.com/tm-571-hexashop
                                         </div> -->
                                         <div class="d-flex align-items-center">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="print|photo|celluloid">
-                                                <label class="form-check-label" for="photography">Photography</label>
+                                                <input type="checkbox" class="form-check-input" id="medium5" name="medium5" value="photographs">
+                                                <label class="form-check-label" for="medium5">Photographs</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="textile|cloth|fabric">
-                                                <label class="form-check-label" for="texttile-arts">Textile arts</label>
+                                                <input type="checkbox" class="form-check-input" id="medium6" name="medium6" value="works on paper">
+                                                <label class="form-check-label" for="medium6-arts">Works on paper</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="installation">
-                                                <label class="form-check-label" for="Installation">Installation</label>
+                                                <input type="checkbox" class="form-check-input" id="medium4" name="medium4" value="miniatures">
+                                                <label class="form-check-label" for="medium4">Miniatures</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="medium8" name="medium8" value="others">
+                                                <label class="form-check-label" for="medium1">Others</label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="mb-4">
-                                        <label>Artwork Start</label>
+                                        <label>Artwork Start Year</label>
                                         <input type="text" class="form-control" id="sel_artwork_start" name="sel_artwork_start" value="" placeholder="Filter by artwork start year" />
                                         <!-- <select name='sel_artwork_start' id='sel_artwork_start' class='form-control'>
                                         {% for syk, syr in artwork_year_list.items %}
@@ -837,7 +849,7 @@ https://templatemo.com/tm-571-hexashop
                                     </select> -->
                                     </div>
                                     <div class="mb-4">
-                                        <label>Artwork End</label>
+                                        <label>Artwork End Year</label>
                                         <input type="text" class="form-control" id="sel_artwork_end" name="sel_artwork_end" value="" placeholder="Filter by artwork start end" />
                                         <!-- <select name='sel_artwork_end' id='sel_artwork_end' class='form-control'>
                                         {% for syk, syr in artwork_year_list.items %}
@@ -845,16 +857,34 @@ https://templatemo.com/tm-571-hexashop
                                         {%endfor %}
                                     </select> -->
                                     </div>
-                                    <div class="mb-4">
-                                        <label>Sale Start Date</label>
-                                        <input type="date" class="form-control" id="dtauctionstartdate" name="dtauctionstartdate" value="" placeholder="">
+                                    <div>
+                                        <label>Lot Status</label>
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check w-auto mr-4">
+                                                <input class="form-check-input" type="checkbox" id="soldCheckId" value="sold">
+                                                <label class="form-check-label mt-1" for="soldCheckId">Sold</label>
+                                            </div>
+                                            <div class="form-check w-auto mr-4">
+                                                <input class="form-check-input" type="checkbox" id="yetToBeSoldCheckId" value="yet to be sold">
+                                                <label class="form-check-label mt-1" for="yetToBeSoldCheckId">Yet to be Sold</label>
+                                            </div>
+                                            <div class="form-check w-auto mr-4">
+                                                <input class="form-check-input" type="checkbox" id="boughtInCehckId" value="bought-in">
+                                                <label class="form-check-label mt-1" for="boughtInCehckId">Bought-in</label>
+                                            </div>
+                                            <div class="form-check w-auto">
+                                                <input class="form-check-input" type="checkbox" id="withdrawnCheckId" value="withdrawn">
+                                                <label class="form-check-label mt-1" for="withdrawnCheckId">Withdrawn</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="mb-4">
                                         <label>Auction House</label>
                                         <!-- <input type="text" class="form-control" id="sel_auctionhouses" name="sel_auctionhouses" value="" placeholder="Filter by auction house" /> -->
-                                        <select id="sel_auctionhouses" class=" form-control js-example-basic-single js-states" data-placeholder="Select Auction House" name="sel_auctionhouses"></select>
+                                        <select id="sel_auctionhouses" class="js-example-basic-single form-control select2-container step2-select" data-placeholder="Select Auction House" name="sel_auctionhouses">
+                                        </select>
                                     </div>
                                         <!-- <select name='sel_auctionhouses' id='sel_auctionhouses' class='form-control' size=4 multiple>
                                         {% for auctionhouse, ahid in auctionhouses.items %}
@@ -894,38 +924,21 @@ https://templatemo.com/tm-571-hexashop
                                     </div> -->
                                     <div class="mb-4">
                                         <label>Auction Location</label>
-                                        <input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" value="" placeholder="Filter by auction location">
+                                        <input type="text" class="form-control" id="txtauctionlocation" name="txtauctionlocation" placeholder="Filter by auction location">
                                     </div>
-                                    <div class="mb-4">
-                                        <label>Lot Status</label>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="soldCheckId">
-                                                <label class="form-check-label" for="soldCheckId">Sold</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="yetToBeSoldCheckId">
-                                                <label class="form-check-label" for="yetToBeSoldCheckId">Yet to be Sold</label>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="boughtInCehckId">
-                                                <label class="form-check-label" for="boughtInCehckId">Bought-in</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="withdrawnCheckId">
-                                                <label class="form-check-label" for="withdrawnCheckId">Withdrawn</label>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     <div class="mb-4">
                                         <label>Sale Title</label>
-                                        <input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" value="" placeholder="Filter by sale title">
+                                        <input type="text" class="form-control" id="txtsaletitle" name="txtsaletitle" placeholder="Filter by sale title">
                                     </div>
                                     <div class="mb-4">
                                         <label>Sale Code</label>
-                                        <input type="text" class="form-control" id="txtsalecode" name="txtsalecode" value="" placeholder="Filter by sale code">
+                                        <input type="text" class="form-control" id="txtsalecode" name="txtsalecode" placeholder="Filter by sale code">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label>Sale Start Date</label>
+                                        <input type="date" class="form-control" id="dtauctionstartdate" name="dtauctionstartdate" placeholder="">
                                     </div>
                                     <!-- <div class="row"> -->
                                         <!-- <div class="col-lg-6"> -->
@@ -934,7 +947,7 @@ https://templatemo.com/tm-571-hexashop
                                         <!-- <div class="col-lg-6"> -->
                                             <div>
                                                 <label>Sale End Date</label>
-                                                <input type="date" class="form-control" id="dtauctionenddate" name="dtauctionenddate" value="" placeholder="">
+                                                <input type="date" class="form-control" id="dtauctionenddate" name="dtauctionenddate" placeholder="">
                                             </div>
                                         <!-- </div> -->
                                     <!-- </div> -->
@@ -951,6 +964,131 @@ https://templatemo.com/tm-571-hexashop
             </div>
         </div>
     </section>
+        <div class="container-xl pt-5" id="displayDataDivId">
+            <div class="row col-12 justify-content-center">
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="tabbable d-flex align-items-center border-bottom justify-content-between">
+                <h3 class="heading-style mb-0">Advance Search Results</h3>
+                        <div class="page-show p-0">
+                            <select class="custom-select" id="inputGroupSelect01" style="border: 0; background-color: transparent;" onchange="selectChange(event)">
+								<option value="50" selected="">Per Page 50</option>
+								<option value="100">Per Page 100</option>
+								<option value="150">Per Page 150</option>
+								<option value="200">Per Page 200</option>
+							</select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 pt-4" id="advanceSearchResultDataDivId">
+                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3 mb-4">
+                    <div class="latest-artists">
+                        <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
+                            <div class="thumb">
+                                <img src="https://f000.backblazeb2.com/file/fineart-images/brunk-4-Dec-21-premier-and-emporium-auctions-february-11-13-2021-12781-252-lots-900-p1-1-500-a.jpg" class="card-img" alt="img">
+                            </div>
+                            <div class="artist-card">
+                                <h3>Title : <span>Le Passage du gué</span></h3>
+                                <h3>Artist : <span>Theodore Rousseau</span></h3>
+                                <h3 class="mb-3">Lot#309</h3>
+
+                                <h3>Medium : <span>oil on panel</span></h3>
+                                <h3 class="mb-3">Category : <span>paintings</span>
+                                </h3>
+
+                                <h3>Contemporary Curated</h3>
+                                <h3><span>Sotheby’s</span></h3>
+                                <h3 class="mb-3"><span>1 March 2023 I London</span>
+                                </h3>
+
+                                <h3>Estimate : <span>Login to view</span></h3>
+                                <h3>Price Sold : <span>Login to view</span></h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     <!-- ***** Main Banner Area End ***** -->
 
 
@@ -1255,9 +1393,9 @@ https://templatemo.com/tm-571-hexashop
 		    <a class="btn btn-slider" href="/auction/moreauctions/?atype=1">View More</a>
 	    	</div>
 	    </div>
-	</div> -->
+	</div> 
     </section>
-    </div>
+    </div> -->
 
 
     <div id="adminScreen">
