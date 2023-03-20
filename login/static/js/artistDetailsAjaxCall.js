@@ -10,6 +10,7 @@ const lastYearSellRateId = document.querySelector('#lastYearSellRateId')
 const lastYearAveSalePriceId = document.querySelector('#lastYearAveSalePriceId')
 const lastYearSoldPriceEstimatesId = document.querySelector('#lastYearSoldPriceEstimatesId')
 const auctionsDataDivID = document.querySelector('#pastauctions')
+const artsitFollowUnfollowId = document.querySelector('#artsitFollowUnfollowId')
 let pastUpcomingStrData = 'past'
 
 function htmlDataBinder(auctionData) {
@@ -181,6 +182,23 @@ function filterAuction(e) {
     pastUpcomingAuction(e, pastUpcomingStrData , queryParams)
 }
 
+function abbreviateNumber(value) {
+    let newValue = value;
+    if (value >= 1000) {
+        let suffixes = ["", "K", "M", "B","T"];
+        let suffixNum = Math.floor( (""+value).length/3 );
+        let shortValue = '';
+        for (let precision = 2; precision >= 1; precision--) {
+            shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
+            let dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
+            if (dotLessShortValue.length <= 2) { break; }
+        }
+        if (shortValue % 1 != 0)  shortValue = shortValue.toFixed(2);
+        newValue = shortValue+suffixes[suffixNum];
+    }
+    return newValue;
+}
+
 function getArtistDetails() {
     fetch(`/artist/getArtistDetails/?aid=${artistId}`, {
         method: 'GET',
@@ -204,9 +222,21 @@ function getArtistDetails() {
             }
             nationalityBirthDeathId.innerHTML = htmlData
             lastYearSoldLotsId.innerHTML = body.years_lot_sale
-            lastYearSellRateId.innerHTML = body.sell_through_rate + '%'
-            lastYearAveSalePriceId.innerHTML = body.avg_sale_price_usd
-            lastYearSoldPriceEstimatesId.innerHTML = body.mean_price_usd
+            lastYearSellRateId.innerHTML = Math.round(body.sell_through_rate) + '%'
+            lastYearAveSalePriceId.innerHTML = abbreviateNumber(Math.round(body.avg_sale_price_usd))
+            lastYearSoldPriceEstimatesId.innerHTML = Math.round(body.mean_price_usd) + '%'
+        })
+}
+
+function followUnfollowArtist(followUnfollowStr) {
+    artsitFollowUnfollowId.innerHTML = '<button class="btn btn-login btn-round ms-0" type="button">Please Wait!</button>'
+    fetch(`/artist/followUnfollowArtist/?artistId=${artistId}&followUnfollowStr=${followUnfollowStr}`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let htmlData = `<button class="btn btn-login btn-round ms-0" type="button" onclick="followUnfollowArtist('${body.msg}')">${body.msg}</button>`
+            artsitFollowUnfollowId.innerHTML = htmlData
         })
 }
 

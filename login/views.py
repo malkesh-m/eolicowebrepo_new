@@ -141,11 +141,20 @@ def myArtistDetails(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
-        artistId = request.GET.get('aid')
+        artistId = request.GET.get('aid').replace('"', '')
         userobj = request.user
         sessionkey = request.session.session_key
         context = {}
         context['username'] = userobj.username
+        followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
+        connList = connectToDb()
+        connList[1].execute(followUnfollowSelectQuery)
+        followUnfollowData = connList[1].fetchone()
+        disconnectDb(connList)
+        if followUnfollowData:
+            context['followUnfollow'] = True
+        else:
+            context['followUnfollow'] = False
         return render(request, 'myArtistDetails.html', context)
 
 
@@ -182,11 +191,40 @@ def myArtworkDetails(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
-        artistId = request.GET.get('awid')
+        lotId = request.GET.get('lid')
+
+        def getFollowUnfollowArtwork():
+            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND reference_table = 'fineart_artworks' AND referenced_table_id = (SELECT fal_artwork_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
+            connList = connectToDb()
+            connList[1].execute(followUnfollowSelect)
+            followUnfollowData = connList[1].fetchone()
+            disconnectDb(connList)
+            if followUnfollowData:
+                context['followUnfollowArtwork'] = True
+            else:
+                context['followUnfollowArtwork'] = False
+
+        def getFollowUnfollowArtist():
+            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND reference_table = 'fineart_artists' AND referenced_table_id = (SELECT fal_artist_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
+            connList = connectToDb()
+            connList[1].execute(followUnfollowSelect)
+            followUnfollowData = connList[1].fetchone()
+            disconnectDb(connList)
+            if followUnfollowData:
+                context['followUnfollowArtist'] = True
+            else:
+                context['followUnfollowArtist'] = False
+
+        artworkThread = Thread(target=getFollowUnfollowArtwork)
+        artworkThread.start()
+        artistThread = Thread(target=getFollowUnfollowArtist)
+        artistThread.start()
         userobj = request.user
         sessionkey = request.session.session_key
         context = {}
         context['username'] = userobj.username
+        artworkThread.join()
+        artistThread.join()
         return render(request, 'myArtworkDetails.html', context)
 
 

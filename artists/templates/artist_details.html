@@ -603,9 +603,17 @@
                         <p id="nationalityBirthDeathId"></p>
                     </div>
                 </div>
-                <div class="col-auto">
-                    <button class="btn btn-login btn-round ms-0" type="button">Follow</button>
-                </div>
+                {% if user.is_authenticated %}
+                    {% if followUnfollow %}
+                        <div class="col-auto" id="artsitFollowUnfollowId">
+                            <button class="btn btn-login btn-round ms-0" type="button" onclick="followUnfollowArtist('Unfollow')">Unfollow</button>
+                        </div>
+                    {% else %}
+                        <div class="col-auto" id="artsitFollowUnfollowId">
+                            <button class="btn btn-login btn-round ms-0" type="button" onclick="followUnfollowArtist('Follow')">Follow</button>
+                        </div>
+                    {% endif %}
+                {% endif %}
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -613,7 +621,7 @@
                         <img id="artistImageId" src=""  alt="img">
                     </div>
                 </div>
-                <div class="col-md-6 pl-md-5">
+                <div class="col-md-8 pl-md-5">
                     <div class="artists-details-content">
                         <h4 class="mb-3" id="aboutNameId">About</h4>
                         <p class="mb-1" id="artistBioId">
@@ -622,11 +630,38 @@
                             expatriate painter, sculptor, printmaker, ceramicist April 8, 1973, Mougins, France), Spanish expatriate painter, sculptor, printmaker, ceramicist -->
                         </p>
                         <a href="#" class="mb-4">Read More</a>
-                        <h6 class="mb-3">Artist Statistics</h6>
-                        <h5>Lots Sold Last Year : <span id="lastYearSoldLotsId"></span></h5>
+                        <h4 class="mb-3">Annual Performance</h4>
+                            
+                        <div class="row">
+                            <div class="col-md-6 col-xl-3 mb-4 mb-xl-0">
+                                <div class="box-annul">
+                                    <h5>Lots Sold</h5>
+                                    <p><span id="lastYearSoldLotsId"></span></p>
+                                    </div>
+                            </div>
+                            <div class="col-md-6 col-xl-3 mb-4 mb-xl-0">
+                                <div class="box-annul">
+                                    <h5>Sell Through Rate</h5>
+                                    <p><span id="lastYearSellRateId"></span></p>
+                                    </div>
+                            </div>
+                            <div class="col-md-6 col-xl-3 mb-4 mb-md-0">
+                                <div class="box-annul">
+                                    <h5>Average Sale Price (USD)</h5>
+                                    <p><span id="lastYearAveSalePriceId"></span></p>
+                                    </div>
+                            </div>
+                            <div class="col-md-6 col-xl-3 mb-4 mb-md-0">
+                                <div class="box-annul">
+                                    <h5>Price Over Estimates </h5>
+                                    <p><span id="lastYearSoldPriceEstimatesId"></span></p>
+                                    </div>
+                            </div>
+                        </div>
+                        <!-- <h5>Lots Sold Last Year : <span id="lastYearSoldLotsId"></span></h5>
                         <h5>Selling Rate : <span id="lastYearSellRateId"></span></h5>
                         <h5>Average Sale Price (USD): <span id="lastYearAveSalePriceId"></span></h5>
-                        <h5>Sold Price Above Estimates : <span id="lastYearSoldPriceEstimatesId"></span></h5>
+                        <h5>Sold Price Above Estimates : <span id="lastYearSoldPriceEstimatesId"></span></h5> -->
                     </div>
                 </div>
             </div>

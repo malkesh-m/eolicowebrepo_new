@@ -1659,3 +1659,26 @@ b {
 #btnsearch{
     background-color: #051747;
 }
+.box-annul{
+    background-color: #ececec;
+    text-align: center;
+}
+.box-annul h5{
+    background-color: #081f62;
+    font-size: 14p;
+    color: #fff !important;
+    text-align: center;
+    padding: 8px 4px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+}
+.box-annul p{
+    font-size: 23px;
+    font-weight: 600;
+    color: #000 !important;
+    padding: 20px 0;
+    margin: 0;
+}

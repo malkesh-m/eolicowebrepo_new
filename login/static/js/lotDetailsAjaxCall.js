@@ -26,12 +26,15 @@ const estimatesId = document.querySelector('#estimatesId')
 const estimatesUSDId = document.querySelector('#estimatesUSDId')
 const soldPriceId = document.querySelector('#soldPriceId')
 const soldPriceUSDId = document.querySelector('#soldPriceUSDId')
+const artsitFollowUnfollowId = document.querySelector('#artsitFollowUnfollowId')
+const artworkFollowUnfollowId = document.querySelector('#artworkFollowUnfollowId')
 let descData = ''
 let exhibitionData = ''
 let literatureData = ''
 let provenanceData = ''
 let apiArtistId = undefined
 let apiCategory = undefined
+let apiArtworkId = undefined
 
 function getRelatedLotsDataSetter(start) {
     document.querySelector('#relatedArtworkViewMoreId').remove()
@@ -99,6 +102,7 @@ function getLotDetailsDataSetter() {
         .then(response => response.json())
         .then(body => {
             apiArtistId = body.fa_artist_ID
+            apiArtworkId = body.fal_artwork_ID
             apiCategory = body.faa_artwork_category
             headerTitleId.innerHTML = body.faa_artwork_title
             image1Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image1}`
@@ -294,6 +298,30 @@ function readMore(descExhibiStr, readLessOrMore) {
                                         </div>`
         }
     }
+}
+
+function followUnfollowArtist(followUnfollowStr) {
+    artsitFollowUnfollowId.innerHTML = '<button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;" type="button">Please Wait!</button>'
+    fetch(`/artist/followUnfollowArtist/?artistId=${apiArtistId}&followUnfollowStr=${followUnfollowStr}`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let htmlData = `<button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtist('${body.msg}')">${body.msg} Artist</button>`
+            artsitFollowUnfollowId.innerHTML = htmlData
+        })
+}
+
+function followUnfollowArtwork(followUnfollowStr) {
+    artworkFollowUnfollowId.innerHTML = `<button class="btn btn-login btn-round ml-0  d-block" style="font-size: 12px; width: 100%;" type="button">Please Wait!</button>`
+    fetch(`/auction/followUnfollowArtwork/?artworkId=${apiArtworkId}&followUnfollowStr=${followUnfollowStr}`, {
+        method: 'GET'
+    })
+        .then(response => response.json())
+        .then(body => {
+            let htmlData = `<button class="btn btn-login btn-round ml-0  d-block" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtwork('${body.msg}')">${body.msg}</button>`
+            artworkFollowUnfollowId.innerHTML = htmlData
+        })
 }
 
 document.addEventListener('DOMContentLoaded', function () {

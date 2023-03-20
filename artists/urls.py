@@ -21,4 +21,5 @@ urlpatterns = [
     path('getArtistDetails/', views.getArtistDetails, name="getArtistDetails"),
     path('getArtistPastAuctions/', views.getArtistPastAuctions, name="getArtistPastAuctions"),
     path('getArtistUpcomingAuctions/', views.getArtistUpcomingAuctions, name="getArtistUpcomingAuctions"),
+    path('followUnfollowArtist/', views.followUnfollowArtist, name="followUnfollowArtist"),
 ]

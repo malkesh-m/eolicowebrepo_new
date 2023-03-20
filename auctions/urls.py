@@ -19,4 +19,5 @@ urlpatterns = [
     path('getAuctionArtworksData/', views.getAuctionArtworksData, name="getAuctionArtworksData"),
     path('getLotDetails/', views.getLotDetails, name="getLotDetails"),
     path('getRelatedLotsData/', views.getRelatedLotsData, name="getRelatedLotsData"),
+    path('followUnfollowArtwork/', views.followUnfollowArtwork, name='followUnfollowArtwork'),
 ]

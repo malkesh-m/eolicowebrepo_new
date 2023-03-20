@@ -435,10 +435,28 @@
                                 <h4 class="mb-2" id="titleId"></h4>
                                 <h4 class="mb-3" id="lotNoId"></h4>
                             </div>
-                            <div>
-                                <button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;  " type="button">Follow Artist</button>
-                                <button class="btn btn-login btn-round ml-0  d-block" style="font-size: 12px; width: 100%;" type="button">Add  to Collection</button>
-                            </div>
+                            {% if user.is_authenticated %}
+                                <div>
+                                    {% if followUnfollowArtwork %}
+                                        <div id="artsitFollowUnfollowId">
+                                            <button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtist('Unfollow')">Unfollow Artist</button>
+                                        </div>
+                                    {% else %}
+                                        <div id="artsitFollowUnfollowId">
+                                            <button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtist('Follow')">Follow Artist</button>
+                                        </div>
+                                    {% endif %}
+                                    {% if followUnfollowArtwork %}
+                                        <div id="artworkFollowUnfollowId">
+                                            <button class="btn btn-login btn-round ml-0  d-block" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtwork('Remove from Collection')">Remove From Collection</button>
+                                        </div>
+                                    {% else %}
+                                        <div id="artworkFollowUnfollowId">
+                                            <button class="btn btn-login btn-round ml-0  d-block" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtwork('Add to Collection')">Add  to Collection</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                         </div>
 
                         <h5 id="mediumId"></h5>

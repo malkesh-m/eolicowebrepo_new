@@ -40,6 +40,7 @@ from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconne
 from django.views.decorators.cache import cache_page
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.conf import settings
+from threading import Thread
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
@@ -507,14 +508,43 @@ def details(request):
     #         redis_instance.set('ac_allartists_%s'%lotobj.auction.id, pickle.dumps(allartists))
     #     except:
     #         pass
+    lotId = request.GET.get('lid')
     context = {}
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
     else:
         context['adminuser'] = 0
-    if request.user:
+    if request.user.is_authenticated:
+        def getFollowUnfollowArtwork():
+            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND reference_table = 'fineart_artworks' AND referenced_table_id = (SELECT fal_artwork_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
+            connList = connectToDb()
+            connList[1].execute(followUnfollowSelect)
+            followUnfollowData = connList[1].fetchone()
+            disconnectDb(connList)
+            if followUnfollowData:
+                context['followUnfollowArtwork'] = True
+            else:
+                context['followUnfollowArtwork'] = False
+
+        def getFollowUnfollowArtist():
+            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND reference_table = 'fineart_artists' AND referenced_table_id = (SELECT fal_artist_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
+            connList = connectToDb()
+            connList[1].execute(followUnfollowSelect)
+            followUnfollowData = connList[1].fetchone()
+            disconnectDb(connList)
+            if followUnfollowData:
+                context['followUnfollowArtist'] = True
+            else:
+                context['followUnfollowArtist'] = False
+
+        artworkThread = Thread(target=getFollowUnfollowArtwork)
+        artworkThread.start()
+        artistThread = Thread(target=getFollowUnfollowArtist)
+        artistThread.start()
         userobj = request.user
         context['username'] = userobj.username
+        artworkThread.join()
+        artistThread.join()
     template = loader.get_template('auction_details.html')
     return HttpResponse(template.render(context, request))
 
@@ -529,6 +559,35 @@ def getLotDetails(request):
     artworkDetailsData = connList[1].fetchone()
     disconnectDb(connList)
     return HttpResponse(json.dumps(artworkDetailsData, default=default))
+
+
+@login_required(login_url='/login/show/')
+def followUnfollowArtwork(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        context = {}
+        artworkId = request.GET.get('artworkId')
+        followUnfollowStr = request.GET.get('followUnfollowStr')
+        connList = connectToDb()
+        if followUnfollowStr == 'Add to Collection':
+            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND referenced_table_id = {artworkId} AND reference_table = 'fineart_artworks'"""
+            connList[1].execute(followUnfollowSelectQuery)
+            followUnfollowData = connList[1].fetchone()
+            if followUnfollowData is None:
+                followArtistQuery = f"""INSERT INTO user_favorites (user_id, referenced_table_id, reference_table, created) VALUES({request.user.id}, {artworkId}, 'fineart_artworks', '{datetime.datetime.now()}')"""
+                connList[1].execute(followArtistQuery)
+                connList[0].commit()
+                context['msg'] = 'Remove from Collection'
+            else:
+                context['msg'] = 'Remove from Collection'
+        elif followUnfollowStr == "Remove from Collection":
+            unfollowArtistQuery = f"""DELETE FROM user_favorites WHERE user_id = {request.user.id} AND referenced_table_id = {artworkId} AND reference_table = 'fineart_artworks'"""
+            connList[1].execute(unfollowArtistQuery)
+            connList[0].commit()
+            context['msg'] = 'Add to Collection'
+        disconnectDb(connList)
+        return HttpResponse(json.dumps(context))
     
 
 #@cache_page(CACHE_TTL)
