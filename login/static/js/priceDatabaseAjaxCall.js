@@ -160,7 +160,7 @@ function selectAutionHouse() {
             processResults: function (response) {
                 let data = $.map(response, function (dataObj) {
                     return {id: dataObj.cah_auction_house_name, text: dataObj.cah_auction_house_name}
-                });
+                })
                 return {results: data}
             },
         }
@@ -180,7 +180,7 @@ function selectArtist() {
             processResults: function (response) {
                 let data = $.map(response, function (dataObj) {
                     return {id: dataObj.fa_artist_name, text: dataObj.fa_artist_name}
-                });
+                })
                 return {results: data}
             },
         }
@@ -199,9 +199,9 @@ function selectArtwork() {
             },
             processResults: function (response) {
                 let data = $.map(response, function (dataObj) {
-                    // debugger
-                    return {id: dataObj.faa_artwork_title, text: dataObj.faa_artwork_title}
-                });
+                    let newTitle = dataObj.faa_artwork_title.replaceAll('\t', '').replaceAll('\r', '').replaceAll('\u0000', '').replaceAll('\n', '')
+                    return {id: newTitle, text: newTitle}
+                })
                 return {results: data}
             },
         }
