@@ -679,8 +679,11 @@
                                     <button class="nav-link" id="Overview-tab" data-toggle="tab" role="tab" aria-controls="Overview" aria-selected="false" onclick="pastUpcomingAuction(event, 'upcoming', '');">Upcoming
                                         Auctions</button>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item mr-3">
                                     <button class="nav-link active" id="Works-tab" data-toggle="tab" role="tab" aria-controls="Works" aria-selected="false" onclick="pastUpcomingAuction(event, 'past', '');">Past Auctions</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" id="analytics-tab" data-toggle="tab" role="tab" aria-controls="Works" aria-selected="false" onclick="advacedAnalytics(event)">Advanced Analytics</button>
                                 </li>
                             </ul>
                             <div class="page-show p-0">
@@ -1676,6 +1679,22 @@
                                             </div>
                                         </div>
                                     </div> -->
+                                </div>
+                                <div class="tab-content" id="advancedAnalytics">
+                                    <!-- <canvas id="yoyTotalSaleInUSDChartId" style="width:100%;max-width:600px"></canvas> -->
+                                    <figure class="highcharts-figure pb-5">
+                                        <div id="yoyTotalSaleChartId"></div>
+                                        <p class="highcharts-description">
+                                        </p>
+                                    </figure>
+                                    <figure class="highcharts-figure pb-5">
+                                        <div id="YoySellingCatAverageSellingPricePerCatChartId"></div>
+                                        <p class="highcharts-description"></p>
+                                    </figure>
+                                    <!-- <figure class="highcharts-figure pb-5">
+                                        <div id="artistPerformannceByRegionChartId"></div>
+                                        <p class="highcharts-description"></p>
+                                    </figure> -->
                                 </div>
                             </div>
                         </div>
@@ -3432,6 +3451,13 @@
             }
         });
     </script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    
     <script src="/static/js/artistDetailsAjaxCall.js"></script>
 </body>
 

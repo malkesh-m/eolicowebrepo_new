@@ -171,6 +171,18 @@ def myArtwork(request):
 
 
 @login_required(login_url='/login/show/')
+def artMarketAnalysis(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    else:
+        userobj = request.user
+        sessionkey = request.session.session_key
+        context = {}
+        context['username'] = userobj.username
+        return render(request, 'artMarketAnalysis.html', context)
+
+
+@login_required(login_url='/login/show/')
 def getMyArtworks(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')

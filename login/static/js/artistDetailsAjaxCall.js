@@ -10,7 +10,9 @@ const lastYearSellRateId = document.querySelector('#lastYearSellRateId')
 const lastYearAveSalePriceId = document.querySelector('#lastYearAveSalePriceId')
 const lastYearSoldPriceEstimatesId = document.querySelector('#lastYearSoldPriceEstimatesId')
 const auctionsDataDivID = document.querySelector('#pastauctions')
+const upcomingauctions = document.querySelector('#upcomingauctions')
 const artsitFollowUnfollowId = document.querySelector('#artsitFollowUnfollowId')
+const advancedAnalytics = document.querySelector('#advancedAnalytics')
 let pastUpcomingStrData = 'past'
 
 function htmlDataBinder(auctionData) {
@@ -35,25 +37,25 @@ function htmlDataBinder(auctionData) {
                                     </h3>
 
                                     <h3>Estimate : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_low_estimate} - ${auctionData.fal_lot_high_estimate}</span></h3>`
-                                    if (auctionData.cah_auction_house_currency_code === 'USD') {
-                                        if (auctionData.fal_lot_sale_price == 0) {
-                                            htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
-                                        }
-                                        else {
-                                        htmlData += `<h3>Price Sold : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_sale_price}</span></h3>`
-                                        }
-                                    }
-                                    else {
-                                        htmlData += `<h3>Estimate USD : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>`
-                                        if (auctionData.fal_lot_sale_price == 0) {
-                                            htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
-                                        }
-                                        else {
-                                            htmlData += `<h3>Price Sold : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_sale_price}</span></h3>
+    if (auctionData.cah_auction_house_currency_code === 'USD') {
+        if (auctionData.fal_lot_sale_price == 0) {
+            htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
+        }
+        else {
+            htmlData += `<h3>Price Sold : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_sale_price}</span></h3>`
+        }
+    }
+    else {
+        htmlData += `<h3>Estimate USD : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>`
+        if (auctionData.fal_lot_sale_price == 0) {
+            htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
+        }
+        else {
+            htmlData += `<h3>Price Sold : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_sale_price}</span></h3>
                                                         <h3>Price Sold USD : <span>${auctionData.fal_lot_sale_price_USD}</span></h3>`
-                                        }
-                                    }
-                                htmlData += `
+        }
+    }
+    htmlData += `
                                 </div>
                             </a>
                         </div>
@@ -90,6 +92,7 @@ function pastAuctionDataSet(queryParams, limit) {
 }
 
 function pastUpcomingAuction(e, pastUpcomingStr, queryParams) {
+    advancedAnalytics.style.display = 'none'
     pastUpcomingStrData = pastUpcomingStr
     let limit = document.querySelector('#inputGroupSelect01').value
     if (pastUpcomingStrData === 'past') {
@@ -98,6 +101,7 @@ function pastUpcomingAuction(e, pastUpcomingStr, queryParams) {
     else if (pastUpcomingStrData === 'upcoming') {
         upcomingAuctionDataSet(queryParams, limit)
     }
+    document.querySelector('#inputGroupSelect01').style.display = upcomingauctions.style.display = 'block'
 }
 
 function selectChange(e) {
@@ -179,22 +183,22 @@ function filterAuction(e) {
         queryParams = queryParams + `toDate=${toDateTextId.value}&`
     }
 
-    pastUpcomingAuction(e, pastUpcomingStrData , queryParams)
+    pastUpcomingAuction(e, pastUpcomingStrData, queryParams)
 }
 
 function abbreviateNumber(value) {
     let newValue = value;
     if (value >= 1000) {
-        let suffixes = ["", "K", "M", "B","T"];
-        let suffixNum = Math.floor( (""+value).length/3 );
+        let suffixes = ["", "K", "M", "B", "T"];
+        let suffixNum = Math.floor(("" + value).length / 3);
         let shortValue = '';
         for (let precision = 2; precision >= 1; precision--) {
-            shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
-            let dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
+            shortValue = parseFloat((suffixNum != 0 ? (value / Math.pow(1000, suffixNum)) : value).toPrecision(precision));
+            let dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '');
             if (dotLessShortValue.length <= 2) { break; }
         }
-        if (shortValue % 1 != 0)  shortValue = shortValue.toFixed(2);
-        newValue = shortValue+suffixes[suffixNum];
+        if (shortValue % 1 != 0) shortValue = shortValue.toFixed(2);
+        newValue = shortValue + suffixes[suffixNum];
     }
     return newValue;
 }
@@ -240,9 +244,262 @@ function followUnfollowArtist(followUnfollowStr) {
         })
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+function advacedAnalytics(e) {
+    document.querySelector('#inputGroupSelect01').style.display = upcomingauctions.style.display = 'none'
+    advancedAnalytics.style.display = 'block'
+}
 
+function yoyTotalSaleInUSDChartMaker() {
+    Highcharts.chart('yoyTotalSaleChartId', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            align: 'center',
+            text: 'YOY Total Sale'
+        },
+        accessibility: {
+            announceNewData: {
+                enabled: true
+            }
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: 'Total Sales In Million (USD)'
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y}M'
+                }
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}M</b> of total<br/>'
+        },
+
+        series: [
+            {
+                name: 'Years',
+                colorByPoint: false,
+                data: [
+                    {
+                        name: '2013',
+                        y: 63
+                    },
+                    {
+                        name: '2014',
+                        y: 19
+                    },
+                    {
+                        name: '2015',
+                        y: 10
+                    },
+                    {
+                        name: '2016',
+                        y: 15
+                    },
+                    {
+                        name: '2017',
+                        y: 20
+                    },
+                    {
+                        name: '2018',
+                        y: 23
+                    },
+                    {
+                        name: '2019',
+                        y: 15
+                    },
+                    {
+                        name: '2020',
+                        y: 15
+                    },
+                    {
+                        name: '2021',
+                        y: 20
+                    },
+                    {
+                        name: '2022',
+                        y: 23
+                    },
+                    {
+                        name: '2023',
+                        y: 15
+                    }
+                ]
+            }
+        ]
+    })
+}
+
+function YoySellingCatAverageSellingPricePerCatChartMaker() {
+    Highcharts.chart('YoySellingCatAverageSellingPricePerCatChartId', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'YOY Selling Categories & Average Selling Price Per Category'
+        },
+        xAxis: {
+            categories: [
+                '2013',
+                '2014',
+                '2015',
+                '2016',
+                '2017',
+                '2018',
+                '2019',
+                '2020',
+                '2021',
+                '2022',
+                '2023'
+            ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Rainfall (mm)'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Paintings',
+            data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 85, 75]
+
+        }, {
+            name: 'Work on Paper',
+            data: [55, 90, 80, 70, 60, 50, 40, 30, 20, 10, 25]
+
+        }, {
+            name: 'Sculptures',
+            data: [5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 50]
+
+        }, {
+            name: 'Prints',
+            data: [60, 95, 85, 75, 65, 55, 45, 35, 25, 15, 5]
+
+        }]
+    });
+}
+
+// function artistPerformancesByRegionChartMaker() {
+//     Highcharts.chart('artistPerformannceByRegionChartId', {
+//         chart: {
+//             type: 'bar'
+//         },
+//         title: {
+//             align: 'center',
+//             text: 'Browser market shares. January, 2022'
+//         },
+//         accessibility: {
+//             announceNewData: {
+//                 enabled: true
+//             }
+//         },
+//         xAxis: {
+//             type: 'category'
+//         },
+//         yAxis: {
+//             title: {
+//                 text: 'Total percent market share'
+//             }
+
+//         },
+//         plotOptions: {
+//             series: {
+//                 borderWidth: 0,
+//                 dataLabels: {
+//                     enabled: true,
+//                     format: '{point.y:.1f}%'
+//                 }
+//             }
+//         },
+
+//         tooltip: {
+//             headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+//             pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+//         },
+
+//         series: [
+//             {
+//                 name: 'Browsers',
+//                 colorByPoint: true,
+//                 data: [
+//                     {
+//                         name: 'Chrome',
+//                         y: 63.06,
+//                         drilldown: 'Chrome'
+//                     },
+//                     {
+//                         name: 'Safari',
+//                         y: 19.84,
+//                         drilldown: 'Safari'
+//                     },
+//                     {
+//                         name: 'Firefox',
+//                         y: 4.18,
+//                         drilldown: 'Firefox'
+//                     },
+//                     {
+//                         name: 'Edge',
+//                         y: 4.12,
+//                         drilldown: 'Edge'
+//                     },
+//                     {
+//                         name: 'Opera',
+//                         y: 2.33,
+//                         drilldown: 'Opera'
+//                     },
+//                     {
+//                         name: 'Internet Explorer',
+//                         y: 0.45,
+//                         drilldown: 'Internet Explorer'
+//                     },
+//                     {
+//                         name: 'Other',
+//                         y: 1.582,
+//                         drilldown: null
+//                     }
+//                 ]
+//             }
+//         ]
+//     });
+
+// }
+
+document.addEventListener('DOMContentLoaded', function () {
+    advancedAnalytics.style.display = 'none'
     getArtistDetails()
     pastAuctionDataSet('', 50)
+    yoyTotalSaleInUSDChartMaker()
+    YoySellingCatAverageSellingPricePerCatChartMaker()
+    // artistPerformancesByRegionChartMaker()
 
 })
