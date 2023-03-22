@@ -1726,12 +1726,11 @@ b {
 
 .highcharts-figure,
 .highcharts-data-table table {
-    min-width: 310px;
-    max-width: 800px;
+    width: 100%;
     margin: 1em auto;
 }
 
-#yoyTotalSaleChartId, #YoySellingCatAverageSellingPricePerCatChartId, #topPerformancesOfTheYearChartId, #topGeographicalLocationChartId {
+#yoyTotalSaleChartId, #YoySellingCatAverageSellingPricePerCatChartId, #topPerformancesOfTheYearChartId, #topGeographicalLocationChartId, #artistAnnualPerformanceChartId {
     height: 500px;
 }
 
@@ -1747,7 +1746,7 @@ b {
 
 .highcharts-data-table caption {
     padding: 1em 0;
-    font-size: 1.2em;
+    font-size: 5.2em;
     color: #555;
 }
 
