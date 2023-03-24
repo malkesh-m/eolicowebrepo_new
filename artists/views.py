@@ -510,6 +510,20 @@ def yoySellingCategoryChart(request):
         return HttpResponse(json.dumps(artistData))
 
 
+def artistPerformanceByCountryChart(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        artistId = request.GET.get('artistId')
+        lotYear = request.GET.get('lotYear')
+        artistSelectQuery = f"""SELECT totalSalePrice, averageSalePrice, lotsCountry, lotsYear FROM artistPerformanceByCountry WHERE artistID = {artistId} AND lotsYear = '{lotYear}' ORDER BY lotsYear DESC"""
+        connList = connectToDb()
+        connList[1].execute(artistSelectQuery)
+        artistData = connList[1].fetchall()
+        disconnectDb(connList)
+        return HttpResponse(json.dumps(artistData))
+
+
 @login_required(login_url='/login/show/')
 def followUnfollowArtist(request):
     if request.method != 'GET':

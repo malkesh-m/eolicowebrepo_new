@@ -308,8 +308,12 @@ function artistAnnualPerformanceChartMaker() {
                     }
                 },
                 tooltip: {
+                    // headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    // pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    //     '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                    // footerFormat: '</table>',
                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    pointFormat: '<tr><td style="color:{series.color};padding:0"> <br>Average of {series.name} (USD): </td>' +
                         '<td style="padding:0"><b>{point.y}</b></td></tr>',
                     footerFormat: '</table>',
                     shared: true
@@ -437,7 +441,7 @@ function YoySellingCatAverageSellingPricePerCatChartMaker() {
                 },
                 tooltip: {
                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">Average of {series.name}: </td>' +
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">Average of {series.name} (USD): </td>' +
                         '<td style="padding:0"><b>{point.avg:.1f} m</b></td></tr>',
                     footerFormat: '</table>',
                     shared: true,
@@ -470,90 +474,159 @@ function YoySellingCatAverageSellingPricePerCatChartMaker() {
         })
 }
 
-// function artistPerformancesByRegionChartMaker() {
-//     Highcharts.chart('artistPerformannceByRegionChartId', {
-//         chart: {
-//             type: 'bar'
-//         },
-//         title: {
-//             align: 'center',
-//             text: 'Browser market shares. January, 2022'
-//         },
-//         accessibility: {
-//             announceNewData: {
-//                 enabled: true
-//             }
-//         },
-//         xAxis: {
-//             type: 'category'
-//         },
-//         yAxis: {
-//             title: {
-//                 text: 'Total percent market share'
-//             }
+async function getCountryCode(countryName) {
+    let countryCode = await fetch(`https://restcountries.com/v3.1/name/${countryName}`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            return body[0].cca2
+        })
+    return countryCode
+}
 
-//         },
-//         plotOptions: {
-//             series: {
-//                 borderWidth: 0,
-//                 dataLabels: {
-//                     enabled: true,
-//                     format: '{point.y:.1f}%'
-//                 }
-//             }
-//         },
+async function artistPerformancesByRegionChartMaker() {
+    fetch(`/artist/artistPerformanceByCountryChart/?artistId=${artistId}&lotYear=2012`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let myDataArray = []
+            body.forEach(obj => {
+                myDataArray.push({name: obj.lotsCountry, code: getCountryCode(obj.lotsCountry)})
+            })
+            console.log(myDataArray)
+        })
+    // (async () => {
 
-//         tooltip: {
-//             headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-//             pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-//         },
+        const topology = await fetch(
+            'https://code.highcharts.com/mapdata/custom/world.topo.json'
+        ).then(response => response.json());
+    
+        function drawChart(data) {
+            return Highcharts.mapChart('artistPerformanceByCountry', {
+                chart: {
+                    map: topology,
+                    borderWidth: 1
+                },
+    
+                colors: ['rgba(19,64,117,0.05)', 'rgba(19,64,117,0.2)', 'rgba(19,64,117,0.4)',
+                    'rgba(19,64,117,0.5)', 'rgba(19,64,117,0.6)', 'rgba(19,64,117,0.8)', 'rgba(19,64,117,1)'],
+    
+                title: {
+                    text: 'Population density by country (/km²)',
+                    align: 'left'
+                },
+    
+                mapNavigation: {
+                    enabled: true,
+                    buttonOptions: {
+                        align: 'right'
+                    }
+                },
+    
+                mapView: {
+                    fitToGeometry: {
+                        type: 'MultiPoint',
+                        coordinates: [
+                            // Alaska west
+                            [-164, 54],
+                            // Greenland north
+                            [-35, 84],
+                            // New Zealand east
+                            [179, -38],
+                            // Chile south
+                            [-68, -55]
+                        ]
+                    }
+                },
+    
+                legend: {
+                    title: {
+                        text: 'Individuals per km²',
+                        style: {
+                            color: ( // theme
+                                Highcharts.defaultOptions &&
+                                Highcharts.defaultOptions.legend &&
+                                Highcharts.defaultOptions.legend.title &&
+                                Highcharts.defaultOptions.legend.title.style &&
+                                Highcharts.defaultOptions.legend.title.style.color
+                            ) || 'black'
+                        }
+                    },
+                    align: 'left',
+                    verticalAlign: 'bottom',
+                    floating: true,
+                    layout: 'vertical',
+                    valueDecimals: 0,
+                    backgroundColor: ( // theme
+                        Highcharts.defaultOptions &&
+                        Highcharts.defaultOptions.legend &&
+                        Highcharts.defaultOptions.legend.backgroundColor
+                    ) || 'rgba(255, 255, 255, 0.85)',
+                    symbolRadius: 0,
+                    symbolHeight: 14
+                },
+    
+                colorAxis: {
+                    dataClasses: [{
+                        to: 3
+                    }, {
+                        from: 3,
+                        to: 10
+                    }, {
+                        from: 10,
+                        to: 30
+                    }, {
+                        from: 30,
+                        to: 100
+                    }, {
+                        from: 100,
+                        to: 300
+                    }, {
+                        from: 300,
+                        to: 1000
+                    }, {
+                        from: 1000
+                    }]
+                },
+    
+                series: [{
+                    data: data,
+                    joinBy: ['iso-a2', 'code'],
+                    animation: true,
+                    name: 'Population density',
+                    states: {
+                        hover: {
+                            color: '#a4edba'
+                        }
+                    },
+                    tooltip: {
+                        valueSuffix: '/km²'
+                    },
+                    shadow: false
+                }]
+            });
+        }
+    
+        var d = [ {
+            code: "US",
+            //name: "Yemen, Rep.",
+            value: 46
+        }, {
+            code: "ZM",
+            //name: "Zambia",
+            value: 17
+        }, {
+            code: "ZW",
+            //name: "Zimbabwe",
+            value: 32
+        }];
+        drawChart(d)
+    
+    
 
-//         series: [
-//             {
-//                 name: 'Browsers',
-//                 colorByPoint: true,
-//                 data: [
-//                     {
-//                         name: 'Chrome',
-//                         y: 63.06,
-//                         drilldown: 'Chrome'
-//                     },
-//                     {
-//                         name: 'Safari',
-//                         y: 19.84,
-//                         drilldown: 'Safari'
-//                     },
-//                     {
-//                         name: 'Firefox',
-//                         y: 4.18,
-//                         drilldown: 'Firefox'
-//                     },
-//                     {
-//                         name: 'Edge',
-//                         y: 4.12,
-//                         drilldown: 'Edge'
-//                     },
-//                     {
-//                         name: 'Opera',
-//                         y: 2.33,
-//                         drilldown: 'Opera'
-//                     },
-//                     {
-//                         name: 'Internet Explorer',
-//                         y: 0.45,
-//                         drilldown: 'Internet Explorer'
-//                     },
-//                     {
-//                         name: 'Other',
-//                         y: 1.582,
-//                         drilldown: null
-//                     }
-//                 ]
-//             }
-//         ]
-//     });
-
-// }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     advancedAnalytics.style.display = 'none'
@@ -562,6 +635,6 @@ document.addEventListener('DOMContentLoaded', function () {
     artistAnnualPerformanceChartMaker()
     yoyTotalSaleInUSDChartMaker()
     YoySellingCatAverageSellingPricePerCatChartMaker()
-    // artistPerformancesByRegionChartMaker()
+    artistPerformancesByRegionChartMaker()
 
 })

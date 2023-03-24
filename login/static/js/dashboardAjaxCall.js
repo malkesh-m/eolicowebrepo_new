@@ -128,63 +128,41 @@ function getFollowedArtistsCounter() {
     })
         .then(response => response.json())
         .then(body => {
-            totalFollowedArtistId.innerHTML = body.user_artist_followed_counts
+            // totalFollowedArtistId.innerHTML = body.user_artist_followed_counts
             // let xValues = [`Total Followed: ${body.user_artist_followed_counts}`, `Followed This Week: ${body.this_week_followed_artist_counts}`]
             // let yValues = [body.user_artist_followed_counts, body.this_week_followed_artist_counts]
             // let barColors = ["#85C1E9", "#F8C471"]
             // chartMaker("Artits", xValues, yValues, barColors)
             
-        })
-        Highcharts.chart('Artists', {
-            chart: {
-                type: 'variablepie'
-            },
-            title: {
-                text: 'Countries compared by population density and total area, 2022.',
-                align: 'left'
-            },
-            tooltip: {
-                headerFormat: '',
-                pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name}</b><br/>' +
-                    'Area (square km): <b>{point.y}</b><br/>' +
-                    'Population density (people per square km): <b>{point.z}</b><br/>'
-            },
-            series: [{
-                minPointSize: 10,
-                innerSize: '20%',
-                zMin: 0,
-                name: 'countries',
-                data: [{
-                    name: 'Spain',
-                    y: 505992,
-                    z: 20
-                }, {
-                    name: 'France',
-                    y: 551695,
-                    z: 20
-                }, {
-                    name: 'Poland',
-                    y: 312679,
-                    z: 20
-                }, {
-                    name: 'Czech Republic',
-                    y: 78865,
-                    z: 20
-                }, {
-                    name: 'Italy',
-                    y: 301336,
-                    z: 20
-                }, {
-                    name: 'Switzerland',
-                    y: 41284,
-                    z: 20
-                }, {
-                    name: 'Germany',
-                    y: 357114,
-                    z: 20
+            Highcharts.chart('Artists', {
+                chart: {
+                    type: 'variablepie'
+                },
+                title: {
+                    text: `Total Artists Followed: ${body.user_artist_followed_counts}`,
+                    align: 'center'
+                },
+                tooltip: {
+                    headerFormat: '',
+                    pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name} </b>'
+                },
+                series: [{
+                    minPointSize: 10,
+                    innerSize: '20%',
+                    zMin: 0,
+                    name: 'Artists',
+                    data: [{
+                        name: `Total Followed: ${body.user_artist_followed_counts}`,
+                        y: body.user_artist_followed_counts,
+                        z: 2
+                    }, {
+                        name: `Followed This Week: ${body.this_week_followed_artist_counts}`,
+                        y: body.this_week_followed_artist_counts,
+                        z: 2
+                    }]
                 }]
-            }]
-        });
+            });
+        })
         
 }
 
@@ -194,12 +172,60 @@ function getFollowedArtworksCounter() {
     })
         .then(response => response.json())
         .then(body => {
-            totalFollowedArtworksId.innerHTML = body.user_artwork_followed_counts
-            // let otherValues = body.user_artwork_followed_counts - (body.forPaintingsFollowed + body.forPrintsFollowed + body.forWorkOnPaperFollowed + body.forSculpturesFollowed + body.forPhotographsFollowed + body.forMiniaturesFollowed)
+            // totalFollowedArtworksId.innerHTML = body.user_artwork_followed_counts
+            let otherValues = body.user_artwork_followed_counts - (body.forPaintingsFollowed + body.forPrintsFollowed + body.forWorkOnPaperFollowed + body.forSculpturesFollowed + body.forPhotographsFollowed + body.forMiniaturesFollowed)
             // let xValues = [`Paintings: ${body.forPaintingsFollowed}`, `Prints: ${body.forPrintsFollowed}`, `Works on Paper: ${body.forWorkOnPaperFollowed}`, `Sculptures: ${body.forSculpturesFollowed}`, `Photographs: ${body.forPhotographsFollowed}`, `Miniatures: ${body.forMiniaturesFollowed}`, `Others: ${otherValues}`]
             // let yValues = [body.forPaintingsFollowed, body.forPrintsFollowed, body.forWorkOnPaperFollowed, body.forSculpturesFollowed, body.forPhotographsFollowed, body.forMiniaturesFollowed, otherValues]
             // let barColors = ["#76D7C4", "#7FB3D5", "#F7DC6F", "#AF7AC5", "#F5B041", "#5499C7", "#5D6D7E"]
             // chartMaker("Artworks", xValues, yValues, barColors)
+            Highcharts.chart('Artworks', {
+                chart: {
+                    type: 'variablepie'
+                },
+                title: {
+                    text: `Total Artworks Followed: ${body.user_artwork_followed_counts}`,
+                    align: 'center'
+                },
+                tooltip: {
+                    headerFormat: '',
+                    pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name} </b>'
+                },
+                series: [{
+                    minPointSize: 10,
+                    innerSize: '20%',
+                    zMin: 0,
+                    name: 'Artworks',
+                    data: [{
+                        name: `Paintings: ${body.forPaintingsFollowed}`,
+                        y: body.forPaintingsFollowed,
+                        z: 2
+                    }, {
+                        name: `Prints: ${body.forPrintsFollowed}`,
+                        y: body.forPrintsFollowed,
+                        z: 2
+                    }, {
+                        name: `Works on Paper: ${body.forWorkOnPaperFollowed}`,
+                        y: body.forWorkOnPaperFollowed,
+                        z: 2
+                    }, {
+                        name: `Sculptures: ${body.forSculpturesFollowed}`,
+                        y: body.forSculpturesFollowed,
+                        z: 2
+                    }, {
+                        name: `Photographs: ${body.forPhotographsFollowed}`,
+                        y: body.forPhotographsFollowed,
+                        z: 2
+                    }, {
+                        name: `Miniatures: ${body.forMiniaturesFollowed}`,
+                        y: body.forMiniaturesFollowed,
+                        z: 2
+                    }, {
+                        name: `Others: ${otherValues}`,
+                        y: otherValues,
+                        z: 2
+                    }]
+                }]
+            });
         })
 }
 

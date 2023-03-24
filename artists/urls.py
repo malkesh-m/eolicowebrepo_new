@@ -25,4 +25,5 @@ urlpatterns = [
     path('artistAnnualPerformanceChart/', views.artistAnnualPerformanceChart, name='artistAnnualPerformanceChart'),
     path('yoyTotalSaleAverageChart/', views.yoyTotalSaleAverageChart, name='yoyTotalSaleAverageChart'),
     path('yoySellingCategoryChart/', views.yoySellingCategoryChart, name='yoySellingCategoryChart'),
+    path('artistPerformanceByCountryChart/', views.artistPerformanceByCountryChart, name="artistPerformanceByCountryChart"),
 ]

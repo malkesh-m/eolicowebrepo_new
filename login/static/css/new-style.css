@@ -16,7 +16,7 @@ body {
 }
 
 .search-bg .input-group {
-    width: 56% !important;
+    width: 70% !important;
     margin: auto;
 }
 
@@ -30,9 +30,7 @@ body {
 }
 
 .search-bg h4 {
-    color: #051747;
-    font-size:18px;
-    font-weight:500;
+    color: #535f80;
 }
 
 .home-content h3 {
@@ -1360,7 +1358,7 @@ li {
 
 #myCarousel .carousel-item {
     height: 100%;
-    min-height: 450px;
+    min-height: 550px;
 }
 
 b {
@@ -1552,7 +1550,7 @@ b {
 
 .slider-img {
     width: 600px;
-    height: 420px;
+    height: 500px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -1560,7 +1558,7 @@ b {
 }
 
 #myCarousel .carousel-item p {
-    font-size: 24px;
+    font-size: 26px;
     color: #fff;
     font-weight: 600;
     line-height: 36px;
@@ -1569,11 +1567,11 @@ b {
 
 #myCarousel .carousel-item h4 {
     line-height: 32px;
-    font-size: 40px;
+    font-size: 46px;
 }
 
 .h5-style {
-    font-size: 24px !important;
+    font-size: 26px !important;
 }
 
 @media (max-width:767px) {
@@ -1771,102 +1769,3 @@ b {
 .highcharts-data-table tr:hover {
     background: #f1f7ff;
 }
-.art-database .art-database-text h3{
-    font-size: 26px;
-    font-weight: 500;
-    color: #535f80;
-}
-.art-database .art-database-text img{
-    border-radius:10px;
-}
-.art-market {
-    padding: 100px 0;
-}
-    .art-market .art-market-text h3 {
-        font-size: 30px;
-        font-weight: 600;
-        color: #081f62;
-        margin-bottom: 20px;
-    }
-    .art-market .art-market-text ul li,
-    .art-market .art-market-text ul {
-        font-size: 20px;
-        list-style: inside;
-        color:#081f62;
-    }
-    .art-market .art-market-text h6 {
-        font-size: 20px;
-        line-height: 30px;
-        font-weight: 500;
-        color: #535f80;
-    }
-.our-service {
-    margin-bottom: 100px;
-    padding: 80px 0;
-    background-color: #f0f4ff;
-}
-    .our-service img{
-        margin:auto;
-        width:100px;
-    }
-    .our-service h3 {
-        font-size: 36px;
-        font-weight: 600;
-        color: #081f62;
-        margin-bottom: 30px;
-        text-transform: uppercase;
-    }
-.service-details{
-    margin-bottom:100px;
-}
-        .service-details .service-details-text p {
-            font-size: 16px;
-            line-height: 25px;
-            color: #535f80;
-        }
-    .service-details .service-details-text h3 {
-        font-size: 22px;
-        color: #081f62;
-        font-weight: 700;
-        margin: 12px 0 8px;
-        text-transform:uppercase;
-    }
-    .service-details .service-details-text img{
-        width:250px;
-        height:250px;
-    }
-    @media(max-width:767px){
-        .art-database .art-database-text h3 {
-            font-size: 20px;
-        }
-        .our-service h3 {
-            font-size: 30px;
-            margin-bottom: 20px;
-        }
-        .art-market {
-            padding: 50px 0;
-        }
-        .our-service {
-            margin-bottom: 50px;
-            padding: 50px 0;
-        }
-            .our-service img {
-                width: 80px;
-                margin-bottom: 10px;
-            }
-        .service-details .service-details-text h3 {
-            font-size: 18px;
-        }
-    }
-    @media(min-width:768px) and (max-width: 991px){
-        .art-database .art-database-text h3 {
-            font-size: 18px;
-        }
-        .art-market .art-market-text h6 {
-            font-size: 18px;
-            line-height: 25px;
-        }
-        .art-market .art-market-text ul li, .art-market .art-market-text ul {
-            font-size: 16px;
-        }
-    }
