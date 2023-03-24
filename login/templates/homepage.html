@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
           rel="stylesheet">
-    <link href="/static/font/GT-Super/stylesheet.css"/>
+    <link href="/static/font/GT-Super/stylesheet.css" />
 
     <title>ArtBidder Home</title>
 
@@ -361,7 +361,7 @@
                 <!-- </a> -->
                 <div class="navbar-brand">
                     <a class="navbar-brand" href="/">
-                        <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
+                        <img src="/static/images/email-logo.png" style="height: 70px;" alt="">
                     </a>
                 </div>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
@@ -465,7 +465,7 @@
                 <div class="col-lg-12">
                     <div class="section-heading text-center">
                         <h2>My Favourites</h2>
-                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span> 
+                        <!-- <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
                         <hr>
                     </div>
                 </div>
@@ -484,7 +484,7 @@
                                     <a href="/artist/details/?aid={{favdata.3}}" style="color:#000000;">
                                         <h4>{{favname}}</h4>
                                         <h6>{{favdata.2}}</h6>
-                                        <!-- <h6>{{favdata.4}}</h6> 
+                                        <!-- <h6>{{favdata.4}}</h6>
                                     </a>
                                     {% if adminuser == 1 %}
                                     <div>
@@ -526,7 +526,7 @@
                             </div>
                             {% endfor %}
                         </div>
-                        
+
                                     <div class="owl-men-item owl-carousel">
                                         {% for ename, edata in events.items %}
                                         <div class="item">
@@ -543,7 +543,7 @@
                                         </div>
                                         {% endfor %}
                                     </div>
-                        
+
                         <div class="container">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -647,7 +647,12 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="search-bg">
-                        <h2 class="heading-style">Your Art Market Expert</h2>
+                        <h2 class="heading-style mb-2">
+                            ARTBIDER.COM
+                        </h2>
+                        <p class="mb-3" style=" font-size: 16px; font-weight: 600; color: #111045;">
+                            Your Art Market Expert - Specialized Art Market Research and Information
+                        </p>
                         <div class="input-group mb-3">
                             <input class='form-control  rounded-0' name='search' id='search' maxLength="200"
                                    placeholder="search..." />
@@ -883,564 +888,779 @@
                 </button>
             </div>-->
         </div>
-        <div class="latest-artists actions-result">
+        <div class="container">
+            <div class="art-database">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="art-database-text">
+                            <div class="row mb-4 align-items-center">
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <img src="/static/images/art-icon-1.png" />
+                                </div>
+                                <div class="col-md-9">
+                                    <h3>
+                                        Artbider Price Database - Global art market information at one single place
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="row mb-4 align-items-center">
+                                <div class="col-md-3  mb-3 mb-md-0">
+                                    <img src="/static/images/art-icon-2.png" />
+                                </div>
+                                <div class="col-md-9 ">
+                                    <h3>
+                                        Art market insights and daily Auctions Analysis
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-md-3  mb-3 mb-md-0">
+                                    <img src="/static/images/art-icon-3.png" />
+                                </div>
+                                <div class="col-md-9">
+                                    <h3>
+                                        Collection management of your favorite artists & artworks
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-4 mt-md-0">
+                        <div class="art-database-img">
+                            <img src="/static/images/database.png" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="art-market">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="art-market-img">
+                            <img src="/static/images/art-market.png" class="img-fluid" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="art-market-text">
+                            <h3>
+                                Art Market Analysis
+                            </h3>
+                            <h6>
+                                Get the Art Market insights from our team of experts and specialized AI based tools. Latest market trends, top artists & auctions and  many more to keep you one step ahead.
+                            </h6>
+                            <ul class="my-3">
+                                <li>
+                                    <b>Artists Advanced Analytics</b>
+                                </li>
+                                <li>
+                                    <b>Latest Market Trend</b>
+                                </li>
+                                <li>
+                                    <b>Top Artworks & Auctions</b>
+                                </li>
+                                <li>
+                                    <b>Share, Download & Print your research</b>
+                                </li>
+                            </ul>
+                            <h6>
+                                We simplify your research by providing you the most precise and up-to date art market information
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="our-service">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-12 text-center">
+                        <h3>Explore our Services</h3>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <img src="/static/images/service-1.png" />
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <img src="/static/images/service-2.png" style="width:140px;" />
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <img src="/static/images/service-3.png" />
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <img src="/static/images/service-4.png" />
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <img src="/static/images/service-5.png" />
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <img src="/static/images/service-6.png" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="service-details">
+                <div class="service-details-text">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-6 text-center">
+                            <img src="/static/images/service-1.png" />
+                        </div>
+                        <div class="col-md-6">
+                            <h3>
+                                PRICE DATABASE
+                            </h3>
+                            <p>
+                                Artbider offers a keyword-search to a comprehensive price database of over 10 million auction results dating back to 1970, collected and curated from 1500 auction houses with classified details like Title, Categories, Medium, Artwork Dates etc.
+                            </p>
+                            <p>
+                                You can access more than 500,000 artists records, with their market performance, bio’s and art genre.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-6">
+                            <h3>
+                                Market Alerts
+                            </h3>
+                            <p>
+                                Always be ahead of your competition with our latest art market updates, including upcoming auctions, news, and events.
+                            </p>
+                            <p>
+                                Receive timely alerts of your favorite artists on their upcoming artworks and events making sure you never miss a chance to bid on your desired artwork.
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <img src="/static/images/service-2.png" style="width:unset;" />
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-6 text-center">
+                            <img src="/static/images/service-3.png" />
+                        </div>
+                        <div class="col-md-6">
+                            <h3>
+                                MARKET UPDATES
+                            </h3>
+                            <p>
+                                Stay on top of the latest art market updates on Upcoming Auctions, News and Events.
+                            </p>
+                            <p>
+                                Our daily market analysis keep you updated with the top artists, top sales and latest market trends.
+                                Be one step ahead with our exclusively created art market updates.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-6">
+                            <h3>
+                                Artist Performance & Insights
+                            </h3>
+                            <p>
+                                Get full insights of your favorite  artist performance
+                            </p>
+                            <p>
+                                Our advanced algorithms will work for you and provide you all the key indicators of your favourite artists and auctions - total lots sold, average sold price, selling rate, top performing countries and more.
+                            </p>
+                            <p>
+                                With Artbider you will make better judgements.
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <img src="/static/images/service-4.png" />
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-6 text-center">
+                            <img src="/static/images/service-5.png" />
+                        </div>
+                        <div class="col-md-6">
+                            <h3>
+                                Advanced Analytics
+                            </h3>
+                            <p>
+                                Artbider offers the most exclusive art market research, top sales, trending artists and many more.
+                            </p>
+                            <p>
+                                You can Save, Download and Print your analysis  and research with the help of our advanced interactive tools.
+                            </p>
+                            <p>
+                                Our Advanced Analytics helps you to make better market decisions.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h3>
+                                COLLECTION MANAGEMENT
+                            </h3>
+                            <p>
+                                Create and manage your collection of favorite Artworks, Artists and Auctions.
+                            </p>
+                            <p>
+                                Our <b>Interactive Dashboards </b>gives you the complete overview of your favourite artists & artworks and their performance.
+                            </p>
+                            <p>
+                                Discover more with our specialized information system.
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <img src="/static/images/service-6.png" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--<div class="latest-artists actions-result">
             <div class="container">
                 <div class="">
                     <h3 class="heading-style mb-2">Top Artists</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>Top Preforming Artists</b> here</p>
                     <div class="home-demo">
-                        <div class="owl-carousel owl-theme" id="getTrendingArtistId">
+                        <div class="owl-carousel owl-theme" id="getTrendingArtistId">-->
+        <!-- {% for trendingArtist in trendingArtists %}
+        <div class="item">
+            <a href=/artist/details/?aid="{{ trendingArtist.fa_artist_ID }}" class="latest-card">
+                <img src="https://f000.backblazeb2.com/file/fineart-images/{{ trendingArtist.fa_artist_image }}"
+                    class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        {% if trendingArtist.fa_artist_name|length > 17 %}
+                        <h4>{{ trendingArtist.fa_artist_name|slice:14 }}...</h4>
+                        {% else %}
+                        <h4>{{ trendingArtist.fa_artist_name }}</h4>
+                        {% endif %}
+                        <p>View Details</p>
+                    </div>
+                    <span>{{ trendingArtist.fa_artist_nationality }}, {{ trendingArtist.fa_artist_birth_year }} - {{ trendingArtist.fa_artist_death_year }}</span>
+                </div>
+            </a>
+        </div>
+        {% endfor %} -->
+        <!-- <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h4>Pablo Picasso</h4>
+                        <p>View Details</p>
+                    </div>
+                    <span>Spanish, 1881 - 1973</span>
+                </div>
+            </a>
+        </div>
+        <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h4>Pablo Picasso</h4>
+                        <p>View Details</p>
+                    </div>
+                    <span>Spanish, 1881 - 1973</span>
+                </div>
+            </a>
+        </div>-->
+        <!-- <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h4>Pablo Picasso</h4>
+                        <p>View Details</p>
+                    </div>
+                    <span>Spanish, 1881 - 1973</span>
+                </div>
+            </a>
+        </div>
+        <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h4>Pablo Picasso</h4>
+                        <p>View Details</p>
+                    </div>
+                    <span>Spanish, 1881 - 1973</span>
+                </div>
+            </a>
+        </div>
+        <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h4>Pablo Picasso</h4>
+                        <p>View Details</p>
+                    </div>
+                    <span>Spanish, 1881 - 1973</span>
+                </div>
+            </a>
+        </div> -->
+        <!--</div>
+        </div>-->
+        <!-- <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col-md-4">
 
-
-
-                            <!-- {% for trendingArtist in trendingArtists %}
-                            <div class="item">
-                                <a href=/artist/details/?aid="{{ trendingArtist.fa_artist_ID }}" class="latest-card">
-                                    <img src="https://f000.backblazeb2.com/file/fineart-images/{{ trendingArtist.fa_artist_image }}"
-                                        class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            {% if trendingArtist.fa_artist_name|length > 17 %}
-                                            <h4>{{ trendingArtist.fa_artist_name|slice:14 }}...</h4>
-                                            {% else %}
-                                            <h4>{{ trendingArtist.fa_artist_name }}</h4>
-                                            {% endif %}
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>{{ trendingArtist.fa_artist_nationality }}, {{ trendingArtist.fa_artist_birth_year }} - {{ trendingArtist.fa_artist_death_year }}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h4>Pablo Picasso</h4>
+                                        <p>View Details</p>
                                     </div>
-                                </a>
-                            </div>
-                            {% endfor %} -->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h4>Pablo Picasso</h4>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>Spanish, 1881 - 1973</span>
+                                    <span>Spanish, 1881 - 1973</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h4>Pablo Picasso</h4>
+                                        <p>View Details</p>
                                     </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h4>Pablo Picasso</h4>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>Spanish, 1881 - 1973</span>
-                                    </div>
-                                </a>
-                            </div>-->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h4>Pablo Picasso</h4>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>Spanish, 1881 - 1973</span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h4>Pablo Picasso</h4>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>Spanish, 1881 - 1973</span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h4>Pablo Picasso</h4>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>Spanish, 1881 - 1973</span>
-                                    </div>
-                                </a>
-                            </div> -->
+                                    <span>Spanish, 1881 - 1973</span>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <!-- <div id="carousel" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="row">
-                                    <div class="col-md-4">
+                </div>
 
+                <div class="carousel-item">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h4>Pablo Picasso</h4>
+                                        <p>View Details</p>
                                     </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h4>Pablo Picasso</h4>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>Spanish, 1881 - 1973</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h4>Pablo Picasso</h4>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>Spanish, 1881 - 1973</span>
-                                            </div>
-                                        </a>
-                                    </div>
+                                    <span>Spanish, 1881 - 1973</span>
                                 </div>
-                            </div>
-
-                            <div class="carousel-item">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h4>Pablo Picasso</h4>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>Spanish, 1881 - 1973</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h4>Pablo Picasso</h4>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>Spanish, 1881 - 1973</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h4>Pablo Picasso</h4>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>Spanish, 1881 - 1973</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            </a>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
-                            <div class="prev-icon">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            </div>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
-                            <div class="next-icon">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            </div>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div> -->
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h4>Pablo Picasso</h4>
+                                        <p>View Details</p>
+                                    </div>
+                                    <span>Spanish, 1881 - 1973</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/ArtistResult.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h4>Pablo Picasso</h4>
+                                        <p>View Details</p>
+                                    </div>
+                                    <span>Spanish, 1881 - 1973</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="latest-artists py--80  actions-result">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                <div class="prev-icon">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </div>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                <div class="next-icon">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </div>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div> -->
+        <!--</div>
+            </div>
+        </div>-->
+        <!--<div class="latest-artists py--80  actions-result">
             <div class="container">
                 <div class="">
                     <h3 class="heading-style mb-2">Upcoming Auctions</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>upcoming auctions </b>here</p>
                     <div class="home-demo">
-                        <div class="owl-carousel owl-theme" id="getUpcomingAuctionsId">
+                        <div class="owl-carousel owl-theme" id="getUpcomingAuctionsId">-->
+        <!-- {% for upcomingAuction in upcomingAuctions %}
+        <div class="item">
+            <a href="/auction/showauction/?aucid={{ upcomingAuction.faac_auction_ID }}"
+                class="latest-card">
+                <img src="https://f000.backblazeb2.com/file/fineart-images/{{upcomingAuction.faac_auction_image}}"
+                    class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        {% if upcomingAuction.faac_auction_title|length > 17 %}
+                        <h4>{{ upcomingAuction.faac_auction_title|slice:14 }}...</h4>
+                        {% else %}
+                        <h4>{{ upcomingAuction.faac_auction_title }}</h4>
+                        {% endif %}
+                        <p>View Details</p>
+                    </div>
+                    <h5>{{ upcomingAuction.cah_auction_house_name }}</h5>
+                    <span>{{ upcomingAuction.faac_auction_start_date }} | {{ upcomingAuction.cah_auction_house_location }}</span>
+                </div>
+            </a>
+        </div>
+        {% endfor %} -->
+        <!-- <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div> -->
+        <!-- <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div> -->
+        <!-- <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div>
+        <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div>
+        <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div> -->
+        <!--</div>
+        </div>-->
+        <!-- <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col-md-4">
 
-                            <!-- {% for upcomingAuction in upcomingAuctions %}
-                            <div class="item">
-                                <a href="/auction/showauction/?aucid={{ upcomingAuction.faac_auction_ID }}"
-                                    class="latest-card">
-                                    <img src="https://f000.backblazeb2.com/file/fineart-images/{{upcomingAuction.faac_auction_image}}"
-                                        class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            {% if upcomingAuction.faac_auction_title|length > 17 %}
-                                            <h4>{{ upcomingAuction.faac_auction_title|slice:14 }}...</h4>
-                                            {% else %}
-                                            <h4>{{ upcomingAuction.faac_auction_title }}</h4>
-                                            {% endif %}
-                                            <p>View Details</p>
-                                        </div>
-                                        <h5>{{ upcomingAuction.cah_auction_house_name }}</h5>
-                                        <span>{{ upcomingAuction.faac_auction_start_date }} | {{ upcomingAuction.cah_auction_house_location }}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
                                     </div>
-                                </a>
-                            </div>
-                            {% endfor %} -->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
                                     </div>
-                                </a>
-                            </div> -->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div> -->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div> -->
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <!-- <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="row">
-                                    <div class="col-md-4">
-
+                </div>
+                <div class="carousel-item">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
                                     </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
                                 </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            </a>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel2" data-bs-slide="prev">
-                            <div class="prev-icon">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            </div>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carousel2" data-bs-slide="next">
-                            <div class="next-icon">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            </div>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div> -->
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
+                                    </div>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
+                                    </div>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-
-        <div class="latest-artists actions-result">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel2" data-bs-slide="prev">
+                <div class="prev-icon">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </div>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel2" data-bs-slide="next">
+                <div class="next-icon">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </div>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div> -->
+        <!--</div>
+            </div>
+        </div>-->
+        <!--<div class="latest-artists actions-result">
             <div class="container">
                 <div class="">
                     <h3 class="heading-style mb-2">Auctions Results</h3>
                     <p class="p-tag-style mb-4">Explore the list of <b>auctions results </b>here</p>
                     <div class="home-demo">
-                        <div class="owl-carousel owl-theme" id="getRecentAuctionsId">
-
-                            <!-- {% for recentAuction in recentAuctions %}
-                            <div class="item">
-                                <a href="/auction/showauction/?aucid={{ recentAuction.faac_auction_ID }}"
-                                    class="latest-card">
-                                    <img src="https://f000.backblazeb2.com/file/fineart-images/{{recentAuction.faac_auction_image}}"
-                                        class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            {% if recentAuction.faac_auction_title|length > 17 %}
-                                            <h4>{{ recentAuction.faac_auction_title|slice:14 }}...</h4>
-                                            {% else %}
-                                            <h4>{{ recentAuction.faac_auction_title }}</h4>
-                                            {% endif %}
-                                            <p>View Details</p>
-                                        </div>
-                                        <h5>{{ recentAuction.cah_auction_house_name }}</h5>
-                                        <span>{{ recentAuction.faac_auction_start_date }} | {{ recentAuction.cah_auction_house_location }}</span>
+                        <div class="owl-carousel owl-theme" id="getRecentAuctionsId">-->
+        <!-- {% for recentAuction in recentAuctions %}
+        <div class="item">
+            <a href="/auction/showauction/?aucid={{ recentAuction.faac_auction_ID }}"
+                class="latest-card">
+                <img src="https://f000.backblazeb2.com/file/fineart-images/{{recentAuction.faac_auction_image}}"
+                    class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        {% if recentAuction.faac_auction_title|length > 17 %}
+                        <h4>{{ recentAuction.faac_auction_title|slice:14 }}...</h4>
+                        {% else %}
+                        <h4>{{ recentAuction.faac_auction_title }}</h4>
+                        {% endif %}
+                        <p>View Details</p>
+                    </div>
+                    <h5>{{ recentAuction.cah_auction_house_name }}</h5>
+                    <span>{{ recentAuction.faac_auction_start_date }} | {{ recentAuction.cah_auction_house_location }}</span>
+                </div>
+            </a>
+        </div>
+        {% endfor %} -->
+        <!-- <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div>
+        <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div> -->
+        <!-- <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div>
+        <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div>
+        <div class="item">
+            <a href="#" class="latest-card">
+                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                <div class="down-content">
+                    <div class="d-flex justify-content-between">
+                        <h5>Modern & Contemporary Day Auction</h5>
+                        <p>View Details</p>
+                    </div>
+                    <span>2 MARCH 2023 | NEW YORK</span>
+                </div>
+            </a>
+        </div> -->
+        <!--</div>
+        </div>-->
+        <!-- <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
                                     </div>
-                                </a>
-                            </div>
-                            {% endfor %} -->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
                                     </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
                                     </div>
-                                </a>
-                            </div> -->
-                            <!-- <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <a href="#" class="latest-card">
-                                    <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                    <div class="down-content">
-                                        <div class="d-flex justify-content-between">
-                                            <h5>Modern & Contemporary Day Auction</h5>
-                                            <p>View Details</p>
-                                        </div>
-                                        <span>2 MARCH 2023 | NEW YORK</span>
-                                    </div>
-                                </a>
-                            </div> -->
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <!-- <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
+                </div>
+                <div class="carousel-item">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
                                     </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
                                 </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#" class="latest-card">
-                                            <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
-                                            <div class="down-content">
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Modern & Contemporary Day Auction</h5>
-                                                    <p>View Details</p>
-                                                </div>
-                                                <span>2 MARCH 2023 | NEW YORK</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            </a>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel3" data-bs-slide="prev">
-                            <div class="prev-icon">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            </div>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carousel3" data-bs-slide="next">
-                            <div class="next-icon">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            </div>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div> -->
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
+                                    </div>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="latest-card">
+                                <img src="/static/images/Upcoming.jpg" class="card-img" alt="img" />
+                                <div class="down-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h5>Modern & Contemporary Day Auction</h5>
+                                        <p>View Details</p>
+                                    </div>
+                                    <span>2 MARCH 2023 | NEW YORK</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="art-bider py--80">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel3" data-bs-slide="prev">
+                <div class="prev-icon">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </div>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel3" data-bs-slide="next">
+                <div class="next-icon">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </div>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div> -->
+        <!--</div>
+            </div>
+        </div>-->
+        <!--<div class="art-bider py--80">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-6">
@@ -1500,7 +1720,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
 
         <div class="subscribe mt-0">
@@ -1838,13 +2058,41 @@
     </section> -->
 
     <div id="adminScreen">
-        <a href="#" class="cancel">×</a>
+
+        as
+
+        <a href="#" class="cancel">
+            s=
+            ×
+        </a>
+        s=
         <form name='frmedit' id='frmedit'>
-            {% csrf_token %}
+
+
+            {% csrf
+            _token %}
         </form>
+
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
     <div id="cover">
+
+
     </div>
+
+
 
     <!-- ***** Footer Start ***** -->
     <footer>
@@ -1867,6 +2115,8 @@
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
                         <li><a href="/login/index/">Home</a></li>
+
+
                         <li><a href="/auction/index/">Current Auctions</a></li>
                         <li><a href="/artist/index/">Trending Artists</a></li>
                     </ul>
@@ -1874,7 +2124,7 @@
                 <div class="col-lg-3">
                     <h4>Useful Links</h4>
                     <ul>
-                        <li><a href="/about/">About Us</a></li>
+                        <li><a href="/about/">hAbout Us</a></li>
                         <li><a href="/gallery/index/">Galleries</a></li>
                         <li><a href="/museum/index/">Museums</a></li>
                         <li><a href="/contactus/">Contact Us</a></li>
@@ -1897,9 +2147,13 @@
                             <ul>
                                 <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                                 <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                ><
                                 <li><a href="#"><i class="fa fa-instagram"></i></a></li>
                             </ul>
                     </div>
+                    >
+
+                    /d
                 </div>
             </div>
         </div>
