@@ -1,3 +1,32 @@
+Highcharts.setOptions({
+    title: { style: { fontSize: "24px" },},
+    subtitle: { style: { fontSize: "12px" },},
+    lang: {
+        thousandsSep: ','
+    },
+    credits: { enabled: false },
+    
+    xAxis: {
+        crosshair: true,
+        style: {
+            fontSize: "12px;"
+        },
+        labels: {
+            // rotation: 270,
+            useHTML: true
+        },
+    },
+    yAxis: {        
+        labels: {            
+            style: { fontSize: "12px" },
+        }
+    },
+    exporting: {
+        enabled: false,
+        tableCaption: false,
+    }
+});
+
 const urlParams = new URLSearchParams(location.search)
 const artistId = urlParams.get('aid').replaceAll('"', '')
 const artistNameID = document.querySelector('#artistNameId')
@@ -250,225 +279,195 @@ function advacedAnalytics(e) {
 }
 
 function artistAnnualPerformanceChartMaker() {
-    Highcharts.chart('artistAnnualPerformanceChartId', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Artist Annual Performance'
-        },
-        subtitle: {
-            text: 'Number of Lots offered & Lots Sold (Sale Through Rate) - Year v/s Number'
-        },
-        xAxis: {
-            categories: [
-                '2013',
-                '2014',
-                '2015',
-                '2016',
-                '2017',
-                '2018',
-                '2019',
-                '2020',
-                '2021',
-                '2022',
-                '2023'
-            ],
-            crosshair: true
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Rainfall (mm)'
-            }
-        },
-        tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
-        plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
-            }
-        },
-        series: [{
-            name: 'Number of Lots Offered',
-            data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4,194.1, 95.6]
-    
-        }, {
-            name: 'Number of Lots Sold',
-            data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5,106.6]
-    
-        }, {
-            name: 'Number of Lots Unsold',
-            data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3]
-        }]
-    });
+    fetch(`/artist/artistAnnualPerformanceChart/?artistId=${artistId}`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let lotsYearArray = body.reverse().map(obj => obj.lotsYear)
+            let numberOfLotsOfferedArray = body.map(obj => Number(obj.numberOfLotsOffered))
+            let numberOfLotsSoldArray = body.map(obj => Number(obj.numberOfLotsSold))
+            let numberOfLotsUnsoldArray = body.map(obj => Number(obj.numberOfLotsUnsold))
+            Highcharts.chart('artistAnnualPerformanceChartId', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Artist Annual Performance'
+                },
+                subtitle: {
+                    text: 'Number of Lots offered & Lots Sold (Sale Through Rate) - Year v/s Number'
+                },
+                xAxis: {
+                    categories: lotsYearArray,
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Lots Count'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.1,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Number of Lots Offered',
+                    data: numberOfLotsOfferedArray
+            
+                }, {
+                    name: 'Number of Lots Sold',
+                    data: numberOfLotsSoldArray
+            
+                }, {
+                    name: 'Number of Lots Unsold',
+                    data: numberOfLotsUnsoldArray
+                }]
+            });
+        })
 }
 
 function yoyTotalSaleInUSDChartMaker() {
-    Highcharts.chart('yoyTotalSaleChartId', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            align: 'center',
-            text: 'YOY Total Sale'
-        },
-        accessibility: {
-            announceNewData: {
-                enabled: true
-            }
-        },
-        xAxis: {
-            type: 'category'
-        },
-        yAxis: {
-            title: {
-                text: 'Total Sales In Million (USD)'
-            }
-
-        },
-        legend: {
-            enabled: false
-        },
-        plotOptions: {
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.y}M'
-                }
-            }
-        },
-
-        tooltip: {
-            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}M</b> of total<br/>'
-        },
-
-        series: [
-            {
-                name: 'Years',
-                colorByPoint: false,
-                data: [
+    fetch(`/artist/yoyTotalSaleAverageChart/?artistId=${artistId}`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let totalSaleAndYearObjArray = body.reverse().map(obj => {
+                let data = {name: obj.saleYear, y: Math.round((Math.abs(Number(obj.totalSale)) / 1.0e+6)), avg: Math.round((Math.abs(Number(obj.saleAverage)) / 1.0e+6))}
+                return data
+            })
+            Highcharts.chart('yoyTotalSaleChartId', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    align: 'center',
+                    text: 'YOY Total Sale'
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Sales In Million (USD)'
+                    }
+        
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y}M'
+                        }
+                    }
+                },
+        
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px"></span><br>',
+                    pointFormat: '<span style="color:{point.color}">Average of {point.name} (USD) </span>: <b>{point.avg:.1f}M</b><br/>'
+                },
+        
+                series: [
                     {
-                        name: '2013',
-                        y: 63
-                    },
-                    {
-                        name: '2014',
-                        y: 19
-                    },
-                    {
-                        name: '2015',
-                        y: 10
-                    },
-                    {
-                        name: '2016',
-                        y: 15
-                    },
-                    {
-                        name: '2017',
-                        y: 20
-                    },
-                    {
-                        name: '2018',
-                        y: 23
-                    },
-                    {
-                        name: '2019',
-                        y: 15
-                    },
-                    {
-                        name: '2020',
-                        y: 15
-                    },
-                    {
-                        name: '2021',
-                        y: 20
-                    },
-                    {
-                        name: '2022',
-                        y: 23
-                    },
-                    {
-                        name: '2023',
-                        y: 15
+                        name: 'Years',
+                        colorByPoint: false,
+                        data: totalSaleAndYearObjArray
                     }
                 ]
-            }
-        ]
-    })
+            })
+        })
 }
 
 function YoySellingCatAverageSellingPricePerCatChartMaker() {
-    Highcharts.chart('YoySellingCatAverageSellingPricePerCatChartId', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'YOY Selling Categories & Average Selling Price Per Category'
-        },
-        xAxis: {
-            categories: [
-                '2013',
-                '2014',
-                '2015',
-                '2016',
-                '2017',
-                '2018',
-                '2019',
-                '2020',
-                '2021',
-                '2022',
-                '2023'
-            ],
-            crosshair: true
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Rainfall (mm)'
-            }
-        },
-        tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
-        plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
-            }
-        },
-        series: [{
-            name: 'Paintings',
-            data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 85, 75]
+    fetch(`/artist/yoySellingCategoryChart/?artistId=${artistId}`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let lotsYearArray = body.reverse().map(obj => obj.lotsYear).filter((value, index, array) => array.indexOf(value) === index)
+            let paintingsArray = []
+            let workOnPaperArray = []
+            let sculptuesArray = []
+            let printsArray = []
+            lotsYearArray.forEach(lotYear => {
+                let data = body.find(obj => obj.lotsYear == lotYear && obj.lotsCategory === 'paintings')
+                paintingsArray.push({y: data == undefined ? 0 : Math.round(Math.abs(Number(data.totalSalePrice) / 1.0e+6)), avg: data == undefined ? 0 : Math.round(Math.abs(Number(data.averageSalePrice) / 1.0e+6))})
 
-        }, {
-            name: 'Work on Paper',
-            data: [55, 90, 80, 70, 60, 50, 40, 30, 20, 10, 25]
+                data = body.find(obj => obj.lotsYear == lotYear && obj.lotsCategory === 'works on paper')
+                workOnPaperArray.push({y: data == undefined ? 0 : Math.round(Math.abs(Number(data.totalSalePrice) / 1.0e+6)), avg: data == undefined ? 0 : Math.round(Math.abs(Number(data.averageSalePrice) / 1.0e+6))})
 
-        }, {
-            name: 'Sculptures',
-            data: [5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 50]
+                data = body.find(obj => obj.lotsYear == lotYear && obj.lotsCategory === 'sculptures')
+                sculptuesArray.push({y: data == undefined ? 0 : Math.round(Math.abs(Number(data.totalSalePrice) / 1.0e+6)), avg: data == undefined ? 0 : Math.round(Math.abs(Number(data.averageSalePrice) / 1.0e+6))})
 
-        }, {
-            name: 'Prints',
-            data: [60, 95, 85, 75, 65, 55, 45, 35, 25, 15, 5]
-
-        }]
-    });
+                data = body.find(obj => obj.lotsYear == lotYear && obj.lotsCategory === 'prints')
+                printsArray.push({y: data == undefined ? 0 : Math.round(Math.abs(Number(data.totalSalePrice) / 1.0e+6)), avg: data == undefined ? 0 : Math.round(Math.abs(Number(data.averageSalePrice) / 1.0e+6))})
+            })
+            Highcharts.chart('YoySellingCatAverageSellingPricePerCatChartId', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'YOY Selling Categories & Average Selling Price Per Category'
+                },
+                xAxis: {
+                    categories: lotsYearArray,
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">Average of {series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.avg:.1f} m</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Paintings',
+                    data: paintingsArray
+        
+                }, {
+                    name: 'Work on Paper',
+                    data: workOnPaperArray
+        
+                }, {
+                    name: 'Sculptures',
+                    data: sculptuesArray
+        
+                }, {
+                    name: 'Prints',
+                    data: printsArray
+        
+                }]
+            });
+        })
 }
 
 // function artistPerformancesByRegionChartMaker() {

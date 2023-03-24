@@ -22,4 +22,7 @@ urlpatterns = [
     path('getArtistPastAuctions/', views.getArtistPastAuctions, name="getArtistPastAuctions"),
     path('getArtistUpcomingAuctions/', views.getArtistUpcomingAuctions, name="getArtistUpcomingAuctions"),
     path('followUnfollowArtist/', views.followUnfollowArtist, name="followUnfollowArtist"),
+    path('artistAnnualPerformanceChart/', views.artistAnnualPerformanceChart, name='artistAnnualPerformanceChart'),
+    path('yoyTotalSaleAverageChart/', views.yoyTotalSaleAverageChart, name='yoyTotalSaleAverageChart'),
+    path('yoySellingCategoryChart/', views.yoySellingCategoryChart, name='yoySellingCategoryChart'),
 ]

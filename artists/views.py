@@ -471,6 +471,45 @@ def searchArtists(request):
             return HttpResponse(json.dumps(alphabetSearchArtistData))
 
 
+def artistAnnualPerformanceChart(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        artistId = request.GET.get('artistId')
+        artistSelectQuery = f"""SELECT numberOfLotsOffered, numberOfLotsSold, numberOfLotsUnsold, lotsYear FROM artistAnnualPerformance WHERE artistID = {artistId} ORDER BY lotsYear DESC LIMIT 10"""
+        connList = connectToDb()
+        connList[1].execute(artistSelectQuery)
+        artistData = connList[1].fetchall()
+        disconnectDb(connList)
+        return HttpResponse(json.dumps(artistData))
+
+
+def yoyTotalSaleAverageChart(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        artistId = request.GET.get('artistId')
+        artistSelectQuery = f"""SELECT totalSale, saleAverage, saleYear FROM yoyTotalSaleAverage WHERE artistID = {artistId} ORDER BY saleYear DESC LIMIT 10"""
+        connList = connectToDb()
+        connList[1].execute(artistSelectQuery)
+        artistData = connList[1].fetchall()
+        disconnectDb(connList)
+        return HttpResponse(json.dumps(artistData))
+
+
+def yoySellingCategoryChart(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    else:
+        artistId = request.GET.get('artistId')
+        artistSelectQuery = f"""SELECT totalSalePrice, averageSalePrice, lotsCategory, lotsYear FROM yoySellingCategory WHERE artistID = {artistId} AND CAST(lotsYear as INT) BETWEEN {datetime.datetime.now().year - 9} AND {datetime.datetime.now().year} ORDER BY lotsYear DESC"""
+        connList = connectToDb()
+        connList[1].execute(artistSelectQuery)
+        artistData = connList[1].fetchall()
+        disconnectDb(connList)
+        return HttpResponse(json.dumps(artistData))
+
+
 @login_required(login_url='/login/show/')
 def followUnfollowArtist(request):
     if request.method != 'GET':
