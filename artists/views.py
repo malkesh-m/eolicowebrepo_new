@@ -476,7 +476,7 @@ def artistAnnualPerformanceChart(request):
         return HttpResponse("Invalid method of call")
     else:
         artistId = request.GET.get('artistId')
-        artistSelectQuery = f"""SELECT numberOfLotsOffered, numberOfLotsSold, numberOfLotsUnsold, lotsYear FROM artistAnnualPerformance WHERE artistID = {artistId} ORDER BY lotsYear DESC LIMIT 10"""
+        artistSelectQuery = f"""SELECT numberOfLotsOffered, numberOfLotsSold, numberOfLotsUnsold, lotsYear, saleThroughRate FROM artistAnnualPerformance WHERE artistID = {artistId} ORDER BY lotsYear DESC LIMIT 10"""
         connList = connectToDb()
         connList[1].execute(artistSelectQuery)
         artistData = connList[1].fetchall()

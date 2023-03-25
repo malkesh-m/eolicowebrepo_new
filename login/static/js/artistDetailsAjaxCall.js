@@ -22,7 +22,7 @@ Highcharts.setOptions({
         }
     },
     exporting: {
-        enabled: false,
+        enabled: true,
         tableCaption: false,
     }
 });
@@ -43,6 +43,7 @@ const upcomingauctions = document.querySelector('#upcomingauctions')
 const artsitFollowUnfollowId = document.querySelector('#artsitFollowUnfollowId')
 const advancedAnalytics = document.querySelector('#advancedAnalytics')
 let pastUpcomingStrData = 'past'
+let artistBioStrData = ''
 
 function htmlDataBinder(auctionData) {
     let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 artworkData">
@@ -242,7 +243,8 @@ function getArtistDetails() {
             nationalityBirthDeathId.innerHTML = `${body.fa_artist_nationality}, ${body.fa_artist_birth_year} - ${body.fa_artist_death_year}`
             artistImageId.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fa_artist_image}`
             aboutNameId.innerHTML = aboutNameId.innerHTML + ' ' + body.fa_artist_name
-            artistBioId.innerHTML = body.fa_artist_bio
+            artistBioStrData = body.fa_artist_bio
+            artistBioId.innerHTML = `<p class="mb-1" id="artistDescPId">${artistBioStrData.slice(0,480)}....</p><a href="javascript:readMore('more')" id="readMoreId">Read More</a>`
             let htmlData = ''
             if (body.fa_artist_nationality !== 'na') {
                 htmlData = htmlData + body.fa_artist_nationality
@@ -259,6 +261,15 @@ function getArtistDetails() {
             lastYearAveSalePriceId.innerHTML = abbreviateNumber(Math.round(body.avg_sale_price_usd))
             lastYearSoldPriceEstimatesId.innerHTML = Math.round(body.mean_price_usd) + '%'
         })
+}
+
+function readMore(readMoreLess) {
+    if (readMoreLess === 'more') {
+        artistBioId.innerHTML = `<p class="mb-1" id="artistDescPId">${artistBioStrData}</p><a href="javascript:readMore('less')" id="readMoreId">Read Less</a>`
+    }
+    else {
+        artistBioId.innerHTML = `<p class="mb-1" id="artistDescPId">${artistBioStrData.slice(0,480)}....</p><a href="javascript:readMore('more')" id="readMoreId">Read More</a>`
+    }
 }
 
 function followUnfollowArtist(followUnfollowStr) {
@@ -288,6 +299,7 @@ function artistAnnualPerformanceChartMaker() {
             let numberOfLotsOfferedArray = body.map(obj => Number(obj.numberOfLotsOffered))
             let numberOfLotsSoldArray = body.map(obj => Number(obj.numberOfLotsSold))
             let numberOfLotsUnsoldArray = body.map(obj => Number(obj.numberOfLotsUnsold))
+            let saleThroughRateArray = body.map(obj => Number(obj.saleThroughRate))
             Highcharts.chart('artistAnnualPerformanceChartId', {
                 chart: {
                     type: 'column'
@@ -313,7 +325,7 @@ function artistAnnualPerformanceChartMaker() {
                     //     '<td style="padding:0"><b>{point.y}</b></td></tr>',
                     // footerFormat: '</table>',
                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0"> <br>Average of {series.name} (USD): </td>' +
+                    pointFormat: '<tr><td style="color:{series.color};padding:0"> <br>Number of Lots </td>' +
                         '<td style="padding:0"><b>{point.y}</b></td></tr>',
                     footerFormat: '</table>',
                     shared: true
@@ -326,7 +338,7 @@ function artistAnnualPerformanceChartMaker() {
                 },
                 series: [{
                     name: 'Number of Lots Offered',
-                    data: numberOfLotsOfferedArray
+                    data: numberOfLotsOfferedArray,
             
                 }, {
                     name: 'Number of Lots Sold',
@@ -479,9 +491,7 @@ async function getCountryCode(countryName) {
         method: 'GET',
     })
         .then(response => response.json())
-        .then(body => {
-            return body[0].cca2
-        })
+        .then(body => body[0].cca2)
     return countryCode
 }
 
@@ -493,7 +503,8 @@ async function artistPerformancesByRegionChartMaker() {
         .then(body => {
             let myDataArray = []
             body.forEach(obj => {
-                myDataArray.push({name: obj.lotsCountry, code: getCountryCode(obj.lotsCountry)})
+                let countryCode = getCountryCode(obj.lotsCountry).then(countryCode => countryCode)
+                myDataArray.push({name: obj.lotsCountry, code: countryCode})
             })
             console.log(myDataArray)
         })
