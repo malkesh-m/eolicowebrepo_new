@@ -135,6 +135,19 @@ def getMyArtists(request):
     return HttpResponse(json.dumps(myArtistsData, default=default))
 
 
+@login_required(login_url='/login/show/')
+def topGeographicalLocationsForCharts(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    year = request.GET.get('year')
+    selectQuery = f"""SELECT cah_auction_house_country, YEAR(fal_lot_sale_date) FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_status = 'sold' AND YEAR(fal_lot_sale_date) = {year} GROUP BY cah_auction_house_country ORDER BY SUM(fal_lot_sale_price_USD) DESC limit 10"""
+    connList = connectToDb()
+    connList[1].execute(selectQuery)
+    myArtistsData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(myArtistsData, default=default))
+
+
 
 @login_required(login_url='/login/show/')
 def myArtistDetails(request):

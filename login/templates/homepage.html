@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-          rel="stylesheet">
+        rel="stylesheet">
     <link href="/static/font/GT-Super/stylesheet.css" />
 
     <title>ArtBidder Home</title>
@@ -28,7 +28,11 @@
     <link rel="stylesheet" href="/static/css/newcarousel.css">
     <link rel="stylesheet" href="/static/css/new-style.css">
 
-
+    <style>
+        #women {
+            padding-top: 130px !important;
+        }
+    </style>
 
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet"
@@ -101,13 +105,13 @@
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
-         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-logo">
                         <a href="index.html">
-                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                            <img src="/static/images/email-logo.png" alt="" class="img-fluid" width="150" />
                         </a>
                     </div>
                     <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
@@ -124,24 +128,24 @@
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input type="text" class="form-control" id="regiUsername" name="username"
-                                       placeholder="Enter your full name" />
+                                    placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
                                 <input type="text" class="form-control" id="emailid" name="emailid"
-                                       placeholder="Enter your email address" />
+                                    placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
                                 <label for="password1">Password</label>
                                 <input type="password" class="form-control" id="password1" name="password1"
-                                       placeholder="Enter a password" />
+                                    placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
                             <div class="form-group">
                                 <label for="password2">Confirm Password</label>
                                 <input type="password" class="form-control" id="password2" name="password2"
-                                       placeholder="Re-type password" />
+                                    placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
@@ -150,14 +154,16 @@
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
                                     <p>
-                                        I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                        I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a
+                                            href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a
+                                            href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
                                         receiving emails from ArtBidder.
                                     </p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <button type="button" value="signup" name="btnsignup" class="btn btn-slider"
-                                        onclick="javascript:doregister();">
+                                    onclick="javascript:doregister();">
                                     Sign up
                                 </button>
                             </div>
@@ -178,12 +184,13 @@
                             <div class="form-group text-center">
                                 <p>
                                     Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                                                data-toggle="modal" data-target="#exampleModal-login">Log In</a>
+                                        data-toggle="modal" data-target="#exampleModal-login">Log In</a>
                                 </p>
                             </div>
                             <div class="form-group text-center">
                                 <p>
-                                    This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">
+                                    This site is protected by reCAPTCHA and the Google <a
+                                        href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">
                                         Terms of
                                         Service
                                     </a> apply.
@@ -198,13 +205,13 @@
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
-         aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+        aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-logo">
                         <a href="index.html">
-                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                            <img src="/static/images/email-logo.png" alt="" class="img-fluid" width="150" />
                         </a>
                     </div>
                     <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
@@ -221,12 +228,12 @@
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" name='username' id="loginUsername"
-                                       placeholder="Enter your username" />
+                                    placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
                                 <input type="password" class="form-control" name='passwd' id="passwd"
-                                       placeholder="Enter your password" />
+                                    placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <!-- <div class="form-group">
@@ -236,7 +243,7 @@
                             </div> -->
                             <div class="form-group">
                                 <button type="button" value="submit" name="" class="btn btn-slider"
-                                        onclick="javascript:dologin();">
+                                    onclick="javascript:dologin();">
                                     Log in
                                 </button>
                             </div>
@@ -264,7 +271,7 @@
                             <div class="form-group text-center">
                                 <p>
                                     Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
-                                                              data-toggle="modal" data-target="#exampleModal-signup">Sign up</a>
+                                        data-toggle="modal" data-target="#exampleModal-signup">Sign up</a>
                                 </p>
                             </div>
                         </form>
@@ -276,13 +283,13 @@
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+        aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-logo">
                         <a href="index.html">
-                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                            <img src="/static/images/email-logo.png" alt="" class="img-fluid" width="150" />
                         </a>
                     </div>
                     <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
@@ -309,8 +316,8 @@
                             <div class="form-group text-center">
                                 <p>
                                     Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
-                                                            data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
-                                                                                                              data-toggle="modal" data-target="#exampleModal">Sign up</a>
+                                        data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
+                                        data-toggle="modal" data-target="#exampleModal">Sign up</a>
                                 </p>
                             </div>
                         </form>
@@ -365,7 +372,7 @@
                     </a>
                 </div>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                        aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                    aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
@@ -404,11 +411,13 @@
                     <ul class="navbar-nav sm-icons mr-0">
                         {% if not user.is_authenticated %}
                         <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                        <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                        <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal"
+                                data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                         {% else %}
                         <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                         <li class="nav-item">
-                            <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                            <button class="btn text-light btn-primary px-4" style="border-radius: 20px;"
+                                onclick='javascript:logout();'>Logout</button>
                         </li>
                         {% endif %}
                     </ul>
@@ -644,18 +653,18 @@
 
     <section class="section" id="women">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="search-bg">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="search-bg py-4">
                         <h2 class="heading-style mb-2">
                             ARTBIDER.COM
                         </h2>
                         <p class="mb-3" style=" font-size: 16px; font-weight: 600; color: #111045;">
-                            Your Art Market Expert - Specialized Art Market Research and Information
+                            Specialized Art Market Research and Information
                         </p>
                         <div class="input-group mb-3">
                             <input class='form-control  rounded-0' name='search' id='search' maxLength="200"
-                                   placeholder="search..." />
+                                placeholder="search..." />
                             <span class="input-group-text rounded-0">
                                 <button type="button" class="btn border-0 p-0 rounded-right">
                                     <i class="fa fa-search"></i>
@@ -672,7 +681,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid py--80">
+        <div class="container-fluid pt-5 py--80">
             <div id="myCarousel" class="carousel slide carousel-fade" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
@@ -699,7 +708,8 @@
                                     </div>
                                     <div class="col-md-5 col-12 order-md-2 order-1">
                                         <div class="slider-img">
-                                            <img src="https://assets.phillips.com/image/upload/t_Website_LotDetailMainImage/v1677600689/auctions/NY010123/181948_001.jpg" class="mx-auto" alt="slide">
+                                            <img src="https://assets.phillips.com/image/upload/t_Website_LotDetailMainImage/v1677600689/auctions/NY010123/181948_001.jpg"
+                                                class="mx-auto" alt="slide">
                                         </div>
                                     </div>
                                 </div>
@@ -730,7 +740,8 @@
                                     </div>
                                     <div class="col-md-5 col-12 order-md-2 order-1">
                                         <div class="slider-img">
-                                            <img src="https://www.christies.com/img/LotImages/2023/NYR/2023_NYR_21759_0116_000(alex_katz_ada_in_front_of_4pm025108).jpg?maxwidth=1010&maxheight=650" class="mx-auto" alt="slide">
+                                            <img src="https://www.christies.com/img/LotImages/2023/NYR/2023_NYR_21759_0116_000(alex_katz_ada_in_front_of_4pm025108).jpg?maxwidth=1010&maxheight=650"
+                                                class="mx-auto" alt="slide">
                                         </div>
                                     </div>
                                 </div>
@@ -761,7 +772,8 @@
                                     </div>
                                     <div class="col-md-5 col-12 order-md-2 order-1">
                                         <div class="slider-img">
-                                            <img src="https://sothebys-md.brightspotcdn.com/dims4/default/9dccb68/2147483647/strip/true/crop/1637x2000+0+0/resize/800x977!/quality/90/?url=http%3A%2F%2Fsothebys-brightspot.s3.amazonaws.com%2Fmedia-desk%2Fwebnative%2Fimages%2F1e%2F01%2F087413a74576aa142cbbed6a41be%2F005l23002-ckscg-t3-01a-cropped.jpg" class="mx-auto" alt="slide">
+                                            <img src="https://sothebys-md.brightspotcdn.com/dims4/default/9dccb68/2147483647/strip/true/crop/1637x2000+0+0/resize/800x977!/quality/90/?url=http%3A%2F%2Fsothebys-brightspot.s3.amazonaws.com%2Fmedia-desk%2Fwebnative%2Fimages%2F1e%2F01%2F087413a74576aa142cbbed6a41be%2F005l23002-ckscg-t3-01a-cropped.jpg"
+                                                class="mx-auto" alt="slide">
                                         </div>
                                     </div>
                                 </div>
@@ -792,7 +804,8 @@
                                     </div>
                                     <div class="col-md-5 col-12 order-md-2 order-1">
                                         <div class="slider-img">
-                                            <img src="https://images2.bonhams.com/image?src=Images/live/2022-12/07/25282016-1-8.jpg&height=430&quality=90" class="mx-auto" alt="slide">
+                                            <img src="https://images2.bonhams.com/image?src=Images/live/2022-12/07/25282016-1-8.jpg&height=430&quality=90"
+                                                class="mx-auto" alt="slide">
                                         </div>
                                     </div>
                                 </div>
@@ -823,7 +836,8 @@
                                     </div>
                                     <div class="col-md-5 col-12 order-md-2 order-1">
                                         <div class="slider-img">
-                                            <img src="https://www.christies.com/img/LotImages/2023/NYR/2023_NYR_21741_0016_000(fernando_botero_dancing_couple062526).jpg?maxwidth=1010&maxheight=650" class="mx-auto" alt="slide">
+                                            <img src="https://www.christies.com/img/LotImages/2023/NYR/2023_NYR_21741_0016_000(fernando_botero_dancing_couple062526).jpg?maxwidth=1010&maxheight=650"
+                                                class="mx-auto" alt="slide">
                                         </div>
                                     </div>
                                 </div>
@@ -831,7 +845,11 @@
                         </div>
                     </div>
                 </div>
-                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev"> <span class="carousel-control-prev-icon" aria-hidden="true"></span> <span class="sr-only">Previous</span> </a> <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next"> <span class="carousel-control-next-icon" aria-hidden="true"></span> <span class="sr-only">Next</span> </a>
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev"> <span
+                        class="carousel-control-prev-icon" aria-hidden="true"></span> <span
+                        class="sr-only">Previous</span> </a> <a class="carousel-control-next" href="#myCarousel"
+                    role="button" data-slide="next"> <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span> </a>
             </div>
             <script>
                 $('#myCarousel').carousel({
@@ -909,7 +927,7 @@
                                 </div>
                                 <div class="col-md-9 ">
                                     <h3>
-                                        Art market insights and daily Auctions Analysis
+                                        Art market insights and daily Auction Analysis
                                     </h3>
                                 </div>
                             </div>
@@ -948,7 +966,8 @@
                                 Art Market Analysis
                             </h3>
                             <h6>
-                                Get the Art Market insights from our team of experts and specialized AI based tools. Latest market trends, top artists & auctions and  many more to keep you one step ahead.
+                                Get the Art Market insights from our team of experts and specialized AI based tools.
+                                Latest market trends, top artists & auctions and many more to keep you one step ahead.
                             </h6>
                             <ul class="my-3">
                                 <li>
@@ -965,7 +984,8 @@
                                 </li>
                             </ul>
                             <h6>
-                                We simplify your research by providing you the most precise and up-to date art market information
+                                We simplify your research by providing you the most precise and up-to date art market
+                                information
                             </h6>
                         </div>
                     </div>
@@ -1011,10 +1031,13 @@
                                 PRICE DATABASE
                             </h3>
                             <p>
-                                Artbider offers a keyword-search to a comprehensive price database of over 10 million auction results dating back to 1970, collected and curated from 1500 auction houses with classified details like Title, Categories, Medium, Artwork Dates etc.
+                                Artbider offers a keyword-search to a comprehensive price database of over 10 million
+                                auction results dating back to 1970, collected and curated from 1500 auction houses with
+                                classified details like Title, Categories, Medium, Artwork Dates etc.
                             </p>
                             <p>
-                                You can access more than 500,000 artists records, with their market performance, bio’s and art genre.
+                                You can access more than 500,000 artists records, with their market performance, bio’s
+                                and art genre.
                             </p>
                         </div>
                     </div>
@@ -1024,14 +1047,16 @@
                                 Market Alerts
                             </h3>
                             <p>
-                                Always be ahead of your competition with our latest art market updates, including upcoming auctions, news, and events.
+                                Always be ahead of your competition with our latest art market updates, including
+                                upcoming auctions, news, and events.
                             </p>
                             <p>
-                                Receive timely alerts of your favorite artists on their upcoming artworks and events making sure you never miss a chance to bid on your desired artwork.
+                                Receive timely alerts of your favorite artists on their upcoming artworks and events
+                                making sure you never miss a chance to bid on your desired artwork.
                             </p>
                         </div>
                         <div class="col-md-6 text-center">
-                            <img src="/static/images/service-2.png" style="width:unset;" />
+                            <img src="/static/images/service-4.png" />
                         </div>
                     </div>
                     <div class="row align-items-center mb-4">
@@ -1046,7 +1071,8 @@
                                 Stay on top of the latest art market updates on Upcoming Auctions, News and Events.
                             </p>
                             <p>
-                                Our daily market analysis keep you updated with the top artists, top sales and latest market trends.
+                                Our daily market analysis keep you updated with the top artists, top sales and latest
+                                market trends.
                                 Be one step ahead with our exclusively created art market updates.
                             </p>
                         </div>
@@ -1057,32 +1083,36 @@
                                 Artist Performance & Insights
                             </h3>
                             <p>
-                                Get full insights of your favorite  artist performance
+                                Get full insights of your favorite artist performance
                             </p>
                             <p>
-                                Our advanced algorithms will work for you and provide you all the key indicators of your favourite artists and auctions - total lots sold, average sold price, selling rate, top performing countries and more.
+                                Our advanced algorithms will work for you and provide you all the key indicators of your
+                                favourite artists and auctions - total lots sold, average sold price, selling rate, top
+                                performing countries and more.
                             </p>
                             <p>
                                 With Artbider you will make better judgements.
                             </p>
                         </div>
                         <div class="col-md-6 text-center">
-                            <img src="/static/images/service-4.png" />
+                            <img src="/static/images/service-5.png" />
                         </div>
                     </div>
                     <div class="row align-items-center mb-4">
                         <div class="col-md-6 text-center">
-                            <img src="/static/images/service-5.png" />
+                            <img src="/static/images/service-2.png" style="width:unset;" />
                         </div>
                         <div class="col-md-6">
                             <h3>
                                 Advanced Analytics
                             </h3>
                             <p>
-                                Artbider offers the most exclusive art market research, top sales, trending artists and many more.
+                                Artbider offers the most exclusive art market research, top sales, trending artists and
+                                many more.
                             </p>
                             <p>
-                                You can Save, Download and Print your analysis  and research with the help of our advanced interactive tools.
+                                You can Save, Download and Print your analysis and research with the help of our
+                                advanced interactive tools.
                             </p>
                             <p>
                                 Our Advanced Analytics helps you to make better market decisions.
@@ -1098,7 +1128,8 @@
                                 Create and manage your collection of favorite Artworks, Artists and Auctions.
                             </p>
                             <p>
-                                Our <b>Interactive Dashboards </b>gives you the complete overview of your favourite artists & artworks and their performance.
+                                Our <b>Interactive Dashboards </b>gives you the complete overview of your favourite
+                                artists & artworks and their performance.
                             </p>
                             <p>
                                 Discover more with our specialized information system.
@@ -1726,9 +1757,11 @@
         <div class="subscribe mt-0">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-9">
                         <div class="section-heading">
-                            <h2>By Subscribing To Our Price Database You Can Avail Special Launch Offer, <a href="/price/plans/" style="text-decoration:underline !important;">click here</a> for more details</h2>
+                            <h2>By Subscribing To Our Price Database You Can Avail Special Launch Offer, <a
+                                    href="/price/plans/" style="text-decoration:underline !important;">click here</a>
+                                for more details</h2>
                             <!--<span>Details to details is what makes Hexashop different from the other themes.</span>-->
                         </div>
                         <form id="subscribe" action="" method="get">
@@ -1741,7 +1774,7 @@
                                 <div class="col-lg-5">
                                     <fieldset>
                                         <input name="email" type="text" id="email" pattern="[^ @]*@[^ @]*"
-                                               placeholder="Your Email Address" required="">
+                                            placeholder="Your Email Address" required="">
                                     </fieldset>
                                 </div>
                                 <div class="col-lg-2">
@@ -1754,26 +1787,16 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <ul>
-                                    <li>Store Location:<br><span>Sunny Isles Beach, FL 33160, United States</span></li>
-                                    <li>Phone:<br><span>010-020-0340</span></li>
-                                    <li>Office Location:<br><span>North Miami Beach</span></li>
+                                    <li>Branch address :<br><span>85, Great Portland Street, First Floor, London, United
+                                            Kingdom, W1W 7LT</span></li>
+                                    <li>Email:<br><span>info@artbider.com</span></li>
                                 </ul>
                             </div>
-                            <div class="col-6">
-                                <ul>
-                                    <li>Work Hours:<br><span>07:30 AM - 9:30 PM Daily</span></li>
-                                    <li>Email:<br><span>info@company.com</span></li>
-                                    <li>
-                                        Social Media:<br><span>
-                                            <a href="#">Facebook</a>, <a href="#">Instagram</a>, <a href="#">Behance</a>, <a href="#">Linkedin</a>
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -2101,12 +2124,12 @@
                 <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
+                            <img src="/static/images/ArtBider-footer-logo.png" alt="" style="width: 150px;">
                         </div>
                         <ul>
-                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
-                            <li><a href="#">demo@company.com</a></li>
-                            <li><a href="#">010-020-0340</a></li>
+                            <li><a href="#" style="font-size: 12px;">85, Great Portland Street, First Floor, London, United Kingdom, W1W 7LT</a>
+                            </li>
+                            <li><a href="#" style="font-size: 12px;">support@artbider.com</a></li>
                         </ul>
                     </div>
                 </div>
@@ -2124,9 +2147,9 @@
                 <div class="col-lg-3">
                     <h4>Useful Links</h4>
                     <ul>
-                        <li><a href="/about/">hAbout Us</a></li>
-                        <li><a href="/gallery/index/">Galleries</a></li>
-                        <li><a href="/museum/index/">Museums</a></li>
+                        <li><a href="/about/">About Us</a></li>
+                        <!-- <li><a href="/gallery/index/">Galleries</a></li>
+                        <li><a href="/museum/index/">Museums</a></li> -->
                         <li><a href="/contactus/">Contact Us</a></li>
                     </ul>
                 </div>
@@ -2141,19 +2164,19 @@
                 </div>
                 <div class="col-lg-12">
                     <div class="under-footer">
+                        
+                                                <ul class="mt-0 mb-3">
+                                                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                                    <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                                                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                                </ul>
+                        <p class="text-left pb-3" style="font-size: 11px;">Art Bider trademark and all of its assets are owned and operated by Asawari Art Industries Private Limited, a private limited company registered in India under Indian Companies Act, 2013. CIN - U92490PN2022PTC21596.</p>
+                        <p class="text-left" style="font-size: 11px;">All trademarks, logos and brand names are the property of their respective owners. All company, product and service names used in this website are for analytical and research purposes only. Use of these names, trademarks and brands does not imply endorsement.</p>
+                        <p class="text-left py-3" style="font-size: 11px;">We guarantee that all payments received from our members, less fees, remittance charges and gateway commissions are held in a current deposit Account maintained with The Hongkong and Shanghai Banking Corporation Limited, India (HSBC) </p>
                         <p>
                             Copyright © 2022. All Rights Reserved.
-
-                            <ul>
-                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                ><
-                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                            </ul>
+                        </p>
                     </div>
-                    >
-
-                    /d
                 </div>
             </div>
         </div>

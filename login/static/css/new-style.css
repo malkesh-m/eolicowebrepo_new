@@ -1868,4 +1868,8 @@ b {
         .art-market .art-market-text ul li, .art-market .art-market-text ul {
             font-size: 16px;
         }
+    }footer .logo {
+        margin-bottom: 20px;
+        height: 110px;
+        overflow: hidden;
     }

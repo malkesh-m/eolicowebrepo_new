@@ -303,7 +303,7 @@ header
     border-bottom: 3px dotted #eee;
     box-shadow: none;
     background-color: #fff;
-    position: absolute;
+    position: fixed;
     top: 0px;
     left: 0px;
     right: 0px;
@@ -1618,7 +1618,7 @@ footer
 
 footer {
     margin-top: 60px;
-    padding: 60px 0px 30px 0px;
+    padding: 60px 0px 10px 0px;
     background-color: #051747;
 }
 
