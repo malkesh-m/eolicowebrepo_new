@@ -157,14 +157,21 @@ def topLotsOfMonthsForArtMarket():
 def topSalesOfMonth():
     truncateThread = Thread(target=tableTruncater, args=("""TRUNCATE TABLE topSalesOfMonth""",))
     truncateThread.start()
-    auctionsSelectQuery = f"""SELECT fal_auction_ID FROM fineart_lots WHERE fal_lot_status = 'sold' AND MONTH(fal_lot_sale_date) = MONTH(NOW()) GROUP BY fal_auction_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
+    auctionsSelectQuery = f"""SELECT fal_auction_ID FROM fineart_lots WHERE MONTH(fal_lot_sale_date) = MONTH(NOW()) GROUP BY fal_auction_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
     truncateThread.join()
     connList = connectToDb()
     connList[1].execute(auctionsSelectQuery)
     auctionsDataList = connList[1].fetchall()
-    dataInsertQuery = f""""""
+    dataInsertQuery = f"""INSERT INTO topSalesOfMonth(auctionID, auctionName, auctionHouseName, auctionHouseLocation, auctionImage, auctionStartDate, totalLotsOffered, totalLotsSold, sellThroughRate, soldPriceOverEstimate, totalSaleValue) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     for auctionData in auctionsDataList:
-        pass
+        allLotsSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS totalLotsOffered FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']}"""
+        soldLotsSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS totalLotsSold FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']} AND fal_lot_status = 'sold'"""
+        connList[1].execute(allLotsSelectQuery)
+        totalLotsOffered = connList[1].fetchone()
+        connList[1].execute(soldLotsSelectQuery)
+        totalLotsSold = connList[1].fetchone()
+        sellThroughRate = (totalLotsSold['totalLotsSold'] / totalLotsOffered['totalLotsOffered']) * 100
+
 
 
 def main():
