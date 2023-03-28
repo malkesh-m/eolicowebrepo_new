@@ -1872,4 +1872,6 @@ b {
         margin-bottom: 20px;
         height: 110px;
         overflow: hidden;
+    }#gal-Tab .nav-item .nav-link {
+        font-size: 16px;
     }
