@@ -35,5 +35,8 @@ urlpatterns = [
     path('getMyArtworksDetails/', views.getMyArtworksDetails, name="getMyArtworksDetails"),
     path('getMyArtists/', views.getMyArtists, name='getMyArtists'),
     path('getMyArtworks/', views.getMyArtworks, name='getMyArtworks'),
+    path('topLotsOfMonthForCharts/', views.topLotsOfMonthForCharts, name='topLotsOfMonthForCharts'),
+    path('topSalesOfMonthForCharts/', views.topSalesOfMonthForCharts, name='topSalesOfMonthForCharts'),
+    path('topArtistsOfMonthForCharts/', views.topArtistsOfMonthForCharts, name='topArtistsOfMonthForCharts'),
     path('topGeographicalLocationsForCharts/', views.topGeographicalLocationsForCharts, name="topGeographicalLocationsForCharts"),
 ]

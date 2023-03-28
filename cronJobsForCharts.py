@@ -1,6 +1,7 @@
 import datetime
 from threading import Thread
 import MySQLdb
+from statistics import median
 
 
 def connectToDb():
@@ -154,24 +155,78 @@ def topLotsOfMonthsForArtMarket():
     disconnectDb(connList)
 
 
-def topSalesOfMonth():
+def topSalesOfMonthForArtMarket():
     truncateThread = Thread(target=tableTruncater, args=("""TRUNCATE TABLE topSalesOfMonth""",))
     truncateThread.start()
-    auctionsSelectQuery = f"""SELECT fal_auction_ID FROM fineart_lots WHERE MONTH(fal_lot_sale_date) = MONTH(NOW()) GROUP BY fal_auction_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
+    auctionsSelectQuery = f"""SELECT fal_auction_ID FROM fineart_lots WHERE MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW()) GROUP BY fal_auction_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
     truncateThread.join()
     connList = connectToDb()
     connList[1].execute(auctionsSelectQuery)
     auctionsDataList = connList[1].fetchall()
     dataInsertQuery = f"""INSERT INTO topSalesOfMonth(auctionID, auctionName, auctionHouseName, auctionHouseLocation, auctionImage, auctionStartDate, totalLotsOffered, totalLotsSold, sellThroughRate, soldPriceOverEstimate, totalSaleValue) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    dataList = []
     for auctionData in auctionsDataList:
         allLotsSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS totalLotsOffered FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']}"""
         soldLotsSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS totalLotsSold FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']} AND fal_lot_status = 'sold'"""
+        totalSaleValueSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS totalSaleValue FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']}"""
+        highLowEstimateSelectQuery = f"""SELECT fal_lot_high_estimate_USD, fal_lot_low_estimate_USD FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']}"""
+        auctionDetailsSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_start_date, faac_auction_image, cah_auction_house_name, cah_auction_house_location FROM fineart_auction_calendar INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionData['fal_auction_ID']}"""
         connList[1].execute(allLotsSelectQuery)
         totalLotsOffered = connList[1].fetchone()
         connList[1].execute(soldLotsSelectQuery)
         totalLotsSold = connList[1].fetchone()
         sellThroughRate = (totalLotsSold['totalLotsSold'] / totalLotsOffered['totalLotsOffered']) * 100
+        connList[1].execute(totalSaleValueSelectQuery)
+        totalSaleValue = connList[1].fetchone()
+        connList[1].execute(highLowEstimateSelectQuery)
+        highLowEstimate = connList[1].fetchall()
+        sumOfHighLowEstimateMedian = 0
+        for highLowData in highLowEstimate:
+            sumOfHighLowEstimateMedian += median([float(highLowData['fal_lot_low_estimate_USD']) if highLowData['fal_lot_low_estimate_USD'] else 0, float(highLowData['fal_lot_high_estimate_USD']) if highLowData['fal_lot_high_estimate_USD'] else 0])
+        soldPriceOverEstimate = (float(totalSaleValue['totalSaleValue']) / sumOfHighLowEstimateMedian) * 100
+        connList[1].execute(auctionDetailsSelectQuery)
+        auctionDetails = connList[1].fetchone()
+        dataList.append((auctionDetails['faac_auction_ID'], auctionDetails['faac_auction_title'], auctionDetails['cah_auction_house_name'], auctionDetails['cah_auction_house_location'], auctionDetails['faac_auction_image'], auctionDetails['faac_auction_start_date'], totalLotsOffered['totalLotsOffered'], totalLotsSold['totalLotsSold'], sellThroughRate, soldPriceOverEstimate, totalSaleValue['totalSaleValue']))
+    connList[1].executemany(dataInsertQuery, dataList)
+    connList[0].commit()
+    disconnectDb(connList)
 
+
+def topArtistsOfMonthForArtMarket():
+    truncateThread = Thread(target=tableTruncater, args=("""TRUNCATE TABLE topArtistsOfMonth""",))
+    truncateThread.start()
+    auctionsSelectQuery = f"""SELECT faa_artist_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW()) GROUP BY faa_artist_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
+    truncateThread.join()
+    connList = connectToDb()
+    connList[1].execute(auctionsSelectQuery)
+    artistsDataList = connList[1].fetchall()
+    dataInsertQuery = f"""INSERT INTO topArtistsOfMonth(artistID, artistName, artistImage, TotalSaleOfThisYear, averageSalePriceUSD, sellThroughRate, soldPriceAboveEstimate) VALUES(%s, %s, %s, %s, %s, %s, %s)"""
+    dataList = []
+    for artistData in artistsDataList:
+        artistDetailsSelectQuery = f"""SELECT fa_artist_name, fa_artist_image FROM fineart_artists WHERE fa_artist_ID = {artistData['faa_artist_ID']}"""
+        totalSaleSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS totalSaleOfThisYear, COUNT(fal_lot_ID) AS TotalSoldLots FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE YEAR(fal_lot_sale_date) = YEAR(NOW()) AND faa_artist_ID = {artistData['faa_artist_ID']} AND fal_lot_status = 'sold'"""
+        totalLotsSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS totalLots FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['faa_artist_ID']} AND YEAR(fal_lot_sale_date) = YEAR(NOW())"""
+        highLowMedianSelectQuery = f"""SELECT fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['faa_artist_ID']} AND MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW())"""
+        connList[1].execute(artistDetailsSelectQuery)
+        artistDetails = connList[1].fetchone()
+        connList[1].execute(totalSaleSelectQuery)
+        totalSale = connList[1].fetchone()
+        averageSalePrice = float(totalSale['totalSaleOfThisYear']) / float(totalSale['totalSoldLots'])
+        connList[1].execute(totalLotsSelectQuery)
+        totalLots = connList[1].fetchone()
+        sellThroughRate = (float(totalSale['totalSoldLots']) / float(totalLots['totalLots'])) * 100
+        connList[1].execute(highLowMedianSelectQuery)
+        highLowMedian = connList[1].fetchall()
+        sumOfHighLowEstimateMedian = 0
+        sumOfSalePrice = 0
+        for highLowData in highLowMedian:
+            sumOfSalePrice += float(highLowData['fal_lot_sale_price_USD'])
+            sumOfHighLowEstimateMedian += median([float(highLowData['fal_lot_low_estimate_USD']) if highLowData['fal_lot_low_estimate_USD'] else 0, float(highLowData['fal_lot_high_estimate_USD']) if highLowData['fal_lot_high_estimate_USD'] else 0])
+        soldPriceOverEstimate = (sumOfSalePrice / sumOfHighLowEstimateMedian) * 100
+        dataList.append((artistData['faa_artist_ID'], artistDetails['fa_artist_name'], artistDetails['fa_artist_image'], totalSale['totalSaleOfThisYear'], averageSalePrice, sellThroughRate, soldPriceOverEstimate))
+    connList[1].executemany(dataInsertQuery, dataList)
+    connList[0].commit()
+    disconnectDb(connList)
 
 
 def main():

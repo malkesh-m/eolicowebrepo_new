@@ -136,6 +136,42 @@ def getMyArtists(request):
 
 
 @login_required(login_url='/login/show/')
+def topArtistsOfMonthForCharts(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    selectQuery = f"""SELECT * FROM topArtistsOfMonth"""
+    connList = connectToDb()
+    connList[1].execute(selectQuery)
+    topArtistsOfMonthData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(topArtistsOfMonthData, default=default))
+
+
+@login_required(login_url='/login/show/')
+def topSalesOfMonthForCharts(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    selectQuery = f"""SELECT * FROM topSalesOfMonth"""
+    connList = connectToDb()
+    connList[1].execute(selectQuery)
+    topSalesOfMonthData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(topSalesOfMonthData, default=default))
+
+
+@login_required(login_url='/login/show/')
+def topLotsOfMonthForCharts(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    selectQuery = f"""SELECT * FROM topLotsOfMonth"""
+    connList = connectToDb()
+    connList[1].execute(selectQuery)
+    topLotsOfMonthData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(topLotsOfMonthData, default=default))
+
+
+@login_required(login_url='/login/show/')
 def topGeographicalLocationsForCharts(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')

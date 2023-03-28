@@ -1,3 +1,5 @@
+const topLotsOfTheMonthDiv = document.querySelector('#topLotsOfTheMonth')
+
 function topPerfromanceOfTheYearChartMaker() {
     Highcharts.chart('topPerformancesOfTheYearChartId', {
         title: {
@@ -75,6 +77,131 @@ function topPerfromanceOfTheYearChartMaker() {
     })
 }
 
+function topArtistsOfTheMonth() {
+    fetch('/login/topArtistsOfMonthForCharts/', {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            console.log(body)
+        })
+}
+
+function topSalesOfTheMonth() {
+    fetch('/login/topSalesOfMonthForCharts/', {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            console.log(body)
+        })
+}
+
+function topLotsOfTheMonth() {
+    fetch('/login/topLotsOfMonthForCharts/', {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let htmlData = topLotsOfTheMonthDiv.innerHTML = ''
+            body.forEach(lotsData => {
+                htmlData += `
+                <div class="item">
+                <div class="latest-artists">
+                    <a href="/auction/details/?lid=${lotsData.lotID}" class="latest-card">
+                        <div class="thumb">
+                            <img src="https://f000.backblazeb2.com/file/fineart-images/${lotsData.artworkImage}"
+                                class="card-img" alt="img">
+                        </div>
+                        <div class="artist-card">
+                            <table class="table table-striped w-100">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>
+                                            <h3>Lot Title</h3>
+                                        </th>
+                                        <th class="text-right border-left">
+                                            <span>${lotsData.artworkTitle}</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h3>Artist</h3>
+                                        </td>
+                                        <td  class="text-right border-left">
+                                            <span>${lotsData.artistName}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h3>Price Sold</h3>
+                                        </td>
+                                        <td class="text-right border-left">
+                                            <span>${lotsData.currencyCode} ${lotsData.lotSalePrice}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h3>Price Sold</h3>
+                                        </td>
+                                        <td class="text-right border-left">
+                                            <span>USD ${lotsData.lotSalePriceUSD}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h3>Lot</h3>
+                                        </td>
+                                        <td class="text-right border-left">
+                                            <span>${lotsData.lotNum}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h3>Sale Title</h3>
+                                        </td>
+                                        <td class="text-right border-left">
+                                            <span>${lotsData.auctionTitle}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h3>Auction House</h3>
+                                        </td>
+                                        <td class="text-right border-left">
+                                            <span>${lotsData.auctionHouseName}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h3>Sale Date</h3>
+                                        </td>
+                                        <td class="text-right border-left">
+                                            <span>${lotsData.auctionStartDate}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h3>Auction Location</h3>
+                                        </td>
+                                        <td class="text-right border-left">
+                                            <span>${lotsData.auctionHouseLocation}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </a>
+                </div>
+            </div>`
+            })
+            topLotsOfTheMonthDiv.innerHTML = htmlData
+            owlSlider('#topLotsOfTheMonth')
+        })
+}
+
 function topGeographicalLocationsChartMaker() {
     Highcharts.chart('topGeographicalLocationChartId', {
         chart: {
@@ -143,5 +270,8 @@ function topGeographicalLocationsChartMaker() {
 
 document.addEventListener('DOMContentLoaded', function () {
     topPerfromanceOfTheYearChartMaker()
+    topArtistsOfTheMonth()
+    topSalesOfTheMonth()
+    // topLotsOfTheMonth()
     topGeographicalLocationsChartMaker()
 })
