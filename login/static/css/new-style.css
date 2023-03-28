@@ -98,10 +98,10 @@ body {
 }
 
 .nav-link {
-    font-weight: 600;
+    font-weight: 500;
     color: #505050 !important;
     padding: 0 15px;
-    font-size: 14px;
+    font-size: 20px;
     transition: all 0.3s;
 }
 
@@ -1819,8 +1819,8 @@ b {
     margin-bottom:100px;
 }
         .service-details .service-details-text p {
-            font-size: 16px;
-            line-height: 25px;
+            font-size: 20px;
+            line-height: 26px;
             color: #535f80;
         }
     .service-details .service-details-text h3 {
