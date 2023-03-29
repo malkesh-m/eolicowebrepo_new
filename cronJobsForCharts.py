@@ -134,6 +134,36 @@ def artistPerformanceByCountryForArtist():
     disconnectDb(connList)
 
 
+def topPerformanceOfYearForArtMarket():
+    truncateThread = Thread(target=tableTruncater, args=("""DELETE FROM `topPerformanceOfYear` WHERE topPerformanceOfYearId > 0""",))
+    truncateThread.start()
+    yearSelectQuery = f"SELECT DISTINCT(YEAR(fal_lot_sale_date)) AS fal_lot_sale_date_year FROM fineart_lots"
+    truncateThread.join()
+    connList = connectToDb()
+    connList[1].execute(yearSelectQuery)
+    yearsListData = connList[1].fetchall()
+    for yearData in yearsListData:
+        yearlySelectQuery = f"""SELECT YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year, faa_artist_ID, SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE YEAR(fal_lot_sale_date) = {yearData['fal_lot_sale_date_year']} GROUP BY faa_artist_ID ORDER BY fal_lot_sale_price_USD_SUM DESC limit 5"""
+        connList[1].execute(yearlySelectQuery)
+        topArtistsListData = connList[1].fetchall()
+        for topArtistData in topArtistsListData:
+            yearlyInsertQuery = f"""INSERT INTO topPerformanceOfYear(artistID, totalSalePrice, saleYear) VALUES(%s, %s, %s)"""
+            yearDataTuple = (topArtistData['faa_artist_ID'], topArtistData['fal_lot_sale_price_USD_SUM'], topArtistData['fal_lot_sale_date_year'])
+            connList[1].execute(yearlyInsertQuery, yearDataTuple)
+            connList[0].commit()
+            connList[1].execute('SELECT LAST_INSERT_ID() AS topPerformanceOfYearId')
+            topPerformanceOfYearData = connList[1].fetchone()
+            monthlySelectQuery = f"""SELECT MONTH(fal_lot_sale_date) AS fal_lot_sale_date_month, SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE YEAR(fal_lot_sale_date) = {topArtistData['fal_lot_sale_date_year']} AND faa_artist_ID = {topArtistData['faa_artist_ID']} GROUP BY fal_lot_sale_date_month"""
+            connList[1].execute(monthlySelectQuery)
+            topArtistsListDataByMonth = connList[1].fetchall()
+            for topArtistDataByMonth in topArtistsListDataByMonth:
+                monthlyInsertQuery = f"""INSERT INTO topPerformanceOfYearByMonth(topPerformanceOfYearID, totalSalePriceByMonth, month) VALUES(%s, %s, %s)"""
+                monthlyDataTuple = (topPerformanceOfYearData['topPerformanceOfYearId'], topArtistDataByMonth['fal_lot_sale_price_USD_SUM'], topArtistDataByMonth['fal_lot_sale_date_month'])
+                connList[1].execute(monthlyInsertQuery, monthlyDataTuple)
+                connList[0].commit()
+    disconnectDb(connList)
+
+
 def topLotsOfMonthsForArtMarket():
     truncateThread = Thread(target=tableTruncater, args=("""TRUNCATE TABLE topLotsOfMonth""",))
     truncateThread.start()
@@ -245,4 +275,4 @@ def main():
 
 
 # main()
-topLotsOfMonthsForArtMarket()
+topPerformanceOfYearForArtMarket()

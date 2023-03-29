@@ -136,6 +136,19 @@ def getMyArtists(request):
 
 
 @login_required(login_url='/login/show/')
+def topPerformanceOfYearCharts(request):
+    if request.method != 'GET':
+        return HttpResponse('Invalid Request Method!')
+    year = request.GET.get('year')
+    selectQuery = f"""SELECT fa_artist_name, artistID, totalSalePrice, saleYear, totalSalePriceByMonth, saleMonth FROM topPerformanceOfYearByMonth AS monthly INNER JOIN topPerformanceOfYear AS yearly ON monthly.topPerformanceOfYearID = yearly.topPerformanceOfYearId INNER JOIN fineart_artists ON artistId = fa_artist_ID WHERE saleYear = '{year}'"""
+    connList = connectToDb()
+    connList[1].execute(selectQuery)
+    topArtistsOfMonthData = connList[1].fetchall()
+    disconnectDb(connList)
+    return HttpResponse(json.dumps(topArtistsOfMonthData, default=default))
+
+
+@login_required(login_url='/login/show/')
 def topArtistsOfMonthForCharts(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
@@ -182,7 +195,6 @@ def topGeographicalLocationsForCharts(request):
     myArtistsData = connList[1].fetchall()
     disconnectDb(connList)
     return HttpResponse(json.dumps(myArtistsData, default=default))
-
 
 
 @login_required(login_url='/login/show/')

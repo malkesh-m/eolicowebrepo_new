@@ -491,23 +491,29 @@ async function getCountryCode(countryName) {
         method: 'GET',
     })
         .then(response => response.json())
-        .then(body => body[0].cca2)
-    return countryCode
+    return countryCode[0].cca2
 }
 
 async function artistPerformancesByRegionChartMaker() {
-    fetch(`/artist/artistPerformanceByCountryChart/?artistId=${artistId}&lotYear=2012`, {
+    let lotYear = 2012
+    let body = await fetch(`/artist/artistPerformanceByCountryChart/?artistId=${artistId}&lotYear=${lotYear}`, {
         method: 'GET',
     })
         .then(response => response.json())
-        .then(body => {
-            let myDataArray = []
-            body.forEach(obj => {
-                let countryCode = getCountryCode(obj.lotsCountry).then(countryCode => countryCode)
-                myDataArray.push({name: obj.lotsCountry, code: countryCode})
-            })
-            console.log(myDataArray)
+        let myDataArray = []
+        body.forEach(async obj => {
+            let countryCode = await getCountryCode(obj.lotsCountry).then(countryCode => countryCode)
+            myDataArray.push({name: obj.lotsCountry, code: countryCode, value: Number(obj.totalSalePrice)})
         })
+        console.log(myDataArray)
+        // .then(body => {
+        //     let myDataArray = []
+            // body.forEach(obj => {
+            //     let countryCode = await getCountryCode(obj.lotsCountry).then(countryCode => countryCode)
+            //     myDataArray.push({name: obj.lotsCountry, code: countryCode})
+            // })
+        //   console.log(myDataArray)
+        // })
     // (async () => {
 
         const topology = await fetch(
@@ -525,8 +531,8 @@ async function artistPerformancesByRegionChartMaker() {
                     'rgba(19,64,117,0.5)', 'rgba(19,64,117,0.6)', 'rgba(19,64,117,0.8)', 'rgba(19,64,117,1)'],
     
                 title: {
-                    text: 'Population density by country (/km²)',
-                    align: 'left'
+                    text: `Artist Performance By Region Year:- ${lotYear}`,
+                    align: 'center'
                 },
     
                 mapNavigation: {
@@ -554,7 +560,7 @@ async function artistPerformancesByRegionChartMaker() {
     
                 legend: {
                     title: {
-                        text: 'Individuals per km²',
+                        text: 'Sale Price (USD)',
                         style: {
                             color: ( // theme
                                 Highcharts.defaultOptions &&
@@ -581,24 +587,24 @@ async function artistPerformancesByRegionChartMaker() {
     
                 colorAxis: {
                     dataClasses: [{
-                        to: 3
-                    }, {
-                        from: 3,
-                        to: 10
-                    }, {
-                        from: 10,
-                        to: 30
-                    }, {
-                        from: 30,
                         to: 100
                     }, {
                         from: 100,
-                        to: 300
+                        to: 200
                     }, {
-                        from: 300,
-                        to: 1000
+                        from: 200,
+                        to: 400
                     }, {
-                        from: 1000
+                        from: 400,
+                        to: 800
+                    }, {
+                        from: 800,
+                        to: 1600
+                    }, {
+                        from: 1600,
+                        to: 3200
+                    }, {
+                        from: 3200
                     }]
                 },
     
@@ -606,34 +612,20 @@ async function artistPerformancesByRegionChartMaker() {
                     data: data,
                     joinBy: ['iso-a2', 'code'],
                     animation: true,
-                    name: 'Population density',
+                    name: 'Total Sale Price (USD)',
                     states: {
                         hover: {
                             color: '#a4edba'
                         }
                     },
-                    tooltip: {
-                        valueSuffix: '/km²'
-                    },
+                    // tooltip: {
+                    //     valueSuffix: ''
+                    // },
                     shadow: false
                 }]
             });
-        }
-    
-        var d = [ {
-            code: "US",
-            //name: "Yemen, Rep.",
-            value: 46
-        }, {
-            code: "ZM",
-            //name: "Zambia",
-            value: 17
-        }, {
-            code: "ZW",
-            //name: "Zimbabwe",
-            value: 32
-        }];
-        drawChart(d)
+        };
+        drawChart(myDataArray)
     
     
 
