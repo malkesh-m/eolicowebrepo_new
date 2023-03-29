@@ -111,11 +111,11 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'staging', 
-        'USER': 'websiteadmin',  
-        'PASSWORD': 'AVNS_UHIULiqroqLJ4x2ivN_', 
-        'HOST': 'art-curv-db-mysql-lon1-59596-do-user-10661075-0.b.db.ondigitalocean.com',  
-        'PORT': '25060',
+        'NAME': 'artb_Artbider_Prod',
+        'USER': 'artb_Admin',
+        'PASSWORD': 'cDLCntgtsjAOP%tw',
+        'HOST': '191.101.0.14',
+        'PORT': '3306',
     }
 }
 

@@ -272,6 +272,6 @@ document.addEventListener('DOMContentLoaded', function () {
     topPerfromanceOfTheYearChartMaker()
     topArtistsOfTheMonth()
     topSalesOfTheMonth()
-    // topLotsOfTheMonth()
+    topLotsOfTheMonth()
     topGeographicalLocationsChartMaker()
 })
