@@ -1,19 +1,73 @@
+Highcharts.setOptions({
+    title: { style: { fontSize: "24px" },},
+    subtitle: { style: { fontSize: "12px" },},
+    lang: {
+        thousandsSep: ','
+    },
+    credits: { enabled: false },
+    
+    xAxis: {
+        crosshair: true,
+        style: {
+            fontSize: "12px;"
+        },
+        labels: {
+            // rotation: 270,
+            useHTML: true
+        },
+    },
+    yAxis: {        
+        labels: {            
+            style: { fontSize: "12px" },
+        }
+    },
+    exporting: {
+        enabled: true,
+        tableCaption: false,
+    }
+});
+
 const topLotsOfTheMonthDiv = document.querySelector('#topLotsOfTheMonth')
 const topArtistsOfTheMonthDiv = document.querySelector('#topArtistsOfTheMonth')
 const topSalesOfTheMonthDiv = document.querySelector('#topSalesOfTheMonth')
 
 function topPerfromanceOfTheYearChartMaker() {
-    let year = 12
+    let year = 1975
+    let catArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    let mainDataArray = []
+    let artistsArray = []
     fetch(`/login/topPerformanceOfYearCharts/?year=${year}`, {
         method: 'GET' ,
     })
         .then(response => response.json())
         .then(body => {
-            console.log(body)
-        })
-    Highcharts.chart('topPerformancesOfTheYearChartId', {
+            body.forEach(obj => {
+                if (artistsArray.includes(obj.fa_artist_name) === false) {
+                    artistsArray.push(obj.fa_artist_name)
+                }
+            })
+            artistsArray.forEach(artistName => {
+                let salePriceArray = []
+                let mainSalePriceArray = []
+                body.forEach(obj => {
+                    if (artistName === obj.fa_artist_name) {
+                        salePriceArray.push({saleMonth: Number(obj.saleMonth), salePrice: Number(obj.totalSalePriceByMonth)})
+                    }
+                })
+                catArray.forEach(month => {
+                    let salePrice = 0
+                    salePriceArray.forEach(obj => {
+                        if (month == catArray[obj.saleMonth - 1]) {
+                            salePrice = obj.salePrice
+                        }
+                    })
+                    mainSalePriceArray.push(salePrice)
+                })
+                mainDataArray.push({name: artistName, data: mainSalePriceArray})
+            })
+            Highcharts.chart('topPerformancesOfTheYearChartId', {
         title: {
-            text: 'Top Performance Of The Year',
+            text: `Top Performance Of The Year:- ${year}`,
             align: 'center'
         },
         yAxis: {
@@ -22,20 +76,7 @@ function topPerfromanceOfTheYearChartMaker() {
             }
         },
         xAxis: {
-            categories: [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec'
-            ]
+            categories: catArray
         },
         legend: {
             layout: 'vertical',
@@ -49,27 +90,7 @@ function topPerfromanceOfTheYearChartMaker() {
                 }
             }
         },
-        series: [{
-            name: 'Pablo Picasso',
-            data: [43934, 48656, 65165, 81827, 112143, 142383,
-                171533, 165174, 155157, 161454, 154610, 154610]
-        }, {
-            name: 'Marc Chagall',
-            data: [24916, 37941, 29742, 29851, 32490, 30282,
-                38121, 36885, 33726, 34243, 31050, 154610]
-        }, {
-            name: 'Jean-Michel BASQUIAT',
-            data: [11744, 30000, 16005, 19771, 20185, 24377,
-                32147, 30912, 29243, 29213, 25663, 154610]
-        }, {
-            name: 'BANKSY',
-            data: [null, null, null, null, null, null, null,
-                null, 11164, 11218, 10077, 154610]
-        }, {
-            name: 'Yoshitomo NARA',
-            data: [21908, 5548, 8105, 11248, 8989, 11816, 18274,
-                17300, 13053, 11906, 10073, 154610]
-        }],
+        series: mainDataArray,
         responsive: {
             rules: [{
                 condition: {
@@ -85,6 +106,7 @@ function topPerfromanceOfTheYearChartMaker() {
             }]
         }
     })
+        })
 }
 
 function owlCarouselInit(elementId) {
@@ -287,7 +309,6 @@ function topLotsOfTheMonth() {
         .then(response => response.json())
         .then(body => {
             let htmlData = topLotsOfTheMonthDiv.innerHTML = ''
-            let flag = false
             body.forEach(lotsData => {
                 htmlData += `
                 <div class="item">
@@ -388,75 +409,25 @@ function topLotsOfTheMonth() {
         })
 }
 
+async function getCountryCode(countryName) {
+    let countryCode = await fetch(`https://restcountries.com/v3.1/name/${countryName}`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+    return countryCode[0].cca2
+}
+
 async function topGeographicalLocationsChartMaker() {
-    let year = 2012
+    let year = 1923
     let body = await fetch(`/login/topGeographicalLocationsForCharts/?year=${year}`, {
         method: 'GET',
     })
         .then(response => response.json())
-    console.log(body)
-    // Highcharts.chart('topGeographicalLocationChartId', {
-    //     chart: {
-    //         type: 'bar'
-    //     },
-    //     title: {
-    //         text: 'Top Geographical Locations',
-    //         align: 'center'
-    //     },
-    //     xAxis: {
-    //         categories: ['China', 'United States', 'United Kingdom', 'Germany', 'Australia', 'France', 'Austria', 'Italy', 'Russia', 'Others'],
-    //         title: {
-    //             text: null
-    //         }
-    //     },
-    //     yAxis: {
-    //         min: 0,
-    //         title: {
-    //             text: null
-    //         },
-    //         labels: {
-    //             overflow: 'justify'
-    //         }
-    //     },
-    //     // tooltip: {
-    //     //     valueSuffix: ' millions'
-    //     // },
-    //     plotOptions: {
-    //         bar: {
-    //             dataLabels: {
-    //                 enabled: true
-    //             }
-    //         }
-    //     },
-    //     legend: {
-    //         layout: 'vertical',
-    //         align: 'right',
-    //         verticalAlign: 'top',
-    //         x: -40,
-    //         y: 80,
-    //         floating: true,
-    //         borderWidth: 1,
-    //         backgroundColor:
-    //             Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-    //         shadow: true
-    //     },
-    //     credits: {
-    //         enabled: false
-    //     },
-    //     series: [{
-    //         name: '2022',
-    //         data: [631, 727, 202, 721, 26, 631, 727, 202, 721, 26]
-    //     }, {
-    //         name: '2021',
-    //         data: [814, 841, 374, 726, 31, 814, 841, 714, 726, 31]
-    //     }, {
-    //         name: '2020',
-    //         data: [144, 44, 470, 735, 40, 144, 944, 170, 735, 40]
-    //     }, {
-    //         name: '2019',
-    //         data: [276, 107, 561, 746, 42, 1276, 170, 461, 746, 42]
-    //     }]
-    // });
+        let myDataArray = []
+        body.forEach(async obj => {
+            let countryCode = await getCountryCode(obj.auctionHouseCountry).then(countryCode => countryCode)
+            myDataArray.push({name: obj.auctionHouseCountry, code: countryCode, value: Number(obj.totalSalePrice)})
+        })
     const topology = await fetch(
         'https://code.highcharts.com/mapdata/custom/world.topo.json'
     ).then(response => response.json());
@@ -472,7 +443,7 @@ async function topGeographicalLocationsChartMaker() {
                 'rgba(19,64,117,0.5)', 'rgba(19,64,117,0.6)', 'rgba(19,64,117,0.8)', 'rgba(19,64,117,1)'],
 
             title: {
-                text: `Artist Performance By Region Year:- 2012`,
+                text: `Artist Performance By Region Year:- ${year}`,
                 align: 'center'
             },
 
@@ -566,20 +537,8 @@ async function topGeographicalLocationsChartMaker() {
             }]
         });
     };
-    var d = [ {
-        code: "YE",
-        //name: "Yemen, Rep.",
-        value: 46
-      }, {
-        code: "ZM",
-        //name: "Zambia",
-        value: 17
-      }, {
-        code: "ZW",
-        //name: "Zimbabwe",
-        value: 32
-      }];
-    drawChart(d)
+    console.log(myDataArray)
+    drawChart(myDataArray)
 
 }
 

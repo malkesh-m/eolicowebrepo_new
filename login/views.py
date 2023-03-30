@@ -140,10 +140,15 @@ def topPerformanceOfYearCharts(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     year = request.GET.get('year')
-    selectQuery = f"""SELECT fa_artist_name, artistID, totalSalePrice, saleYear, totalSalePriceByMonth, saleMonth FROM topPerformanceOfYearByMonth AS monthly INNER JOIN topPerformanceOfYear AS yearly ON monthly.topPerformanceOfYearID = yearly.topPerformanceOfYearId INNER JOIN fineart_artists ON artistId = fa_artist_ID WHERE saleYear = '{year}'"""
+    selectQuery = f"""SELECT fa_artist_name, totalSalePrice, saleYear, totalSalePriceByMonth, saleMonth FROM topPerformanceOfYearByMonth AS monthly INNER JOIN topPerformanceOfYear AS yearly ON monthly.topPerformanceOfYearID = yearly.topPerformanceOfYearId INNER JOIN fineart_artists ON artistId = fa_artist_ID WHERE saleYear = '{year}'"""
     connList = connectToDb()
     connList[1].execute(selectQuery)
     topArtistsOfMonthData = connList[1].fetchall()
+    artistsList = []
+    for topArtistData in topArtistsOfMonthData:
+        if topArtistData['fa_artist_name'] not in artistsList:
+            artistsList.append(topArtistData['fa_artist_name'])
+
     disconnectDb(connList)
     return HttpResponse(json.dumps(topArtistsOfMonthData, default=default))
 
@@ -189,12 +194,12 @@ def topGeographicalLocationsForCharts(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     year = request.GET.get('year')
-    selectQuery = f"""SELECT cah_auction_house_country, YEAR(fal_lot_sale_date) FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_status = 'sold' AND YEAR(fal_lot_sale_date) = {year} GROUP BY cah_auction_house_country ORDER BY SUM(fal_lot_sale_price_USD) DESC limit 10"""
+    selectQuery = f"""SELECT auctionHouseCountry, totalSalePrice, saleYear FROM topGeographicalLocations WHERE saleYear = '{year}'"""
     connList = connectToDb()
     connList[1].execute(selectQuery)
-    myArtistsData = connList[1].fetchall()
+    topGeographicalLocationsData = connList[1].fetchall()
     disconnectDb(connList)
-    return HttpResponse(json.dumps(myArtistsData, default=default))
+    return HttpResponse(json.dumps(topGeographicalLocationsData, default=default))
 
 
 @login_required(login_url='/login/show/')
