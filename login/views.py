@@ -745,13 +745,11 @@ def getTrendingArtist(request):
     todayDate = datetime.datetime.now().date()
     subtractDate = todayDate - datetime.timedelta(days=365)
     connList = connectToDb()
-    trendingArtistSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT {limit} OFFSET {start};"""
+    trendingArtistSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID AND fal_lot_published = 'yes' WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT {limit} OFFSET {start};"""
     connList[1].execute(trendingArtistSelectQuery)
     trendingArtistData = connList[1].fetchall()
     disconnectDb(connList)
     return HttpResponse(json.dumps(trendingArtistData))
-
-
 
 
 def getUpcomingAuctions(request):
@@ -767,7 +765,7 @@ def getUpcomingAuctions(request):
     houses = request.GET.get('houses')
     locations = request.GET.get('locations')
     todayDate = datetime.datetime.now().date()
-    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date >= '{todayDate}'"""
+    upcomingAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID AND faac_auction_published = 'yes' WHERE faac_auction_start_date >= '{todayDate}'"""
     whereClause = """ """
     orderByClause = """ORDER BY"""
     if auctionHouseName:
@@ -813,7 +811,7 @@ def getRecentAuctions(request):
     houses = request.GET.get('houses')
     locations = request.GET.get('locations')
     todayDate = datetime.datetime.now().date()
-    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID WHERE faac_auction_start_date < '{todayDate}'"""
+    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID ON faac_auction_published = 'yes' WHERE faac_auction_start_date < '{todayDate}'"""
     whereClause = """ """
     orderByClause = """ORDER BY"""
     if auctionHouseName:
@@ -887,20 +885,20 @@ def getMyArtistsDetails(request):
         connList = connectToDb()
         connList[1].execute(getTotalArtworkSelectQuery)
         getTotalArtworkData = connList[1].fetchone()
-        getAverageSellingRateSelectQuery = f"""SELECT COUNT(fal_artwork_ID) AS totalSoldArtworkData FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+        getAverageSellingRateSelectQuery = f"""SELECT COUNT(fal_artwork_ID) AS totalSoldArtworkData FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
         connList[1].execute(getAverageSellingRateSelectQuery)
         getTotalSoldArtworkData = connList[1].fetchone()
         getAverageSellingRate = (int(getTotalSoldArtworkData['totalSoldArtworkData']) * 100) / int(getTotalArtworkData['totalArtworkData'])
-        getAverageSellingPriceSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) AS averageSellingPrice FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+        getAverageSellingPriceSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) AS averageSellingPrice FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
         connList[1].execute(getAverageSellingPriceSelectQuery)
         getAverageSellingPrice = connList[1].fetchone()
-        getAverageSellingPriceIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) averageSellingPriceIn12Month FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        getAverageSellingPriceIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) averageSellingPriceIn12Month FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
         connList[1].execute(getAverageSellingPriceIn12MonthSelectQuery)
         getAverageSellingPriceIn12Month = connList[1].fetchone()
-        getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
         connList[1].execute(getTotalArtworkSoldIn12MonthSelectQuery)
         getTotalArtworkSoldIn12Month = connList[1].fetchone()
-        getTotalArtworkIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+        getTotalArtworkIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
         connList[1].execute(getTotalArtworkIn12MonthSelectQuery)
         getTotalArtworkIn12Month = connList[1].fetchone()
         getAverageSellingRateIn12Month = 0
@@ -922,7 +920,7 @@ def getMyArtistsDetails(request):
 def getMyArtworksDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_id = cah_auction_house_ID WHERE reference_table = 'fineart_artworks' AND user_id = {request.user.id};"""
+    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_id = cah_auction_house_ID AND faac_auction = 'yes' WHERE reference_table = 'fineart_artworks' AND user_id = {request.user.id};"""
     connList = connectToDb()
     connList[1].execute(getMyArtworksDetailsSelectQuery)
     getMyArtworksDetailsData = connList[1].fetchall()

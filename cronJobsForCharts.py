@@ -1,4 +1,6 @@
-from timeit import timeit
+import datetime
+
+import schedule
 from threading import Thread
 import MySQLdb
 from statistics import median
@@ -32,7 +34,7 @@ def yoyTotalSaleForArtist():
     artistsDataList = connList[1].fetchall()
     dataInsertQuery = f"""INSERT INTO yoyTotalSaleAverage (artistID, totalSale, saleAverage, saleYear) VALUES(%s, %s, %s, %s)"""
     for artistData in artistsDataList:
-        dataSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM, AVG(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_AVG, faa_artist_ID, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_status = 'sold' GROUP BY YEAR(fal_lot_sale_date);"""
+        dataSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM, AVG(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_AVG, faa_artist_ID, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_status = 'sold' GROUP BY YEAR(fal_lot_sale_date);"""
         connList[1].execute(dataSelectQuery)
         data = connList[1].fetchall()
         if data:
@@ -57,9 +59,9 @@ def artistAnnualPerformanceForArtist():
     artistsDataList = connList[1].fetchall()
     dataInsertQuery = f"""INSERT INTO artistAnnualPerformance(artistID, numberOfLotsOffered, numberOfLotsSold, numberOfLotsUnsold, lotsYear, saleThroughRate) VALUES(%s, %s, %s, %s, %s, %s)"""
     for artistData in artistsDataList:
-        allLotsCountSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS allLots, faa_artist_ID, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['fa_artist_ID']} GROUP BY YEAR(fal_lot_sale_date);"""
-        soldLotsCountSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS soldLots, faa_artist_ID, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_status = 'sold' GROUP BY YEAR(fal_lot_sale_date);"""
-        unsoldLotsCountSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS unsoldLots, faa_artist_ID, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_status = 'yet to be sold' GROUP BY YEAR(fal_lot_sale_date);"""
+        allLotsCountSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS allLots, faa_artist_ID, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {artistData['fa_artist_ID']} GROUP BY YEAR(fal_lot_sale_date);"""
+        soldLotsCountSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS soldLots, faa_artist_ID, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_status = 'sold' GROUP BY YEAR(fal_lot_sale_date);"""
+        unsoldLotsCountSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS unsoldLots, faa_artist_ID, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_status = 'yet to be sold' GROUP BY YEAR(fal_lot_sale_date);"""
         connList[1].execute(allLotsCountSelectQuery)
         allLotsData = connList[1].fetchall()
         connList[1].execute(soldLotsCountSelectQuery)
@@ -94,7 +96,7 @@ def yoySellingCategoryForArtist():
     artistsDataList = connList[1].fetchall()
     dataInsertQuery = f"""INSERT INTO yoySellingCategory(artistID, totalSalePrice, averageSalePrice, lotsCategory, lotsYear) VALUES(%s, %s, %s, %s, %s)"""
     for artistData in artistsDataList:
-        dataSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM, AVG(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_AVG, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year, faa_artist_ID, fal_lot_category FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_category != '' AND fal_lot_status = 'sold' GROUP BY fal_lot_category, YEAR(fal_lot_sale_date);"""
+        dataSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM, AVG(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_AVG, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year, faa_artist_ID, fal_lot_category FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_category != '' AND fal_lot_status = 'sold' GROUP BY fal_lot_category, YEAR(fal_lot_sale_date);"""
         connList[1].execute(dataSelectQuery)
         data = connList[1].fetchall()
         if data:
@@ -119,16 +121,13 @@ def artistPerformanceByCountryForArtist():
     artistsDataList = connList[1].fetchall()
     dataInsertQuery = f"""INSERT INTO artistPerformanceByCountry(artistID, totalSalePrice, averageSalePrice, lotsCountry, lotsYear) VALUES(%s, %s, %s, %s, %s)"""
     for artistData in artistsDataList:
-        dataSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM, AVG(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_AVG, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year, faa_artist_ID, cah_auction_house_country FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_status = 'sold' GROUP BY cah_auction_house_country, YEAR(fal_lot_sale_date);"""
+        dataSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM, AVG(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_AVG, YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year, faa_artist_ID, cah_auction_house_country FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID AND faac_auction_published = 'yes' INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID WHERE faa_artist_ID = {artistData['fa_artist_ID']} AND fal_lot_status = 'sold' GROUP BY cah_auction_house_country, YEAR(fal_lot_sale_date);"""
         connList[1].execute(dataSelectQuery)
         data = connList[1].fetchall()
         if data:
             dataList = []
             for rowData in data:
-                dataList.append((rowData['faa_artist_ID'], rowData['fal_lot_sale_price_USD_SUM'] if rowData[
-                    'fal_lot_sale_price_USD_SUM'] else '0', rowData['fal_lot_sale_price_USD_AVG'] if rowData[
-                    'fal_lot_sale_price_USD_AVG'] else '0', rowData['cah_auction_house_country'],
-                                 rowData['fal_lot_sale_date_year']))
+                dataList.append((rowData['faa_artist_ID'], rowData['fal_lot_sale_price_USD_SUM'] if rowData['fal_lot_sale_price_USD_SUM'] else '0', rowData['fal_lot_sale_price_USD_AVG'] if rowData['fal_lot_sale_price_USD_AVG'] else '0', rowData['cah_auction_house_country'], rowData['fal_lot_sale_date_year']))
             connList[1].executemany(dataInsertQuery, dataList)
             connList[0].commit()
     disconnectDb(connList)
@@ -137,13 +136,13 @@ def artistPerformanceByCountryForArtist():
 def topPerformanceOfYearForArtMarket():
     truncateThread = Thread(target=tableTruncater, args=("""DELETE FROM `topPerformanceOfYear` WHERE topPerformanceOfYearId > 0""",))
     truncateThread.start()
-    yearSelectQuery = f"SELECT DISTINCT(YEAR(fal_lot_sale_date)) AS fal_lot_sale_date_year FROM fineart_lots"
+    yearSelectQuery = f"SELECT DISTINCT(YEAR(fal_lot_sale_date)) AS fal_lot_sale_date_year FROM fineart_lots WHERE fal_lot_published = 'yes'"
     truncateThread.join()
     connList = connectToDb()
     connList[1].execute(yearSelectQuery)
     yearsListData = connList[1].fetchall()
     for yearData in yearsListData:
-        yearlySelectQuery = f"""SELECT YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year, faa_artist_ID, SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE YEAR(fal_lot_sale_date) = {yearData['fal_lot_sale_date_year']} GROUP BY faa_artist_ID ORDER BY fal_lot_sale_price_USD_SUM DESC limit 5"""
+        yearlySelectQuery = f"""SELECT YEAR(fal_lot_sale_date) AS fal_lot_sale_date_year, faa_artist_ID, SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE YEAR(fal_lot_sale_date) = {yearData['fal_lot_sale_date_year']} GROUP BY faa_artist_ID ORDER BY fal_lot_sale_price_USD_SUM DESC limit 5"""
         connList[1].execute(yearlySelectQuery)
         topArtistsListData = connList[1].fetchall()
         for topArtistData in topArtistsListData:
@@ -153,7 +152,7 @@ def topPerformanceOfYearForArtMarket():
             connList[0].commit()
             connList[1].execute('SELECT LAST_INSERT_ID() AS topPerformanceOfYearId')
             topPerformanceOfYearData = connList[1].fetchone()
-            monthlySelectQuery = f"""SELECT MONTH(fal_lot_sale_date) AS fal_lot_sale_date_month, SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE YEAR(fal_lot_sale_date) = {topArtistData['fal_lot_sale_date_year']} AND faa_artist_ID = {topArtistData['faa_artist_ID']} GROUP BY fal_lot_sale_date_month"""
+            monthlySelectQuery = f"""SELECT MONTH(fal_lot_sale_date) AS fal_lot_sale_date_month, SUM(fal_lot_sale_price_USD) AS fal_lot_sale_price_USD_SUM FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE YEAR(fal_lot_sale_date) = {topArtistData['fal_lot_sale_date_year']} AND faa_artist_ID = {topArtistData['faa_artist_ID']} GROUP BY fal_lot_sale_date_month"""
             connList[1].execute(monthlySelectQuery)
             topArtistsListDataByMonth = connList[1].fetchall()
             for topArtistDataByMonth in topArtistsListDataByMonth:
@@ -164,17 +163,17 @@ def topPerformanceOfYearForArtMarket():
     disconnectDb(connList)
 
 
-def topLotsOfMonthsForArtMarket():
+def topLotsOfMonthForArtMarket():
     truncateThread = Thread(target=tableTruncater, args=("""TRUNCATE TABLE topLotsOfMonth""",))
     truncateThread.start()
-    lotsSelectQuery = f"""SELECT fal_lot_ID FROM fineart_lots WHERE fal_lot_status = 'sold' AND MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(fal_lot_sale_date) ORDER BY fal_lot_sale_price_USD LIMIT 5"""
+    lotsSelectQuery = f"""SELECT fal_lot_ID FROM fineart_lots WHERE fal_lot_status = 'sold' AND MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(fal_lot_sale_date) AND fal_lot_published = 'yes' ORDER BY fal_lot_sale_price_USD LIMIT 5"""
     truncateThread.join()
     connList = connectToDb()
     connList[1].execute(lotsSelectQuery)
     lotsDataList = connList[1].fetchall()
     insertQuery = f"""INSERT INTO topLotsOfMonth(lotID, lotNum, currencyCode, lotHighEstimate, lotLowEstimate, lotSalePrice, lotHighEstimateUSD, lotLowEstimateUSD, lotSalePriceUSD, auctionTitle, artworkImage, artworkMaterial, artworkCategory, artworkTitle, artistName, auctionStartDate, auctionHouseName, auctionHouseLocation) VALUES (%s, %s, %s , %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     for lotData in lotsDataList:
-        dataSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_ID = {lotData['fal_lot_ID']}"""
+        dataSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID AND faac_auction_published = 'yes' INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_ID = {lotData['fal_lot_ID']}"""
         connList[1].execute(dataSelectQuery)
         data = connList[1].fetchone()
         dataList = []
@@ -188,7 +187,7 @@ def topLotsOfMonthsForArtMarket():
 def topSalesOfMonthForArtMarket():
     truncateThread = Thread(target=tableTruncater, args=("""TRUNCATE TABLE topSalesOfMonth""",))
     truncateThread.start()
-    auctionsSelectQuery = f"""SELECT fal_auction_ID FROM fineart_lots WHERE MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW()) GROUP BY fal_auction_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
+    auctionsSelectQuery = f"""SELECT fal_auction_ID FROM fineart_lots WHERE MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW()) AND fal_lot_published = 'yes' GROUP BY fal_auction_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
     truncateThread.join()
     connList = connectToDb()
     connList[1].execute(auctionsSelectQuery)
@@ -200,7 +199,7 @@ def topSalesOfMonthForArtMarket():
         soldLotsSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS totalLotsSold FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']} AND fal_lot_status = 'sold'"""
         totalSaleValueSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS totalSaleValue FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']}"""
         highLowEstimateSelectQuery = f"""SELECT fal_lot_high_estimate_USD, fal_lot_low_estimate_USD FROM fineart_lots WHERE fal_auction_ID = {auctionData['fal_auction_ID']}"""
-        auctionDetailsSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_start_date, faac_auction_image, cah_auction_house_name, cah_auction_house_location FROM fineart_auction_calendar INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionData['fal_auction_ID']}"""
+        auctionDetailsSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_start_date, faac_auction_image, cah_auction_house_name, cah_auction_house_location FROM fineart_auction_calendar INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_published = 'yes' WHERE faac_auction_ID = {auctionData['fal_auction_ID']}"""
         connList[1].execute(allLotsSelectQuery)
         totalLotsOffered = connList[1].fetchone()
         connList[1].execute(soldLotsSelectQuery)
@@ -225,7 +224,7 @@ def topSalesOfMonthForArtMarket():
 def topArtistsOfMonthForArtMarket():
     truncateThread = Thread(target=tableTruncater, args=("""TRUNCATE TABLE topArtistsOfMonth""",))
     truncateThread.start()
-    auctionsSelectQuery = f"""SELECT faa_artist_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW()) GROUP BY faa_artist_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
+    auctionsSelectQuery = f"""SELECT faa_artist_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW()) GROUP BY faa_artist_ID ORDER BY SUM(fal_lot_sale_price_USD) DESC LIMIT 5"""
     truncateThread.join()
     connList = connectToDb()
     connList[1].execute(auctionsSelectQuery)
@@ -234,9 +233,9 @@ def topArtistsOfMonthForArtMarket():
     dataList = []
     for artistData in artistsDataList:
         artistDetailsSelectQuery = f"""SELECT fa_artist_name, fa_artist_image FROM fineart_artists WHERE fa_artist_ID = {artistData['faa_artist_ID']}"""
-        totalSaleSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS totalSaleOfThisYear, COUNT(fal_lot_ID) AS TotalSoldLots FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE YEAR(fal_lot_sale_date) = YEAR(NOW()) AND faa_artist_ID = {artistData['faa_artist_ID']} AND fal_lot_status = 'sold'"""
-        totalLotsSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS totalLots FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['faa_artist_ID']} AND YEAR(fal_lot_sale_date) = YEAR(NOW())"""
-        highLowMedianSelectQuery = f"""SELECT fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID WHERE faa_artist_ID = {artistData['faa_artist_ID']} AND MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW())"""
+        totalSaleSelectQuery = f"""SELECT SUM(fal_lot_sale_price_USD) AS totalSaleOfThisYear, COUNT(fal_lot_ID) AS TotalSoldLots FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE YEAR(fal_lot_sale_date) = YEAR(NOW()) AND faa_artist_ID = {artistData['faa_artist_ID']} AND fal_lot_status = 'sold'"""
+        totalLotsSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS totalLots FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {artistData['faa_artist_ID']} AND YEAR(fal_lot_sale_date) = YEAR(NOW())"""
+        highLowMedianSelectQuery = f"""SELECT fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {artistData['faa_artist_ID']} AND MONTH(fal_lot_sale_date) = MONTH(NOW()) AND YEAR(fal_lot_sale_date) = YEAR(NOW())"""
         connList[1].execute(artistDetailsSelectQuery)
         artistDetails = connList[1].fetchone()
         connList[1].execute(totalSaleSelectQuery)
@@ -270,10 +269,9 @@ def topGeographicalLocationsForArtMarket():
     dataInsertQuery = f"""INSERT INTO topGeographicalLocations(auctionHouseCountry, totalSalePrice, saleYear) VALUES(%s, %s, %s)"""
     for yearData in yearsListData:
         dataList = []
-        selectQuery = f"""SELECT cah_auction_house_country, SUM(fal_lot_sale_price_USD) fal_lot_sale_price_USD_SUM FROM fineart_lots INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID AND YEAR(fal_lot_sale_date) = {yearData['fal_lot_sale_date_year']} AND fal_lot_status = 'sold' INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID GROUP BY cah_auction_house_country ORDER BY fal_lot_sale_price_USD_SUM DESC LIMIT 10"""
+        selectQuery = f"""SELECT cah_auction_house_country, SUM(fal_lot_sale_price_USD) fal_lot_sale_price_USD_SUM FROM fineart_lots INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID AND fal_lot_published = 'yes' AND faac_auction_published = 'yes' AND YEAR(fal_lot_sale_date) = {yearData['fal_lot_sale_date_year']} AND fal_lot_status = 'sold' INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID GROUP BY cah_auction_house_country ORDER BY fal_lot_sale_price_USD_SUM DESC LIMIT 10"""
         connList[1].execute(selectQuery)
         topGeographicalLocationsDataList = connList[1].fetchall()
-        print(topGeographicalLocationsDataList)
         for topGeographicalLocationsData in topGeographicalLocationsDataList:
             dataList.append((topGeographicalLocationsData['cah_auction_house_country'], topGeographicalLocationsData['fal_lot_sale_price_USD_SUM'] if topGeographicalLocationsData['fal_lot_sale_price_USD_SUM'] else 0, yearData['fal_lot_sale_date_year']))
         connList[1].executemany(dataInsertQuery, dataList)
@@ -281,20 +279,64 @@ def topGeographicalLocationsForArtMarket():
     disconnectDb(connList)
 
 
-def main():
-    artistAnnualPerformanceThread = Thread(target=artistAnnualPerformanceForArtist)
+def emailAlert():
+    usersArtistsSelectQuery = f"""SELECT user_id AS userId, referenced_table_id AS artistId FROM `user_favorites` WHERE reference_table = 'fineart_artists'"""
+    connList = connectToDb()
+    connList[1].execute(usersArtistsSelectQuery)
+    usersArtistsDataList = connList[1].fetchall()
+    for userArtistData in usersArtistsDataList:
+        upcomingLotsSelectQuery = f"""SELECT fal_lot_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND faa_artist_ID = {userArtistData['artistId']} AND fal_lot_record_created >= {datetime.datetime.now() - datetime.timedelta(hours=24)} AND fal_lot_published = 'yes'"""
+        print(upcomingLotsSelectQuery)
+        connList[1].execute(upcomingLotsSelectQuery)
+        upcomingLotsDataList = connList[1].fetchall()
+        print(upcomingLotsDataList)
+    disconnectDb(connList)
+
+
+def dailyCronJobs():
     yoyTotalSaleThread = Thread(target=yoyTotalSaleForArtist)
-    yoySellingCategoryThread = Thread(target=yoySellingCategoryForArtist)
-    artistPerformanceByCountryThread = Thread(target=artistPerformanceByCountryForArtist)
     yoyTotalSaleThread.start()
+
+    artistAnnualPerformanceThread = Thread(target=artistAnnualPerformanceForArtist)
     artistAnnualPerformanceThread.start()
+
+    yoySellingCategoryThread = Thread(target=yoySellingCategoryForArtist)
     yoySellingCategoryThread.start()
+
+    artistPerformanceByCountryThread = Thread(target=artistPerformanceByCountryForArtist)
     artistPerformanceByCountryThread.start()
+
+    topPerformanceOfYearThread = Thread(target=topPerformanceOfYearForArtMarket)
+    topPerformanceOfYearThread.start()
+
+    topGeographicalLocationsThread = Thread(target=topGeographicalLocationsForArtMarket)
+    topGeographicalLocationsThread.start()
+
     yoyTotalSaleThread.join()
     artistAnnualPerformanceThread.join()
     yoySellingCategoryThread.join()
     artistPerformanceByCountryThread.join()
+    topPerformanceOfYearThread.join()
+    topGeographicalLocationsThread.join()
 
 
-# main()
-topGeographicalLocationsForArtMarket()
+def monthlyCronJobs():
+    topArtistsOfMonthThread = Thread(target=topArtistsOfMonthForArtMarket)
+    topArtistsOfMonthThread.start()
+
+    topLotsOfMonthThread = Thread(target=topLotsOfMonthForArtMarket)
+    topLotsOfMonthThread.start()
+
+    topSalesOfMonthThread = Thread(target=topSalesOfMonthForArtMarket)
+    topSalesOfMonthThread.start()
+
+    topArtistsOfMonthThread.join()
+    topLotsOfMonthThread.join()
+    topSalesOfMonthThread.join()
+
+
+def main():
+    pass
+
+
+emailAlert()
