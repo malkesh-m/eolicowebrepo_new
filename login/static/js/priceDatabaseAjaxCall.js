@@ -1,11 +1,21 @@
 const frmpricefilter = document.querySelector('#frmpricefilter')
 const advanceSearchResultDataDivId = document.querySelector('#advanceSearchResultDataDivId')
+const txttitle = document.querySelector('#txttitle')
+const txtartistname = document.querySelector('#txtartistname')
+const sel_auctionhouses = document.querySelector('#sel_auctionhouses')
 const displayDataDivId = document.querySelector('#displayDataDivId')
+
+function clearFilter(e) {
+    $('#txttitle').val(null).trigger('change')
+    $('#txtartistname').val(null).trigger('change')
+    $('#sel_auctionhouses').val(null).trigger('change')
+    frmpricefilter.reset()
+}
 
 function htmlDataBinder(auctionData) {
     let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-3 artworkData">
                         <div class="latest-artists">
-                            <a href="/login/myArtworkDetails/?lid=${auctionData.fal_lot_ID}" class="latest-card">
+                            <a href="/auction/details/?lid=${auctionData.fal_lot_ID}" class="latest-card">
                                 <div class="thumb">
                                     <img src="https://f000.backblazeb2.com/file/fineart-images/${auctionData.faa_artwork_image1}" class="card-img" alt="img">
                                 </div>
@@ -51,8 +61,6 @@ function htmlDataBinder(auctionData) {
 }
 
 function dataFilter(start, limit) {
-    const txtartistname = document.querySelector('#txtartistname')
-    const txttitle = document.querySelector('#txttitle')
     const medium1 = document.querySelector('#medium1')
     const medium2 = document.querySelector('#medium2')
     const medium3 = document.querySelector('#medium3')
@@ -64,7 +72,6 @@ function dataFilter(start, limit) {
     const sel_artwork_start = document.querySelector('#sel_artwork_start')
     const sel_artwork_end = document.querySelector('#sel_artwork_end')
     const dtauctionstartdate = document.querySelector('#dtauctionstartdate')
-    const sel_auctionhouses = document.querySelector('#sel_auctionhouses')
     const txtauctionlocation = document.querySelector('#txtauctionlocation')
     const soldCheckId = document.querySelector('#soldCheckId')
     const yetToBeSoldCheckId = document.querySelector('#yetToBeSoldCheckId')

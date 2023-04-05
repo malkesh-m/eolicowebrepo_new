@@ -122,7 +122,7 @@ async function getauctionHouses(e, housesOrLocationsStr) {
         start = e.target.dataset.start
         queryParams += `start=${start}&locations=true&`
     }
-    const apiData = await fetch(`/auction/getAuctionHousesOrLocations/?${queryParams}limit=10`, {
+    const apiData = await fetch(`/auction/getAuctionHousesOrLocations/?${queryParams}limit=10&ahid=${auctionHouseId}`, {
                         method: 'GET',
                     })
                         .then(response => response.json())

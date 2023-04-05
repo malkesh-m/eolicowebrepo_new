@@ -110,11 +110,11 @@ function getMyArtistsDetailsSetter() {
                 htmlData += `<tr>
                                 <td>${artistData.artistName}</td>
                                 <td class="forAlign">${artistData.totalArtworkData}</td>
-                                <td class="forAlign"><strong>USD </strong>${artistData.averageSellingPrice}</td>
-                                <td class="forAlign">${artistData.averageSellingRate}%</td>
-                                <td class="forAlign">${artistData.totalArtworkSoldInLast12Month}</td>
-                                <td class="forAlign">${artistData.averageSellingPriceInLast12Month}</td>
-                                <td class="forAlign">${artistData.averageSellingRateIn12Month}%</td>
+                                <td class="forAlign"><strong>USD </strong>${Number(artistData.averageSellingPrice).toFixed(3)}</td>
+                                <td class="forAlign">${Number(artistData.averageSellingRate).toFixed(3)}%</td>
+                                <td class="forAlign">${Number(artistData.totalArtworkSoldInLast12Month).toFixed(3)}</td>
+                                <td class="forAlign">${Number(artistData.averageSellingPriceInLast12Month).toFixed(3)}</td>
+                                <td class="forAlign">${Number(artistData.averageSellingRateIn12Month).toFixed(3)}%</td>
                             </tr>`
             })
             artistTableBodyId.innerHTML = htmlData 

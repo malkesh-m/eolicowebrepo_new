@@ -1,5 +1,7 @@
 import datetime
-
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 import schedule
 from threading import Thread
 import MySQLdb
@@ -285,12 +287,181 @@ def emailAlert():
     connList[1].execute(usersArtistsSelectQuery)
     usersArtistsDataList = connList[1].fetchall()
     for userArtistData in usersArtistsDataList:
-        upcomingLotsSelectQuery = f"""SELECT fal_lot_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND faa_artist_ID = {userArtistData['artistId']} AND fal_lot_record_created >= {datetime.datetime.now() - datetime.timedelta(hours=24)} AND fal_lot_published = 'yes'"""
-        print(upcomingLotsSelectQuery)
+        upcomingLotsSelectQuery = f"""SELECT fal_lot_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND faa_artist_ID = {userArtistData['artistId']} AND fal_lot_record_created >= '{datetime.datetime.now() - datetime.timedelta(hours=24)}' AND fal_lot_published = 'yes'"""
         connList[1].execute(upcomingLotsSelectQuery)
         upcomingLotsDataList = connList[1].fetchall()
-        print(upcomingLotsDataList)
+        for upcomingLotsData in upcomingLotsDataList:
+            userSelectQuery = f"""SELECT id AS userId, username AS userName, email AS emailAdd FROM auth_user WHERE id = {userArtistData['userId']}"""
+            connList[1].execute(userSelectQuery)
+            userData = connList[1].fetchone()
+            print(userData)
     disconnectDb(connList)
+
+
+def sendEmail():
+    print('email sending')
+    recieverEmail = 'himanshujetani2211@gmail.com'
+    hostEmail = 'contact@artbider.com'
+    hostEmailPassword = 'Welcome#1234'
+    hostEmailHostName = 'smtp.hostinger.com'
+    hostEmailPort = 587
+    msg = MIMEMultipart()
+    msg['From'] = hostEmail
+    htmlData = '''<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Email</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5; color: #333333; background-color: #f2f2f2; margin: 0; padding: 0;">
+    <div class="container" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); box-sizing: border-box;">
+        <div class="header" style="display: flex; justify-content: space-between; margin-bottom: 20px; background-color: #E7e9f0; padding: 20px 30px; display: flex; align-items: center;">
+            <h1 style="font-size: 24px; margin-top: 0; margin-bottom: 0;">My Email</h1>
+            <h6 style="font-size: 15px; font-weight: 600; margin-top: 0; margin-bottom: 0;">Your Alert for 03 Apr, 2023</h6>
+        </div>
+        <div class="content" style="margin-bottom: 20px; padding: 0 50px;">
+            <h2 style=" margin-top: 0; font-size: 30px; font-weight: 600; margin-bottom: 10px;"><span style="font-size: 24px; font-weight: 500;">Dear</span> Parez</h2>
+            <p style=" margin: 0px; font-size: 15px;">The Following Artists in your collection have new artworks available</p>
+            <div class="mail-contani">
+                <h2 style="font-size: 24px; font-weight: 600; margin: 10px 0 0 0;">Pabllo Pic</h2>
+                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">1</span> lots in sale</h5>
+                <div class="mail-inner" style=" display: flex;">
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">house</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">location</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">03 Apr, 2023</h6>
+                </div>
+                <div class="mail-img" style="display: flex; justify-content: space-between;">
+                    <div class="img-contain" style="margin-right: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <div class="img-text" style="padding: 0 10px 10px 10px;">
+                            <h5 style="font-size: 20px; font-weight: 600; margin: 0 0 10px 0;">Card title</h5>
+                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                        </div>
+                    </div>
+                    <div class="img-contain" style="margin-left: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <div class="img-text" style="padding: 0 10px 10px 10px;">
+                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
+                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                        </div>
+                    </div>
+                </div>
+                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">1</span> lots in sale</h5>
+                <div class="mail-inner" style=" display: flex;">
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">house</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">location</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">03 Apr, 2023</h6>
+                </div>
+                <div class="mail-img" style="display: flex; justify-content: space-between;">
+                    <div class="img-contain" style="margin-right: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <div class="img-text" style="padding: 0 10px 10px 10px;">
+                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
+                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                        </div>
+                    </div>
+                    <div class="img-contain" style="margin-left: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <div class="img-text" style="padding: 0 10px 10px 10px;">
+                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
+                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mail-contani">
+                <h2 style="font-size: 24px; font-weight: 600; margin: 10px 0 0 0;">Pabllo Pic</h2>
+                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">1</span> lots in sale</h5>
+                <div class="mail-inner" style=" display: flex;">
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">house</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">location</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">03 Apr, 2023</h6>
+                </div>
+                <div class="mail-img" style="display: flex; justify-content: space-between;">
+                    <div class="img-contain" style="margin-right: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <div class="img-text" style="padding: 0 10px 10px 10px;">
+                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
+                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                        </div>
+                    </div>
+                    <div class="img-contain" style="margin-left: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <div class="img-text" style="padding: 0 10px 10px 10px;">
+                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
+                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                        </div>
+                    </div>
+                </div>
+                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">1</span> lots in sale</h5>
+                <div class="mail-inner" style=" display: flex;">
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">house</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">location</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">03 Apr, 2023</h6>
+                </div>
+                <div class="mail-img" style="display: flex; justify-content: space-between;">
+                    <div class="img-contain" style="margin-right: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <div class="img-text" style="padding: 0 10px 10px 10px;">
+                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
+                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                        </div>
+                    </div>
+                    <div class="img-contain" style="margin-left: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
+                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <div class="img-text" style="padding: 0 10px 10px 10px;">
+                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
+                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block; margin-top: 20px;">FOLLOW MORE ARTISTS</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer" style="background-color: #E7e9f0; padding: 20px 30px;">
+            <div class="follow-contain" style="text-align: center;">
+                <div class="logo">
+                    <h1 style="margin: 0 0 10px 0;">mail</h1>
+                </div>
+                <div class="social-icon" style="display: flex; justify-content: center; margin-bottom: 15px;">
+                    <a target="_blank" href="#" style="display: contents;">
+                        <img src="image/instragram.png" alt="" style="width: 5%; padding: 0 5px;">
+                    </a>
+                    <a target="_blank" href="#" style="display: contents;">
+                        <img src="image/facebook.png" alt="" style="width: 5%; padding: 0 5px;">
+                    </a>
+                    <a target="_blank" href="#" style="display: contents;">
+                        <img src="image/linkdin.png" alt="" style="width: 5%; padding: 0 5px;">
+                    </a>
+                    <a target="_blank" href="#" style="display: contents;">
+                        <img src="image/pintrest.png" alt="" style="width: 5%; padding: 0 5px;">
+                    </a>
+                </div>
+                <h6 style="font-size: 16px; margin: 0;">Copyright © 2022 All rights reserved.</h6>
+                <p style="font-size: 14px; width: 90%; margin: auto; margin: 5px 0 0 0;">Artbider respects your right to privacy. We sent you this email message
+                    because you have signed up to receive emails from MutualArt. This email
+                    may include advertising or promotional content. If you want to be
+                    removed from this email list, please unsubscribe here.</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>'''
+    msg['To'] = recieverEmail
+    msg['Subject'] = "Unmatched HEX count"
+    msg.attach(MIMEText(htmlData, 'html'))
+    server = smtplib.SMTP(hostEmailHostName, hostEmailPort)
+    server.starttls()
+    server.login(hostEmail, hostEmailPassword)
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    server.quit()
+    print('email sent')
 
 
 def dailyCronJobs():
@@ -339,4 +510,4 @@ def main():
     pass
 
 
-emailAlert()
+sendEmail()

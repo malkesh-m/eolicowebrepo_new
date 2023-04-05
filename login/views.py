@@ -811,7 +811,7 @@ def getRecentAuctions(request):
     houses = request.GET.get('houses')
     locations = request.GET.get('locations')
     todayDate = datetime.datetime.now().date()
-    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID ON faac_auction_published = 'yes' WHERE faac_auction_start_date < '{todayDate}'"""
+    recentAuctionSelectQuery = f"""SELECT faac_auction_ID, faac_auction_title, faac_auction_sale_code, faac_auction_image, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON fineart_auction_calendar.faac_auction_house_ID = core_auction_houses.cah_auction_house_ID AND faac_auction_published = 'yes' WHERE faac_auction_start_date < '{todayDate}'"""
     whereClause = """ """
     orderByClause = """ORDER BY"""
     if auctionHouseName:
@@ -823,7 +823,7 @@ def getRecentAuctions(request):
     else:
         orderByClause += """ faac_auction_start_date DESC """
     if fromDate:
-        whereClause += f""" AND faac_auction_start_date = '{fromDate}' """
+        whereClause += f""" AND faac_auction_start_date BETWEEN '{fromDate}' AND '{toDate}'"""
     if toDate:
         whereClause += f""" AND faac_auction_end_date = '{toDate}' """
     if houses:
@@ -920,7 +920,7 @@ def getMyArtistsDetails(request):
 def getMyArtworksDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_id = cah_auction_house_ID AND faac_auction = 'yes' WHERE reference_table = 'fineart_artworks' AND user_id = {request.user.id};"""
+    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_published = 'yes' WHERE reference_table = 'fineart_artworks' AND user_id = {request.user.id};"""
     connList = connectToDb()
     connList[1].execute(getMyArtworksDetailsSelectQuery)
     getMyArtworksDetailsData = connList[1].fetchall()
@@ -1045,7 +1045,6 @@ def dologin(request):
         username = request.POST.get('username')
         raw_password = request.POST.get('passwd')
         user = authenticate(username=username, password=raw_password)
-        print(user)
         if user is not None:
             login(request, user)
         else:

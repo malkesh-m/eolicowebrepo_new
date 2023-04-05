@@ -276,12 +276,13 @@ def getAuctionHousesOrLocations(request):
     start = request.GET.get('start')
     limit = request.GET.get('limit')
     houses = request.GET.get('houses')
+    auctionHouseId = request.GET.get('ahid')
     locations = request.GET.get('locations')
     auctionHousesSelectQuery = f"SELECT DISTINCT "
     if houses:
         auctionHousesSelectQuery += f"""cah_auction_house_name FROM `core_auction_houses` WHERE cah_auction_house_name != "Sotheby's" AND cah_auction_house_name != "Christie's" AND cah_auction_house_name != 'Bonhams' AND cah_auction_house_name != 'Phillips' AND cah_auction_house_name != '' LIMIT {limit} OFFSET {start};"""
     if locations:
-        auctionHousesSelectQuery += f"""cah_auction_house_location FROM `core_auction_houses` WHERE cah_auction_house_location != 'London' AND cah_auction_house_location != 'NewYork' AND cah_auction_house_location != 'Paris' AND cah_auction_house_location != 'Milan' AND cah_auction_house_location != '' LIMIT 10 OFFSET {start};"""
+        auctionHousesSelectQuery += f"""cah_auction_house_location FROM `core_auction_houses` WHERE cah_auction_house_ID = {auctionHouseId} AND cah_auction_house_location != 'London' AND cah_auction_house_location != 'NewYork' AND cah_auction_house_location != 'Paris' AND cah_auction_house_location != 'Milan' AND cah_auction_house_location != '' LIMIT 10 OFFSET {start};"""
     connList = connectToDb()
     connList[1].execute(auctionHousesSelectQuery)
     auctionHousesData = connList[1].fetchall()

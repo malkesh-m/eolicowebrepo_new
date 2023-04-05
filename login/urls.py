@@ -14,6 +14,7 @@ urlpatterns = [
     path('unfollow/', views.unfollowartist, name='unfollowartist'),
     # path('morefollows/', views.morefollows, name='morefollows'),
     path('morefavourites/', views.morefavourites, name='morefavourites'),
+    path('termsAndCondition/', views.termsAndCondition, name='termsAndCondition'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('show/', views.show, name='show'),
     path('notifications/', views.notifications, name='notifications'),

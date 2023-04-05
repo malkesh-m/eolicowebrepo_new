@@ -1,6 +1,7 @@
 const getTrendingArtistDiv = document.querySelector('#getTrendingArtistId')
 const getUpcomingAuctionsDiv = document.querySelector('#getUpcomingAuctionsId')
 const getRecentAuctionsDiv = document.querySelector('#getRecentAuctionsId')
+let passwordShowHideFlag = false
 
 function owlSlider(sliderId) {
     var owl = $(sliderId);
@@ -25,6 +26,18 @@ function owlSlider(sliderId) {
             }
         }
     });
+}
+
+function passwordShowHide(elementId) {
+    const passwordEle = document.querySelector(elementId)
+    if (passwordShowHideFlag) {
+        passwordEle.type = 'text'
+        passwordShowHideFlag = false
+    }
+    else {
+        passwordEle.type = 'password'
+        passwordShowHideFlag = true
+    }
 }
 
 function trendingArtistSlider() {
