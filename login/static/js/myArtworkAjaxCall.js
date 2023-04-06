@@ -19,9 +19,11 @@ function htmlDataBinder(auctionData) {
                                     <h3>${auctionData.faac_auction_title}</h3>
                                     <h3><span>${auctionData.cah_auction_house_name}</span></h3>
                                     <h3 class="mb-3"><span>${auctionData.faac_auction_start_date} | ${auctionData.cah_auction_house_location}</span>
-                                    </h3>
+                                    </h3>`
 
-                                    <h3>Estimate : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_low_estimate} - ${auctionData.fal_lot_high_estimate}</span></h3>`
+                                    if (auctionData.fal_lot_low_estimate != 0 & auctionData.fal_lot_high_estimate != 0) {
+                                        htmlData += `<h3>Estimate : <span>${auctionData.cah_auction_house_currency_code} ${auctionData.fal_lot_low_estimate} - ${auctionData.fal_lot_high_estimate}</span></h3>`
+                                    }
                                     if (auctionData.cah_auction_house_currency_code === 'USD') {
                                         if (auctionData.fal_lot_sale_price == 0 || auctionData.fal_lot_sale_price == null) {
                                             htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
@@ -31,7 +33,9 @@ function htmlDataBinder(auctionData) {
                                         }
                                     }
                                     else {
-                                        htmlData += `<h3>Estimate USD : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>`
+                                        if (auctionData.fal_lot_low_estimate_USD != 0 & auctionData.fal_lot_high_estimate_USD != 0) {
+                                            htmlData += `<h3>Estimate USD : <span>${auctionData.fal_lot_low_estimate_USD} - ${auctionData.fal_lot_high_estimate_USD}</span></h3>`
+                                        }
                                         if (auctionData.fal_lot_sale_price == 0 || auctionData.fal_lot_sale_price == null) {
                                             htmlData += `<h3>Price Sold : <span>Unsold</span></h3>`
                                         }

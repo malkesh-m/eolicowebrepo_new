@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
+        rel="stylesheet">
 
     <title>ArtBider</title>
 
@@ -36,7 +37,7 @@
             font-weight: bold;
             text-decoration: none;
         }
-        
+
         #cover {
             position: fixed;
             top: 0;
@@ -47,7 +48,7 @@
             height: 100%;
             display: none;
         }
-        
+
         #adminScreen {
             height: 680px;
             width: 640px;
@@ -59,13 +60,15 @@
             border: 5px solid #cccccc;
             border-radius: 10px;
         }
-        
+
         #adminScreen:target,
         #adminScreen:target+#cover {
             display: block;
             opacity: 2;
         }
+
         
+
         .cancel {
             display: block;
             position: absolute;
@@ -83,14 +86,19 @@
     </style>
 
     <script src="/static/js/editfromfront.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js" integrity="sha512-sn/GHTj+FCxK5wam7k9w4gPPm6zss4Zwl/X9wgrvGMFbnedR8lTUSLdsolDRBRzsX6N+YgG6OWyvn9qaFVXH9w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/static/js/jspdf.umd.js"></script>
     <script src="/static/js/eolicoauth.js"></script>
-    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=632ac11776ed290012d9213d&product=inline-share-buttons' async='async'></script>
+    <script type='text/javascript'
+        src='https://platform-api.sharethis.com/js/sharethis.js#property=632ac11776ed290012d9213d&product=inline-share-buttons'
+        async='async'></script>
 
 </head>
 
 <body>
     <!-- Unique Work Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -112,21 +120,25 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="name">Username</label>
-                                <input type="text" class="form-control" id="regiUsername" name="username" placeholder="Enter your full name" />
+                                <input type="text" class="form-control" id="regiUsername" name="username"
+                                    placeholder="Enter your full name" />
                             </div>
                             <div class="form-group">
                                 <label for="emailid">Email</label>
-                                <input type="text" class="form-control" id="emailid" name="emailid" placeholder="Enter your email address" />
+                                <input type="text" class="form-control" id="emailid" name="emailid"
+                                    placeholder="Enter your email address" />
                             </div>
                             <div class="form-group">
                                 <label for="password1">Password</label>
-                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter a password" />
+                                <input type="password" class="form-control" id="password1" name="password1"
+                                    placeholder="Enter a password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <p>Password must be at least 8 characters.</p>
                             </div>
                             <div class="form-group">
                                 <label for="password2">Confirm Password</label>
-                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-type password" />
+                                <input type="password" class="form-control" id="password2" name="password2"
+                                    placeholder="Re-type password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
@@ -134,12 +146,15 @@
                                     <span>
                                         <input type="checkbox" name="agree" id="agree" value="" />
                                     </span>
-                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
+                                    <p>I agree to the <a href="terms.html" target="_blank">Terms of Use</a>, <a
+                                            href="privacy-policy.html" target="_blank">Privacy Policy</a>, <a
+                                            href="conditions-of-sale.html" target="_blank">Conditions of Sale</a> and to
                                         receiving emails from ArtBidder.</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider" onclick="javascript:doregister();">Sign up</button>
+                                <button type="button" value="signup" name="btnsignup" class="btn btn-slider"
+                                    onclick="javascript:doregister();">Sign up</button>
                             </div>
                             <!--
                             <div class="form-group">
@@ -156,10 +171,13 @@
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
+                                <p>Already have an account? <a href="javascript:void(0)" data-dismiss="modal"
+                                        data-toggle="modal" data-target="#exampleModal-login">Log In</a></p>
                             </div>
                             <div class="form-group text-center">
-                                <p>This site is protected by reCAPTCHA and the Google <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a> apply.</p>
+                                <p>This site is protected by reCAPTCHA and the Google <a
+                                        href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms of
+                                        Service</a> apply.</p>
                             </div>
                         </form>
                     </div>
@@ -169,7 +187,8 @@
     </div>
     <!-- Sign up Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
+        aria-labelledby="exampleModalLabel-login" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -191,11 +210,13 @@
                             <label style="color:red;" id="errormsg"></label> {% csrf_token %}
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" class="form-control" name='username' id="loginUsername" placeholder="Enter your username" />
+                                <input type="text" class="form-control" name='username' id="loginUsername"
+                                    placeholder="Enter your username" />
                             </div>
                             <div class="form-group">
                                 <label for="password">password</label>
-                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
+                                <input type="password" class="form-control" name='passwd' id="passwd"
+                                    placeholder="Enter your password" />
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <!-- <div class="form-group">
@@ -204,7 +225,8 @@
                                 </div>
                             </div> -->
                             <div class="form-group">
-                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
+                                <button type="button" value="submit" name="" class="btn btn-slider"
+                                    onclick="javascript:dologin();">Log in</button>
                             </div>
                             <!--
                             <div class="form-group">
@@ -221,7 +243,8 @@
                             </div>
 			    -->
                             <div class="form-group text-center">
-                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal"
+                                        data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -231,7 +254,8 @@
     </div>
     <!-- Sign in Modal -->
     <!-- Sign in Modal -->
-    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
+    <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -256,10 +280,13 @@
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </div>
                             <div class="form-group">
-                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset instructions</button>
+                                <button type="submit" value="submit" name="" class="btn btn-slider">Send me reset
+                                    instructions</button>
                             </div>
                             <div class="form-group text-center">
-                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
+                                <p>Don’t need to reset? <a href="javascript:void(0)" data-toggle="modal"
+                                        data-target="#exampleModal-login">login</a> or <a href="javascript:void(0)"
+                                        data-toggle="modal" data-target="#exampleModal">Sign up</a></p>
                             </div>
                         </form>
                     </div>
@@ -315,8 +342,9 @@
                                 <img src="/static/images/email-logo.png" style="height: 60px;" alt="">
                             </a>
                         </div>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                                aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false"
+                            aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
@@ -350,16 +378,19 @@
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="#"> News</a>
                                 </li> -->
-        
+
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
                                 {% if not user.is_authenticated %}
                                 <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                                <li class="nav-item"><button type="button" class="btn btn-login btn-round"
+                                        data-toggle="modal" data-target="#exampleModal-login"
+                                        aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
                                 <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
                                 <li class="nav-item">
-                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
+                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;"
+                                        onclick='javascript:logout();'>Logout</button>
                                 </li>
                                 {% endif %}
                             </ul>
@@ -369,151 +400,286 @@
             </div>
         </div>
     </header>
-
-    <section class="artists-details" style="padding-top: 140px;">
-        <div class="container">
-            <div class="row align-items-end justify-content-between">
-                <div class="col-auto">
-                    <div class="artists-details-img">
-                        <h3 id="headerTitleId"></h3>
-                        <p class="mb-0" id="headerLotNoId"></p>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <!-- share button -->
-                    <!-- <div class="sharethis-inline-share-buttons"></div>  -->
-                    <!-- share button -->
-                    <div>
-                        <a href="#"> <img src="/static/images/pdf.png" class="mr-2" style="width: 30px;" /></a>
-                        <a href="#">
-                            <img src="/static/images/share.png" style="width: 30px;" />
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <hr/>
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="product-imgs">
-                        <div class="img-display">
-                            <div class="img-showcase">
-                                <img id="image1Id" src="" alt="show image">
-                                <!-- <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg" alt="shoe image">
-                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg" alt="shoe image">
-                                <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg" alt="shoe image"> -->
-                            </div>
+    <div id="pdfDataDivId">
+        <section class="artists-details" style="padding-top: 140px;">
+            <div class="container">
+                <div class="row align-items-end justify-content-between">
+                    <div class="col-auto">
+                        <div class="artists-details-img">
+                            <h3 id="headerTitleId"></h3>
+                            <p class="mb-0" id="headerLotNoId"></p>
                         </div>
-                        <div class="img-select">
-                            <div class="img-item">
-                                <a href="#" data-id="1">
-                                    <img id="image2Id" class="lotImages" src="" alt="show image">
-                                </a>
+                    </div>
+                    <div class="col-auto">
+                        <div class="modal fade z-index" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLongTitle">Share Lot</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="sharethis-inline-share-buttons"></div> 
+                                </div>
+                              </div>
                             </div>
-                            <div class="img-item">
-                                <a href="#" data-id="2">
-                                    <img id="image3Id" class="lotImages" src="" alt="show image">
-                                </a>
-                            </div>
-                            <div class="img-item">
-                                <a href="#" data-id="3">
-                                    <img id="image4Id" class="lotImages" src="" alt="show image">
-                                </a>
-                            </div>
-                            <div class="img-item">
-                                <a href="#" data-id="4">
-                                    <img id="image5Id" class="lotImages" src="" alt="show image">
-                                </a>
-                            </div>
+                          </div>
+                        <!-- share button -->
+                        <div>
+                            <button id="saveToPdfBtnId" style="border: 0; background: transparent;"> <img
+                                    src="/static/images/pdf.png" class="mr-2" style="width: 30px;" /></button>
+                            <a href="#" data-toggle="modal" data-target="#exampleModalCenter">
+                                <img src="/static/images/share.png" style="width: 30px;" />
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-7 mt-4 mt-md-0">
-                    <div class="artists-details-content">
-                        <div class="d-md-flex justify-content-between mb-5">
-                            <div>
-                                <h4 class="mb-2" id="artistId"></h4>
-                                <h4 class="mb-2" id="titleId"></h4>
-                                <h4 class="mb-3" id="lotNoId"></h4>
+                <hr />
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="product-imgs">
+                            <div class="img-display">
+                                <div class="img-showcase">
+                                    <img id="image1Id" src="" alt="show image">
+                                    <!-- <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg"
+                                        alt="show image">
+                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg"
+                                        alt="show image">
+                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg"
+                                        alt="show image"> -->
+                                </div>
                             </div>
-                            {% if user.is_authenticated %}
+                            <div class="img-select">
+                                <div class="img-item">
+                                    <a href="#" data-id="1">
+                                        <img id="image2Id" class="lotImages" src="" alt="show image">
+                                    </a>
+                                </div>
+                                <div class="img-item">
+                                    <a href="#" data-id="2">
+                                        <img id="image3Id" class="lotImages" src="" alt="show image">
+                                    </a>
+                                </div>
+                                <div class="img-item">
+                                    <a href="#" data-id="3">
+                                        <img id="image4Id" class="lotImages" src="" alt="show image">
+                                    </a>
+                                </div>
+                                <div class="img-item">
+                                    <a href="#" data-id="4">
+                                        <img id="image5Id" class="lotImages" src="" alt="show image">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 mt-4 mt-md-0">
+                        <div class="artists-details-content">
+                            <div class="d-md-flex justify-content-between mb-5">
+                                <div>
+                                    <h4 class="mb-2" id="artistId"></h4>
+                                    <h4 class="mb-2" id="titleId"></h4>
+                                    <h4 class="mb-3" id="lotNoId"></h4>
+                                </div>
+                                {% if user.is_authenticated %}
                                 <div>
                                     {% if followUnfollowArtist %}
-                                        <div id="artsitFollowUnfollowId">
-                                            <button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtist('Unfollow')">Unfollow Artist</button>
-                                        </div>
+                                    <div id="artsitFollowUnfollowId">
+                                        <button class="btn btn-login btn-round ml-0 d-block mb-2"
+                                            style="font-size: 12px; width: 100%;" type="button"
+                                            onclick="followUnfollowArtist('Unfollow')">Unfollow Artist</button>
+                                    </div>
                                     {% else %}
-                                        <div id="artsitFollowUnfollowId">
-                                            <button class="btn btn-login btn-round ml-0 d-block mb-2" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtist('Follow')">Follow Artist</button>
-                                        </div>
+                                    <div id="artsitFollowUnfollowId">
+                                        <button class="btn btn-login btn-round ml-0 d-block mb-2"
+                                            style="font-size: 12px; width: 100%;" type="button"
+                                            onclick="followUnfollowArtist('Follow')">Follow Artist</button>
+                                    </div>
                                     {% endif %}
                                     {% if followUnfollowArtwork %}
-                                        <div id="artworkFollowUnfollowId">
-                                            <button class="btn btn-login btn-round ml-0  d-block" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtwork('Remove from Collection')">Remove From Collection</button>
-                                        </div>
+                                    <div id="artworkFollowUnfollowId">
+                                        <button class="btn btn-login btn-round ml-0  d-block"
+                                            style="font-size: 12px; width: 100%;" type="button"
+                                            onclick="followUnfollowArtwork('Remove from Collection')">Remove From
+                                            Collection</button>
+                                    </div>
                                     {% else %}
-                                        <div id="artworkFollowUnfollowId">
-                                            <button class="btn btn-login btn-round ml-0  d-block" style="font-size: 12px; width: 100%;" type="button" onclick="followUnfollowArtwork('Add to Collection')">Add  to Collection</button>
-                                        </div>
+                                    <div id="artworkFollowUnfollowId">
+                                        <button class="btn btn-login btn-round ml-0  d-block"
+                                            style="font-size: 12px; width: 100%;" type="button"
+                                            onclick="followUnfollowArtwork('Add to Collection')">Add to
+                                            Collection</button>
+                                    </div>
                                     {% endif %}
                                 </div>
-                            {% endif %}
-                        </div>
-
-                        <h5 id="mediumId"></h5>
-                        <h5 id="categoryId"></h5>
-                        <h5 class="mb-3" id="dimensionsId"></h5>
-                        <h5 id="markingId"></h5>
-
-                        <h5 class="mb-3" id="auctionTitle"></h5>
-                        <h5 class="mb-3" id="nameLocationId"></h5>
-                        <h5 class="mb-5" id="dateId"></h5>
-
-                        <h5 class="mb-3" id="estimatesId"></h5>
-                        <h5 class="mb-3" id="estimatesUSDId"></h5>
-                        <h5 class="mb-3" id="soldPriceId"></h5>
-                        <h5 id="soldPriceUSDId"></h5>
-
-
-                    </div>
-                </div>
-            </div>
-            <hr>
-        </div>
-    </section>
-    <section>
-        <div class="action-page-details">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="action-content">
-                            <div class="d-md-flex align-items-start" id="provenanceId">
-                                
+                                {% endif %}
                             </div>
-                            <div class="d-md-flex align-items-start" id="literatureId">
-                                
-                            </div>
-                            <div class="d-md-flex align-items-start" id="exhibitionId">
-                                
-                            </div>
-                            <div class="d-md-flex align-items-start" id="descriptionId">
-                                
-                            </div>
+
+                            <h5 id="mediumId"></h5>
+                            <h5 id="categoryId"></h5>
+                            <h5 class="mb-3" id="dimensionsId"></h5>
+                            <h5 id="markingId"></h5>
+
+                            <h5 class="mb-3" id="auctionTitle"></h5>
+                            <h5 class="mb-3" id="nameLocationId"></h5>
+                            <h5 class="mb-5" id="dateId"></h5>
+
+                            <h5 class="mb-3" id="estimatesId"></h5>
+                            <h5 class="mb-3" id="estimatesUSDId"></h5>
+                            <h5 class="mb-3" id="soldPriceId"></h5>
+                            <h5 id="soldPriceUSDId"></h5>
+
+
                         </div>
                     </div>
                 </div>
                 <hr>
             </div>
-        </div>
-    </section>
-        <section class="pt-5">
+        </section>
+        <section>
+            <div class="action-page-details">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="action-content">
+                                <div class="d-md-flex align-items-start" id="provenanceId">
+
+                                </div>
+                                <div class="d-md-flex align-items-start" id="literatureId">
+
+                                </div>
+                                <div class="d-md-flex align-items-start" id="exhibitionId">
+
+                                </div>
+                                <div class="d-md-flex align-items-start" id="descriptionId">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="pdfDataSaveDivId" style="display: none ;">
+        <section class="artists-details" style="padding-top: 140px;">
             <div class="container">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <h3 class="heading-style">Similar Artworks</h3>
+                <div class="row align-items-end justify-content-between">
+                    <div class="col-auto">
+                        <div class="artists-details-img">
+                            <h3 id="headerPdfTitleId"></h3>
+                            <p class="mb-0" id="headerLotNoPdfId"></p>
+                        </div>
                     </div>
                 </div>
-                <div class="row" id="relatedLotsId">
-                    <!-- <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
+                <hr />
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="product-imgs">
+                            <div class="img-display">
+                                <div class="img-showcase">
+                                    <img id="image1PdfId" src="" alt="show image">
+                                    <!-- <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_2.jpg"
+                                        alt="show image">
+                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_4.jpg"
+                                        alt="show image">
+                                    <img src="https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_3.jpg"
+                                        alt="show image"> -->
+                                </div>
+                            </div>
+                            <div class="img-select">
+                                <div class="img-item">
+                                    <a href="#" data-id="1">
+                                        <img id="image2PdfId" class="lotImages" src="" alt="show image">
+                                    </a>
+                                </div>
+                                <div class="img-item">
+                                    <a href="#" data-id="2">
+                                        <img id="image3PdfId" class="lotImages" src="" alt="show image">
+                                    </a>
+                                </div>
+                                <div class="img-item">
+                                    <a href="#" data-id="3">
+                                        <img id="image4PdfId" class="lotImages" src="" alt="show image">
+                                    </a>
+                                </div>
+                                <div class="img-item">
+                                    <a href="#" data-id="4">
+                                        <img id="image5PdfId" class="lotImages" src="" alt="show image">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 mt-4 mt-md-0">
+                        <div class="artists-details-content">
+                            <div class="d-md-flex justify-content-between mb-5">
+                                <div>
+                                    <h4 class="mb-2" id="artistPdfId"></h4>
+                                    <h4 class="mb-2" id="titlePdfId"></h4>
+                                    <h4 class="mb-3" id="lotNoPdfId"></h4>
+                                </div>
+                            </div>
+
+                            <h5 id="mediumPdfId"></h5>
+                            <h5 id="categoryPdfId"></h5>
+                            <h5 class="mb-3" id="dimensionsPdfId"></h5>
+                            <h5 id="markingPdfId"></h5>
+
+                            <h5 class="mb-3" id="auctionTitlePdf"></h5>
+                            <h5 class="mb-3" id="nameLocationPdfId"></h5>
+                            <h5 class="mb-5" id="datePdfId"></h5>
+
+                            <h5 class="mb-3" id="estimatesPdfId"></h5>
+                            <h5 class="mb-3" id="estimatesUSDPdfId"></h5>
+                            <h5 class="mb-3" id="soldPricePdfId"></h5>
+                            <h5 id="soldPriceUSDPdfId"></h5>
+
+
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </section>
+        <section>
+            <div class="action-page-details">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="action-content">
+                                <div class="d-md-flex align-items-start" id="provenancePdfId">
+
+                                </div>
+                                <div class="d-md-flex align-items-start" id="literaturePdfId">
+
+                                </div>
+                                <div class="d-md-flex align-items-start" id="exhibitionPdfId">
+
+                                </div>
+                                <div class="d-md-flex align-items-start" id="descriptionpdfId">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </section>
+    </div>
+    <section class="pt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h3 class="heading-style">Similar Artworks</h3>
+                </div>
+            </div>
+            <div class="row" id="relatedLotsId">
+                <!-- <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4">
                         <div class="latest-artists">
                             <a href="/auction/showauction/?aucid=148454" class="latest-card" style="background-color: #f9f9f9;">
                                 <div class="thumb">
@@ -669,12 +835,13 @@
                             </a>
                         </div>
                     </div> -->
-                    <div class="col-12 text-center mt-4" id="relatedArtworkViewMoreId">
-                        <button type="button" class="btn btn-login btn-round py-2" onclick="getRelatedLotsDataSetter(0)">View More</button>
-                    </div>
+                <div class="col-12 text-center mt-4" id="relatedArtworkViewMoreId">
+                    <button type="button" class="btn btn-login btn-round py-2"
+                        onclick="getRelatedLotsDataSetter(0)">View More</button>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
     <!-- ***** Header Area End ***** -->
     <!-- ***** Main Banner Area Start ***** -->
     <!----<section class="featured-artist-slider">
@@ -1257,9 +1424,13 @@
                             <img src="/static/images/ArtBider-footer-logo.png" alt="" style="width: 150px;">
                         </div>
                         <ul>
-                            <li><a href="#" style="font-size: 12px;">85, Great Portland Street, First Floor, London, United Kingdom, W1W 7LT</a>
+                            <li>
+                                <p style="font-size: 12px; color: #fff">85, Great Portland Street, First Floor, London,
+                                    United Kingdom, W1W 7LT</p>
                             </li>
-                            <li><a href="#" style="font-size: 12px;">contact@artbider.com</a></li>
+                            <li>
+                                <p style="font-size: 12px; color: #fff;">contact@artbider.com</p>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -1270,7 +1441,7 @@
                         <li><a href="/login/index/">Home</a></li>
                         <li><a href="/auction/index/">Current Auctions</a></li>
                         <li><a href="/artist/index/">Trending Artists</a></li>
-                        
+
                     </ul>
                 </div>
                 <!-- <div class="col-lg-3">
@@ -1295,16 +1466,28 @@
                 </div>
                 <div class="col-lg-12">
                     <div class="under-footer">
-                        
-                                                <ul class="mt-0 mb-3">
-                                                    <li><a target="_blank" href="https://www.linkedin.com/company/artbider/"><i class="fa fa-linkedin"></i></a></li>
-                                                    <li><a target="_blank" href="https://www.instagram.com/artbsocial/"><i class="fa fa-instagram"></i></a></li>
-                                                    <li><a target="_blank" href="https://www.facebook.com/ArtBider?mibextid=LQQJ4d"><i class="fa fa-facebook"></i></a></li>
-                                                    <li><a target="_blank" href="https://pin.it/5Ypwddg"><i class="fa fa-pinterest"></i></a></li>
-                                                </ul>
-                        <p class="text-center pb-3" style="font-size: 11px;">Art Bider trademark and all of its assets are owned and operated by Asawari Art Industries Private Limited, a private limited company registered in India under Indian Companies Act, 2013. CIN - U92490PN2022PTC21596.</p>
-                        <p class="text-center" style="font-size: 11px;">All trademarks, logos and brand names are the property of their respective owners. All company, product and service names used in this website are for analytical and research purposes only. Use of these names, trademarks and brands does not imply endorsement.</p>
-                        <p class="text-center py-3" style="font-size: 11px;">We guarantee that all payments received from our members, less fees, remittance charges and gateway commissions are held in a current deposit Account maintained with The Hongkong and Shanghai Banking Corporation Limited, India (HSBC) </p>
+
+                        <ul class="mt-0 mb-3">
+                            <li><a target="_blank" href="https://www.linkedin.com/company/artbider/"><i
+                                        class="fa fa-linkedin"></i></a></li>
+                            <li><a target="_blank" href="https://www.instagram.com/artbsocial/"><i
+                                        class="fa fa-instagram"></i></a></li>
+                            <li><a target="_blank" href="https://www.facebook.com/ArtBider?mibextid=LQQJ4d"><i
+                                        class="fa fa-facebook"></i></a></li>
+                            <li><a target="_blank" href="https://pin.it/5Ypwddg"><i class="fa fa-pinterest"></i></a>
+                            </li>
+                        </ul>
+                        <p class="text-center pb-3" style="font-size: 11px;">Art Bider trademark and all of its assets
+                            are owned and operated by Asawari Art Industries Private Limited, a private limited company
+                            registered in India under Indian Companies Act, 2013. CIN - U92490PN2022PTC21596.</p>
+                        <p class="text-center" style="font-size: 11px;">All trademarks, logos and brand names are the
+                            property of their respective owners. All company, product and service names used in this
+                            website are for analytical and research purposes only. Use of these names, trademarks and
+                            brands does not imply endorsement.</p>
+                        <p class="text-center py-3" style="font-size: 11px;">We guarantee that all payments received
+                            from our members, less fees, remittance charges and gateway commissions are held in a
+                            current deposit Account maintained with The Hongkong and Shanghai Banking Corporation
+                            Limited, India (HSBC) </p>
                         <p>
                             Copyright © 2022. All Rights Reserved.
                         </p>
@@ -1386,9 +1569,9 @@
                 }
             }
         })
-        $(function() {
+        $(function () {
             $("row-re").slice(0, 1).show();
-            $("#loadMore").on('click', function(e) {
+            $("#loadMore").on('click', function (e) {
                 e.preventDefault();
                 $("row-re:hidden").slice(0, 1).slideDown();
                 if ($("row-re:hidden").length == 0) {
@@ -1401,7 +1584,7 @@
                 }, 1500);
             });
 
-            $("#loadLess").on('click', function(e) {
+            $("#loadLess").on('click', function (e) {
                 e.preventDefault();
                 $('row-re:not(:lt(1))').fadeOut();
                 $("#loadMore").fadeIn('slow');
@@ -1417,13 +1600,13 @@
         });
     </script>
     <script>
-        $(function() {
+        $(function () {
             var selectedClass = "";
-            $("p").click(function() {
+            $("p").click(function () {
                 selectedClass = $(this).attr("data-rel");
                 $("#portfolio").fadeTo(50, 0.1);
                 $("#portfolio div").not("." + selectedClass).fadeOut();
-                setTimeout(function() {
+                setTimeout(function () {
                     $("." + selectedClass).fadeIn();
                     $("#portfolio").fadeTo(50, 1);
                 }, 500);
