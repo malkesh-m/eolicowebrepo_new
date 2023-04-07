@@ -737,6 +737,19 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+def contactUs(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    context = {}
+    if request.user.is_authenticated and request.user.is_staff:
+        context['adminuser'] = 1
+    else:
+        context['adminuser'] = 0
+    userobj = request.user
+    context['username'] = userobj.username
+    return render(request, 'contactUs.html', context)
+
+
 def getTrendingArtist(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
