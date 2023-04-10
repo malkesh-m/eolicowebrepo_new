@@ -4177,7 +4177,7 @@ img {
     color: #fff;
 }
 
-.contact-form .contact-inner button {
+.contact-form .contact-inner .btnFormSubmitCls {
     border: 0;
     padding: 10px 30px;
     border-radius: 30px;

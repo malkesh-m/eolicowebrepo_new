@@ -3,15 +3,9 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.template.context_processors import csrf
 from django.views.generic import View
 from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect, HttpRequest
-from django.urls import reverse
-from django.template import RequestContext
-from django.db.models import Q
-from django.template.response import TemplateResponse
-from django.utils.http import base36_to_int, is_safe_url
-from django.template import Template, Context
-from django.template.loader import get_template
-from django.core.mail import send_mail
-from django.contrib.sessions.backends.db import SessionStore
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 from threading import Thread
 from django.template import loader
 from django.contrib.auth import login, authenticate
@@ -738,8 +732,28 @@ def index(request):
 
 
 def contactUs(request):
-    if request.method != 'GET':
-        return HttpResponse("Invalid method of call")
+    if request.method == 'POST':
+        name = request.POST.get('contactUsName')
+        toEmail = request.POST.get('contactUsEmail')
+        subject = request.POST.get('contactUsSubject')
+        message = request.POST.get('contactUsMessage')
+        print('email sending')
+        hostEmail = 'contact@artbider.com'
+        hostEmailPassword = 'Welcome#1234'
+        hostEmailHostName = 'smtp.hostinger.com'
+        hostEmailPort = 587
+        msg = MIMEMultipart()
+        msg['From'] = hostEmail
+        msg['To'] = toEmail
+        msg['Subject'] = subject
+        msg.attach(MIMEText(message, 'plain'))
+        server = smtplib.SMTP(hostEmailHostName, hostEmailPort)
+        server.starttls()
+        server.login(hostEmail, hostEmailPassword)
+        server.sendmail(msg['From'], msg['To'], msg.as_string())
+        server.quit()
+        print('email sent')
+
     context = {}
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
@@ -747,7 +761,9 @@ def contactUs(request):
         context['adminuser'] = 0
     userobj = request.user
     context['username'] = userobj.username
-    return render(request, 'contactUs.html', context)
+    if request.method == 'GET':
+        template = loader.get_template('contactUs.html')
+        return HttpResponse(template.render(context, request))
 
 
 def getTrendingArtist(request):
@@ -1114,30 +1130,30 @@ def about(request):
 
 
 # @cache_page(CACHE_TTL)
-def contactus(request):
-    if request.method == 'GET':
-        """
-        wcqset = WebConfig.objects.filter(paramname="ContactUs")
-        #wcqset = WebConfig.objects.filter(path="/contactus/")
-        wcobj = None
-        if wcqset.__len__() > 0:
-            wcobj = wcqset[0]
-        context = {'contactus' : ''}
-        if wcobj is not None:
-            context['contactus'] = wcobj.paramvalue
-            context['contactid'] = wcobj.id
-        carouselentries = getcarouselinfo()
-        context['carousel'] = carouselentries
-        """
-        context = {'contactus': ''}
-        if request.user.is_authenticated and request.user.is_staff:
-            context['adminuser'] = 1
-        else:
-            context['adminuser'] = 0
-        template = loader.get_template('contactus.html')
-        return HttpResponse(template.render(context, request))
-    else:
-        return HttpResponse("Incorrect request method")
+# def contactus(request):
+#     if request.method == 'GET':
+#         """
+#         wcqset = WebConfig.objects.filter(paramname="ContactUs")
+#         #wcqset = WebConfig.objects.filter(path="/contactus/")
+#         wcobj = None
+#         if wcqset.__len__() > 0:
+#             wcobj = wcqset[0]
+#         context = {'contactus' : ''}
+#         if wcobj is not None:
+#             context['contactus'] = wcobj.paramvalue
+#             context['contactid'] = wcobj.id
+#         carouselentries = getcarouselinfo()
+#         context['carousel'] = carouselentries
+#         """
+#         context = {'contactus': ''}
+#         if request.user.is_authenticated and request.user.is_staff:
+#             context['adminuser'] = 1
+#         else:
+#             context['adminuser'] = 0
+#         template = loader.get_template('contactus.html')
+#         return HttpResponse(template.render(context, request))
+#     else:
+#         return HttpResponse("Incorrect request method")
 
 
 @login_required(login_url="/login/show/")

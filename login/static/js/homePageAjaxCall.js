@@ -4,7 +4,7 @@ const getRecentAuctionsDiv = document.querySelector('#getRecentAuctionsId')
 let passwordShowHideFlag = false
 
 function owlSlider(sliderId) {
-    var owl = $(sliderId);
+    let owl = $(sliderId);
     owl.owlCarousel({
         items: 3,
         margin: 10,

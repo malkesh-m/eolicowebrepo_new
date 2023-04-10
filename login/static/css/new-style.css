@@ -289,7 +289,7 @@ body {
 }
 
 footer .under-footer a {
-    color: #fff;
+    color: #fff !important;
 }
 
 footer .under-footer a:hover {
