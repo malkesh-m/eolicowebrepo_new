@@ -3,6 +3,7 @@ const alphabetSearchUlId = document.querySelector('#alphabetSearchUlId')
 const filterHeaderId = document.querySelector('#filterHeaderId')
 const mainFilterLoaderId = document.querySelector('#mainFilterLoaderId')
 let auctionHousesData = []
+let passwordShowHideFlag = false
 
 function searchByAlphabet(e) {
     filterHeaderId.parentElement.className = "col-lg-12 text-center"
@@ -61,6 +62,18 @@ function getFeaturedAuctionHousesData() {
             })
             featuredshowsDivId.innerHTML = htmlData
         })
+}
+
+function passwordShowHide(elementId) {
+    const passwordEle = document.querySelector(elementId)
+    if (passwordShowHideFlag) {
+        passwordEle.type = 'text'
+        passwordShowHideFlag = false
+    }
+    else {
+        passwordEle.type = 'password'
+        passwordShowHideFlag = true
+    }
 }
 
 function getAuctionHousesData() {

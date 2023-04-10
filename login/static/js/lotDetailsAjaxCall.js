@@ -86,6 +86,7 @@ let provenanceData = ''
 let apiArtistId = undefined
 let apiCategory = undefined
 let apiArtworkId = undefined
+let passwordShowHideFlag = false
 
 function getRelatedLotsDataSetter(start) {
     document.querySelector('#relatedArtworkViewMoreId').remove()
@@ -148,6 +149,18 @@ function getRelatedLotsDataSetter(start) {
             } 
             relatedLotsId.innerHTML = htmlData
         })
+}
+
+function passwordShowHide(elementId) {
+    const passwordEle = document.querySelector(elementId)
+    if (passwordShowHideFlag) {
+        passwordEle.type = 'text'
+        passwordShowHideFlag = false
+    }
+    else {
+        passwordEle.type = 'password'
+        passwordShowHideFlag = true
+    }
 }
 
 function saveToPdf() {

@@ -1,6 +1,7 @@
 const urlParams = new URLSearchParams(location.search)
 const auctionId = urlParams.get('aucid')
 const artworkDataDiv = document.querySelector('#pastauctions')
+let passwordShowHideFlag = false
 
 
 function htmlDataBinder(auctionData) {

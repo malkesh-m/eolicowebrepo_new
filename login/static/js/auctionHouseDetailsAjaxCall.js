@@ -6,6 +6,7 @@ const auctionHouseId = urlParams.get('ahid')
 const auctionHouseHeaderId = document.querySelector('#auctionHouseHeaderId')
 let pastUpcomingStrData = 'past'
 let auctionHouseName = ''
+let passwordShowHideFlag = false
 
 function htmlBinder(recentAuctionData) {
     htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 auctionData">
@@ -40,6 +41,18 @@ function pastAuctionHousesSetter(queryParams, start, limit) {
             })
             pastauctionsDiv.innerHTML = htmlData
         })
+}
+
+function passwordShowHide(elementId) {
+    const passwordEle = document.querySelector(elementId)
+    if (passwordShowHideFlag) {
+        passwordEle.type = 'text'
+        passwordShowHideFlag = false
+    }
+    else {
+        passwordEle.type = 'password'
+        passwordShowHideFlag = true
+    }
 }
 
 function upcomingAuctionHousesSetter(queryParams, start, limit) {

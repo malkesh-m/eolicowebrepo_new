@@ -1,4 +1,5 @@
 const contactUsFormId = document.querySelector('#contactUsFormId')
+let passwordShowHideFlag = false
 
 contactUsFormId.addEventListener('submit', function (event) {
     event.preventDefault()
@@ -23,6 +24,18 @@ contactUsFormId.addEventListener('submit', function (event) {
         .then(body => body)
 
 })
+
+function passwordShowHide(elementId) {
+    const passwordEle = document.querySelector(elementId)
+    if (passwordShowHideFlag) {
+        passwordEle.type = 'text'
+        passwordShowHideFlag = false
+    }
+    else {
+        passwordEle.type = 'password'
+        passwordShowHideFlag = true
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 

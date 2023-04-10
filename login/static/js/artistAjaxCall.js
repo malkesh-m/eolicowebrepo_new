@@ -3,6 +3,7 @@ const getTrendingArtistDiv = document.querySelector('#getTrendingArtistId')
 const filterHeaderId = document.querySelector('#filterHeaderId')
 const featuredshowsDivId = document.querySelector('#featuredartistsdiv')
 const mainFilterLoaderId = document.querySelector('#mainFilterLoaderId')
+let passwordShowHideFlag = false
 
 function searchByAlphabet(e, start) {
     let limit = 100
@@ -62,6 +63,18 @@ function alphabetUlSetter() {
         <li class="list-alfabat"><button class="alphabetBtn" data-id="${String.fromCharCode(i)}" data-alphabet="${String.fromCharCode(i)}" onclick="searchByAlphabet(event, 0)">${String.fromCharCode(i)}</button></li>`
     }
     alphabetSearchUlId.innerHTML = htmlData
+}
+
+function passwordShowHide(elementId) {
+    const passwordEle = document.querySelector(elementId)
+    if (passwordShowHideFlag) {
+        passwordEle.type = 'text'
+        passwordShowHideFlag = false
+    }
+    else {
+        passwordEle.type = 'password'
+        passwordShowHideFlag = true
+    }
 }
 
 function trendingArtistData(start) {

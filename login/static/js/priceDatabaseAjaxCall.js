@@ -4,6 +4,7 @@ const txttitle = document.querySelector('#txttitle')
 const txtartistname = document.querySelector('#txtartistname')
 const sel_auctionhouses = document.querySelector('#sel_auctionhouses')
 const displayDataDivId = document.querySelector('#displayDataDivId')
+let passwordShowHideFlag = false
 
 function clearFilter(e) {
     $('#txttitle').val(null).trigger('change')
@@ -62,6 +63,18 @@ function htmlDataBinder(auctionData) {
                         </div>
                     </div>`
     return htmlData
+}
+
+function passwordShowHide(elementId) {
+    const passwordEle = document.querySelector(elementId)
+    if (passwordShowHideFlag) {
+        passwordEle.type = 'text'
+        passwordShowHideFlag = false
+    }
+    else {
+        passwordEle.type = 'password'
+        passwordShowHideFlag = true
+    }
 }
 
 function dataFilter(start, limit) {

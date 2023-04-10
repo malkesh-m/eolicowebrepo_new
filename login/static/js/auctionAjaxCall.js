@@ -2,6 +2,7 @@ const workDataDiv =  document.querySelector('#Work')
 const collapseThreeDiv = document.querySelector('#collapseThree')
 const collapseFourDiv = document.querySelector('#collapseFour')
 let pastUpcomingStrData = 'past'
+let passwordShowHideFlag = false
 
 function htmlDataBinder(recentAuctionData) {
     let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 auctionData">
@@ -67,6 +68,17 @@ function upcomingAuctionSetter(queryParamas, start, limit) {
         })
 }
 
+function passwordShowHide(elementId) {
+    const passwordEle = document.querySelector(elementId)
+    if (passwordShowHideFlag) {
+        passwordEle.type = 'text'
+        passwordShowHideFlag = false
+    }
+    else {
+        passwordEle.type = 'password'
+        passwordShowHideFlag = true
+    }
+}
 
 function filterAuction(e) {
     const auctionTitle = document.querySelector('#auctionTitle')
