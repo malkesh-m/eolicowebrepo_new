@@ -189,15 +189,6 @@ PDB_ARTISTSLIMIT = 200
 PDB_MAXSEARCHRESULT = 200
 PDB_LATESTPERIOD = 1000  # 365
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yourserver.com'
-EMAIL_PORT = ''
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-FROM_EMAIL_USER = "artwork-messenger@artwork.com"
-
 IMG_URL_PREFIX = "https://f000.backblazeb2.com/file/fineart-images/"
 CAROUSEL_DAYS = 3000
 YEARS_FOR_STATS = 6  # production value 2

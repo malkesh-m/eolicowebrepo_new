@@ -1,33 +1,30 @@
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.template.context_processors import csrf
-from django.views.generic import View
-from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect, HttpRequest
+import datetime
+import os
+import pickle
+import re
+import sys
+import urllib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import smtplib
 from threading import Thread
-from django.template import loader
+from smtplib import SMTP
+import redis
+import simplejson as json
+from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
-from django.contrib.auth.models import User as djUser, AnonymousUser
 from django.contrib.auth.decorators import login_required
-import os, sys, re, time, datetime
-import simplejson as json
-import redis
-import pickle
-import urllib
-# from gallery.models import Gallery, Event
-# from museum.models import Museum, MuseumEvent, MuseumPieces
-from login.models import User, Session, Favourite, EmailAlerts  # ,WebConfig, Carousel, Follow
-from auctions.models import Auction, Lot
-from auctionhouses.models import AuctionHouse
-from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
-from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
-# Caching related imports and variables
-from django.views.decorators.cache import cache_page
+from django.contrib.auth.models import User as djUser
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
-from django.conf import settings
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.template import loader
+from django.views.decorators.csrf import csrf_exempt
+from artists.models import Artist, Artwork
+from auctionhouses.models import AuctionHouse
+from auctions.models import Auction
+from eolicowebsite.utils import connecttoDB, connectToDb, disconnectDb
+from login.models import Favourite  # ,WebConfig, Carousel, Follow
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
@@ -733,27 +730,42 @@ def index(request):
 
 def contactUs(request):
     if request.method == 'POST':
-        name = request.POST.get('contactUsName')
-        toEmail = request.POST.get('contactUsEmail')
-        subject = request.POST.get('contactUsSubject')
-        message = request.POST.get('contactUsMessage')
-        print('email sending')
-        hostEmail = 'contact@artbider.com'
-        hostEmailPassword = 'Welcome#1234'
+        hostEmail = 'contactus@artbider.com'
+        hostEmailPassword = 'Welcome#2023'
         hostEmailHostName = 'smtp.hostinger.com'
         hostEmailPort = 587
+        server = {}
+
+        def mailServerStart():
+            server['server'] = SMTP(hostEmailHostName, hostEmailPort)
+            server['server'].ehlo()
+            server['server'].starttls()
+            server['server'].ehlo()
+            server['server'].login(hostEmail, hostEmailPassword)
+
+        mailServerThread = Thread(target=exec("mailServerStart()"))
+        mailServerThread.start()
+        name = request.POST.get('contactUsName')
+        fromEmail = request.POST.get('contactUsEmail')
+        subject = request.POST.get('contactUsSubject')
+        message = request.POST.get('contactUsMessage').replace('\n', '\n\t\t  ')
         msg = MIMEMultipart()
         msg['From'] = hostEmail
-        msg['To'] = toEmail
+        msg['To'] = hostEmail
         msg['Subject'] = subject
+        message = f"""Name:- {name}\nEmail:- {fromEmail}\nMessage:- {message}"""
         msg.attach(MIMEText(message, 'plain'))
-        server = smtplib.SMTP(hostEmailHostName, hostEmailPort)
-        server.starttls()
-        server.login(hostEmail, hostEmailPassword)
-        server.sendmail(msg['From'], msg['To'], msg.as_string())
-        server.quit()
-        print('email sent')
-
+        print('email sending')
+        try:
+            mailServerThread.join()
+            server['server'].sendmail(msg['From'], msg['To'], msg.as_string())
+            server['server'].quit()
+            print('email sent')
+            return HttpResponse(json.dumps({'success': True}))
+        except Exception as e:
+            print(f'email not sent! error:- {e}')
+            server['server'].quit()
+            return HttpResponse(json.dumps({'success': False}))
     context = {}
     if request.user.is_authenticated and request.user.is_staff:
         context['adminuser'] = 1
