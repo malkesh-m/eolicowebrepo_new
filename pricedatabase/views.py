@@ -374,13 +374,9 @@ def index(request):
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
     context = {}
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('pdb.html')
     return HttpResponse(template.render(context, request))
 
@@ -702,10 +698,9 @@ def search(request):
         if quotaflag == 1:
             break
     context['allsearchresults'] = allsearchresults
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     cursor.close()
     dbconn.close()
     prevpage = int(page) - 1
@@ -722,9 +717,6 @@ def search(request):
                         'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
                         'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
                         'currentpage': int(page)}
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
     return HttpResponse(json.dumps(context))
 
 
@@ -1159,9 +1151,9 @@ def dofilter(request):
         for d in l_entities:
             r_entitieslist.append(d)
     context['allsearchresults'] = r_entitieslist
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     prevpage = int(page) - 1
     nextpage = int(page) + 1
     displayedprevpage1 = 0
@@ -1183,8 +1175,8 @@ def showplans(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'err': 'Invalid method of call'}))
     context = {}
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('plans.html')
     return HttpResponse(template.render(context, request))

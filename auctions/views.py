@@ -1,22 +1,8 @@
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.template.context_processors import csrf
-from django.views.generic import View
-from django.http import HttpResponseBadRequest, HttpResponse , HttpResponseRedirect, HttpRequest
-from django.urls import reverse
-from django.template import RequestContext
-from django.db.models import Q
-from django.template.response import TemplateResponse
-from django.utils.http import base36_to_int, is_safe_url
-from django.template import Template, Context
-from django.template.loader import get_template
-from django.core.mail import send_mail
-from django.contrib.sessions.backends.db import SessionStore
+from authentication.views import myLoginRequired
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse , HttpResponseRedirect
 from django.template import loader
 from artists.views import pastUpcomingQueryCreator
-from django.contrib.auth import login, authenticate
-from django.contrib.auth import logout
-from django.contrib.auth.models import User as djUser
 from django.contrib.auth.decorators import login_required
 
 import os, sys, re, time, datetime
@@ -259,13 +245,9 @@ def index(request):
     # firstpage = 1
     # context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     context = {}
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('auction.html')
     return HttpResponse(template.render(context, request))
 
@@ -511,13 +493,9 @@ def details(request):
     #         pass
     lotId = request.GET.get('lid')
     context = {}
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user.is_authenticated:
+    if request.session['user']:
         def getFollowUnfollowArtwork():
-            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND reference_table = 'fineart_artworks' AND referenced_table_id = (SELECT fal_artwork_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
+            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND reference_table = 'fineart_artworks' AND referenced_table_id = (SELECT fal_artwork_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
             connList = connectToDb()
             connList[1].execute(followUnfollowSelect)
             followUnfollowData = connList[1].fetchone()
@@ -528,11 +506,12 @@ def details(request):
                 context['followUnfollowArtwork'] = False
 
         def getFollowUnfollowArtist():
-            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND reference_table = 'fineart_artists' AND referenced_table_id = (SELECT fal_artist_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
+            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND reference_table = 'fineart_artists' AND referenced_table_id = (SELECT faa_artist_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_ID = {lotId})"""
             connList = connectToDb()
             connList[1].execute(followUnfollowSelect)
             followUnfollowData = connList[1].fetchone()
             disconnectDb(connList)
+            print(followUnfollowData)
             if followUnfollowData:
                 context['followUnfollowArtist'] = True
             else:
@@ -542,8 +521,9 @@ def details(request):
         artworkThread.start()
         artistThread = Thread(target=getFollowUnfollowArtist)
         artistThread.start()
-        userobj = request.user
-        context['username'] = userobj.username
+        userDict = request.session['user']
+        if userDict:
+            context['username'] = userDict['username']
         artworkThread.join()
         artistThread.join()
     template = loader.get_template('auction_details.html')
@@ -562,7 +542,7 @@ def getLotDetails(request):
     return HttpResponse(json.dumps(artworkDetailsData, default=default))
 
 
-@login_required(login_url='/login/show/')
+@myLoginRequired
 def followUnfollowArtwork(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
@@ -572,18 +552,18 @@ def followUnfollowArtwork(request):
         followUnfollowStr = request.GET.get('followUnfollowStr')
         connList = connectToDb()
         if followUnfollowStr == 'Add to Collection':
-            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND referenced_table_id = {artworkId} AND reference_table = 'fineart_artworks'"""
+            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND referenced_table_id = {artworkId} AND reference_table = 'fineart_artworks'"""
             connList[1].execute(followUnfollowSelectQuery)
             followUnfollowData = connList[1].fetchone()
             if followUnfollowData is None:
-                followArtistQuery = f"""INSERT INTO user_favorites (user_id, referenced_table_id, reference_table, created) VALUES({request.user.id}, {artworkId}, 'fineart_artworks', '{datetime.datetime.now()}')"""
+                followArtistQuery = f"""INSERT INTO user_favorites (user_id, referenced_table_id, reference_table, created) VALUES({request.session['user']['user_id']}, {artworkId}, 'fineart_artworks', '{datetime.datetime.now()}')"""
                 connList[1].execute(followArtistQuery)
                 connList[0].commit()
                 context['msg'] = 'Remove from Collection'
             else:
                 context['msg'] = 'Remove from Collection'
         elif followUnfollowStr == "Remove from Collection":
-            unfollowArtistQuery = f"""DELETE FROM user_favorites WHERE user_id = {request.user.id} AND referenced_table_id = {artworkId} AND reference_table = 'fineart_artworks'"""
+            unfollowArtistQuery = f"""DELETE FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND referenced_table_id = {artworkId} AND reference_table = 'fineart_artworks'"""
             connList[1].execute(unfollowArtistQuery)
             connList[0].commit()
             context['msg'] = 'Add to Collection'
@@ -629,10 +609,6 @@ def search(request):
     auctionhouseidsstr = "(" + ",".join(auctionhouseidslist) + ")"
     if auctionhouseidslist.__len__() == 0: # In case we don't find any matching records, we return with empty list.
         context['allauctions'] = []
-        if request.user.is_authenticated and request.user.is_staff:
-            context['adminuser'] = 1
-        else:
-            context['adminuser'] = 0
         return HttpResponse(json.dumps(context))
     ahsql = "select cah_auction_house_name, cah_auction_house_ID from core_auction_houses where cah_auction_house_ID in %s"%auctionhouseidsstr
     #print(ahsql)
@@ -668,13 +644,9 @@ def search(request):
     dbconn.close()
     #print(allauctions)
     context['allauctions'] = allauctions
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     return HttpResponse(json.dumps(context))
 
 
@@ -773,7 +745,7 @@ def moreauctions(request):
             except:
                 pass
             # Check for favourites
-            if request.user.is_authenticated:
+            if request.session['user']:
                 favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_auction_calendar", reference_model_id=auction[0])
             else:
                 favqset = []
@@ -815,13 +787,9 @@ def moreauctions(request):
     displayednextpage2 = nextpage + 2
     firstpage = 1
     context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('moreauctions.html')
     return HttpResponse(template.render(context, request))
 
@@ -953,9 +921,9 @@ def showauction(request):
     # context['allartists'] = allartists
     # context['nationalities'] = nationalities
     context = {}
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('showauction.html')
     return HttpResponse(template.render(context, request))
 
@@ -1149,14 +1117,13 @@ def morefilter(request):
                                 uniquelots[artwork.artworkname] = 1 # Size matches. So this lot is included.
                             break
     context['filteredlots'] = filteredlots
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     return HttpResponse(json.dumps(context))
 
 
-@login_required(login_url="/login/show/")
+@myLoginRequired
 def addfavourite(request):
     """
     Add an auction as a 'favourite' by a legit user.
@@ -1165,8 +1132,8 @@ def addfavourite(request):
         return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aucid' : ''})) # Operation failed!
     if not request.user.is_authenticated:
         return HttpResponse(json.dumps({'msg' : 0, 'div_id' : '', 'aucid' : ''})) # Operation failed!
-    userobj = request.user
-    sessionkey = request.session.session_key
+    userobj = request.session['user']
+    # sessionkey = request.session.session_key
     entitytype, aucid, divid = None, None, ''
     requestbody = str(request.body)
     bodycomponents = requestbody.split("&")
@@ -1194,7 +1161,7 @@ def addfavourite(request):
     # Check if the auction is already a 'favourite' of the user...
     favouriteobj = None
     try:
-        favouriteqset = Favourite.objects.filter(user=request.user, reference_model='fineart_auction_calendar', reference_model_id=aucid)
+        favouriteqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model='fineart_auction_calendar', reference_model_id=aucid)
         if favouriteqset.__len__() > 0:
             favouriteobj = favouriteqset[0]
         else:

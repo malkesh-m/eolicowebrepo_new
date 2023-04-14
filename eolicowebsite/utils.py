@@ -26,5 +26,5 @@ def disconnectDB(dbconn, cursor):
 
 
 def disconnectDb(connList):
-    connList[1].close
+    connList[1].close()
     connList[0].close()

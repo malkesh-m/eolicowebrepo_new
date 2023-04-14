@@ -1,37 +1,16 @@
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.template.context_processors import csrf
-from django.views.generic import View
-from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect, HttpRequest
-from django.urls import reverse
-from django.template import RequestContext
-from django.db.models import Q
-from django.template.response import TemplateResponse
-from django.utils.http import base36_to_int, is_safe_url
-from django.template import Template, Context
-from django.template.loader import get_template
-from django.core.mail import send_mail
-from django.contrib.sessions.backends.db import SessionStore
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 from django.template import loader
-from django.db.models import Avg, Count, Min, Sum
-
-from django.contrib.auth import login, authenticate
-from django.contrib.auth import logout
-from django.contrib.auth.models import User as djUser
 from django.contrib.auth.decorators import login_required
-
-import os, sys, re, time, datetime
+import  re, datetime
 import simplejson as json
 import redis
 import pickle
-import MySQLdb
 import urllib
-
-# from gallery.models import Gallery, Event
-from login.models import User, Session, Favourite  # , WebConfig, Carousel, Follow
-from login.views import getcarouselinfo_new
-# from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
-from artists.models import Artist, Artwork, FeaturedArtist, LotArtist
+from authentication.views import myLoginRequired
+from login.models import Favourite
+from artists.models import Artist, Artwork, FeaturedArtist
 from auctions.models import Auction, Lot
 from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
 
@@ -222,9 +201,9 @@ def index(request):
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
             # Check for follows and favourites
-            if request.user.is_authenticated:
+            if request.session['user']:
                 # folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists",
+                favqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model="fineart_artists",
                                                    reference_model_id=artistid)
                 folqset = favqset
             else:
@@ -317,7 +296,7 @@ def index(request):
                 # Check for follows and favourites
                 if request.user.is_authenticated:
                     # folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
-                    favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artists",
+                    favqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model="fineart_artists",
                                                        reference_model_id=artistid)
                     folqset = favqset
                 else:
@@ -444,13 +423,9 @@ def index(request):
     """
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('artist.html')
     return HttpResponse(template.render(context, request))
 
@@ -524,7 +499,7 @@ def artistPerformanceByCountryChart(request):
         return HttpResponse(json.dumps(artistData))
 
 
-@login_required(login_url='/login/show/')
+@myLoginRequired
 def followUnfollowArtist(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
@@ -534,18 +509,18 @@ def followUnfollowArtist(request):
         followUnfollowStr = request.GET.get('followUnfollowStr')
         connList = connectToDb()
         if followUnfollowStr == 'Follow':
-            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
+            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
             connList[1].execute(followUnfollowSelectQuery)
             followUnfollowData = connList[1].fetchone()
             if followUnfollowData is None:
-                followArtistQuery = f"""INSERT INTO user_favorites (user_id, referenced_table_id, reference_table, created) VALUES({request.user.id}, {artistId}, 'fineart_artists', '{datetime.datetime.now()}')"""
+                followArtistQuery = f"""INSERT INTO user_favorites (user_id, referenced_table_id, reference_table, created) VALUES({request.session['user']['user_id']}, {artistId}, 'fineart_artists', '{datetime.datetime.now()}')"""
                 connList[1].execute(followArtistQuery)
                 connList[0].commit()
                 context['msg'] = 'Unfollow'
             else:
                 context['msg'] = 'Unfollow'
         elif followUnfollowStr == "Unfollow":
-            unfollowArtistQuery = f"""DELETE FROM user_favorites WHERE user_id = {request.user.id} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
+            unfollowArtistQuery = f"""DELETE FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
             connList[1].execute(unfollowArtistQuery)
             connList[0].commit()
             context['msg'] = 'Follow'
@@ -561,14 +536,10 @@ def details(request):
     else:
         artistId = request.GET.get('aid').replace('"', '')
         context = {}
-        if request.user.is_authenticated and request.user.is_staff:
-            context['adminuser'] = 1
-        else:
-            context['adminuser'] = 0
-        if request.user.is_authenticated:
-            userobj = request.user
-            context['username'] = userobj.username
-            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.user.id} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
+        if request.session['user']:
+            userDict = request.session['user']
+            context['username'] = userDict['username']
+            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {userDict['user_id']} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
             connList = connectToDb()
             connList[1].execute(followUnfollowSelectQuery)
             followUnfollowData = connList[1].fetchone()
@@ -1362,10 +1333,9 @@ def search(request):
                         'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
                         'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
                         'currentpage': int(page)}
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     return HttpResponse(json.dumps(context))
 
 
@@ -1451,8 +1421,8 @@ def showartwork(request):
             if creationdate == "0":
                 creationdate = ""
             # Check for favourites
-            if request.user.is_authenticated:
-                favqset = Favourite.objects.filter(user=request.user, reference_model="fineart_artworks",
+            if request.session['user']:
+                favqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model="fineart_artworks",
                                                    reference_model_id=artwork.id)
             else:
                 favqset = []
@@ -1540,13 +1510,9 @@ def showartwork(request):
                  'aid': artist.id, 'aliveperiod': aliveperiod}
             relatedartists.append(d)
     context['relatedartists'] = relatedartists
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('artist_artworkdetails.html')
     return HttpResponse(template.render(context, request))
 
@@ -1615,10 +1581,6 @@ def textfilter(request):
                          'estimate': estimate, 'auctionperiod': ''}
                 pastartworks.append(d)
     context['pastartworks'] = pastartworks
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
     prevpage = int(page) - 1
     nextpage = int(page) + 1
     displayedprevpage1 = 0
@@ -1883,13 +1845,9 @@ def morefilter(request):
                         'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
                         'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
                         'currentpage': int(page)}
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     return HttpResponse(json.dumps(context))
 
 
@@ -1917,7 +1875,7 @@ def showstats(request):
         msg = "<h6>Required parameter div Id missing</h6>"
         context = {'stats': msg, 'aid': None, 'div_id': None, 'err': 'nodiv'}
         return HttpResponse(json.dumps(context))
-    if not request.user.is_authenticated:
+    if not request.session['user']:
         loginlink = "<h6><a style='color:#000000;bgcolor:#ffffff;' data-toggle='modal' href='#exampleModal-login' aria-controls='exampleModal-login'>Login to view</a></h6>"
         context = {'stats': loginlink, 'aid': aid, 'div_id': divid, 'err': 'nologin'}
         return HttpResponse(json.dumps(context))
@@ -1997,7 +1955,7 @@ def showstats(request):
     return HttpResponse(json.dumps(context))
 
 
-@login_required(login_url="/login/show/")
+@myLoginRequired
 @csrf_exempt
 def addfavourite(request):
     """
@@ -2005,10 +1963,10 @@ def addfavourite(request):
     """
     if request.method != 'POST':
         return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
-    if not request.user.is_authenticated:
+    if not request.session['user']:
         return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
-    userobj = request.user
-    sessionkey = request.session.session_key
+    userDict = request.session['user']
+    # sessionkey = request.session.session_key
     entitytype, aid, divid = None, None, ''
     requestbody = str(request.body)
     bodycomponents = requestbody.split("&")
@@ -2055,17 +2013,15 @@ def addfavourite(request):
     return HttpResponse(json.dumps({'msg': 1, 'div_id': divid, 'aid': aid}))  # Added to favourites!
 
 
-@login_required(login_url="/login/show/")
+@myLoginRequired
 def addfavouritework(request):
     """
     Add an artwork as a 'favourite' by a legit user.
     """
     if request.method != 'POST':
         return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'awid': ''}))  # Operation failed!
-    if not request.user.is_authenticated:
-        return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'awid': ''}))  # Operation failed!
-    userobj = request.user
-    sessionkey = request.session.session_key
+    userobj = request.session['user']
+    # sessionkey = request.session.session_key
     entitytype, awid, divid = None, None, ''
     requestbody = str(request.body)
     bodycomponents = requestbody.split("&")
@@ -2094,7 +2050,7 @@ def addfavouritework(request):
     # Check if the artwork is already a 'favourite' of the user...
     favouriteobj = None
     try:
-        favouriteqset = Favourite.objects.filter(user=request.user, reference_model='fineart_artworks',
+        favouriteqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model='fineart_artworks',
                                                  reference_model_id=awid)
         if favouriteqset.__len__() > 0:
             favouriteobj = favouriteqset[0]
@@ -2102,7 +2058,7 @@ def addfavouritework(request):
             favouriteobj = Favourite()
     except:
         favouriteobj = Favourite()
-    favouriteobj.user = request.user
+    favouriteobj.user_id = request.session['user']['user_id']
     favouriteobj.reference_model = 'fineart_artworks'
     favouriteobj.reference_model_id = awid
     try:

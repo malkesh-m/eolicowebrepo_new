@@ -148,13 +148,9 @@ def index(request):
     dbconn.close()
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('auctionhouses.html')
     return HttpResponse(template.render(context, request))
 
@@ -538,11 +534,6 @@ def details(request):
     # context['upcomingauctions'] = upcomingauctions
     # print(pastauctions)
     # context['pastauctions'] = pastauctions
-    context = {}
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
     # if request.user.is_authenticated:
     #    context['favourite_link'] = "%s"%aid
     # else:
@@ -558,9 +549,10 @@ def details(request):
     # displayednextpage2 = nextpage + 2
     # firstpage = 1
     # context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    context = {}
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     template = loader.get_template('auctionhouse_details.html')
     return HttpResponse(template.render(context, request))
 
@@ -811,13 +803,9 @@ def search(request):
                         'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
                         'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
                         'currentpage': int(page)}
-    if request.user.is_authenticated and request.user.is_staff:
-        context['adminuser'] = 1
-    else:
-        context['adminuser'] = 0
-    if request.user:
-        userobj = request.user
-        context['username'] = userobj.username
+    userDict = request.session['user']
+    if userDict:
+        context['username'] = userDict['username']
     return HttpResponse(json.dumps(context))
 
 

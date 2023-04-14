@@ -675,7 +675,7 @@
 
                     </ul>
                     <ul class="navbar-nav sm-icons mr-0">
-                        {% if not user.is_authenticated %}
+                        {% if not username %}
                         <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
                         <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal"
                                 data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
@@ -830,6 +830,7 @@
     </section> -->
 
     <div class="container contact-margin">
+        <div id="contactUsAlert"></div>
         <div class="contact-form">
             <div class="row align-items-center">
                 <div class="col-12 col-md-7 p-0">
@@ -860,7 +861,7 @@
                         </div>
                         <div class="d-flex align-items-center mt-4">
                             <i class="fa-solid fa-envelope"></i>
-                            <p> <span class="font-weight-bold">Email: </span>contact@artbider.com</p>
+                            <p> <span class="font-weight-bold">Email: </span>contactus@artbider.com</p>
                         </div>
                         <div class="d-flex align-items-center mt-4">
                             <i class="fa-solid fa-globe"></i>
@@ -896,7 +897,7 @@
                                     London, United Kingdom, W1W 7LT</p>
                             </li>
                             <li>
-                                <p style="font-size: 12px; color: #fff;">contact@artbider.com</p>
+                                <p style="font-size: 12px; color: #fff;">contactus@artbider.com</p>
                             </li>
                         </ul>
                     </div>

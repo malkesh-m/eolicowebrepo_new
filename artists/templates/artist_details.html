@@ -608,7 +608,7 @@
         
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
-                                {% if not user.is_authenticated %}
+                                {% if not username %}
                                 <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
                                 <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
@@ -634,7 +634,7 @@
                         <p id="nationalityBirthDeathId"></p>
                     </div>
                 </div>
-                {% if user.is_authenticated %}
+                {% if username %}
                     {% if followUnfollow %}
                         <div class="col-auto" id="artsitFollowUnfollowId">
                             <button class="btn btn-login btn-round ms-0" type="button" onclick="followUnfollowArtist('Unfollow')">Unfollow</button>
