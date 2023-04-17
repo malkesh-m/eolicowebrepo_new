@@ -108,7 +108,7 @@ def myArtist(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
-        userDict = request.session['user']
+        userDict = request.session.get('user')
         # sessionkey = request.session.session_key
         context = {}
         context['username'] = userDict['username']
@@ -121,7 +121,7 @@ def getMyArtists(request):
         return HttpResponse('Invalid Request Method!')
     start = request.GET.get('start')
     limit = request.GET.get('limit')
-    getMyArtistsSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `user_favorites` ON fa_artist_ID = referenced_table_id WHERE reference_table = 'fineart_artists' AND user_id = {request.session['user']['user_id']} LIMIT {limit} OFFSET {start};"""
+    getMyArtistsSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `user_favorites` ON fa_artist_ID = referenced_table_id WHERE reference_table = 'fineart_artists' AND user_id = {request.session.get('user')['user_id']} LIMIT {limit} OFFSET {start};"""
     connList = connectToDb()
     connList[1].execute(getMyArtistsSelectQuery)
     myArtistsData = connList[1].fetchall()
@@ -202,7 +202,7 @@ def myArtistDetails(request):
         return HttpResponse('Invalid Request Method!')
     else:
         artistId = request.GET.get('aid').replace('"', '')
-        userDict = request.session['user']
+        userDict = request.session.get('user')
         # sessionkey = request.session.session_key
         context = {}
         context['username'] = userDict['username']
@@ -223,7 +223,7 @@ def myArtwork(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
-        userDict = request.session['user']
+        userDict = request.session.get('user')
         # sessionkey = request.session.session_key
         context = {}
         context['username'] = userDict['username']
@@ -235,7 +235,7 @@ def artMarketAnalysis(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     else:
-        userDict = request.session['user']
+        userDict = request.session.get('user')
         # sessionkey = request.session.session_key
         context = {}
         context['username'] = userDict['username']
@@ -248,7 +248,7 @@ def getMyArtworks(request):
         return HttpResponse('Invalid Request Method!')
     start = request.GET.get('start')
     limit = request.GET.get('limit')
-    getMyArtworksSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID INNER JOIN `user_favorites` ON faa_artwork_ID = referenced_table_id WHERE reference_table = 'fineart_artworks' AND user_id = {request.session['user']['user_id']}"""
+    getMyArtworksSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID INNER JOIN `user_favorites` ON faa_artwork_ID = referenced_table_id WHERE reference_table = 'fineart_artworks' AND user_id = {request.session.get('user')['user_id']}"""
     whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
     getMyArtworksSelectQuery += whereClauseAndOrderBy + f""" LIMIT {limit} OFFSET {start};"""
     connList = connectToDb()
@@ -266,7 +266,7 @@ def myArtworkDetails(request):
         lotId = request.GET.get('lid')
 
         def getFollowUnfollowArtwork():
-            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND reference_table = 'fineart_artworks' AND referenced_table_id = (SELECT fal_artwork_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
+            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artworks' AND referenced_table_id = (SELECT fal_artwork_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
             connList = connectToDb()
             connList[1].execute(followUnfollowSelect)
             followUnfollowData = connList[1].fetchone()
@@ -277,7 +277,7 @@ def myArtworkDetails(request):
                 context['followUnfollowArtwork'] = False
 
         def getFollowUnfollowArtist():
-            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND reference_table = 'fineart_artists' AND referenced_table_id = (SELECT fal_artist_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
+            followUnfollowSelect = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artists' AND referenced_table_id = (SELECT fal_artist_ID FROM fineart_lots WHERE fal_lot_ID = {lotId})"""
             connList = connectToDb()
             connList[1].execute(followUnfollowSelect)
             followUnfollowData = connList[1].fetchone()
@@ -291,7 +291,7 @@ def myArtworkDetails(request):
         artworkThread.start()
         artistThread = Thread(target=getFollowUnfollowArtist)
         artistThread.start()
-        userDict = request.session['user']
+        userDict = request.session.get('user')
         # sessionkey = request.session.session_key
         context = {}
         context['username'] = userDict['username']
@@ -340,7 +340,7 @@ def termsAndCondition(request):
         return HttpResponse("Invalid method of call")
     else:
         context = {}
-        userDict = request.session['user']
+        userDict = request.session.get('user')
         if userDict:
             context['username'] = userDict['username']
         return render(request, 'termsAndCondition.html', context)
@@ -771,7 +771,7 @@ def contactUs(request):
             server['server'].quit()
             return HttpResponse(json.dumps({'success': False}))
     context = {}
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     if request.method == 'GET':
@@ -890,7 +890,7 @@ def getRecentAuctions(request):
 def getFollowedArtists(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getFollowedArtistsSelectQuery = f"""SELECT COUNT(user_id) as user_artist_followed_counts FROM `user_favorites` WHERE reference_table = 'fineart_artists' AND user_id = {request.session['user']['user_id']}"""
+    getFollowedArtistsSelectQuery = f"""SELECT COUNT(user_id) as user_artist_followed_counts FROM `user_favorites` WHERE reference_table = 'fineart_artists' AND user_id = {request.session.get('user')['user_id']}"""
     data = {}
 
     def getFollowedThisWeekData(followedArtistsSelectQuery):
@@ -915,7 +915,7 @@ def getFollowedArtists(request):
 def getMyArtistsDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getMyArtistsIdSelectQuery = f"""SELECT DISTINCT(fa_artist_ID) AS fa_artist_ID, fa_artist_name FROM `user_favorites` INNER JOIN `fineart_artists` ON referenced_table_id = fa_artist_ID WHERE user_id = {request.session['user']['user_id']} AND reference_table = 'fineart_artists';"""
+    getMyArtistsIdSelectQuery = f"""SELECT DISTINCT(fa_artist_ID) AS fa_artist_ID, fa_artist_name FROM `user_favorites` INNER JOIN `fineart_artists` ON referenced_table_id = fa_artist_ID WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artists';"""
     connList = connectToDb()
     connList[1].execute(getMyArtistsIdSelectQuery)
     getMyArtistsData = connList[1].fetchall()
@@ -962,7 +962,7 @@ def getMyArtistsDetails(request):
 def getMyArtworksDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_published = 'yes' WHERE reference_table = 'fineart_artworks' AND user_id = {request.session['user']['user_id']};"""
+    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_published = 'yes' WHERE reference_table = 'fineart_artworks' AND user_id = {request.session.get('user')['user_id']};"""
     connList = connectToDb()
     connList[1].execute(getMyArtworksDetailsSelectQuery)
     getMyArtworksDetailsData = connList[1].fetchall()
@@ -975,7 +975,7 @@ def getFollowedArtworks(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     data = {}
-    getFollowedArtworksSelectQuery = f"""SELECT COUNT(DISTINCT(referenced_table_id)) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.session['user']['user_id']} AND reference_table = 'fineart_artworks'"""
+    getFollowedArtworksSelectQuery = f"""SELECT COUNT(DISTINCT(referenced_table_id)) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artworks'"""
 
     def forPaintings(followedArtworksSelectQuery):
         forPaintingsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'paintings'"""
@@ -1121,7 +1121,7 @@ def showprofile(request):
 
 
 def checkloginstatus(request):
-    if request.session['user']:
+    if request.session.get('user'):
         return HttpResponse(True)
     else:
         return HttpResponse(False)
@@ -1145,7 +1145,7 @@ def about(request):
         context['carousel'] = carouselentries
         """
         context = {'aboutcontent': ''}
-        userDict = request.session['user']
+        userDict = request.session.get('user')
         if userDict:
             context['username'] = userDict['username']
         template = loader.get_template('about.html')
@@ -1185,7 +1185,7 @@ def about(request):
 def followartist(request):
     if request.method != 'POST':
         return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     sessionkey = request.session.session_key
     aid, divid = None, None
     requestbody = str(request.body)
@@ -1231,7 +1231,7 @@ def followartist(request):
 def unfollowartist(request):
     if request.method != 'POST':
         return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     sessionkey = request.session.session_key
     aid, divid = None, None
     requestbody = str(request.body)
@@ -1327,7 +1327,7 @@ def morefavourites(request):
     endctr = int(page) * rows * cols
     favouritesdict = {}
     context = {}
-    favsqset = Favourite.objects.filter(user_id=request.session['user']['user_id']).order_by("-updated")[startctr:endctr]
+    favsqset = Favourite.objects.filter(user_id=request.session.get('user')['user_id']).order_by("-updated")[startctr:endctr]
     for fav in favsqset:
         favtype = fav.reference_model
         if favtype == "fineart_artists":
@@ -1405,7 +1405,7 @@ def morefavourites(request):
 def dashboard(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'err': 'Invalid method of call'}))  # Operation failed!
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     context = dict()
     # sessionkey = request.session.session_key
     # page = 1
@@ -1584,7 +1584,7 @@ def notifications(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'err': 'Invalid method of call', }))  # Operation failed!
         # return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     # sessionkey = request.session.session_key
     context = {}
     # Add page specific code here
@@ -1598,7 +1598,7 @@ def acctsettings(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login/index/")
         # return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     # sessionkey = request.session.session_key
     context = {}
     # Add page specific code here

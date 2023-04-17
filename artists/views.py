@@ -201,9 +201,9 @@ def index(request):
             if prefix != "" and prefix != "na":
                 prefix = prefix + " "
             # Check for follows and favourites
-            if request.session['user']:
+            if request.session.get('user'):
                 # folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
-                favqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model="fineart_artists",
+                favqset = Favourite.objects.filter(user=request.session.get('user')['user_id'], reference_model="fineart_artists",
                                                    reference_model_id=artistid)
                 folqset = favqset
             else:
@@ -296,7 +296,7 @@ def index(request):
                 # Check for follows and favourites
                 if request.user.is_authenticated:
                     # folqset = Follow.objects.filter(user=request.user, artist__id=artistid)
-                    favqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model="fineart_artists",
+                    favqset = Favourite.objects.filter(user=request.session.get('user')['user_id'], reference_model="fineart_artists",
                                                        reference_model_id=artistid)
                     folqset = favqset
                 else:
@@ -423,7 +423,7 @@ def index(request):
     """
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     template = loader.get_template('artist.html')
@@ -509,18 +509,18 @@ def followUnfollowArtist(request):
         followUnfollowStr = request.GET.get('followUnfollowStr')
         connList = connectToDb()
         if followUnfollowStr == 'Follow':
-            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
+            followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {request.session.get('user')['user_id']} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
             connList[1].execute(followUnfollowSelectQuery)
             followUnfollowData = connList[1].fetchone()
             if followUnfollowData is None:
-                followArtistQuery = f"""INSERT INTO user_favorites (user_id, referenced_table_id, reference_table, created) VALUES({request.session['user']['user_id']}, {artistId}, 'fineart_artists', '{datetime.datetime.now()}')"""
+                followArtistQuery = f"""INSERT INTO user_favorites (user_id, referenced_table_id, reference_table, created) VALUES({request.session.get('user')['user_id']}, {artistId}, 'fineart_artists', '{datetime.datetime.now()}')"""
                 connList[1].execute(followArtistQuery)
                 connList[0].commit()
                 context['msg'] = 'Unfollow'
             else:
                 context['msg'] = 'Unfollow'
         elif followUnfollowStr == "Unfollow":
-            unfollowArtistQuery = f"""DELETE FROM user_favorites WHERE user_id = {request.session['user']['user_id']} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
+            unfollowArtistQuery = f"""DELETE FROM user_favorites WHERE user_id = {request.session.get('user')['user_id']} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
             connList[1].execute(unfollowArtistQuery)
             connList[0].commit()
             context['msg'] = 'Follow'
@@ -536,8 +536,8 @@ def details(request):
     else:
         artistId = request.GET.get('aid').replace('"', '')
         context = {}
-        if request.session['user']:
-            userDict = request.session['user']
+        if request.session.get('user'):
+            userDict = request.session.get('user')
             context['username'] = userDict['username']
             followUnfollowSelectQuery = f"""SELECT user_id FROM user_favorites WHERE user_id = {userDict['user_id']} AND referenced_table_id = {artistId} AND reference_table = 'fineart_artists'"""
             connList = connectToDb()
@@ -1333,7 +1333,7 @@ def search(request):
                         'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
                         'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
                         'currentpage': int(page)}
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     return HttpResponse(json.dumps(context))
@@ -1421,8 +1421,8 @@ def showartwork(request):
             if creationdate == "0":
                 creationdate = ""
             # Check for favourites
-            if request.session['user']:
-                favqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model="fineart_artworks",
+            if request.session.get('user'):
+                favqset = Favourite.objects.filter(user=request.session.get('user')['user_id'], reference_model="fineart_artworks",
                                                    reference_model_id=artwork.id)
             else:
                 favqset = []
@@ -1510,7 +1510,7 @@ def showartwork(request):
                  'aid': artist.id, 'aliveperiod': aliveperiod}
             relatedartists.append(d)
     context['relatedartists'] = relatedartists
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     template = loader.get_template('artist_artworkdetails.html')
@@ -1845,7 +1845,7 @@ def morefilter(request):
                         'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
                         'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
                         'currentpage': int(page)}
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     return HttpResponse(json.dumps(context))
@@ -1875,7 +1875,7 @@ def showstats(request):
         msg = "<h6>Required parameter div Id missing</h6>"
         context = {'stats': msg, 'aid': None, 'div_id': None, 'err': 'nodiv'}
         return HttpResponse(json.dumps(context))
-    if not request.session['user']:
+    if not request.session.get('user'):
         loginlink = "<h6><a style='color:#000000;bgcolor:#ffffff;' data-toggle='modal' href='#exampleModal-login' aria-controls='exampleModal-login'>Login to view</a></h6>"
         context = {'stats': loginlink, 'aid': aid, 'div_id': divid, 'err': 'nologin'}
         return HttpResponse(json.dumps(context))
@@ -1963,9 +1963,9 @@ def addfavourite(request):
     """
     if request.method != 'POST':
         return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
-    if not request.session['user']:
+    if not request.session.get('user'):
         return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'aid': ''}))  # Operation failed!
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     # sessionkey = request.session.session_key
     entitytype, aid, divid = None, None, ''
     requestbody = str(request.body)
@@ -2020,7 +2020,7 @@ def addfavouritework(request):
     """
     if request.method != 'POST':
         return HttpResponse(json.dumps({'msg': 0, 'div_id': '', 'awid': ''}))  # Operation failed!
-    userobj = request.session['user']
+    userobj = request.session.get('user')
     # sessionkey = request.session.session_key
     entitytype, awid, divid = None, None, ''
     requestbody = str(request.body)
@@ -2050,7 +2050,7 @@ def addfavouritework(request):
     # Check if the artwork is already a 'favourite' of the user...
     favouriteobj = None
     try:
-        favouriteqset = Favourite.objects.filter(user=request.session['user']['user_id'], reference_model='fineart_artworks',
+        favouriteqset = Favourite.objects.filter(user=request.session.get('user')['user_id'], reference_model='fineart_artworks',
                                                  reference_model_id=awid)
         if favouriteqset.__len__() > 0:
             favouriteobj = favouriteqset[0]
@@ -2058,7 +2058,7 @@ def addfavouritework(request):
             favouriteobj = Favourite()
     except:
         favouriteobj = Favourite()
-    favouriteobj.user_id = request.session['user']['user_id']
+    favouriteobj.user_id = request.session.get('user')['user_id']
     favouriteobj.reference_model = 'fineart_artworks'
     favouriteobj.reference_model_id = awid
     try:

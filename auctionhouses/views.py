@@ -148,7 +148,7 @@ def index(request):
     dbconn.close()
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     template = loader.get_template('auctionhouses.html')
@@ -550,7 +550,7 @@ def details(request):
     # firstpage = 1
     # context['pages'] = {'prevpage' : prevpage, 'nextpage' : nextpage, 'firstpage' : firstpage, 'displayedprevpage1' : displayedprevpage1, 'displayedprevpage2' : displayedprevpage2, 'displayednextpage1' : displayednextpage1, 'displayednextpage2' : displayednextpage2, 'currentpage' : int(page)}
     context = {}
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     template = loader.get_template('auctionhouse_details.html')
@@ -803,7 +803,7 @@ def search(request):
                         'displayedprevpage1': displayedprevpage1, 'displayedprevpage2': displayedprevpage2,
                         'displayednextpage1': displayednextpage1, 'displayednextpage2': displayednextpage2,
                         'currentpage': int(page)}
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     return HttpResponse(json.dumps(context))

@@ -3,7 +3,7 @@ from django.shortcuts import HttpResponseRedirect
 
 def myLoginRequired(function):
     def wrapper(request, *args, **kw):
-        userObj = request.session['user']
+        userObj = request.session.get('user')
         if userObj is None:
             return HttpResponseRedirect('/login/show/')
         else:
