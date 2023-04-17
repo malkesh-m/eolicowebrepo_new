@@ -725,7 +725,7 @@ def index(request):
     # connList[1].execute(recentAuctionSelectQuery)
     # context['recentAuctions'] = connList[1].fetchall()
     # disconnectDb(connList)
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     template = loader.get_template('homepage.html')
