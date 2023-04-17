@@ -1,42 +1,23 @@
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.template.context_processors import csrf
-from django.views.generic import View
-from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect, HttpRequest
-from django.urls import reverse
-from django.template import RequestContext
-from django.db.models import Q
-from django.template.response import TemplateResponse
-from django.utils.http import base36_to_int, is_safe_url
-from django.template import Template, Context
-from django.template.loader import get_template
-from django.core.mail import send_mail
-from django.contrib.sessions.backends.db import SessionStore
-from django.template import loader
-
-import os, sys, re, time, datetime
-import simplejson as json
-import redis
-import pickle
+import datetime
+import itertools
+import re
+import sys
 import urllib
-import MySQLdb
-import unicodedata, itertools
-import decimal
+import stripe
+import redis
+import simplejson as json
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.http import HttpResponse
+from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
-# from gallery.models import Gallery, Event
-from login.models import User, Session, Favourite  # ,WebConfig, Carousel, Follow
-from login.views import getcarouselinfo_new
-# from museum.models import Museum, MuseumEvent, MuseumPieces, MuseumArticles
-from auctions.models import Auction, Lot
-from login.views import default
+from artists.models import Artist, Artwork
 from auctionhouses.models import AuctionHouse
-from artists.models import Artist, Artwork, FeaturedArtist
-from eolicowebsite.utils import connecttoDB, disconnectDB, connectToDb, disconnectDb
+from auctions.models import Auction, Lot
+from eolicowebsite.utils import connecttoDB, connectToDb, disconnectDb
+from login.views import default
 
 # Caching related imports and variables
-from django.views.decorators.cache import cache_page
-from django.core.cache.backends.base import DEFAULT_TIMEOUT
-from django.conf import settings
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
@@ -428,6 +409,48 @@ def searchArtworks(request):
     disconnectDb(connList)
     return HttpResponse(json.dumps(artworksData))
 
+
+def checkoutSession(request):
+    domainUrl = str(request.build_absolute_uri()).split('price/')[0]
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    userDict = request.session.get('user')
+    if userDict:
+        plansDetails = request.GET.get('plans')
+        if plansDetails == 'basicDaily':
+            productId = 'price_1MxmuPSFFk9gA4NXMxzkodQy'
+        elif plansDetails == 'basicMonthly':
+            productId = 'price_1MxnXbSFFk9gA4NXpAWP3mFO'
+        elif plansDetails == 'basicYearly':
+            productId = 'price_1MxnYzSFFk9gA4NXER2MmkfR'
+        elif plansDetails == 'premiumDaily':
+            productId = 'price_1MxnavSFFk9gA4NXV4FS7fax'
+        elif plansDetails == 'premiumMonthly':
+            productId = 'price_1MxnbuSFFk9gA4NXy5mnfUoE'
+        elif plansDetails == 'premiumYearly':
+            productId = 'price_1MxncPSFFk9gA4NXKSGyDV5W'
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        try:
+            checkoutSessionObj = stripe.checkout.Session.create(client_reference_id=userDict['user_id'],
+                                                                customer_email=userDict['email'],
+                                                                success_url=f"{domainUrl}price/success/",
+                                                                cancel_url=f"{domainUrl}price/cancel/",
+                                                                payment_method_types=['card'],
+                                                                mode='subscription',
+                                                                line_items=[
+                                                                        {
+                                                                            'price': productId,
+                                                                            'quantity': 1,
+                                                                        }
+                                                                    ]
+                                                                )
+            return HttpResponse(json.dumps({'publicKey': settings.STRIPE_PUBLISHABLE_KEY, 'sessionId': checkoutSessionObj['id']}))
+        except Exception as e:
+            print(e)
+            return HttpResponse(json.dumps({'error': str(e)}))
+        return HttpResponse(json.dumps({'plans': plansDetails}))
+    else:
+        return HttpResponse(json.dumps({'msg': 'please register or login first!'}))
 
 def details(request):
     pass

@@ -66,6 +66,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51Mc8AISFFk9gA4NXsPbnD899P7tSd1d7mUy0lcmZtFlMY78KWNRYhtVdxzecyFCB1ZaSagcwhwWn2BBhaqQ58rFG00WoOeW7gE'
+STRIPE_SECRET_KEY = 'sk_test_51Mc8AISFFk9gA4NXvmfOKNjA1C9Zmg5FVGQ2EIdHaHN5J13sJJ1aTg2s2wj2P2nXrgcBntsNqfO2hWeEOaPPfOVA00pMLcAiOd'
+STRIPE_LIVE_MODE = False
 
 ROOT_URLCONF = 'eolicowebsite.urls'
 

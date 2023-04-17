@@ -640,14 +640,14 @@ https://templatemo.com/tm-571-hexashop
                                 <h6>$9.00</h6>
                                 <p>day</p>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="basicDaily" onchange="checkedEvent('basic')" value="basicDaily">
                                 </div>
                             </div>
                             <div>
                                 <h6>$19.00</h6>
                                 <p>month</p>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="basicMonthly" onchange="checkedEvent('basic')" value="basicMonthly">
                                 </div>
                             </div>
                             <div>
@@ -656,11 +656,11 @@ https://templatemo.com/tm-571-hexashop
                                 <span>(save 38%)</span>
                                 <p>year</p>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="basicYearly" onchange="checkedEvent('basic')" value="basicYearly">
                                 </div>
                             </div>
                         </div>
-                        <button class="btn-login btn btn-round ml-0 mt-5" type="button">Subscribe</button>
+                        <button class="btn-login btn btn-round ml-0 mt-5" onclick="subcribe()" type="button" id="basicSubcribeBtn">Subscribe</button>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-4">
@@ -686,14 +686,14 @@ https://templatemo.com/tm-571-hexashop
                                 <h6>$14.00</h6>
                                 <p>day</p>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="premiumDaily" onchange="checkedEvent('premium')" value="premiumDaily">
                                 </div>
                             </div>
                             <div>
                                 <h6>$29.00</h6>
                                 <p>month</p>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="premiumMonthly" onchange="checkedEvent('premium')" value="premiumMonthly">
                                 </div>
                             </div>
                             <div>
@@ -702,12 +702,12 @@ https://templatemo.com/tm-571-hexashop
                                 <span>(save 43%)</span>
                                 <p>year</p>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                                    <input class="form-check-input" type="radio" name="exampleRadios" id="premiumYearly" onchange="checkedEvent('premium')" value="premiumYearly">
                                 </div>
                             </div>
 
                         </div>
-                        <button class="btn-login btn btn-round ml-0 mt-5" type="button">Subscribe</button>
+                        <button class="btn-login btn btn-round ml-0 mt-5" onclick="subcribe()" type="button" id="premiumSubcribeBtn">Subscribe</button>
                     </div>
                 </div>
             </div>
@@ -1010,7 +1010,8 @@ https://templatemo.com/tm-571-hexashop
             });
         });
     </script>
-
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="/static/js/plansAjaxCall.js"></script>
 </body>
 
 </html>
