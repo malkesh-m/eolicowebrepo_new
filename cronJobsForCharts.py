@@ -9,7 +9,8 @@ from statistics import median
 
 
 def connectToDb():
-    dbConn = MySQLdb.connect(user="artb_Admin", passwd="cDLCntgtsjAOP%tw", host="191.101.0.14", port=3306, db="artb_Artbider_Prod")
+    dbConn = MySQLdb.connect(user="artb_Admin", passwd="cDLCntgtsjAOP%tw", host="191.101.0.14", port=3306,
+                             db="artb_Artbider_Prod")
     cursor = dbConn.cursor(MySQLdb.cursors.DictCursor)
     return dbConn, cursor
 
@@ -82,7 +83,8 @@ def artistAnnualPerformanceForArtist():
             for unsoldLotRowData in unsoldLotsData:
                 if allLotRowData['fal_lot_sale_date_year'] == unsoldLotRowData['fal_lot_sale_date_year']:
                     numberOfLotsUnsold = unsoldLotRowData['unsoldLots']
-            dataList.append((allLotRowData['faa_artist_ID'], allLotRowData['allLots'], numberOfLotsSold, numberOfLotsUnsold, allLotRowData['fal_lot_sale_date_year'], saleThroughRate))
+            dataList.append((allLotRowData['faa_artist_ID'], allLotRowData['allLots'], numberOfLotsSold,
+                             numberOfLotsUnsold, allLotRowData['fal_lot_sale_date_year'], saleThroughRate))
         connList[1].executemany(dataInsertQuery, dataList)
         connList[0].commit()
     disconnectDb(connList)
@@ -107,7 +109,7 @@ def yoySellingCategoryForArtist():
                 dataList.append((rowData['faa_artist_ID'], rowData['fal_lot_sale_price_USD_SUM'] if rowData[
                     'fal_lot_sale_price_USD_SUM'] else '0', rowData['fal_lot_sale_price_USD_AVG'] if rowData[
                     'fal_lot_sale_price_USD_AVG'] else '0', rowData['fal_lot_category'],
-                    rowData['fal_lot_sale_date_year']))
+                                 rowData['fal_lot_sale_date_year']))
             connList[1].executemany(dataInsertQuery, dataList)
             connList[0].commit()
     disconnectDb(connList)
@@ -129,14 +131,18 @@ def artistPerformanceByCountryForArtist():
         if data:
             dataList = []
             for rowData in data:
-                dataList.append((rowData['faa_artist_ID'], rowData['fal_lot_sale_price_USD_SUM'] if rowData['fal_lot_sale_price_USD_SUM'] else '0', rowData['fal_lot_sale_price_USD_AVG'] if rowData['fal_lot_sale_price_USD_AVG'] else '0', rowData['cah_auction_house_country'], rowData['fal_lot_sale_date_year']))
+                dataList.append((rowData['faa_artist_ID'], rowData['fal_lot_sale_price_USD_SUM'] if rowData[
+                    'fal_lot_sale_price_USD_SUM'] else '0', rowData['fal_lot_sale_price_USD_AVG'] if rowData[
+                    'fal_lot_sale_price_USD_AVG'] else '0', rowData['cah_auction_house_country'],
+                                 rowData['fal_lot_sale_date_year']))
             connList[1].executemany(dataInsertQuery, dataList)
             connList[0].commit()
     disconnectDb(connList)
 
 
 def topPerformanceOfYearForArtMarket():
-    truncateThread = Thread(target=tableTruncater, args=("""DELETE FROM `topPerformanceOfYear` WHERE topPerformanceOfYearId > 0""",))
+    truncateThread = Thread(target=tableTruncater,
+                            args=("""DELETE FROM `topPerformanceOfYear` WHERE topPerformanceOfYearId > 0""",))
     truncateThread.start()
     yearSelectQuery = f"SELECT DISTINCT(YEAR(fal_lot_sale_date)) AS fal_lot_sale_date_year FROM fineart_lots WHERE fal_lot_published = 'yes'"
     truncateThread.join()
@@ -149,7 +155,9 @@ def topPerformanceOfYearForArtMarket():
         topArtistsListData = connList[1].fetchall()
         for topArtistData in topArtistsListData:
             yearlyInsertQuery = f"""INSERT INTO topPerformanceOfYear(artistID, totalSalePrice, saleYear) VALUES(%s, %s, %s)"""
-            yearDataTuple = (topArtistData['faa_artist_ID'], topArtistData['fal_lot_sale_price_USD_SUM'] if topArtistData['fal_lot_sale_price_USD_SUM'] else 0, topArtistData['fal_lot_sale_date_year'])
+            yearDataTuple = (topArtistData['faa_artist_ID'],
+                             topArtistData['fal_lot_sale_price_USD_SUM'] if topArtistData[
+                                 'fal_lot_sale_price_USD_SUM'] else 0, topArtistData['fal_lot_sale_date_year'])
             connList[1].execute(yearlyInsertQuery, yearDataTuple)
             connList[0].commit()
             connList[1].execute('SELECT LAST_INSERT_ID() AS topPerformanceOfYearId')
@@ -159,7 +167,10 @@ def topPerformanceOfYearForArtMarket():
             topArtistsListDataByMonth = connList[1].fetchall()
             for topArtistDataByMonth in topArtistsListDataByMonth:
                 monthlyInsertQuery = f"""INSERT INTO topPerformanceOfYearByMonth(topPerformanceOfYearID, totalSalePriceByMonth, saleMonth) VALUES(%s, %s, %s)"""
-                monthlyDataTuple = (topPerformanceOfYearData['topPerformanceOfYearId'], topArtistDataByMonth['fal_lot_sale_price_USD_SUM'] if topArtistDataByMonth['fal_lot_sale_price_USD_SUM'] else 0, topArtistDataByMonth['fal_lot_sale_date_month'])
+                monthlyDataTuple = (topPerformanceOfYearData['topPerformanceOfYearId'],
+                                    topArtistDataByMonth['fal_lot_sale_price_USD_SUM'] if topArtistDataByMonth[
+                                        'fal_lot_sale_price_USD_SUM'] else 0,
+                                    topArtistDataByMonth['fal_lot_sale_date_month'])
                 connList[1].execute(monthlyInsertQuery, monthlyDataTuple)
                 connList[0].commit()
     disconnectDb(connList)
@@ -180,7 +191,17 @@ def topLotsOfMonthForArtMarket():
         data = connList[1].fetchone()
         dataList = []
         if data:
-            dataList.append((data['fal_lot_ID'], data['fal_lot_no'], data['cah_auction_house_currency_code'], data['fal_lot_high_estimate'] if data['fal_lot_high_estimate'] else '0', data['fal_lot_low_estimate'] if data['fal_lot_low_estimate'] else '0', data['fal_lot_sale_price'] if data['fal_lot_sale_price'] else '0', data['fal_lot_high_estimate_USD'] if data['fal_lot_high_estimate_USD'] else '0', data['fal_lot_low_estimate_USD'] if data['fal_lot_low_estimate_USD'] else '0', data['fal_lot_sale_price_USD'] if data['fal_lot_sale_price_USD'] else '0', data['faac_auction_title'], data['faa_artwork_image1'], data['faa_artwork_material'], data['faa_artwork_category'], data['faa_artwork_title'], data['fa_artist_name'], data['faac_auction_start_date'], data['cah_auction_house_name'], data['cah_auction_house_location']))
+            dataList.append((data['fal_lot_ID'], data['fal_lot_no'], data['cah_auction_house_currency_code'],
+                             data['fal_lot_high_estimate'] if data['fal_lot_high_estimate'] else '0',
+                             data['fal_lot_low_estimate'] if data['fal_lot_low_estimate'] else '0',
+                             data['fal_lot_sale_price'] if data['fal_lot_sale_price'] else '0',
+                             data['fal_lot_high_estimate_USD'] if data['fal_lot_high_estimate_USD'] else '0',
+                             data['fal_lot_low_estimate_USD'] if data['fal_lot_low_estimate_USD'] else '0',
+                             data['fal_lot_sale_price_USD'] if data['fal_lot_sale_price_USD'] else '0',
+                             data['faac_auction_title'], data['faa_artwork_image1'], data['faa_artwork_material'],
+                             data['faa_artwork_category'], data['faa_artwork_title'], data['fa_artist_name'],
+                             data['faac_auction_start_date'], data['cah_auction_house_name'],
+                             data['cah_auction_house_location']))
         connList[1].executemany(insertQuery, dataList)
         connList[0].commit()
     disconnectDb(connList)
@@ -213,11 +234,17 @@ def topSalesOfMonthForArtMarket():
         highLowEstimate = connList[1].fetchall()
         sumOfHighLowEstimateMedian = 0
         for highLowData in highLowEstimate:
-            sumOfHighLowEstimateMedian += median([float(highLowData['fal_lot_low_estimate_USD']) if highLowData['fal_lot_low_estimate_USD'] else 0, float(highLowData['fal_lot_high_estimate_USD']) if highLowData['fal_lot_high_estimate_USD'] else 0])
+            sumOfHighLowEstimateMedian += median(
+                [float(highLowData['fal_lot_low_estimate_USD']) if highLowData['fal_lot_low_estimate_USD'] else 0,
+                 float(highLowData['fal_lot_high_estimate_USD']) if highLowData['fal_lot_high_estimate_USD'] else 0])
         soldPriceOverEstimate = (float(totalSaleValue['totalSaleValue']) / sumOfHighLowEstimateMedian) * 100
         connList[1].execute(auctionDetailsSelectQuery)
         auctionDetails = connList[1].fetchone()
-        dataList.append((auctionDetails['faac_auction_ID'], auctionDetails['faac_auction_title'], auctionDetails['cah_auction_house_name'], auctionDetails['cah_auction_house_location'], auctionDetails['faac_auction_image'], auctionDetails['faac_auction_start_date'], totalLotsOffered['totalLotsOffered'], totalLotsSold['totalLotsSold'], sellThroughRate, soldPriceOverEstimate, totalSaleValue['totalSaleValue']))
+        dataList.append((auctionDetails['faac_auction_ID'], auctionDetails['faac_auction_title'],
+                         auctionDetails['cah_auction_house_name'], auctionDetails['cah_auction_house_location'],
+                         auctionDetails['faac_auction_image'], auctionDetails['faac_auction_start_date'],
+                         totalLotsOffered['totalLotsOffered'], totalLotsSold['totalLotsSold'], sellThroughRate,
+                         soldPriceOverEstimate, totalSaleValue['totalSaleValue']))
     connList[1].executemany(dataInsertQuery, dataList)
     connList[0].commit()
     disconnectDb(connList)
@@ -252,9 +279,12 @@ def topArtistsOfMonthForArtMarket():
         sumOfSalePrice = 0
         for highLowData in highLowMedian:
             sumOfSalePrice += float(highLowData['fal_lot_sale_price_USD'])
-            sumOfHighLowEstimateMedian += median([float(highLowData['fal_lot_low_estimate_USD']) if highLowData['fal_lot_low_estimate_USD'] else 0, float(highLowData['fal_lot_high_estimate_USD']) if highLowData['fal_lot_high_estimate_USD'] else 0])
+            sumOfHighLowEstimateMedian += median(
+                [float(highLowData['fal_lot_low_estimate_USD']) if highLowData['fal_lot_low_estimate_USD'] else 0,
+                 float(highLowData['fal_lot_high_estimate_USD']) if highLowData['fal_lot_high_estimate_USD'] else 0])
         soldPriceOverEstimate = (sumOfSalePrice / sumOfHighLowEstimateMedian) * 100
-        dataList.append((artistData['faa_artist_ID'], artistDetails['fa_artist_name'], artistDetails['fa_artist_image'], totalSale['totalSaleOfThisYear'], averageSalePrice, sellThroughRate, soldPriceOverEstimate))
+        dataList.append((artistData['faa_artist_ID'], artistDetails['fa_artist_name'], artistDetails['fa_artist_image'],
+                         totalSale['totalSaleOfThisYear'], averageSalePrice, sellThroughRate, soldPriceOverEstimate))
     connList[1].executemany(dataInsertQuery, dataList)
     connList[0].commit()
     disconnectDb(connList)
@@ -275,39 +305,36 @@ def topGeographicalLocationsForArtMarket():
         connList[1].execute(selectQuery)
         topGeographicalLocationsDataList = connList[1].fetchall()
         for topGeographicalLocationsData in topGeographicalLocationsDataList:
-            dataList.append((topGeographicalLocationsData['cah_auction_house_country'], topGeographicalLocationsData['fal_lot_sale_price_USD_SUM'] if topGeographicalLocationsData['fal_lot_sale_price_USD_SUM'] else 0, yearData['fal_lot_sale_date_year']))
+            dataList.append((topGeographicalLocationsData['cah_auction_house_country'],
+                             topGeographicalLocationsData['fal_lot_sale_price_USD_SUM'] if topGeographicalLocationsData[
+                                 'fal_lot_sale_price_USD_SUM'] else 0, yearData['fal_lot_sale_date_year']))
         connList[1].executemany(dataInsertQuery, dataList)
         connList[0].commit()
     disconnectDb(connList)
 
 
-def emailAlert():
-    usersArtistsSelectQuery = f"""SELECT user_id AS userId, referenced_table_id AS artistId FROM `user_favorites` WHERE reference_table = 'fineart_artists'"""
-    connList = connectToDb()
-    connList[1].execute(usersArtistsSelectQuery)
-    usersArtistsDataList = connList[1].fetchall()
-    for userArtistData in usersArtistsDataList:
-        upcomingLotsSelectQuery = f"""SELECT fal_lot_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND faa_artist_ID = {userArtistData['artistId']} AND fal_lot_record_created >= '{datetime.datetime.now() - datetime.timedelta(hours=24)}' AND fal_lot_published = 'yes'"""
-        connList[1].execute(upcomingLotsSelectQuery)
-        upcomingLotsDataList = connList[1].fetchall()
-        for upcomingLotsData in upcomingLotsDataList:
-            userSelectQuery = f"""SELECT id AS userId, username AS userName, email AS emailAdd FROM auth_user WHERE id = {userArtistData['userId']}"""
-            connList[1].execute(userSelectQuery)
-            userData = connList[1].fetchone()
-            print(userData)
-    disconnectDb(connList)
-
-
-def sendEmail():
+def sendEmail(htmlData):
     print('email sending')
     recieverEmail = 'himanshujetani2211@gmail.com'
-    hostEmail = 'contact@artbider.com'
-    hostEmailPassword = 'Welcome#1234'
+    hostEmail = 'contactus@artbider.com'
+    hostEmailPassword = 'Welcome#2023'
     hostEmailHostName = 'smtp.hostinger.com'
     hostEmailPort = 587
     msg = MIMEMultipart()
     msg['From'] = hostEmail
-    htmlData = '''<!DOCTYPE html>
+    msg['To'] = recieverEmail
+    msg['Subject'] = "Unmatched HEX count"
+    msg.attach(MIMEText(htmlData, 'html'))
+    server = smtplib.SMTP(hostEmailHostName, hostEmailPort)
+    server.starttls()
+    server.login(hostEmail, hostEmailPassword)
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    server.quit()
+    print('email sent')
+
+
+def htmlDataBinderForEmail(allArtistsDataList, userDetailDict):
+    htmlData = f"""<!DOCTYPE html>
 <html>
 
 <head>
@@ -320,109 +347,38 @@ def sendEmail():
     <div class="container" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); box-sizing: border-box;">
         <div class="header" style="display: flex; justify-content: space-between; margin-bottom: 20px; background-color: #E7e9f0; padding: 20px 30px; display: flex; align-items: center;">
             <h1 style="font-size: 24px; margin-top: 0; margin-bottom: 0;">My Email</h1>
-            <h6 style="font-size: 15px; font-weight: 600; margin-top: 0; margin-bottom: 0;">Your Alert for 03 Apr, 2023</h6>
+            <h6 style="font-size: 15px; font-weight: 600; margin-top: 0; margin-bottom: 0;">Your Alert for {datetime.datetime.now().date()}</h6>
         </div>
         <div class="content" style="margin-bottom: 20px; padding: 0 50px;">
-            <h2 style=" margin-top: 0; font-size: 30px; font-weight: 600; margin-bottom: 10px;"><span style="font-size: 24px; font-weight: 500;">Dear</span> Parez</h2>
-            <p style=" margin: 0px; font-size: 15px;">The Following Artists in your collection have new artworks available</p>
-            <div class="mail-contani">
-                <h2 style="font-size: 24px; font-weight: 600; margin: 10px 0 0 0;">Pabllo Pic</h2>
-                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">1</span> lots in sale</h5>
+            <h2 style=" margin-top: 0; font-size: 30px; font-weight: 600; margin-bottom: 10px;"><span style="font-size: 24px; font-weight: 500;">Dear</span> {userDetailDict['username']}</h2>
+            <p style=" margin: 0px; font-size: 15px;">The Following Artists in your collection have new artworks available</p>"""
+    for rowArtistData in allArtistsDataList:
+        htmlData += f"""<div class="mail-contani">
+                <h2 style="font-size: 24px; font-weight: 600; margin: 10px 0 0 0;">{rowArtistData['artistName']}</h2>"""
+        for rowSaleData in rowArtistData['saleDetails']:
+            htmlData += f"""
+                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">{rowSaleData['lotsCountInSale']}</span> lots in {rowSaleData['auctionTitle']} sale</h5>
                 <div class="mail-inner" style=" display: flex;">
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">house</h6>
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">location</h6>
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">03 Apr, 2023</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">{rowSaleData['auctionHouseName']}</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">{rowSaleData['auctionHouseLocation']}</h6>
+                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">{rowSaleData['auctionSaleStartDate']}</h6>
                 </div>
-                <div class="mail-img" style="display: flex; justify-content: space-between;">
+                <div class="mail-img" style="display: flex; justify-content: space-between;">"""
+            for rowLotData in rowSaleData['lotData']:
+                lotTitle = rowLotData['lotTitle']
+                if len(lotTitle) > 18:
+                    lotTitle = lotTitle[0:15] + '...'
+                htmlData += f"""
                     <div class="img-contain" style="margin-right: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
-                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
+                        <img src="{rowLotData['lotImage']}" alt="" style="width: 200px; height:170px; border-radius: 10px 10px 0 0;">
                         <div class="img-text" style="padding: 0 10px 10px 10px;">
-                            <h5 style="font-size: 20px; font-weight: 600; margin: 0 0 10px 0;">Card title</h5>
-                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
+                            <h5 style="font-size: 20px; font-weight: 600; margin: 0 0 10px 0;">{lotTitle}</h5>
+                            <a style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</a>
                         </div>
-                    </div>
-                    <div class="img-contain" style="margin-left: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
-                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
-                        <div class="img-text" style="padding: 0 10px 10px 10px;">
-                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
-                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
-                        </div>
-                    </div>
-                </div>
-                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">1</span> lots in sale</h5>
-                <div class="mail-inner" style=" display: flex;">
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">house</h6>
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">location</h6>
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">03 Apr, 2023</h6>
-                </div>
-                <div class="mail-img" style="display: flex; justify-content: space-between;">
-                    <div class="img-contain" style="margin-right: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
-                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
-                        <div class="img-text" style="padding: 0 10px 10px 10px;">
-                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
-                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
-                        </div>
-                    </div>
-                    <div class="img-contain" style="margin-left: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
-                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
-                        <div class="img-text" style="padding: 0 10px 10px 10px;">
-                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
-                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mail-contani">
-                <h2 style="font-size: 24px; font-weight: 600; margin: 10px 0 0 0;">Pabllo Pic</h2>
-                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">1</span> lots in sale</h5>
-                <div class="mail-inner" style=" display: flex;">
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">house</h6>
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">location</h6>
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">03 Apr, 2023</h6>
-                </div>
-                <div class="mail-img" style="display: flex; justify-content: space-between;">
-                    <div class="img-contain" style="margin-right: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
-                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
-                        <div class="img-text" style="padding: 0 10px 10px 10px;">
-                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
-                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
-                        </div>
-                    </div>
-                    <div class="img-contain" style="margin-left: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
-                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
-                        <div class="img-text" style="padding: 0 10px 10px 10px;">
-                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
-                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
-                        </div>
-                    </div>
-                </div>
-                <h5 style="font-size: 15px; font-weight: 500; margin: 5px 0 0 0;"><span style="font-size: 18px; font-weight: 600; margin: 0;">1</span> lots in sale</h5>
-                <div class="mail-inner" style=" display: flex;">
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">house</h6>
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">location</h6>
-                    <h6 style="font-size: 15px; margin: 6px 15px 0 0; font-weight: 600;">03 Apr, 2023</h6>
-                </div>
-                <div class="mail-img" style="display: flex; justify-content: space-between;">
-                    <div class="img-contain" style="margin-right: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
-                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
-                        <div class="img-text" style="padding: 0 10px 10px 10px;">
-                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
-                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
-                        </div>
-                    </div>
-                    <div class="img-contain" style="margin-left: 10px; margin-top: 15px; border: 1px solid #e1e1e1; border-radius: 10px;">
-                        <img src="image/demo.jpg" alt="" style="width: 100%; border-radius: 10px 10px 0 0;">
-                        <div class="img-text" style="padding: 0 10px 10px 10px;">
-                            <h5 style="font-size: 20px; font-weight: 600;  margin: 0 0 10px 0;">Card title</h5>
-                            <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block;">View Lot</button>
-                        </div>
-                    </div>
-                </div>
-                <div style="text-align: center;">
-                    <button style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block; margin-top: 20px;">FOLLOW MORE ARTISTS</button>
-                </div>
-            </div>
-        </div>
+                    </div>"""
+            htmlData += """</div>"""
+        htmlData += """</div>"""
+    htmlData += """</div>
         <div class="footer" style="background-color: #E7e9f0; padding: 20px 30px;">
             <div class="follow-contain" style="text-align: center;">
                 <div class="logo">
@@ -452,16 +408,67 @@ def sendEmail():
     </div>
 </body>
 
-</html>'''
-    msg['To'] = recieverEmail
-    msg['Subject'] = "Unmatched HEX count"
-    msg.attach(MIMEText(htmlData, 'html'))
-    server = smtplib.SMTP(hostEmailHostName, hostEmailPort)
-    server.starttls()
-    server.login(hostEmail, hostEmailPassword)
-    server.sendmail(msg['From'], msg['To'], msg.as_string())
-    server.quit()
-    print('email sent')
+</html>"""
+    print(htmlData)
+    sendEmail(htmlData)
+
+
+def emailAlert():
+    usersSelectQuery = f"""SELECT DISTINCT(user_id) AS userId FROM `user_favorites` WHERE reference_table = 'fineart_artists'"""
+    connList = connectToDb()
+    connList[1].execute(usersSelectQuery)
+    usersDataList = connList[1].fetchall()
+    for userData in usersDataList:
+        allDataList = []
+        userDetailsDict = {}
+        artistsSelectQuery = f"""SELECT referenced_table_id AS artistId FROM user_favorites WHERE user_id = {userData['userId']} AND reference_table = 'fineart_artists'"""
+        connList[1].execute(artistsSelectQuery)
+        artistsDataList = connList[1].fetchall()
+        for artistData in artistsDataList:
+            artistDataDict = {}
+            saleCountsDataList = []
+            artistNameSelectQuery = f"""SELECT fa_artist_name FROM fineart_artists WHERE fa_artist_ID = {artistData['artistId']}"""
+            connList[1].execute(artistNameSelectQuery)
+            rowArtistDataDict = connList[1].fetchone()
+            datetimeObj = datetime.datetime.now() - datetime.timedelta(hours=24)
+            datetimeObj = datetimeObj.strftime('%Y-%m-%d %H:%M:%S')
+            upcomingSalesSelectQuery = f"""SELECT COUNT(fal_lot_ID) AS lotCounts, fal_auction_ID FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND faa_artist_ID = {artistData['artistId']} AND fal_lot_published = 'yes' GROUP BY fal_auction_ID"""
+            connList[1].execute(upcomingSalesSelectQuery)
+            salesDataList = connList[1].fetchall()
+            for saleData in salesDataList:
+                auctionDetailsSelectQuery = f"""SELECT TRIM(faac_auction_title) AS faac_auction_title, cah_auction_house_name, cah_auction_house_location, faac_auction_start_date FROM fineart_auction_calendar INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_ID = {saleData['fal_auction_ID']}"""
+                connList[1].execute(auctionDetailsSelectQuery)
+                auctionDetailsData = connList[1].fetchone()
+                artistDataDict['artistName'] = rowArtistDataDict['fa_artist_name']
+                saleDataDict = {'auctionTitle': auctionDetailsData['faac_auction_title'],
+                                'auctionHouseName': auctionDetailsData['cah_auction_house_name'],
+                                'auctionHouseLocation': auctionDetailsData['cah_auction_house_location'],
+                                'auctionSaleStartDate': auctionDetailsData['faac_auction_start_date'],
+                                'lotsCountInSale': saleData['lotCounts']}
+                lotsDetailsList = []
+                upcomingLotsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_image1, faa_artwork_title FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND faa_artist_ID = {artistData['artistId']} AND fal_lot_published = 'yes' AND fal_auction_ID = {saleData['fal_auction_ID']}"""
+                connList[1].execute(upcomingLotsSelectQuery)
+                upcomingLotsDataList = connList[1].fetchall()
+                for upcomingLotData in upcomingLotsDataList:
+                    lotDataDict = {'lotId': upcomingLotData['fal_lot_ID'],
+                                   'lotTitle': upcomingLotData['faa_artwork_title'],
+                                   'lotImage': f"https://f000.backblazeb2.com/file/fineart-images/{upcomingLotData['fal_lot_image1']}"}
+                    lotsDetailsList.append(lotDataDict)
+                    userSelectQuery = f"""SELECT user_id, login_email, username FROM user_accounts WHERE user_id = {userData['userId']}"""
+                    connList[1].execute(userSelectQuery)
+                    userEmailData = connList[1].fetchone()
+                    userDetailsDict['userId'], userDetailsDict['email'], userDetailsDict['username'] = userEmailData[
+                        'user_id'], userEmailData['login_email'], userEmailData['username']
+                    break
+                saleDataDict['lotData'] = lotsDetailsList
+                saleCountsDataList.append(saleDataDict)
+                break
+            if salesDataList:
+                artistDataDict['saleDetails'] = saleCountsDataList
+                allDataList.append(artistDataDict)
+        htmlDataBinderForEmail(allDataList, userDetailsDict)
+        break
+    disconnectDb(connList)
 
 
 def dailyCronJobs():
@@ -510,4 +517,4 @@ def main():
     pass
 
 
-sendEmail()
+emailAlert()
