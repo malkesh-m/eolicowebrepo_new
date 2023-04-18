@@ -355,7 +355,7 @@ def index(request):
     # carouselentries = getcarouselinfo_new()
     # context['carousel'] = carouselentries
     context = {}
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     template = loader.get_template('pdb.html')
