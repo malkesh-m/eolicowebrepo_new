@@ -103,7 +103,7 @@ def pastUpcomingQueryCreator(request):
     return whereClause + orderBy
 
 
-@login_required(login_url='/login/show/')
+@myLoginRequired
 def myArtist(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
@@ -230,7 +230,7 @@ def myArtwork(request):
         return render(request, 'myArtwork.html', context)
 
 
-@login_required(login_url='/login/show/')
+@myLoginRequired
 def artMarketAnalysis(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
@@ -1579,7 +1579,7 @@ def dashboard(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url="/login/show/")
+@myLoginRequired
 def notifications(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'err': 'Invalid method of call', }))  # Operation failed!
@@ -1593,7 +1593,7 @@ def notifications(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url="/login/show/")
+@myLoginRequired
 def acctsettings(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login/index/")

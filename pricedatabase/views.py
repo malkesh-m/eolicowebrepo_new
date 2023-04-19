@@ -721,7 +721,7 @@ def search(request):
         if quotaflag == 1:
             break
     context['allsearchresults'] = allsearchresults
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     cursor.close()
@@ -1198,7 +1198,7 @@ def showplans(request):
     if request.method != 'GET':
         return HttpResponse(json.dumps({'err': 'Invalid method of call'}))
     context = {}
-    userDict = request.session['user']
+    userDict = request.session.get('user')
     if userDict:
         context['username'] = userDict['username']
     template = loader.get_template('plans.html')

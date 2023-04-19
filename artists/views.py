@@ -1995,7 +1995,7 @@ def addfavourite(request):
     # Check if the artist is already a 'favourite' of the user...
     favouriteobj = None
     try:
-        favouriteqset = Favourite.objects.filter(user=request.user, reference_model='fineart_artists',
+        favouriteqset = Favourite.objects.filter(user_id=request.session.get('user').get('user_id'), reference_model='fineart_artists',
                                                  reference_model_id=aid)
         if favouriteqset.__len__() > 0:
             favouriteobj = favouriteqset[0]
@@ -2003,7 +2003,7 @@ def addfavourite(request):
             favouriteobj = Favourite()
     except:
         favouriteobj = Favourite()
-    favouriteobj.user = request.user
+    favouriteobj.user_id = request.session.get('user').get('user_id')
     favouriteobj.reference_model = 'fineart_artists'
     favouriteobj.reference_model_id = aid
     try:
@@ -2050,7 +2050,7 @@ def addfavouritework(request):
     # Check if the artwork is already a 'favourite' of the user...
     favouriteobj = None
     try:
-        favouriteqset = Favourite.objects.filter(user=request.session.get('user')['user_id'], reference_model='fineart_artworks',
+        favouriteqset = Favourite.objects.filter(user_id=request.session.get('user').get('user_id'), reference_model='fineart_artworks',
                                                  reference_model_id=awid)
         if favouriteqset.__len__() > 0:
             favouriteobj = favouriteqset[0]
@@ -2058,7 +2058,7 @@ def addfavouritework(request):
             favouriteobj = Favourite()
     except:
         favouriteobj = Favourite()
-    favouriteobj.user_id = request.session.get('user')['user_id']
+    favouriteobj.user_id = request.session.get('user').get('user_id')
     favouriteobj.reference_model = 'fineart_artworks'
     favouriteobj.reference_model_id = awid
     try:
