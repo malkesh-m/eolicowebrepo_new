@@ -12,6 +12,7 @@ function getMyArtworksDetailsSetter() {
             let htmlData = ''
             body.forEach(artworkData => {
                 htmlData += `<tr>
+                                <td class="forAlign"><img src="https://f000.backblazeb2.com/file/fineart-images/${artworkData.faa_artwork_image1}" height="150px" width="275px"/></td>
                                 <td>${artworkData.faa_artwork_title}</td>
                                 <td>${artworkData.fa_artist_name}</td>
                                 <td class="forAlign">${artworkData.faa_artwork_category}</td>

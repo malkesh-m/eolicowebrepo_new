@@ -4,18 +4,23 @@ const headerTitleId = document.querySelector('#headerTitleId')
 const headerPdfTitleId = document.querySelector('#headerPdfTitleId')
 
 const image1Id = document.querySelector('#image1Id')
+const image11Id = document.querySelector('#image11Id')
 const image1PdfId = document.querySelector('#image1PdfId')
 
 const image2Id = document.querySelector('#image2Id')
+const image22Id = document.querySelector('#image22Id')
 const image2PdfId = document.querySelector('#image2PdfId')
 
 const image3Id = document.querySelector('#image3Id')
+const image33Id = document.querySelector('#image33Id')
 const image3PdfId = document.querySelector('#image3PdfId')
 
 const image4Id = document.querySelector('#image4Id')
+const image44Id = document.querySelector('#image44Id')
 const image4PdfId = document.querySelector('#image4PdfId')
 
 const image5Id = document.querySelector('#image5Id')
+const image55Id = document.querySelector('#image55Id')
 const image5PdfId = document.querySelector('#image5PdfId')
 
 const titleId = document.querySelector('#titleId')
@@ -79,6 +84,9 @@ const relatedLotsId = document.querySelector('#relatedLotsId')
 const artsitFollowUnfollowId = document.querySelector('#artsitFollowUnfollowId')
 const artworkFollowUnfollowId = document.querySelector('#artworkFollowUnfollowId')
 const saveToPdfBtnId = document.querySelector('#saveToPdfBtnId')
+
+const imageShowOnModalCls = document.querySelectorAll('.imageShowOnModalCls')
+
 let descData = ''
 let exhibitionData = ''
 let literatureData = ''
@@ -151,6 +159,13 @@ function getRelatedLotsDataSetter(start) {
         })
 }
 
+imageShowOnModalCls.forEach(imageTag => {
+    imageTag.addEventListener('click', function(e) {
+        document.querySelector('#modalImageId').src = e.target.src
+        $(`#showImageModalId`).modal('show')
+    })
+})
+
 function passwordShowHide(elementId) {
     const passwordEle = document.querySelector(elementId)
     if (passwordShowHideFlag) {
@@ -191,7 +206,7 @@ async function getLotDetailsDataSetter() {
             apiCategory = body.faa_artwork_category
             headerTitleId.innerHTML = headerPdfTitleId.innerHTML = body.faa_artwork_title
 
-            image1Id.src = image1PdfId.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image1}`
+            image1Id.src = image1PdfId.src = image11Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image1}`
 
             if (body.fal_lot_image2) {
                 image2Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image2}`
@@ -199,7 +214,7 @@ async function getLotDetailsDataSetter() {
             else {
                 image2Id.scr = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image1}`
             }
-            image2PdfId.src = image2Id.src
+            image2PdfId.src = image22Id.src = image2Id.src
 
             if (body.fal_lot_image3) {
                 image3Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image3}`
@@ -207,7 +222,7 @@ async function getLotDetailsDataSetter() {
             else {
                 image3Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image1}`
             }
-            image3PdfId.src = image3Id.src
+            image3PdfId.src = image33Id.src = image3Id.src
 
             if (body.fal_lot_image4) {
                 image4Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image4}`
@@ -215,7 +230,7 @@ async function getLotDetailsDataSetter() {
             else {
                 image4Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image1}`
             }
-            image4PdfId.src = image4Id.src
+            image4PdfId.src = image44Id.src = image4Id.src
 
             if (body.fal_lot_image5) {
                 image5Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image5}`
@@ -223,7 +238,7 @@ async function getLotDetailsDataSetter() {
             else {
                 image5Id.src = `https://f000.backblazeb2.com/file/fineart-images/${body.fal_lot_image1}`
             }
-            image5PdfId.src = image5Id.src
+            image5PdfId.src = image55Id.src = image5Id.src
 
             artistId.innerHTML = artistPdfId.innerHTML = `Artist : <span>${body.fa_artist_name}</span>`
             titleId.innerHTML = titlePdfId.innerHTML = `Title : <span>${body.faa_artwork_title}</span>`

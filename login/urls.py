@@ -42,4 +42,6 @@ urlpatterns = [
     path('topSalesOfMonthForCharts/', views.topSalesOfMonthForCharts, name='topSalesOfMonthForCharts'),
     path('topArtistsOfMonthForCharts/', views.topArtistsOfMonthForCharts, name='topArtistsOfMonthForCharts'),
     path('topGeographicalLocationsForCharts/', views.topGeographicalLocationsForCharts, name="topGeographicalLocationsForCharts"),
+    path('getMyNotificationLogs/', views.getMyNotificationLogs, name='getMyNotificationLogs'),
+    path('topUpcomingLotsOfWeek/', views.topUpcomingLotsOfWeek, name='topUpcomingLotsOfWeek'),
 ]

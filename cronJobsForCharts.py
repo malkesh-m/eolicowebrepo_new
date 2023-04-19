@@ -445,6 +445,10 @@ def emailAlert():
                                 'auctionHouseLocation': auctionDetailsData['cah_auction_house_location'],
                                 'auctionSaleStartDate': auctionDetailsData['faac_auction_start_date'],
                                 'lotsCountInSale': saleData['lotCounts']}
+                notificationLogsInsertQuery = f"""INSERT INTO notificationLogs(userId, artistId, auctionId, lotsCounts) VALUES({userData['userId']}, {artistData['artistId']}, {saleData['fal_auction_ID']}, '{saleData['lotCounts']}')"""
+                print(notificationLogsInsertQuery)
+                connList[1].execute(notificationLogsInsertQuery)
+                connList[0].commit()
                 lotsDetailsList = []
                 upcomingLotsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_image1, faa_artwork_title FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND faa_artist_ID = {artistData['artistId']} AND fal_lot_published = 'yes' AND fal_auction_ID = {saleData['fal_auction_ID']}"""
                 connList[1].execute(upcomingLotsSelectQuery)

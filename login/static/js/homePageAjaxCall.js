@@ -1,6 +1,8 @@
 const getTrendingArtistDiv = document.querySelector('#getTrendingArtistId')
 const getUpcomingAuctionsDiv = document.querySelector('#getUpcomingAuctionsId')
 const getRecentAuctionsDiv = document.querySelector('#getRecentAuctionsId')
+const myCarousel = document.querySelector('#myCarousel')
+
 let passwordShowHideFlag = false
 
 function owlSlider(sliderId) {
@@ -129,12 +131,58 @@ function recentAuctionSlider() {
         })
 }
 
+function topUpcomingLotsOfWeek() {
+    fetch(`/login/topUpcomingLotsOfWeek/`, {
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => {
+            let htmlData = `<div class="carousel-inner">`
+            let i = 0
+            body.forEach(lotData => {
+                htmlData += `<div class="carousel-item ${i == 0 ? ' active': ''}">
+                                <div class="mask flex-center">
+                                    <div class="container">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-7 col-12 order-md-1 order-2">
+                                                <h4>${lotData.faa_artwork_title}</h4>
+                                                <h4 class="h5-style">${lotData.faa_artist_name}</h4>
+                                                <h4 class="h5-style mb-4">USD ${lotData.fal_lot_low_estimate_USD} – ${lotData.fal_lot_high_estimate_USD}</h4>
+                                                <p class="mb-2">${lotData.faac_auction_title}</p>
+                                                <p class="mb-4">${lotData.cah_auction_house_name}, ${lotData.cah_auction_house_location} | ${lotData.faac_auction_start_date}</p>
+                                                <a href="/auction/showauction/?aucid=${lotData.faac_auction_ID}">View Auction</a>
+                                            </div>
+                                            <div class="col-md-5 col-12 order-md-2 order-1">
+                                                <div class="slider-img">
+                                                    <img src="https://f000.backblazeb2.com/file/fineart-images/${lotData.faa_artwork_image1}?maxwidth=1010&maxheight=650" class="mx-auto" alt="slide">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`
+                            i += 1
+            })
+            htmlData += `</div>
+                        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span> 
+                        </a>
+                        <a class="carousel-control-next" href="#myCarousel"role="button" data-slide="next"> <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>`
+            myCarousel.innerHTML = htmlData
+            $('#myCarousel').carousel({
+                interval: 300,
+            })
+        })
+}
+
 async function setSlider() {
-
-    trendingArtistSlider()
-    upcomingAuctionSlider()
-    recentAuctionSlider()
-
+    // trendingArtistSlider()
+    // upcomingAuctionSlider()
+    // recentAuctionSlider()
+    topUpcomingLotsOfWeek()
 }
 
 document.addEventListener('DOMContentLoaded', function () {
