@@ -431,7 +431,7 @@
               
               <!-- Modal -->
               <div class="modal fade z-index" id="showImageModalId" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: max-content !important;">
                   <div class="modal-content">
                     <div class="modal-header">
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -439,7 +439,7 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      <img id="modalImageId" alt="show image" height="100%" width="100%"/>
+                      <img id="modalImageId" style="object-fit: contain;" class="img-fluid" alt="show image" height="100%" width="100%"/>
                     </div>
                   </div>
                 </div>

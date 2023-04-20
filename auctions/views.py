@@ -511,7 +511,6 @@ def details(request):
             connList[1].execute(followUnfollowSelect)
             followUnfollowData = connList[1].fetchone()
             disconnectDb(connList)
-            print(followUnfollowData)
             if followUnfollowData:
                 context['followUnfollowArtist'] = True
             else:

@@ -315,7 +315,7 @@ def topGeographicalLocationsForArtMarket():
 
 def sendEmail(htmlData):
     print('email sending')
-    recieverEmail = 'himanshujetani2211@gmail.com'
+    recieverEmail = 'umang2in@gmail.com'
     hostEmail = 'contactus@artbider.com'
     hostEmailPassword = 'Welcome#2023'
     hostEmailHostName = 'smtp.hostinger.com'
@@ -378,7 +378,10 @@ def htmlDataBinderForEmail(allArtistsDataList, userDetailDict):
                     </div>"""
             htmlData += """</div>"""
         htmlData += """</div>"""
-    htmlData += """</div>
+    htmlData += """<div style="text-align: center;">
+                <a style="padding: 10px 30px; border: 0; font-size: 15px; font-weight: 500; background-color: #17375e; color: #ffffff; display: inline-block; margin-top: 20px; text-decoration:none;" href="http://localhost:8000/artist/index/">FOLLOW MORE ARTISTS</a>
+            </div>
+    </div>
         <div class="footer" style="background-color: #E7e9f0; padding: 20px 30px;">
             <div class="follow-contain" style="text-align: center;">
                 <div class="logo">
@@ -409,7 +412,6 @@ def htmlDataBinderForEmail(allArtistsDataList, userDetailDict):
 </body>
 
 </html>"""
-    print(htmlData)
     sendEmail(htmlData)
 
 

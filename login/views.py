@@ -13,10 +13,9 @@ import simplejson as json
 from django.conf import settings
 # from django.contrib.auth import login, authenticate
 from authentication.authenticationBackend import AuthenticationBackend
-from django.contrib.auth import logout
+import stripe
 from django.contrib.auth.decorators import login_required
 from authentication.views import myLoginRequired
-from django.contrib.auth.models import User as djUser
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -818,6 +817,45 @@ def topUpcomingLotsOfWeek(request):
     topUpcomingLotsDataList = connList[1].fetchall()
     disconnectDb(connList)
     return HttpResponse(json.dumps(topUpcomingLotsDataList, default=default))
+
+
+@csrf_exempt
+def stripeWebhooks(request):
+    requestBody = request.body.decode('UTF-8')
+    requestBody = json.loads(requestBody)
+    if requestBody.get('type') == 'payment_intent.succeeded':
+        userId = None
+
+        def getCustomer(customerId):
+            global userId
+            stripe.api_key = settings.STRIPE_SECRET_KEY
+            customerData = stripe.Customer.retrieve(customerId)
+            userSelectQuery = f"""SELECT user_id FROM user_accounts WHERE login_email = '{customerData['email']}'"""
+            connList = connectToDb()
+            connList[1].execute(userSelectQuery)
+            userData = connList[1].fetchone()
+            userId = userData['user_id']
+            updateUserQuery = f"""UPDATE user_accounts SET customer_id = '{customerId}' WHERE user_id = {userData['user_id']}"""
+            connList[1].execute(updateUserQuery)
+            connList[0].commit()
+            disconnectDb(connList)
+
+        customerId = requestBody['data']['object']['customer']
+        customerThread = Thread(target=getCustomer, args=(customerId, ))
+        customerThread.start()
+        transactionId = requestBody['data']['object']['id']
+        amountPaid = requestBody['data']['object']['amount_received']
+        description = requestBody['data']['object']['description']
+        invoiceId = requestBody['data']['object']['invoice']
+        paymentStatus = requestBody['data']['object']['status']
+        currency = requestBody['data']['object']['currency']
+        createdAt = datetime.datetime.fromtimestamp(requestBody['data']['object']['created'] / 1e3)
+        customerThread.join()
+        print(userId)
+        paymentInsertQuery = f"""INSERT INTO paymentLogs(userId, paymentStatus, transactionId, invoiceId, amountPaid, currency, description, createdAt) VALUES({userId}, '{paymentStatus}', '{transactionId}', '{invoiceId}', '{amountPaid}', '{currency}', '{description}', '{createdAt}')"""
+        connList = connectToDb()
+        connList[1].execute(paymentInsertQuery)
+    return HttpResponse(json.dumps({'msg': 'hi'}))
 
 
 def getUpcomingAuctions(request):

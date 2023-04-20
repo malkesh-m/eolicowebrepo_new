@@ -16,6 +16,7 @@ from auctionhouses.models import AuctionHouse
 from auctions.models import Auction, Lot
 from eolicowebsite.utils import connecttoDB, connectToDb, disconnectDb
 from login.views import default
+from authentication.views import myLoginRequired
 
 # Caching related imports and variables
 
@@ -410,6 +411,7 @@ def searchArtworks(request):
     return HttpResponse(json.dumps(artworksData))
 
 
+@myLoginRequired
 def checkoutSession(request):
     domainUrl = str(request.build_absolute_uri()).split('price/')[0]
     if request.method != 'GET':
