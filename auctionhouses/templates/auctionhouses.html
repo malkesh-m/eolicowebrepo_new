@@ -128,6 +128,13 @@
     <script src="/static/js/autocomplete.js"></script>
 
     <script>
+         auctionhouses = [
+         {% for auctionhousename in filterauctionhouses %}
+             "{{auctionhousename}}", 
+         {% endfor %}
+         ]; // Should get populated during page load.
+    </script>
+    <script>
         function searchauctionhouse(page = 1) {
             searchkey = document.getElementById('auctionhousesearch').value;
             loaderspan = document.getElementById('loader');
@@ -151,125 +158,37 @@
                      loaderspan.innerHTML = "";
                      loaderspan.style.display = "none";
                      sectiontext = "";
-                     totalauctions = 0;
-		    for(var i=0; i < auctionhousematches.length; i++){
-			auctionhouse = auctionhousematches[i];
-			if(auctionhouse.auctionslist.length == 0){
-			    continue;
-			}
-			//sectiontext += "<h3>" + auctionhouse.housename + ", " + auctionhouse.location + "</h3>";
-		        if(auctionhouse.auctionslist.length == 0){
-		            sectiontext += "<div class='column' style='padding-left:5px;'>No auctions found for this auction house / branch</div>";
-		        }
-		        else{
-			  for(var j=0; j < auctionhouse.auctionslist.length; j++){
-			    auction = auctionhouse.auctionslist[j];
-			    sectiontext += "<div class='col-md-4 mb-4'>";
-			    sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "' class='latest-card'><img src='" + auction.coverimage + "' class='card-img'>";
-			    sectiontext += "<div class='down-content'><div class='d-flex justify-content-between'>"
-			    sectiontext += "<h4>" + auction.auctionname + "</h4>";
-			    sectiontext += "<p style='padding-left:10px;'>" + auction.auctionperiod + "</p>";
-			    sectiontext += "<p>" + auction.location + "</p>";
-			    sectiontext += "</div></div></a>";
-			    
-			    sectiontext += "</div>";
-			    totalauctions++;
-			  }
-		        }
-		    }
-                     paginationcontent = "<div class='auction-pagination'>";
-                     if(totalauctions > 5 || pages.currentpage > 1){
-                         paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
-                         if (pages.prevpage >= 1) {
-                             paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchauctionhouse(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
+                     for (var i = 0; i < auctionhousematches.length; i++) {
+                         auctionhouse = auctionhousematches[i];
+                         if (auctionhouse.auctionslist.length == 0) {
+                             continue;
                          }
-                         paginationcontent += "</li>";
-                         if (pages.displayedprevpage2 > 0) {
-                             paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                         sectiontext += "<div class='col-sm-6 col-md-3 col-xl-2 mb-4'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label>";
+                         for (var j = 0; j < auctionhouse.auctionslist.length; j++) {
+                             auction = auctionhouse.auctionslist[j];
+                             //sectiontext += "<div class='col-sm-6 col-md-3 col-xl-2 mb-4'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label>";
+                             sectiontext += "<div class='img-box m-0'>";
+                             sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "'><img src='" + auction.coverimage + "'></a>";
+                             sectiontext += "<a href='/auction/showauction/?aucid=" + auction.aucid + "'><div class='fea-show'><h3>" + auction.auctionname + "</h3>";
+                             sectiontext += "<h4>" + auction.auctionperiod + "</h4>";
+                             sectiontext += "<p>" + auction.location + "</p>";
+                             sectiontext += "</a>";
+                             sectiontext += "</div>";
                          }
-                         if (pages.displayedprevpage1 > 0) {
-                             paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
-                         }
-                         paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                         sectiontext += "</div>";
                      }
-                     paginationsection = document.getElementById('pagination');
-                     paginationsection.innerHTML = paginationcontent + "</div>";
-                     search_section.innerHTML = sectiontext;
-                     loaderspan.innerHTML = "";
-                     loaderspan.style.display = "none";
-                 }
-             };
-             loaderspan.style.display = "";
-             loaderspan.innerHTML = "&nbsp;&nbsp;<img src='/static/images/loading.gif' style='padding-left:8px;'>"
-             xmlhttp.open("GET", "/auctionhouse/search/?q=" + searchkey + "&page=" + page);
-             xmlhttp.send();
-        }
-        
-        function searchauctionhouse_old(page = 1) {
-            searchkey = document.getElementById('auctionhousesearch').value;
-            loaderspan = document.getElementById('loader');
-             var xmlhttp;
-             if (window.XMLHttpRequest) {
-                 xmlhttp = new XMLHttpRequest();
-             } else {
-                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-             }
-             // Register the handler
-             xmlhttp.onreadystatechange = function() {
-                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                     contextdict = JSON.parse(xmlhttp.responseText);
-                     auctionhousematches = contextdict['auctionhousematches'];
-                     adminuser = contextdict['adminuser'];
-                     pages = contextdict['pages'];
-                     search_section = document.getElementById('featuredshowsDivId');
-                     featured_div = document.getElementById('contextheader');
-                     featured_div.innerHTML = "";
-                     search_section.innerHTML = "";
-                     loaderspan.innerHTML = "";
-                     loaderspan.style.display = "none";
-                     sectiontext = "<div class='container'><div class='row'><div class='section-heading section-heading-2 mrb-50'><h2>Search Results for '" + searchkey + "'</h2></div></div>";
-                     totalauctions = 0;
-		    for(var i=0; i < auctionhousematches.length; i++){
-			auctionhouse = auctionhousematches[i];
-			if(auctionhouse.auctionslist.length == 0){
-			    continue;
-			}
-			sectiontext += "<div class='sub-head'><label style='font-size:larger;font-weight:bold;'>" + auctionhouse.housename + ", " + auctionhouse.location + "</label></div>";
-			sectiontext += "<div class='row align-items-end'>";
-		        if(auctionhouse.auctionslist.length == 0){
-		            sectiontext += "<div class='column' style='padding-left:5px;'>No auctions found for this auction house / branch</div>";
-		        }
-		        else{
-			  for(var j=0; j < auctionhouse.auctionslist.length; j++){
-			    auction = auctionhouse.auctionslist[j];
-			    sectiontext += "<div class='column'><div class='img-box'><a href='/auction/showauction/?aucid=" + auction.aucid + "' style='color:#000000;'><img src='" + auction.coverimage + "' style='width:100%'>";
-			    sectiontext += "<h4>" + auction.auctionname + "</h4>";
-			    sectiontext += "<h6 style='padding-left:10px;'>" + auction.auctionperiod + "</h6>";
-			    sectiontext += "<h6>" + auction.location + "</h6>";
-			    sectiontext += "</a>";
-			    
-			    sectiontext += "</div></div>";
-			    totalauctions++;
-			  }
-		        }
-			sectiontext += "</div><hr>";
-		    }
-                     //sectiontext += "</div>";
-                     paginationcontent = "<div class='auction-pagination'>";
-                     if(totalauctions > 0 || pages.currentpage > 1){
-                         paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
-                         if (pages.prevpage >= 1) {
-                             paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchauctionhouse(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
-                         }
-                         paginationcontent += "</li>";
-                         if (pages.displayedprevpage2 > 0) {
-                             paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
-                         }
-                         if (pages.displayedprevpage1 > 0) {
-                             paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
-                         }
-                         paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
+                     paginationcontent = "<div class='auction-pagination'><nav aria-label='Page navigation example'><ul class='pagination'><li class='page-item'>";
+                     if (pages.prevpage >= 1) {
+                         paginationcontent += "<a class='page-link' href='#' aria-label='Previous' onclick='javascript:searchauctionhouse(" + pages.prevpage + ");'><span aria-hidden='true'>Previous</span><span class='sr-only'>Previous</span></a>";
                      }
+                     paginationcontent += "</li>";
+                     if (pages.displayedprevpage2 > 0) {
+                         paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage2 + ");'>" + pages.displayedprevpage2 + "</a></li>";
+                     }
+                     if (pages.displayedprevpage1 > 0) {
+                         paginationcontent += "<li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayedprevpage1 + ");'>" + pages.displayedprevpage1 + "</a></li>";
+                     }
+                     paginationcontent += "<li class='page-item'><a class='page-link' href='#'>" + pages.currentpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'>" + pages.nextpage + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage1 + ");'>" + pages.displayednextpage1 + "</a></li><li class='page-item'><a class='page-link' href='#' onclick='javascript:searchauctionhouse(" + pages.displayednextpage2 + ");'>" + pages.displayednextpage2 + "</a></li><li class='page-item'><a class='page-link' href='#' aria-label='Next' onclick='javascript:searchauctionhouse(" + pages.nextpage + ");'><span aria-hidden='true'>Next</span><span class='sr-only'>Next</span></a></li></ul></nav></div>";
                      sectiontext += paginationcontent + "</div>";
                      search_section.innerHTML = sectiontext;
                      loaderspan.innerHTML = "";
@@ -281,29 +200,11 @@
              xmlhttp.open("GET", "/auctionhouse/search/?q=" + searchkey + "&page=" + page);
              xmlhttp.send();
         }
-        
-        function getpredictivehints(){
-            var xmlhttp;
-            if (window.XMLHttpRequest) {
-                 xmlhttp = new XMLHttpRequest();
-            } else {
-                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-             // Register the handler
-            xmlhttp.onreadystatechange = function() {
-              if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                  auctionhouseslist = JSON.parse(xmlhttp.responseText);
-                  autocomplete(document.getElementById('auctionhousesearch'), auctionhouseslist);
-              }
-            };
-            xmlhttp.open("GET", "/auctionhouse/predictivehints/");
-            xmlhttp.send();
-        }
     </script>
 
 </head>
 
-<body onload="javascript:getpredictivehints();">
+<body onload="javascript:autocomplete(document.getElementById('auctionhousesearch'), auctionhouses);">
 
     <!-- Sign up Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-signup" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -386,97 +287,66 @@
     </div>
     <!-- Sign up Modal -->
 
-    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog"
-                aria-labelledby="exampleModalLabel-login" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <!-- <div class="modal-header">
-                            <div class="modal-logo">
-                                <a href="index.html">
-                                    <img src="/static/images/email-logo.png" alt="" class="img-fluid" width="150" />
-                                </a>
-                            </div>
-                            <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div> -->
-                        <div class="modal-body px-5 py-3">
-                            <!-- <div class="modal-head">
+    <div class="modal fade z-index signup-modal" id="exampleModal-login" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel-login" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-logo">
+                        <a href="index.html">
+                            <img src="/static/images/logo1.png" alt="" class="img-fluid" width="150" />
+                        </a>
+                    </div>
+                    <button type="button" class="close close-modals" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-head">
                         <h3>Login</h3>
-                    </div> -->
-                            <div class="modal-form">
-                                <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
-                                    <label style="color:red;" id="errormsg"></label> {% csrf_token %}
-                                    <div class="form-group">
-                                        <ion-icon name="person-outline"></ion-icon>
-                                        <input type="text" class="form-control padding" name='username'
-                                            id="loginUsername" placeholder="Username" />
-                                        <i class="fa fa-user user"></i>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" class="form-control padding" name='passwd' id="passwd"
-                                            placeholder="Password" />
-                                        <i class="fa fa-lock user" aria-hidden="true"></i>
-                                        <i class="fa fa-eye icon" aria-hidden="true"
-                                            onclick="passwordShowHide('#passwd')"></i>
-                                    </div>
-                                    <div class="row my-2">
-                                        <div class="col-6 mb-0">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                                <label class="form-check-label" for="exampleCheck1">Remember me</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 mb-0 text-end">
-                                            <a href="#!" style="color: #051747;">Forgot password?</a>
-                                        </div>
-                                    </div>
-                                    <!-- <div class="form-group">
+                    </div>
+                    <div class="modal-form">
+                        <form method="post" action='/login/dologin/' name='frmlogin' id='frmlogin'>
+                            <label style="color:red;" id="errormsg"></label> {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" name='loginUsername' id="username" placeholder="Enter your username" />
+                            </div>
+                            <div class="form-group">
+                                <label for="password">password</label>
+                                <input type="password" class="form-control" name='passwd' id="passwd" placeholder="Enter your password" />
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <!-- <div class="form-group">
                                 <div class="check-input">
                                     <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal-passwprd">Forgot Password?</a>
                                 </div>
                             </div> -->
-                                    <div class="form-group">
-                                        <button type="button" value="submit" name="" class="btn btn-slider"
-                                            onclick="javascript:dologin();">
-                                            Log in
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <p class="or text-center" style="font-size: 20px;">or</p>
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <a class="btn icon-content">
-                                            <img src="/static/images/google.png" alt=""> Sign in with Google
-                                        </a>
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <a class="btn icon-content">
-                                            <img src="/static/images/facebook.png" alt=""> Sign in with Facebook
-                                        </a>
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <a class="btn icon-content">
-                                            <img src="/static/images/apple.png" alt=""> Sign in with Apple
-                                        </a>
-                                    </div>
-                                    <div class="form-group text-center">
-                                        <button type="button" value="submit" name="" class="btn btn-slider"
-                                            onclick="javascript:void(0)" data-dismiss="modal"
-                                            data-toggle="modal" data-target="#exampleModal-signup">
-                                            sign Up For ARTBIDER
-                                        </button>
-                                    </div>
-                                    <div class="text-center sign-in">
-                                        <p>Click "Sign In" tp agree to Medium's Terms of Service and acknowledge that
-                                            Medium's Privacy Policy. applies to you.</p>
-                                    </div>
-                                </form>
+                            <div class="form-group">
+                                <button type="button" value="submit" name="" class="btn btn-slider" onclick="javascript:dologin();">Log in</button>
                             </div>
-                        </div>
+                            <!--
+                            <div class="form-group">
+                                <p class="or text-center">or</p>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-google" aria-hidden="true"></i> Continue with Google</a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-slider"><i class="fa fa-facebook" aria-hidden="true"></i> Continue with Facebook</a>
+                            </div>
+			    -->
+                            <div class="form-group text-center">
+                                <p>Don't have an account? <a href="javascript:void(0)" data-dismiss="modal" data-toggle="modal" data-target="#exampleModal-signup">Sign up</a></p>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
     <!-- Sign in Modal -->
     <div class="modal fade z-index signup-modal" id="exampleModal-passwprd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-passwprd" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -558,23 +428,18 @@
 
                     </nav> -->
                     <nav class="navbar navbar-expand-lg navbar-light p-0 main-nav">
-                        <!-- <a class="navbar-brand" href="/login/dashboard/"> -->
-                        <!-- <img src="static/images/newLogo.png"> -->
-                        <!-- ARTBIDDER -->
-                        <!-- </a> -->
-                        <div class="navbar-brand">
-                            <a class="navbar-brand" href="/">
-                                <img src="/static/images/email-logo.png" style="height: 60px;" alt="">
-                            </a>
-                        </div>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10"
-                                aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
+                        <a class="navbar-brand" href="/login/dashboard/">
+                            <img src="/static/images/email-logo.jpeg" style="height: 50px;" alt="">
+                            <!-- <img src="static/images/logo1.png"> -->
+                            <!-- ARTBIDER -->
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbarToggler10" aria-controls="myNavbarToggler10" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse justify-content-end" id="myNavbarToggler10">
                             <ul class="navbar-nav mr-0">
                                 <li class="nav-item scroll-to-section">
-                                    <a class="nav-link" href="/">Home</a>
+                                    <a class="nav-link " href="#">Home</a>
                                 </li>
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="/artist/index/">Artists</a>
@@ -591,28 +456,25 @@
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="/price/plans/">Price Plans</a>
                                 </li>
-                                <!-- <li class="nav-item scroll-to-section">
+                                <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="#">Galleries</a>
                                 </li>
-        
+
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="#">Shows</a>
                                 </li>
-        
+
                                 <li class="nav-item scroll-to-section">
                                     <a class="nav-link" href="#"> News</a>
-                                </li> -->
-        
+                                </li>
+
                             </ul>
                             <ul class="navbar-nav sm-icons mr-0">
-                                {% if not username %}
+                                {% if not user.is_authenticated %}
                                 <!-- <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@Username</a></li> -->
-                                <li class="nav-item"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
+                                <li class="nav-item text-start"><button type="button" class="btn btn-login btn-round" data-toggle="modal" data-target="#exampleModal-login" aria-controls="exampleModal-login">Login</button></li>
                                 {% else %}
                                 <li class="nav-item"><a class="nav-link" href="/login/dashboard/">@{{username}}</a></li>
-                                <li class="nav-item">
-                                    <button class="btn text-light btn-primary px-4" style="border-radius: 20px;" onclick='javascript:logout();'>Logout</button>
-                                </li>
                                 {% endif %}
                             </ul>
                         </div>
@@ -656,7 +518,7 @@
                     <div class="search-bg">
                         <div class="">
                             <h3 class="heading-style">Auction House Directory</h3>
-                            <form autocomplete="on" name='frmsearchauctionhouses' id='frmsearchauctionhouses' method='POST' action="">
+                            <form autocomplete="off" name='frmsearchauctionhouses' id='frmsearchauctionhouses' method='POST' action="">
                                 {% csrf_token %}
                                 <div class="autocomplete">
                                     <div class="row">
@@ -831,8 +693,6 @@
             </div>
         </div>
     </section> -->
-    <section class="pagination" id='pagination'>
-    </section>
     <!-- 
     <br /><br />
     <section class="download-app">
@@ -867,85 +727,62 @@
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="first-item">
                         <div class="logo">
-                            <img src="/static/images/ArtBider-footer-logo.png" alt="" style="width: 150px;">
+                            <img src="/static/images/CompanyLogo.png" alt="" style="height: 70px; width: 150px;">
                         </div>
                         <ul>
-                            <li>
-                                <p style="font-size: 12px; color: #fff">85, Great Portland Street, First Floor,
-                                    London, United Kingdom, W1W 7LT</p>
+                            <li><a href="#">1234 Collins Ave, Sunny Isles Beach, FL 33160, United States</a></li>
+                            <li><a href="#"><span class="__cf_email__"
+                                        data-cfemail="bbdfded6d4fbd8d4d6cbdad5c295d8d4d6">[email&#160;protected]</span></a>
                             </li>
-                            <li>
-                                <p style="font-size: 12px; color: #fff;">contactus@artbider.com</p>
-                            </li>
+                            <li><a href="#">010-020-0340</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="/auctionhouse/index/">Featured Auction Houses</a></li>
                         <li><a href="/login/index/">Home</a></li>
                         <li><a href="/auction/index/">Current Auctions</a></li>
                         <li><a href="/artist/index/">Trending Artists</a></li>
-
                     </ul>
                 </div>
-                <!-- <div class="col-lg-3">
-            <h4>Useful Links</h4>
-            <ul>
-                <li><a href="/about/">About Us</a></li>
-                 <li><a href="/gallery/index/">Galleries</a></li>
-                <li><a href="/museum/index/">Museums</a></li> 
-                <li><a href="/contactus/">Contact Us</a></li>
-            </ul>
-        </div> -->
-                <div class="col-lg-4">
+                <div class="col-lg-3">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li><a href="/about/">About Us</a></li>
+                        <!-- <li><a href="/gallery/index/">Galleries</a></li>
+                        <li><a href="/museum/index/">Museums</a></li> -->
+                        <li><a href="/contactus/">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
                     <h4>Information</h4>
                     <ul>
-                        <li><a href="/login/termsAndCondition/">FAQ's</a></li>
-                        <li><a href="/login/termsAndCondition/">Terms of Use</a></li>
-                        <li><a href="/login/termsAndCondition/#privacyProtectionId">Privacy Policy</a></li>
-                        <li><a href="/login/termsAndCondition/">Security</a></li>
-                        <li><a href="/about/">About Us</a></li>
-                        <li><a href="/login/contactUs/">Contact Us</a></li>
+                        <li><a href="/faq/">FAQ's</a></li>
+                        <li><a href="/termsofuse/">Terms of Use</a></li>
+                        <li><a href="/privacy/">Privacy Policy</a></li>
+                        <li><a href="/security/">Security</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-12">
                     <div class="under-footer">
+                        <p>Copyright © 2022. All Rights Reserved.</p>
 
-                        <ul class="mt-0 mb-3">
-                            <li><a target="_blank" href="https://www.linkedin.com/company/artbider/"><i
-                                        class="fa fa-linkedin"></i></a></li>
-                            <li><a target="_blank" href="https://www.instagram.com/artbsocial/"><i
-                                        class="fa fa-instagram"></i></a></li>
-                            <li><a target="_blank" href="https://www.facebook.com/ArtBider?mibextid=LQQJ4d"><i
-                                        class="fa fa-facebook"></i></a></li>
-                            <li><a target="_blank" href="https://pin.it/5Ypwddg"><i
-                                        class="fa fa-pinterest"></i></a></li>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
                         </ul>
-                        <p class="text-center pb-3" style="font-size: 11px;">Art Bider trademark and all of its
-                            assets are owned and operated by Asawari Art Industries Private Limited, a private
-                            limited company registered in India under Indian Companies Act, 2013. CIN -
-                            U92490PN2022PTC21596.</p>
-                        <p class="text-center" style="font-size: 11px;">All trademarks, logos and brand names
-                            are the property of their respective owners. All company, product and service names
-                            used in this website are for analytical and research purposes only. Use of these
-                            names, trademarks and brands does not imply endorsement.</p>
-                        <p class="text-center py-3" style="font-size: 11px;">We guarantee that all payments
-                            received from our members, less fees, remittance charges and gateway commissions are
-                            held in a current deposit Account maintained with The Hongkong and Shanghai Banking
-                            Corporation Limited, India (HSBC) </p>
-                        <p>
-                            Copyright © 2022. All Rights Reserved.
-                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
+
 
     <!-- jQuery -->
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
