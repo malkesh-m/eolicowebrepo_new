@@ -1216,12 +1216,12 @@ def signup(request):
 @csrf_exempt
 def dologin(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        raw_password = request.POST.get('passwd')
-        clientSecretKey = request.POST.get('g-recaptcha-response')
-        response = json.loads(requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': settings.CAPTCHA_SECRET_KEY, 'response': clientSecretKey}).text)
-        print(response)
-        if response.get('success'):
+            username = request.POST.get('username')
+            raw_password = request.POST.get('passwd')
+            clientSecretKey = request.POST.get('g-recaptcha-response')
+        # response = json.loads(requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': settings.CAPTCHA_SECRET_KEY, 'response': clientSecretKey}).text)
+        # print(response)
+        # if response.get('success'):
             authObj = AuthenticationBackend()
             user = authObj.authenticate(username=username, password=raw_password)
             if user is not None:
@@ -1229,8 +1229,8 @@ def dologin(request):
                 return HttpResponseRedirect("/login/index/")
             else:
                 return HttpResponse(None)  # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
-        else:
-            return HttpResponse("<script>alert('please verify captcha');window.location.href = '/login/index'</script>")
+        # else:
+        #     return HttpResponse("<script>alert('please verify captcha');window.location.href = '/login/index'</script>")
     else:
         return HttpResponse("Invalid request method")
 
