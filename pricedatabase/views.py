@@ -45,7 +45,7 @@ def advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture,
     if artworkTitle:
         if andFlag:
             whereQuery += """ AND """
-        whereQuery += f"""faa_artwork_title LIKE '%{artworkTitle}%'"""
+        whereQuery += f"""faa_artwork_title = '{artworkTitle}'"""
         andFlag = True
     if workOnPaper:
         if andFlag:
