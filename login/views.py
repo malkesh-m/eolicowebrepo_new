@@ -11,7 +11,7 @@ from smtplib import SMTP
 import redis
 import simplejson as json
 from django.conf import settings
-# from django.contrib.auth import login, authenticate
+import pickle
 from authentication.authenticationBackend import AuthenticationBackend
 import stripe
 from django.contrib.auth.decorators import login_required
@@ -141,7 +141,6 @@ def topPerformanceOfYearCharts(request):
     for topArtistData in topArtistsOfMonthData:
         if topArtistData['fa_artist_name'] not in artistsList:
             artistsList.append(topArtistData['fa_artist_name'])
-
     disconnectDb(connList)
     return HttpResponse(json.dumps(topArtistsOfMonthData, default=default))
 
@@ -150,11 +149,17 @@ def topPerformanceOfYearCharts(request):
 def topArtistsOfMonthForCharts(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
-    selectQuery = f"""SELECT * FROM topArtistsOfMonth"""
-    connList = connectToDb()
-    connList[1].execute(selectQuery)
-    topArtistsOfMonthData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        topArtistsOfMonthData = pickle.loads(redis_instance.get('topArtistsOfMonthData'))
+    except:
+        topArtistsOfMonthData = []
+    if topArtistsOfMonthData is None:
+        selectQuery = f"""SELECT * FROM topArtistsOfMonth"""
+        connList = connectToDb()
+        connList[1].execute(selectQuery)
+        topArtistsOfMonthData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set('topArtistsOfMonthData', pickle.dumps(topArtistsOfMonthData))
     return HttpResponse(json.dumps(topArtistsOfMonthData, default=default))
 
 
@@ -162,11 +167,17 @@ def topArtistsOfMonthForCharts(request):
 def topSalesOfMonthForCharts(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
-    selectQuery = f"""SELECT * FROM topSalesOfMonth"""
-    connList = connectToDb()
-    connList[1].execute(selectQuery)
-    topSalesOfMonthData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        topSalesOfMonthData = pickle.loads(redis_instance.get('topSalesOfMonthData'))
+    except:
+        topSalesOfMonthData = []
+    if topSalesOfMonthData is None:
+        selectQuery = f"""SELECT * FROM topSalesOfMonth"""
+        connList = connectToDb()
+        connList[1].execute(selectQuery)
+        topSalesOfMonthData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set('topSalesOfMonthData', pickle.dumps(topSalesOfMonthData))
     return HttpResponse(json.dumps(topSalesOfMonthData, default=default))
 
 
@@ -174,11 +185,17 @@ def topSalesOfMonthForCharts(request):
 def topLotsOfMonthForCharts(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
-    selectQuery = f"""SELECT * FROM topLotsOfMonth"""
-    connList = connectToDb()
-    connList[1].execute(selectQuery)
-    topLotsOfMonthData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        topLotsOfMonthData = pickle.loads(redis_instance.get('topLotsOfMonthData'))
+    except:
+        topLotsOfMonthData = []
+    if topLotsOfMonthData is None:
+        selectQuery = f"""SELECT * FROM topLotsOfMonth"""
+        connList = connectToDb()
+        connList[1].execute(selectQuery)
+        topLotsOfMonthData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set('topLotsOfMonthData', pickle.dumps(topLotsOfMonthData))
     return HttpResponse(json.dumps(topLotsOfMonthData, default=default))
 
 
@@ -187,11 +204,17 @@ def topGeographicalLocationsForCharts(request):
     if request.method != 'GET':
         return HttpResponse('Invalid Request Method!')
     year = request.GET.get('year')
-    selectQuery = f"""SELECT auctionHouseCountry, totalSalePrice, saleYear FROM topGeographicalLocations WHERE saleYear = '{year}'"""
-    connList = connectToDb()
-    connList[1].execute(selectQuery)
-    topGeographicalLocationsData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        topGeographicalLocationsData = pickle.loads(redis_instance.get(f'topGeographicalLocationsData{year}'))
+    except:
+        topGeographicalLocationsData = []
+    if topGeographicalLocationsData is None:
+        selectQuery = f"""SELECT auctionHouseCountry, totalSalePrice, saleYear FROM topGeographicalLocations WHERE saleYear = '{year}'"""
+        connList = connectToDb()
+        connList[1].execute(selectQuery)
+        topGeographicalLocationsData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set(f'topGeographicalLocationsData{year}', pickle.dumps(topGeographicalLocationsData))
     return HttpResponse(json.dumps(topGeographicalLocationsData, default=default))
 
 
@@ -798,43 +821,55 @@ def getTrendingArtist(request):
         return HttpResponse("Invalid method of call")
     start = request.GET.get('start')
     limit = request.GET.get('limit')
-    todayDate = datetime.datetime.now().date()
-    subtractDate = todayDate - datetime.timedelta(days=365)
-    trendingArtistSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID AND fal_lot_published = 'yes' WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT {limit} OFFSET {start};"""
-    connList = connectToDb()
-    connList[1].execute(trendingArtistSelectQuery)
-    trendingArtistData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        trendingArtistData = pickle.loads(redis_instance.get(f'trendingArtistData{start}{limit}'))
+    except:
+        trendingArtistData = []
+    if trendingArtistData is None:
+        todayDate = datetime.datetime.now().date()
+        subtractDate = todayDate - datetime.timedelta(days=365)
+        trendingArtistSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID AND fal_lot_published = 'yes' WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT {limit} OFFSET {start};"""
+        connList = connectToDb()
+        connList[1].execute(trendingArtistSelectQuery)
+        trendingArtistData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set(f'trendingArtistData{start}{limit}', pickle.dumps(trendingArtistData))
     return HttpResponse(json.dumps(trendingArtistData))
 
 
 def topUpcomingLotsOfWeek(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    topUpcomingLotsSelectQuery = f"""SELECT faa_artwork_title, faa_artwork_image1, fa_artist_name, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, faac_auction_title, faac_auction_start_date, faac_auction_ID, cah_auction_house_name, cah_auction_house_location FROM fineart_lots INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID AND faac_auction_start_date BETWEEN '{datetime.datetime.now().date()}' AND '{datetime.datetime.now().date() + datetime.timedelta(days=7)}' INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID ORDER BY fal_lot_low_estimate_USD DESC LIMIT 5"""
-    connList = connectToDb()
-    connList[1].execute(topUpcomingLotsSelectQuery)
-    topUpcomingLotsDataList = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        topUpcomingLotsDataList = pickle.loads(redis_instance.get('topUpcomingLotsOfWeek'))
+    except:
+        topUpcomingLotsDataList = []
+    if topUpcomingLotsDataList is None:
+        topUpcomingLotsSelectQuery = f"""SELECT faa_artwork_title, faa_artwork_image1, fa_artist_name, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, faac_auction_title, faac_auction_start_date, faac_auction_ID, cah_auction_house_name, cah_auction_house_location FROM fineart_lots INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID AND faac_auction_start_date BETWEEN '{datetime.datetime.now().date()}' AND '{datetime.datetime.now().date() + datetime.timedelta(days=7)}' INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID ORDER BY fal_lot_low_estimate_USD DESC LIMIT 5"""
+        connList = connectToDb()
+        connList[1].execute(topUpcomingLotsSelectQuery)
+        topUpcomingLotsDataList = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set('topUpcomingLotsOfWeek', pickle.dumps(topUpcomingLotsDataList))
     return HttpResponse(json.dumps(topUpcomingLotsDataList, default=default))
 
 
 @csrf_exempt
 def stripeWebhooks(request):
     requestBody = request.body.decode('UTF-8')
+    print(requestBody)
     requestBody = json.loads(requestBody)
     if requestBody.get('type') == 'payment_intent.succeeded':
-        userId = None
+        userId = []
 
         def getCustomer(customerId):
-            global userId
             stripe.api_key = settings.STRIPE_SECRET_KEY
             customerData = stripe.Customer.retrieve(customerId)
             userSelectQuery = f"""SELECT user_id FROM user_accounts WHERE login_email = '{customerData['email']}'"""
             connList = connectToDb()
             connList[1].execute(userSelectQuery)
             userData = connList[1].fetchone()
-            userId = userData['user_id']
+            userId.append(userData['user_id'])
             updateUserQuery = f"""UPDATE user_accounts SET customer_id = '{customerId}' WHERE user_id = {userData['user_id']}"""
             connList[1].execute(updateUserQuery)
             connList[0].commit()
@@ -851,10 +886,11 @@ def stripeWebhooks(request):
         currency = requestBody['data']['object']['currency']
         createdAt = datetime.datetime.fromtimestamp(requestBody['data']['object']['created'] / 1e3)
         customerThread.join()
-        print(userId)
-        paymentInsertQuery = f"""INSERT INTO paymentLogs(userId, paymentStatus, transactionId, invoiceId, amountPaid, currency, description, createdAt) VALUES({userId}, '{paymentStatus}', '{transactionId}', '{invoiceId}', '{amountPaid}', '{currency}', '{description}', '{createdAt}')"""
+        paymentInsertQuery = f"""INSERT INTO paymentLogs(userId, paymentStatus, transactionId, invoiceId, amountPaid, currency, description, createdAt) VALUES({userId[0]}, '{paymentStatus}', '{transactionId}', '{invoiceId}', '{amountPaid}', '{currency}', '{description}', '{createdAt}')"""
         connList = connectToDb()
         connList[1].execute(paymentInsertQuery)
+        connList[0].commit()
+        disconnectDb(connList)
     return HttpResponse(json.dumps({'msg': 'hi'}))
 
 
@@ -954,24 +990,30 @@ def getRecentAuctions(request):
 def getFollowedArtists(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getFollowedArtistsSelectQuery = f"""SELECT COUNT(user_id) as user_artist_followed_counts FROM `user_favorites` WHERE reference_table = 'fineart_artists' AND user_id = {request.session.get('user')['user_id']}"""
-    data = {}
+    try:
+        data = pickle.loads(redis_instance.get('followedArtistsData'))
+    except:
+        data = {}
+    if bool(data) == False:
+        getFollowedArtistsSelectQuery = f"""SELECT COUNT(user_id) as user_artist_followed_counts FROM `user_favorites` WHERE reference_table = 'fineart_artists' AND user_id = {request.session.get('user')['user_id']}"""
+        data = {}
 
-    def getFollowedThisWeekData(followedArtistsSelectQuery):
-        followedThisWeekSelectQuery = followedArtistsSelectQuery + f""" AND created BETWEEN '{datetime.datetime.now() - datetime.timedelta(days=7)}' AND '{datetime.datetime.now()}';"""
+        def getFollowedThisWeekData(followedArtistsSelectQuery):
+            followedThisWeekSelectQuery = followedArtistsSelectQuery + f""" AND created BETWEEN '{datetime.datetime.now() - datetime.timedelta(days=7)}' AND '{datetime.datetime.now()}';"""
+            connList = connectToDb()
+            connList[1].execute(followedThisWeekSelectQuery)
+            thisWeekFollowedArtists = connList[1].fetchone()
+            disconnectDb(connList)
+            data['this_week_followed_artist_counts'] = thisWeekFollowedArtists['user_artist_followed_counts']
+        thread = Thread(target=getFollowedThisWeekData, args=(getFollowedArtistsSelectQuery,))
+        thread.start()
         connList = connectToDb()
-        connList[1].execute(followedThisWeekSelectQuery)
-        thisWeekFollowedArtists = connList[1].fetchone()
+        connList[1].execute(getFollowedArtistsSelectQuery)
+        followedArtistsData = connList[1].fetchone()
         disconnectDb(connList)
-        data['this_week_followed_artist_counts'] = thisWeekFollowedArtists['user_artist_followed_counts']
-    thread = Thread(target=getFollowedThisWeekData, args=(getFollowedArtistsSelectQuery,))
-    thread.start()
-    connList = connectToDb()
-    connList[1].execute(getFollowedArtistsSelectQuery)
-    followedArtistsData = connList[1].fetchone()
-    disconnectDb(connList)
-    data['user_artist_followed_counts'] = followedArtistsData['user_artist_followed_counts']
-    thread.join()
+        data['user_artist_followed_counts'] = followedArtistsData['user_artist_followed_counts']
+        thread.join()
+        redis_instance.set('followedArtistsData', pickle.dumps(data))
     return HttpResponse(json.dumps(data))
 
 
@@ -979,46 +1021,52 @@ def getFollowedArtists(request):
 def getMyArtistsDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getMyArtistsIdSelectQuery = f"""SELECT DISTINCT(fa_artist_ID) AS fa_artist_ID, fa_artist_name FROM `user_favorites` INNER JOIN `fineart_artists` ON referenced_table_id = fa_artist_ID WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artists';"""
-    connList = connectToDb()
-    connList[1].execute(getMyArtistsIdSelectQuery)
-    getMyArtistsData = connList[1].fetchall()
-    disconnectDb(connList)
-    dataList = []
-
-    def dataSelector(getMyArtistData):
-        getTotalArtworkSelectQuery = f"""SELECT COUNT(DISTINCT(faa_artwork_ID)) AS totalArtworkData FROM fineart_artworks WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+    try:
+        dataList = pickle.loads(redis_instance.get('myArtistData'))
+    except:
+        dataList = []
+    if dataList is None:
+        getMyArtistsIdSelectQuery = f"""SELECT DISTINCT(fa_artist_ID) AS fa_artist_ID, fa_artist_name FROM `user_favorites` INNER JOIN `fineart_artists` ON referenced_table_id = fa_artist_ID WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artists';"""
         connList = connectToDb()
-        connList[1].execute(getTotalArtworkSelectQuery)
-        getTotalArtworkData = connList[1].fetchone()
-        getAverageSellingRateSelectQuery = f"""SELECT COUNT(fal_artwork_ID) AS totalSoldArtworkData FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
-        connList[1].execute(getAverageSellingRateSelectQuery)
-        getTotalSoldArtworkData = connList[1].fetchone()
-        getAverageSellingRate = (int(getTotalSoldArtworkData['totalSoldArtworkData']) * 100) / int(getTotalArtworkData['totalArtworkData'])
-        getAverageSellingPriceSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) AS averageSellingPrice FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
-        connList[1].execute(getAverageSellingPriceSelectQuery)
-        getAverageSellingPrice = connList[1].fetchone()
-        getAverageSellingPriceIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) averageSellingPriceIn12Month FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
-        connList[1].execute(getAverageSellingPriceIn12MonthSelectQuery)
-        getAverageSellingPriceIn12Month = connList[1].fetchone()
-        getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
-        connList[1].execute(getTotalArtworkSoldIn12MonthSelectQuery)
-        getTotalArtworkSoldIn12Month = connList[1].fetchone()
-        getTotalArtworkIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
-        connList[1].execute(getTotalArtworkIn12MonthSelectQuery)
-        getTotalArtworkIn12Month = connList[1].fetchone()
-        getAverageSellingRateIn12Month = 0
-        if int(getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month']) != 0:
-            getAverageSellingRateIn12Month = (int(getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month'] * 100) / int(getTotalArtworkIn12Month['totalArtworkIn12Month']))
+        connList[1].execute(getMyArtistsIdSelectQuery)
+        getMyArtistsData = connList[1].fetchall()
         disconnectDb(connList)
-        dataList.append({'artistId': getMyArtistData['fa_artist_ID'], 'artistName': getMyArtistData['fa_artist_name'], 'totalArtworkData': getTotalArtworkData['totalArtworkData'], 'averageSellingRate': getAverageSellingRate, 'averageSellingPrice': getAverageSellingPrice['averageSellingPrice'], 'averageSellingPriceInLast12Month': getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'], 'totalArtworkSoldInLast12Month': getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month'], 'averageSellingRateIn12Month': getAverageSellingRateIn12Month})
-    myThreadList = []
-    for getMyArtistData in getMyArtistsData:
-        thread = Thread(target=dataSelector, args=(getMyArtistData, ))
-        thread.start()
-        myThreadList.append(thread)
-    for myThread in myThreadList:
-        myThread.join()
+        dataList = []
+
+        def dataSelector(getMyArtistData):
+            getTotalArtworkSelectQuery = f"""SELECT COUNT(DISTINCT(faa_artwork_ID)) AS totalArtworkData FROM fineart_artworks WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+            connList = connectToDb()
+            connList[1].execute(getTotalArtworkSelectQuery)
+            getTotalArtworkData = connList[1].fetchone()
+            getAverageSellingRateSelectQuery = f"""SELECT COUNT(fal_artwork_ID) AS totalSoldArtworkData FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+            connList[1].execute(getAverageSellingRateSelectQuery)
+            getTotalSoldArtworkData = connList[1].fetchone()
+            getAverageSellingRate = (int(getTotalSoldArtworkData['totalSoldArtworkData']) * 100) / int(getTotalArtworkData['totalArtworkData'])
+            getAverageSellingPriceSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) AS averageSellingPrice FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']};"""
+            connList[1].execute(getAverageSellingPriceSelectQuery)
+            getAverageSellingPrice = connList[1].fetchone()
+            getAverageSellingPriceIn12MonthSelectQuery = f"""SELECT AVG(fal_lot_sale_price_USD) averageSellingPriceIn12Month FROM fineart_lots INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' WHERE fal_lot_status = 'sold' AND faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+            connList[1].execute(getAverageSellingPriceIn12MonthSelectQuery)
+            getAverageSellingPriceIn12Month = connList[1].fetchone()
+            getTotalArtworkSoldIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkSoldIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_status = 'sold' AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+            connList[1].execute(getTotalArtworkSoldIn12MonthSelectQuery)
+            getTotalArtworkSoldIn12Month = connList[1].fetchone()
+            getTotalArtworkIn12MonthSelectQuery = f"""SELECT COUNT(faa_artwork_ID) AS totalArtworkIn12Month FROM fineart_artworks INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' WHERE faa_artist_ID = {getMyArtistData['fa_artist_ID']} AND fal_lot_sale_date BETWEEN '{datetime.datetime.now().date() - datetime.timedelta(days=365)}' AND '{datetime.datetime.now().date()}';"""
+            connList[1].execute(getTotalArtworkIn12MonthSelectQuery)
+            getTotalArtworkIn12Month = connList[1].fetchone()
+            getAverageSellingRateIn12Month = 0
+            if int(getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month']) != 0:
+                getAverageSellingRateIn12Month = (int(getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month'] * 100) / int(getTotalArtworkIn12Month['totalArtworkIn12Month']))
+            disconnectDb(connList)
+            dataList.append({'artistId': getMyArtistData['fa_artist_ID'], 'artistName': getMyArtistData['fa_artist_name'], 'totalArtworkData': getTotalArtworkData['totalArtworkData'], 'averageSellingRate': getAverageSellingRate, 'averageSellingPrice': getAverageSellingPrice['averageSellingPrice'], 'averageSellingPriceInLast12Month': getAverageSellingPriceIn12Month['averageSellingPriceIn12Month'], 'totalArtworkSoldInLast12Month': getTotalArtworkSoldIn12Month['totalArtworkSoldIn12Month'], 'averageSellingRateIn12Month': getAverageSellingRateIn12Month})
+        myThreadList = []
+        for getMyArtistData in getMyArtistsData:
+            thread = Thread(target=dataSelector, args=(getMyArtistData, ))
+            thread.start()
+            myThreadList.append(thread)
+        for myThread in myThreadList:
+            myThread.join()
+        redis_instance.set('myArtistData', pickle.dumps(dataList))
     return HttpResponse(json.dumps(dataList))
 
 
@@ -1026,11 +1074,17 @@ def getMyArtistsDetails(request):
 def getMyArtworksDetails(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_image1, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_published = 'yes' WHERE reference_table = 'fineart_artworks' AND user_id = {request.session.get('user')['user_id']};"""
-    connList = connectToDb()
-    connList[1].execute(getMyArtworksDetailsSelectQuery)
-    getMyArtworksDetailsData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        getMyArtworksDetailsData = pickle.loads(redis_instance.get('myArtworksDetailsData'))
+    except:
+        getMyArtworksDetailsData = []
+    if getMyArtworksDetailsData is None:
+        getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_image1, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_published = 'yes' WHERE reference_table = 'fineart_artworks' AND user_id = {request.session.get('user')['user_id']};"""
+        connList = connectToDb()
+        connList[1].execute(getMyArtworksDetailsSelectQuery)
+        getMyArtworksDetailsData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set('myArtworksDetailsData', pickle.dumps(getMyArtworksDetailsData))
     return HttpResponse(json.dumps(getMyArtworksDetailsData, default=default))
 
 
@@ -1038,81 +1092,82 @@ def getMyArtworksDetails(request):
 def getFollowedArtworks(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    data = {}
-    getFollowedArtworksSelectQuery = f"""SELECT COUNT(DISTINCT(referenced_table_id)) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artworks'"""
+    data = pickle.loads(redis_instance.get('followedArtworksData'))
+    if bool(data) == False:
+        getFollowedArtworksSelectQuery = f"""SELECT COUNT(DISTINCT(referenced_table_id)) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artworks'"""
 
-    def forPaintings(followedArtworksSelectQuery):
-        forPaintingsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'paintings'"""
+        def forPaintings(followedArtworksSelectQuery):
+            forPaintingsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'paintings'"""
+            connList = connectToDb()
+            connList[1].execute(forPaintingsFollowed)
+            forPaintingsFollowedData = connList[1].fetchone()
+            disconnectDb(connList)
+            data['forPaintingsFollowed'] = forPaintingsFollowedData['totalFollowed']
+
+        def forSculptures(followedArtworksSelectQuery):
+            forSculpturesFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'sculptures'"""
+            connList = connectToDb()
+            connList[1].execute(forSculpturesFollowed)
+            forSculpturesFollowedData = connList[1].fetchone()
+            disconnectDb(connList)
+            data['forSculpturesFollowed'] = forSculpturesFollowedData['totalFollowed']
+
+        def forPrints(followedArtworksSelectQuery):
+            forPrintsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'prints'"""
+            connList = connectToDb()
+            connList[1].execute(forPrintsFollowed)
+            forPrintsFollowedData = connList[1].fetchone()
+            disconnectDb(connList)
+            data['forPrintsFollowed'] = forPrintsFollowedData['totalFollowed']
+
+        def forWorkOnPaper(followedArtworksSelectQuery):
+            forWorkOnPaperFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'works on paper'"""
+            connList = connectToDb()
+            connList[1].execute(forWorkOnPaperFollowed)
+            forWorkOnPaperFollowedData = connList[1].fetchone()
+            disconnectDb(connList)
+            data['forWorkOnPaperFollowed'] = forWorkOnPaperFollowedData['totalFollowed']
+
+        def forMiniatures(followedArtworksSelectQuery):
+            forMiniaturesFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'miniatures'"""
+            connList = connectToDb()
+            connList[1].execute(forMiniaturesFollowed)
+            forMiniaturesFollowedData = connList[1].fetchone()
+            disconnectDb(connList)
+            data['forMiniaturesFollowed'] = forMiniaturesFollowedData['totalFollowed']
+
+        def forPhotographs(followedArtworksSelectQuery):
+            forPhotographsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'photographs'"""
+            connList = connectToDb()
+            connList[1].execute(forPhotographsFollowed)
+            forPhotographsFollowedData = connList[1].fetchone()
+            disconnectDb(connList)
+            data['forPhotographsFollowed'] = forPhotographsFollowedData['totalFollowed']
+
+        threadForPaintings = Thread(target=forPaintings, args=(getFollowedArtworksSelectQuery, ))
+        threadForPaintings.start()
+        threadForSculptures = Thread(target=forSculptures, args=(getFollowedArtworksSelectQuery,))
+        threadForSculptures.start()
+        threadForPrints = Thread(target=forPrints, args=(getFollowedArtworksSelectQuery,))
+        threadForPrints.start()
+        threadForWorkOnPaper = Thread(target=forWorkOnPaper, args=(getFollowedArtworksSelectQuery,))
+        threadForWorkOnPaper.start()
+        threadForMiniatures = Thread(target=forMiniatures, args=(getFollowedArtworksSelectQuery,))
+        threadForMiniatures.start()
+        threadForPhotographs = Thread(target=forPhotographs, args=(getFollowedArtworksSelectQuery,))
+        threadForPhotographs.start()
         connList = connectToDb()
-        connList[1].execute(forPaintingsFollowed)
-        forPaintingsFollowedData = connList[1].fetchone()
+        connList[1].execute(getFollowedArtworksSelectQuery)
+        totalFollowedData = connList[1].fetchone()
         disconnectDb(connList)
-        data['forPaintingsFollowed'] = forPaintingsFollowedData['totalFollowed']
-
-    def forSculptures(followedArtworksSelectQuery):
-        forSculpturesFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'sculptures'"""
-        connList = connectToDb()
-        connList[1].execute(forSculpturesFollowed)
-        forSculpturesFollowedData = connList[1].fetchone()
-        disconnectDb(connList)
-        data['forSculpturesFollowed'] = forSculpturesFollowedData['totalFollowed']
-
-    def forPrints(followedArtworksSelectQuery):
-        forPrintsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'prints'"""
-        connList = connectToDb()
-        connList[1].execute(forPrintsFollowed)
-        forPrintsFollowedData = connList[1].fetchone()
-        disconnectDb(connList)
-        data['forPrintsFollowed'] = forPrintsFollowedData['totalFollowed']
-
-    def forWorkOnPaper(followedArtworksSelectQuery):
-        forWorkOnPaperFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'works on paper'"""
-        connList = connectToDb()
-        connList[1].execute(forWorkOnPaperFollowed)
-        forWorkOnPaperFollowedData = connList[1].fetchone()
-        disconnectDb(connList)
-        data['forWorkOnPaperFollowed'] = forWorkOnPaperFollowedData['totalFollowed']
-
-    def forMiniatures(followedArtworksSelectQuery):
-        forMiniaturesFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'miniatures'"""
-        connList = connectToDb()
-        connList[1].execute(forMiniaturesFollowed)
-        forMiniaturesFollowedData = connList[1].fetchone()
-        disconnectDb(connList)
-        data['forMiniaturesFollowed'] = forMiniaturesFollowedData['totalFollowed']
-
-    def forPhotographs(followedArtworksSelectQuery):
-        forPhotographsFollowed = followedArtworksSelectQuery + f""" AND faa_artwork_category = 'photographs'"""
-        connList = connectToDb()
-        connList[1].execute(forPhotographsFollowed)
-        forPhotographsFollowedData = connList[1].fetchone()
-        disconnectDb(connList)
-        data['forPhotographsFollowed'] = forPhotographsFollowedData['totalFollowed']
-
-    threadForPaintings = Thread(target=forPaintings, args=(getFollowedArtworksSelectQuery, ))
-    threadForPaintings.start()
-    threadForSculptures = Thread(target=forSculptures, args=(getFollowedArtworksSelectQuery,))
-    threadForSculptures.start()
-    threadForPrints = Thread(target=forPrints, args=(getFollowedArtworksSelectQuery,))
-    threadForPrints.start()
-    threadForWorkOnPaper = Thread(target=forWorkOnPaper, args=(getFollowedArtworksSelectQuery,))
-    threadForWorkOnPaper.start()
-    threadForMiniatures = Thread(target=forMiniatures, args=(getFollowedArtworksSelectQuery,))
-    threadForMiniatures.start()
-    threadForPhotographs = Thread(target=forPhotographs, args=(getFollowedArtworksSelectQuery,))
-    threadForPhotographs.start()
-    connList = connectToDb()
-    connList[1].execute(getFollowedArtworksSelectQuery)
-    totalFollowedData = connList[1].fetchone()
-    disconnectDb(connList)
-    data['user_artwork_followed_counts'] = totalFollowedData['totalFollowed']
-    threadForPaintings.join()
-    threadForSculptures.join()
-    threadForPrints.join()
-    threadForWorkOnPaper.join()
-    threadForMiniatures.join()
-    threadForPhotographs.join()
-    # data = {'user_artwork_followed_counts': totalFollowedData['totalFollowed'], 'forPaintingsFollowed': forPaintingsFollowedData['totalFollowed'], 'forSculpturesFollowed': forSculpturesFollowedData['totalFollowed'], 'forPrintsFollowed': forPrintsFollowedData['totalFollowed'], 'forWorkOnPaperFollowed': forWorkOnPaperFollowedData['totalFollowed'], 'forPhotographsFollowed': forPhotographsFollowedData['totalFollowed'], 'forMiniaturesFollowed': forMiniaturesFollowedData['totalFollowed']}
+        data['user_artwork_followed_counts'] = totalFollowedData['totalFollowed']
+        threadForPaintings.join()
+        threadForSculptures.join()
+        threadForPrints.join()
+        threadForWorkOnPaper.join()
+        threadForMiniatures.join()
+        threadForPhotographs.join()
+        redis_instance.set('followedArtworksData', pickle.dumps(data))
     return HttpResponse(json.dumps(data))
 
 

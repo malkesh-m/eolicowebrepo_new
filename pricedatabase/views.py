@@ -5,6 +5,7 @@ import sys
 import urllib
 import stripe
 import redis
+import pickle
 import simplejson as json
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
@@ -368,15 +369,21 @@ def searchAuctionHouses(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     searchKeyword = request.GET.get('search')
-    auctionHouseSelectQuery = f"""SELECT DISTINCT(cah_auction_house_name) AS cah_auction_house_name FROM core_auction_houses"""
-    if searchKeyword:
-        auctionHouseSelectQuery += f""" WHERE cah_auction_house_name LIKE '%{searchKeyword}%'"""
-    else:
-        auctionHouseSelectQuery += f""" LIMIT 100 OFFSET 0"""
-    connList = connectToDb()
-    connList[1].execute(auctionHouseSelectQuery)
-    auctionAuctionHouseData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        auctionAuctionHouseData = pickle.loads(redis_instance.get(f'auctionAuctionHouseData{searchKeyword}'))
+    except:
+        auctionAuctionHouseData = []
+    if auctionAuctionHouseData is None:
+        auctionHouseSelectQuery = f"""SELECT DISTINCT(cah_auction_house_name) AS cah_auction_house_name FROM core_auction_houses"""
+        if searchKeyword:
+            auctionHouseSelectQuery += f""" WHERE cah_auction_house_name LIKE '%{searchKeyword}%'"""
+        else:
+            auctionHouseSelectQuery += f""" LIMIT 100 OFFSET 0"""
+        connList = connectToDb()
+        connList[1].execute(auctionHouseSelectQuery)
+        auctionAuctionHouseData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set(f'auctionAuctionHouseData{searchKeyword}', pickle.dumps(auctionAuctionHouseData))
     return HttpResponse(json.dumps(auctionAuctionHouseData))
 
 
@@ -384,15 +391,21 @@ def searchArtists(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     searchKeyword = request.GET.get('search')
-    artistSearchQuery = f"""SELECT DISTINCT(fa_artist_name) as fa_artist_name FROM fineart_artists"""
-    if searchKeyword:
-        artistSearchQuery += f""" WHERE fa_artist_name LIKE '%{searchKeyword}%'"""
-    else:
-        artistSearchQuery += """ LIMIT 100 OFFSET 0"""
-    connList = connectToDb()
-    connList[1].execute(artistSearchQuery)
-    artistsData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        artistsData = pickle.loads(redis_instance.get(f'searchArtist{searchKeyword}'))
+    except:
+        artistsData = []
+    if artistsData is None:
+        artistSearchQuery = f"""SELECT DISTINCT(fa_artist_name) as fa_artist_name FROM fineart_artists"""
+        if searchKeyword:
+            artistSearchQuery += f""" WHERE fa_artist_name LIKE '%{searchKeyword}%'"""
+        else:
+            artistSearchQuery += """ LIMIT 100 OFFSET 0"""
+        connList = connectToDb()
+        connList[1].execute(artistSearchQuery)
+        artistsData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set(f'searchArtist{searchKeyword}', pickle.dumps(artistsData))
     return HttpResponse(json.dumps(artistsData))
 
 
@@ -400,15 +413,21 @@ def searchArtworks(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     searchKeyword = request.GET.get('search')
-    artworkSelectQuery = f"""SELECT DISTINCT(faa_artwork_title) AS faa_artwork_title FROM fineart_artworks"""
-    if searchKeyword:
-        artworkSelectQuery += f""" WHERE faa_artwork_title LIKE '%{searchKeyword}%'"""
-    else:
-        artworkSelectQuery += """ LIMIT 100 OFFSET 0"""
-    connList = connectToDb()
-    connList[1].execute(artworkSelectQuery)
-    artworksData = connList[1].fetchall()
-    disconnectDb(connList)
+    try:
+        artworksData = pickle.loads(redis_instance.get(f'searchArtworks{searchKeyword}'))
+    except:
+        artworksData = []
+    if artworksData is None:
+        artworkSelectQuery = f"""SELECT DISTINCT(faa_artwork_title) AS faa_artwork_title FROM fineart_artworks"""
+        if searchKeyword:
+            artworkSelectQuery += f""" WHERE faa_artwork_title LIKE '%{searchKeyword}%'"""
+        else:
+            artworkSelectQuery += """ LIMIT 100 OFFSET 0"""
+        connList = connectToDb()
+        connList[1].execute(artworkSelectQuery)
+        artworksData = connList[1].fetchall()
+        disconnectDb(connList)
+        redis_instance.set(f'searchArtworks{searchKeyword}', pickle.dumps(artworksData))
     return HttpResponse(json.dumps(artworksData))
 
 

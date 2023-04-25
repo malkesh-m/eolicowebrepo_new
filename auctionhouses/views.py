@@ -166,47 +166,59 @@ def getFeaturedAuctionHouses(request):
     else:
         keyword = request.GET.get('keyword')
         if keyword:
-            filterAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_name LIKE '{keyword}%' ORDER BY cah_auction_house_name;"""
-            connList = connectToDb()
-            connList[1].execute(filterAuctionHousesSelectQuery)
-            filterAuctionHousesData = connList[1].fetchall()
-            disconnectDb(connList)
+            try:
+                filterAuctionHousesData = pickle.loads(redis_instance.get(f'filterAuctionHousesData{keyword}'))
+            except:
+                filterAuctionHousesData = []
+            if filterAuctionHousesData is None:
+                filterAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_name LIKE '%{keyword}%' ORDER BY cah_auction_house_name;"""
+                connList = connectToDb()
+                connList[1].execute(filterAuctionHousesSelectQuery)
+                filterAuctionHousesData = connList[1].fetchall()
+                disconnectDb(connList)
+                redis_instance.set(f'filterAuctionHousesData{keyword}', pickle.dumps(filterAuctionHousesData))
             return HttpResponse(json.dumps(filterAuctionHousesData, default=default))
         else:
-            featuredAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_ID = 1 OR cah_auction_house_ID = 27 OR cah_auction_house_ID = 36 OR cah_auction_house_ID = 78 OR cah_auction_house_ID = 80 OR cah_auction_house_ID = 560 OR cah_auction_house_ID = 952 OR cah_auction_house_ID = 1076 OR cah_auction_house_ID = 1479 OR cah_auction_house_ID = 1481;"""
-            connList = connectToDb()
-            connList[1].execute(featuredAuctionHousesSelectQuery)
-            featuredAuctionHousesData = connList[1].fetchall()
-            disconnectDb(connList)
-            for featuredAuctionHouseData in featuredAuctionHousesData:
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 1:
-                    featuredAuctionHouseData[
-                        'cah_auction_house_image'] = "/static/images/auctionhouses/Phillips-logo.png"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 27:
-                    featuredAuctionHouseData[
-                        'cah_auction_house_image'] = "/static/images/auctionhouses/Christies-logo.png"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 36:
-                    featuredAuctionHouseData[
-                        'cah_auction_house_image'] = "/static/images/auctionhouses/Sotheby-logo.jpg"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 78:
-                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/doyle-logo.jpg"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 80:
-                    featuredAuctionHouseData[
-                        'cah_auction_house_image'] = "/static/images/auctionhouses/Dorotheum-logo.png"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 560:
-                    featuredAuctionHouseData[
-                        'cah_auction_house_image'] = "/static/images/auctionhouses/Bonhams-logo.png"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 952:
-                    featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Tajan-logo.png"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 1076:
-                    featuredAuctionHouseData[
-                        'cah_auction_house_image'] = "/static/images/auctionhouses/Artcurial-logo.png"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 1479:
-                    featuredAuctionHouseData[
-                        'cah_auction_house_image'] = "/static/images/auctionhouses/ChinaGuardian-logo.jpg"
-                if featuredAuctionHouseData['cah_auction_house_ID'] == 1481:
-                    featuredAuctionHouseData[
-                        'cah_auction_house_image'] = "/static/images/auctionhouses/PolyInternational-logo.png"
+            try:
+                featuredAuctionHouseData = pickle.loads(redis_instance.get('featuredAuctionHouseData'))
+            except:
+                featuredAuctionHouseData = []
+            if featuredAuctionHouseData is None:
+                featuredAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_ID = 1 OR cah_auction_house_ID = 27 OR cah_auction_house_ID = 36 OR cah_auction_house_ID = 78 OR cah_auction_house_ID = 80 OR cah_auction_house_ID = 560 OR cah_auction_house_ID = 952 OR cah_auction_house_ID = 1076 OR cah_auction_house_ID = 1479 OR cah_auction_house_ID = 1481;"""
+                connList = connectToDb()
+                connList[1].execute(featuredAuctionHousesSelectQuery)
+                featuredAuctionHousesData = connList[1].fetchall()
+                disconnectDb(connList)
+                for featuredAuctionHouseData in featuredAuctionHousesData:
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 1:
+                        featuredAuctionHouseData[
+                            'cah_auction_house_image'] = "/static/images/auctionhouses/Phillips-logo.png"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 27:
+                        featuredAuctionHouseData[
+                            'cah_auction_house_image'] = "/static/images/auctionhouses/Christies-logo.png"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 36:
+                        featuredAuctionHouseData[
+                            'cah_auction_house_image'] = "/static/images/auctionhouses/Sotheby-logo.jpg"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 78:
+                        featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/doyle-logo.jpg"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 80:
+                        featuredAuctionHouseData[
+                            'cah_auction_house_image'] = "/static/images/auctionhouses/Dorotheum-logo.png"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 560:
+                        featuredAuctionHouseData[
+                            'cah_auction_house_image'] = "/static/images/auctionhouses/Bonhams-logo.png"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 952:
+                        featuredAuctionHouseData['cah_auction_house_image'] = "/static/images/auctionhouses/Tajan-logo.png"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 1076:
+                        featuredAuctionHouseData[
+                            'cah_auction_house_image'] = "/static/images/auctionhouses/Artcurial-logo.png"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 1479:
+                        featuredAuctionHouseData[
+                            'cah_auction_house_image'] = "/static/images/auctionhouses/ChinaGuardian-logo.jpg"
+                    if featuredAuctionHouseData['cah_auction_house_ID'] == 1481:
+                        featuredAuctionHouseData[
+                            'cah_auction_house_image'] = "/static/images/auctionhouses/PolyInternational-logo.png"
+                redis_instance.set('featuredAuctionHouseData', pickle.dumps(featuredAuctionHouseData))
             return HttpResponse(json.dumps(featuredAuctionHousesData, default=default))
 
 
@@ -214,11 +226,17 @@ def getAuctionHouses(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     else:
-        auctionHousesSelectQuery = """SELECT * FROM core_auction_houses;"""
-        connList = connectToDb()
-        connList[1].execute(auctionHousesSelectQuery)
-        auctionHousesData = connList[1].fetchall()
-        disconnectDb(connList)
+        try:
+            auctionHousesData = pickle.loads(redis_instance.get('auctionHousesData'))
+        except:
+            auctionHousesData = []
+        if auctionHousesData is None:
+            auctionHousesSelectQuery = """SELECT * FROM core_auction_houses;"""
+            connList = connectToDb()
+            connList[1].execute(auctionHousesSelectQuery)
+            auctionHousesData = connList[1].fetchall()
+            disconnectDb(connList)
+            redis_instance.set('auctionHousesData', pickle.loads(auctionHousesData))
         return HttpResponse(json.dumps(auctionHousesData, default=default))
 
 
@@ -226,11 +244,17 @@ def getCurrentAuctionHouse(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
     auctionHouseId = request.GET.get('ahid')
-    currentAuctionHousesSelectQuery = f"""SELECT cah_auction_house_name, cah_auction_house_ID FROM core_auction_houses WHERE cah_auction_house_ID = {auctionHouseId}"""
-    connList = connectToDb()
-    connList[1].execute(currentAuctionHousesSelectQuery)
-    currentAuctionHouseData = connList[1].fetchone()
-    disconnectDb(connList)
+    try:
+        currentAuctionHouseData = pickle.loads(redis_instance.get(f'currentAuctionHouseData{auctionHouseId}'))
+    except:
+        currentAuctionHouseData = []
+    if currentAuctionHouseData is None:
+        currentAuctionHousesSelectQuery = f"""SELECT cah_auction_house_name, cah_auction_house_ID FROM core_auction_houses WHERE cah_auction_house_ID = {auctionHouseId}"""
+        connList = connectToDb()
+        connList[1].execute(currentAuctionHousesSelectQuery)
+        currentAuctionHouseData = connList[1].fetchone()
+        disconnectDb(connList)
+        redis_instance.set(f'currentAuctionHouseData{auctionHouseId}', pickle.dumps(currentAuctionHouseData))
     return HttpResponse(json.dumps(currentAuctionHouseData, default=default))
 
 
