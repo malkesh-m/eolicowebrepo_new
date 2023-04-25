@@ -1,6 +1,8 @@
 import datetime
 import os
-import pickle
+import time
+
+import requests
 import re
 import sys
 import urllib
@@ -153,7 +155,7 @@ def topArtistsOfMonthForCharts(request):
         topArtistsOfMonthData = pickle.loads(redis_instance.get('topArtistsOfMonthData'))
     except:
         topArtistsOfMonthData = []
-    if topArtistsOfMonthData is None:
+    if len(topArtistsOfMonthData) == 0:
         selectQuery = f"""SELECT * FROM topArtistsOfMonth"""
         connList = connectToDb()
         connList[1].execute(selectQuery)
@@ -171,7 +173,7 @@ def topSalesOfMonthForCharts(request):
         topSalesOfMonthData = pickle.loads(redis_instance.get('topSalesOfMonthData'))
     except:
         topSalesOfMonthData = []
-    if topSalesOfMonthData is None:
+    if len(topSalesOfMonthData) == 0:
         selectQuery = f"""SELECT * FROM topSalesOfMonth"""
         connList = connectToDb()
         connList[1].execute(selectQuery)
@@ -189,7 +191,7 @@ def topLotsOfMonthForCharts(request):
         topLotsOfMonthData = pickle.loads(redis_instance.get('topLotsOfMonthData'))
     except:
         topLotsOfMonthData = []
-    if topLotsOfMonthData is None:
+    if len(topLotsOfMonthData) == 0:
         selectQuery = f"""SELECT * FROM topLotsOfMonth"""
         connList = connectToDb()
         connList[1].execute(selectQuery)
@@ -208,7 +210,7 @@ def topGeographicalLocationsForCharts(request):
         topGeographicalLocationsData = pickle.loads(redis_instance.get(f'topGeographicalLocationsData{year}'))
     except:
         topGeographicalLocationsData = []
-    if topGeographicalLocationsData is None:
+    if len(topGeographicalLocationsData) == 0:
         selectQuery = f"""SELECT auctionHouseCountry, totalSalePrice, saleYear FROM topGeographicalLocations WHERE saleYear = '{year}'"""
         connList = connectToDb()
         connList[1].execute(selectQuery)
@@ -825,7 +827,7 @@ def getTrendingArtist(request):
         trendingArtistData = pickle.loads(redis_instance.get(f'trendingArtistData{start}{limit}'))
     except:
         trendingArtistData = []
-    if trendingArtistData is None:
+    if len(trendingArtistData) == 0:
         todayDate = datetime.datetime.now().date()
         subtractDate = todayDate - datetime.timedelta(days=365)
         trendingArtistSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_image FROM `fineart_artists` INNER JOIN `fineart_artworks` ON fineart_artists.fa_artist_ID = fineart_artworks.faa_artist_ID INNER JOIN `fineart_lots` ON fineart_artworks.faa_artwork_ID = fineart_lots.fal_artwork_ID AND fal_lot_published = 'yes' WHERE fa_artist_image IS NOT NULL AND fa_artist_image != '' AND fal_lot_sale_date BETWEEN '{subtractDate}' AND '{todayDate}' GROUP BY fa_artist_ID ORDER BY SUM(fal_lot_sale_price) DESC LIMIT {limit} OFFSET {start};"""
@@ -844,7 +846,7 @@ def topUpcomingLotsOfWeek(request):
         topUpcomingLotsDataList = pickle.loads(redis_instance.get('topUpcomingLotsOfWeek'))
     except:
         topUpcomingLotsDataList = []
-    if topUpcomingLotsDataList is None:
+    if len(topUpcomingLotsDataList) == 0:
         topUpcomingLotsSelectQuery = f"""SELECT faa_artwork_title, faa_artwork_image1, fa_artist_name, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, faac_auction_title, faac_auction_start_date, faac_auction_ID, cah_auction_house_name, cah_auction_house_location FROM fineart_lots INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID AND faac_auction_start_date BETWEEN '{datetime.datetime.now().date()}' AND '{datetime.datetime.now().date() + datetime.timedelta(days=7)}' INNER JOIN fineart_artworks ON fal_artwork_ID = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID ORDER BY fal_lot_low_estimate_USD DESC LIMIT 5"""
         connList = connectToDb()
         connList[1].execute(topUpcomingLotsSelectQuery)
@@ -1025,7 +1027,7 @@ def getMyArtistsDetails(request):
         dataList = pickle.loads(redis_instance.get('myArtistData'))
     except:
         dataList = []
-    if dataList is None:
+    if len(dataList) == 0:
         getMyArtistsIdSelectQuery = f"""SELECT DISTINCT(fa_artist_ID) AS fa_artist_ID, fa_artist_name FROM `user_favorites` INNER JOIN `fineart_artists` ON referenced_table_id = fa_artist_ID WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artists';"""
         connList = connectToDb()
         connList[1].execute(getMyArtistsIdSelectQuery)
@@ -1078,7 +1080,7 @@ def getMyArtworksDetails(request):
         getMyArtworksDetailsData = pickle.loads(redis_instance.get('myArtworksDetailsData'))
     except:
         getMyArtworksDetailsData = []
-    if getMyArtworksDetailsData is None:
+    if len(getMyArtworksDetailsData) == 0:
         getMyArtworksDetailsSelectQuery = f"""SELECT DISTINCT(faa_artwork_ID) AS faa_artwork_ID, faa_artwork_image1, faa_artwork_title, fa_artist_name, faa_artwork_category, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_no, fal_lot_sale_date, faac_auction_title, cah_auction_house_name, cah_auction_house_location FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_lots ON faa_artwork_ID = fal_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_auction_calendar ON fal_auction_ID = faac_auction_ID INNER JOIN core_auction_houses ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_published = 'yes' WHERE reference_table = 'fineart_artworks' AND user_id = {request.session.get('user')['user_id']};"""
         connList = connectToDb()
         connList[1].execute(getMyArtworksDetailsSelectQuery)
@@ -1217,16 +1219,16 @@ def dologin(request):
         username = request.POST.get('username')
         raw_password = request.POST.get('passwd')
         clientSecretKey = request.POST.get('g-recaptcha-response')
-        import requests
-        response = json.loads(requests.post('https://www.google.com/recaptcha/api/siteverify', data=json.dumps({'secret': clientSecretKey, 'response': settings.CAPTCHA_SECRET_KEY})).text)
+        response = json.loads(requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': settings.CAPTCHA_SECRET_KEY, 'response': clientSecretKey}).text)
+        print(response)
         if response.get('success'):
             authObj = AuthenticationBackend()
-            user = authObj.authenticate(request, username=username, password=raw_password)
+            user = authObj.authenticate(username=username, password=raw_password)
             if user is not None:
                 authObj.login(request, user)
+                return HttpResponseRedirect("/login/index/")
             else:
-                return HttpResponse(None)
-            return HttpResponseRedirect("/login/index/")  # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
+                return HttpResponse(None)  # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
         else:
             return HttpResponse("<script>alert('please verify captcha');window.location.href = '/login/index'</script>")
     else:

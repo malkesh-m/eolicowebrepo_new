@@ -373,7 +373,7 @@ def searchAuctionHouses(request):
         auctionAuctionHouseData = pickle.loads(redis_instance.get(f'auctionAuctionHouseData{searchKeyword}'))
     except:
         auctionAuctionHouseData = []
-    if auctionAuctionHouseData is None:
+    if len(auctionAuctionHouseData) == 0:
         auctionHouseSelectQuery = f"""SELECT DISTINCT(cah_auction_house_name) AS cah_auction_house_name FROM core_auction_houses"""
         if searchKeyword:
             auctionHouseSelectQuery += f""" WHERE cah_auction_house_name LIKE '%{searchKeyword}%'"""
@@ -395,7 +395,7 @@ def searchArtists(request):
         artistsData = pickle.loads(redis_instance.get(f'searchArtist{searchKeyword}'))
     except:
         artistsData = []
-    if artistsData is None:
+    if len(artistsData) == 0:
         artistSearchQuery = f"""SELECT DISTINCT(fa_artist_name) as fa_artist_name FROM fineart_artists"""
         if searchKeyword:
             artistSearchQuery += f""" WHERE fa_artist_name LIKE '%{searchKeyword}%'"""
@@ -417,7 +417,7 @@ def searchArtworks(request):
         artworksData = pickle.loads(redis_instance.get(f'searchArtworks{searchKeyword}'))
     except:
         artworksData = []
-    if artworksData is None:
+    if len(artworksData) == 0:
         artworkSelectQuery = f"""SELECT DISTINCT(faa_artwork_title) AS faa_artwork_title FROM fineart_artworks"""
         if searchKeyword:
             artworkSelectQuery += f""" WHERE faa_artwork_title LIKE '%{searchKeyword}%'"""

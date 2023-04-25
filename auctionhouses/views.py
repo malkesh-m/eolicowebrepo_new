@@ -170,7 +170,7 @@ def getFeaturedAuctionHouses(request):
                 filterAuctionHousesData = pickle.loads(redis_instance.get(f'filterAuctionHousesData{keyword}'))
             except:
                 filterAuctionHousesData = []
-            if filterAuctionHousesData is None:
+            if len(filterAuctionHousesData) == 0:
                 filterAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_name LIKE '%{keyword}%' ORDER BY cah_auction_house_name;"""
                 connList = connectToDb()
                 connList[1].execute(filterAuctionHousesSelectQuery)
@@ -230,7 +230,7 @@ def getAuctionHouses(request):
             auctionHousesData = pickle.loads(redis_instance.get('auctionHousesData'))
         except:
             auctionHousesData = []
-        if auctionHousesData is None:
+        if len(auctionHousesData) == 0:
             auctionHousesSelectQuery = """SELECT * FROM core_auction_houses;"""
             connList = connectToDb()
             connList[1].execute(auctionHousesSelectQuery)
@@ -248,7 +248,7 @@ def getCurrentAuctionHouse(request):
         currentAuctionHouseData = pickle.loads(redis_instance.get(f'currentAuctionHouseData{auctionHouseId}'))
     except:
         currentAuctionHouseData = []
-    if currentAuctionHouseData is None:
+    if len(currentAuctionHouseData) == 0:
         currentAuctionHousesSelectQuery = f"""SELECT cah_auction_house_name, cah_auction_house_ID FROM core_auction_houses WHERE cah_auction_house_ID = {auctionHouseId}"""
         connList = connectToDb()
         connList[1].execute(currentAuctionHousesSelectQuery)

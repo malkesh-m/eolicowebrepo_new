@@ -455,7 +455,7 @@ def artistAnnualPerformanceChart(request):
             artistData = pickle.loads(redis_instance.get(f'artistAnnualPerformanceData{artistId}'))
         except:
             artistData = []
-        if artistData is None:
+        if len(artistData) == 0:
             artistSelectQuery = f"""SELECT numberOfLotsOffered, numberOfLotsSold, numberOfLotsUnsold, lotsYear, saleThroughRate FROM artistAnnualPerformance WHERE artistID = {artistId} ORDER BY lotsYear DESC LIMIT 10"""
             connList = connectToDb()
             connList[1].execute(artistSelectQuery)
@@ -474,7 +474,7 @@ def yoyTotalSaleAverageChart(request):
             artistData = pickle.loads(redis_instance.get(f'yoyTotalSaleAverageArtistData{artistId}'))
         except:
             artistData = []
-        if artistData is None:
+        if len(artistData) == 0:
             artistSelectQuery = f"""SELECT totalSale, saleAverage, saleYear FROM yoyTotalSaleAverage WHERE artistID = {artistId} ORDER BY saleYear DESC LIMIT 10"""
             connList = connectToDb()
             connList[1].execute(artistSelectQuery)
@@ -493,7 +493,7 @@ def yoySellingCategoryChart(request):
             artistData = pickle.loads(redis_instance.get(f'yoySellingCategoryArtistData{artistId}'))
         except:
             artistData = []
-        if artistData is None:
+        if len(artistData) == 0:
             artistSelectQuery = f"""SELECT totalSalePrice, averageSalePrice, lotsCategory, lotsYear FROM yoySellingCategory WHERE artistID = {artistId} AND CAST(lotsYear as INT) BETWEEN {datetime.datetime.now().year - 9} AND {datetime.datetime.now().year} ORDER BY lotsYear DESC"""
             connList = connectToDb()
             connList[1].execute(artistSelectQuery)
@@ -513,7 +513,7 @@ def artistPerformanceByCountryChart(request):
             artistData = pickle.loads(redis_instance.get(f'artistPerformanceByCountry{artistId}{lotYear}'))
         except:
             artistData = []
-        if artistData is None:
+        if len(artistData) == 0:
             artistSelectQuery = f"""SELECT totalSalePrice, averageSalePrice, lotsCountry, lotsYear FROM artistPerformanceByCountry WHERE artistID = {artistId} AND lotsYear = '{lotYear}' ORDER BY lotsYear DESC"""
             connList = connectToDb()
             connList[1].execute(artistSelectQuery)

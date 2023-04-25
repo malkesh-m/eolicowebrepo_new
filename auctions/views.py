@@ -537,7 +537,7 @@ def getLotDetails(request):
         artworkDetailsData = pickle.loads(redis_instance.get(f'artworkDetailsData{lotId}'))
     except:
         artworkDetailsData = []
-    if artworkDetailsData is None:
+    if len(artworkDetailsData) == 0:
         lotDetailsSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, faac_auction_title, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, fal_lot_image1, fa_artist_ID, fal_lot_image2, fal_lot_image3, fal_lot_image4, fal_lot_image5, fal_lot_provenance, faa_artwork_description, faa_artwork_exhibition, faa_artwork_literature, fal_lot_height, fal_lot_width, fal_lot_depth, fal_lot_measurement_unit, faa_artwork_material, faac_auction_ID, faa_artwork_category, faa_artwork_markings, fal_artwork_ID, faa_artwork_title, fa_artist_name, fal_lot_sale_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID AND faac_auction_published = 'yes' INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE fal_lot_ID = {lotId};"""
         connList = connectToDb()
         connList[1].execute(lotDetailsSelectQuery)
@@ -940,8 +940,8 @@ def getAuctionDetails(request):
     try:
         getAuctionData = pickle.loads(redis_instance.get(f'getAuctionDetailsData{auctionId}'))
     except:
-        getAuctionData = []
-    if getAuctionData is None:
+        getAuctionData = {}
+    if bool(getAuctionData) == False:
         getAuctionSelectQuery = f"""SELECT faac_auction_start_date, faac_auction_title, faac_auction_image, cah_auction_house_name, cah_auction_house_location, cah_auction_house_country FROM `fineart_auction_calendar` INNER JOIN `core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID AND faac_auction_published = 'yes' WHERE faac_auction_ID = {auctionId};"""
         connList = connectToDb()
         connList[1].execute(getAuctionSelectQuery)
@@ -961,7 +961,7 @@ def getAuctionArtworksData(request):
         getAuctionData = pickle.loads(redis_instance.get(f'getAuctionData{auctionId}{start}{limit}'))
     except:
         getAuctionData = []
-    if getAuctionData is None:
+    if len(getAuctionData) == 0:
         getAuctionArtworksSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID AND faac_auction_published = 'yes' INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_ID = {auctionId}"""
         whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
         getAuctionArtworksSelectQuery += whereClauseAndOrderBy + f""" LIMIT {limit} OFFSET {start};"""
