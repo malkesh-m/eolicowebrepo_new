@@ -2,7 +2,9 @@
 // Please DO NOT add functions related to some other site functionality.
 // Supriyo.
 
-function dologin(){
+function dologin(token){
+
+  document.getElementById("frmlogin").submit();
   usrname = document.frmlogin.username.value.replace(/^\s+|\s+$/gm,'');
   passwrd = document.frmlogin.passwd.value.replace(/^\s+|\s+$/gm,'');
   csrf = document.frmlogin.csrfmiddlewaretoken.value;

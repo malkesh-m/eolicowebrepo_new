@@ -44,7 +44,7 @@ def advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture,
     if artworkTitle:
         if andFlag:
             whereQuery += """ AND """
-        whereQuery += f"""faa_artwork_title = '{artworkTitle}'"""
+        whereQuery += f"""faa_artwork_title LIKE '%{artworkTitle}%'"""
         andFlag = True
     if workOnPaper:
         if andFlag:
@@ -143,6 +143,7 @@ def advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture,
             whereQuery += f""" AND """
         whereQuery += f"""faac_auction_sale_code = '{saleCode}'"""
     selectQuery = """SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM fineart_artworks INNER JOIN fineart_lots ON fineart_lots.fal_artwork_ID = fineart_artworks.faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_auction_calendar ON fineart_auction_calendar.faac_auction_ID = fineart_lots.fal_auction_ID AND faac_auction_published = 'yes' INNER JOIN core_auction_houses ON core_auction_houses.cah_auction_house_ID = fineart_auction_calendar.faac_auction_house_ID WHERE """ + whereQuery + f""" LIMIT {limit} OFFSET {start}"""
+    print(selectQuery)
     connList = connectToDb()
     connList[1].execute(selectQuery)
     searchData = connList[1].fetchall()

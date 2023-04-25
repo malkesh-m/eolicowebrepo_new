@@ -1161,13 +1161,19 @@ def dologin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         raw_password = request.POST.get('passwd')
-        authObj = AuthenticationBackend()
-        user = authObj.authenticate(request, username=username, password=raw_password)
-        if user is not None:
-            authObj.login(request, user)
+        clientSecretKey = request.POST.get('g-recaptcha-response')
+        import requests
+        response = json.loads(requests.post('https://www.google.com/recaptcha/api/siteverify', data=json.dumps({'secret': clientSecretKey, 'response': settings.CAPTCHA_SECRET_KEY})).text)
+        if response.get('success'):
+            authObj = AuthenticationBackend()
+            user = authObj.authenticate(request, username=username, password=raw_password)
+            if user is not None:
+                authObj.login(request, user)
+            else:
+                return HttpResponse(None)
+            return HttpResponseRedirect("/login/index/")  # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
         else:
-            return HttpResponse(None)
-        return HttpResponseRedirect("/login/index/")  # Later this should be changed to 'profile' as we want the user to go to the user's profile page after login.
+            return HttpResponse("<script>alert('please verify captcha');window.location.href = '/login/index'</script>")
     else:
         return HttpResponse("Invalid request method")
 

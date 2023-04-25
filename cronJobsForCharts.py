@@ -457,7 +457,7 @@ def emailAlert():
                 upcomingLotsDataList = connList[1].fetchall()
                 for upcomingLotData in upcomingLotsDataList:
                     lotDataDict = {'lotId': upcomingLotData['fal_lot_ID'],
-                                   'lotTitle': upcomingLotData['faa_artwork_title'],
+                               'lotTitle': upcomingLotData['faa_artwork_title'],
                                    'lotImage': f"https://f000.backblazeb2.com/file/fineart-images/{upcomingLotData['fal_lot_image1']}"}
                     lotsDetailsList.append(lotDataDict)
                     userSelectQuery = f"""SELECT user_id, login_email, username FROM user_accounts WHERE user_id = {userData['userId']}"""

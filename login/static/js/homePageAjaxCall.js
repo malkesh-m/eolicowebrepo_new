@@ -172,9 +172,9 @@ function topUpcomingLotsOfWeek() {
                             <span class="sr-only">Next</span>
                         </a>`
             myCarousel.innerHTML = htmlData
-            $('#myCarousel').carousel({
-                interval: 300,
-            })
+            // $('#myCarousel').carousel({
+            //     interval: 300,
+            // })
         })
 }
 
