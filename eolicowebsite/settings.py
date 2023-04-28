@@ -67,14 +67,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# sentry_sdk.init(
-#     dsn="https://ef95d89643d94fadbeef998e8df9462e@o4505085847011328.ingest.sentry.io/4505086124490752",
-#     integrations=[
-#         DjangoIntegration(),
-#     ],
-#     traces_sample_rate=1.0,
-#     send_default_pii=True
-# )
+sentry_sdk.init(
+    dsn="https://ef95d89643d94fadbeef998e8df9462e@o4505085847011328.ingest.sentry.io/4505086124490752",
+    integrations=[
+        DjangoIntegration(),
+    ],
+    traces_sample_rate=1.0,
+    send_default_pii=True
+)
 
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51Mc8AISFFk9gA4NXsPbnD899P7tSd1d7mUy0lcmZtFlMY78KWNRYhtVdxzecyFCB1ZaSagcwhwWn2BBhaqQ58rFG00WoOeW7gE'
 STRIPE_SECRET_KEY = 'sk_test_51Mc8AISFFk9gA4NXvmfOKNjA1C9Zmg5FVGQ2EIdHaHN5J13sJJ1aTg2s2wj2P2nXrgcBntsNqfO2hWeEOaPPfOVA00pMLcAiOd'
