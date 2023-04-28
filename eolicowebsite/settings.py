@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 import os, sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -66,6 +67,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+sentry_sdk.init(
+    dsn="https://ef95d89643d94fadbeef998e8df9462e@o4505085847011328.ingest.sentry.io/4505086124490752",
+    integrations=[
+        DjangoIntegration(),
+    ],
+    traces_sample_rate=1.0,
+    send_default_pii=True
+)
+
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51Mc8AISFFk9gA4NXsPbnD899P7tSd1d7mUy0lcmZtFlMY78KWNRYhtVdxzecyFCB1ZaSagcwhwWn2BBhaqQ58rFG00WoOeW7gE'
 STRIPE_SECRET_KEY = 'sk_test_51Mc8AISFFk9gA4NXvmfOKNjA1C9Zmg5FVGQ2EIdHaHN5J13sJJ1aTg2s2wj2P2nXrgcBntsNqfO2hWeEOaPPfOVA00pMLcAiOd'
 STRIPE_WEBHOOKS_SECRET = 'whsec_38e3524f0ec97709dc2649c8fcc860786271411d86bc59cf61e13f98cbaefbfa'
@@ -117,7 +127,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'artb_Artbider_Prod',
+        'NAME': 'artb_Dummy_Artbider',
         'USER': 'artb_Admin',
         'PASSWORD': 'cDLCntgtsjAOP%tw',
         'HOST': '191.101.0.14',
