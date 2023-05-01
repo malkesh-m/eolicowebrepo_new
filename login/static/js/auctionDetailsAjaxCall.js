@@ -65,7 +65,7 @@ function paginationSetter(reposeBodyLength) {
     if (start > 0) {
         document.querySelector('#paginationPrevBtnId').classList.remove('disabled')
     }
-    forPaginationDivId.style.display = 'block'
+    forPaginationDivId.style.display = 'inline-block'
 }
 
 function getAuctionArtworksDataSetter(queryParamas) {
