@@ -5,7 +5,7 @@ let pastUpcomingStrData = 'past'
 let passwordShowHideFlag = false
 
 function htmlDataBinder(recentAuctionData) {
-    let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 auctionData">
+    let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4 auctionData">
                         <div class="latest-artists">
                             <a href="/auction/showauction/?aucid=${recentAuctionData.faac_auction_ID}" class="latest-card">
                                 <div class="thumb">

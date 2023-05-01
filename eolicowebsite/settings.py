@@ -127,7 +127,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'artb_Dummy_Artbider',
+        'NAME': 'artb_Artbider_Prod',
         'USER': 'artb_Admin',
         'PASSWORD': 'cDLCntgtsjAOP%tw',
         'HOST': '191.101.0.14',

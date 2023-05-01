@@ -180,10 +180,10 @@ def getFeaturedAuctionHouses(request):
             return HttpResponse(json.dumps(filterAuctionHousesData, default=default))
         else:
             try:
-                featuredAuctionHouseData = pickle.loads(redis_instance.get('featuredAuctionHouseData'))
+                featuredAuctionHousesData = pickle.loads(redis_instance.get('featuredAuctionHouseData'))
             except:
-                featuredAuctionHouseData = []
-            if featuredAuctionHouseData is None:
+                featuredAuctionHousesData = []
+            if len(featuredAuctionHousesData) == 0:
                 featuredAuctionHousesSelectQuery = f"""SELECT cah_auction_house_ID, cah_auction_house_name, cah_auction_house_location FROM core_auction_houses WHERE cah_auction_house_ID = 1 OR cah_auction_house_ID = 27 OR cah_auction_house_ID = 36 OR cah_auction_house_ID = 78 OR cah_auction_house_ID = 80 OR cah_auction_house_ID = 560 OR cah_auction_house_ID = 952 OR cah_auction_house_ID = 1076 OR cah_auction_house_ID = 1479 OR cah_auction_house_ID = 1481;"""
                 connList = connectToDb()
                 connList[1].execute(featuredAuctionHousesSelectQuery)
@@ -218,7 +218,7 @@ def getFeaturedAuctionHouses(request):
                     if featuredAuctionHouseData['cah_auction_house_ID'] == 1481:
                         featuredAuctionHouseData[
                             'cah_auction_house_image'] = "/static/images/auctionhouses/PolyInternational-logo.png"
-                redis_instance.set('featuredAuctionHouseData', pickle.dumps(featuredAuctionHouseData))
+                redis_instance.set('featuredAuctionHouseData', pickle.dumps(featuredAuctionHousesData))
             return HttpResponse(json.dumps(featuredAuctionHousesData, default=default))
 
 

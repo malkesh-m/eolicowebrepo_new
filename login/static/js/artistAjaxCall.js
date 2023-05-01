@@ -88,21 +88,22 @@ function trendingArtistData(start) {
             let htmlData = getTrendingArtistDiv.innerHTML
             body.forEach(artistData => {
                 htmlData = htmlData + `
-                <div class="col-md-4 mb-4 trendingArtistRowDataCls">
+                <div class="col-md-3 mb-4 trendingArtistRowDataCls">
+                <a href=/artist/details/?aid="${artistData.fa_artist_ID}" class="latest-card">
+                <img src="https://f000.backblazeb2.com/file/fineart-images/${artistData.fa_artist_image}"
+                    class="card-img" alt="img" /></a>
+                <div class="down-content">
                     <a href=/artist/details/?aid="${artistData.fa_artist_ID}" class="latest-card">
-                        <img src="https://f000.backblazeb2.com/file/fineart-images/${artistData.fa_artist_image}"
-                            class="card-img" alt="img" />
-                        <div class="down-content">
-                            <div class="d-flex justify-content-between">
-                                <h4 class="lineSplitSetter">${artistData.fa_artist_name}</h4>
-                                <p>View Details</p>
-                            </div>
-                            <span>${artistData.fa_artist_nationality}, ${artistData.fa_artist_birth_year}`
-                if (artistData.fa_artist_death_year != 0) {
-                    htmlData = htmlData + ` - ${artistData.fa_artist_death_year}`
-                }
-                htmlData = htmlData + `</span></div></a></div>`
-            })
+                        <div class="d-flex justify-content-between">
+                            <h4 class="lineSplitSetter">${artistData.fa_artist_name}</h4>
+                            <p>View Details</p>
+                        </div>
+                    <span>${artistData.fa_artist_nationality}, ${artistData.fa_artist_birth_year}`
+        if (artistData.fa_artist_death_year != 0) {
+            htmlData = htmlData + ` - ${artistData.fa_artist_death_year}`
+        }
+        htmlData = htmlData + `</span></a></div></div>`
+        })
             let offSet = document.querySelectorAll('.trendingArtistRowDataCls').length + body.length
             if ( body.length == limit ) {
                 htmlData = htmlData + `<div class="col-12 text-center mt-4" id="trendingArtistViewMoreId">

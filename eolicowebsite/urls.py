@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 import login
 
+
 urlpatterns = [
     path('admin/', include('adminsite.urls')),
     path('login/', include('login.urls')),

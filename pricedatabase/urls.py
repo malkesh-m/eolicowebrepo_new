@@ -9,6 +9,8 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('filter/', views.dofilter, name='dofilter'),
     path('plans/', views.showplans, name='showplans'),
+    path('success/', views.priceSuccess, name='priceSuccess'),
+    path('cancel/', views.priceCancle, name='priceCancle'),
 
     # AJAX CALL
 

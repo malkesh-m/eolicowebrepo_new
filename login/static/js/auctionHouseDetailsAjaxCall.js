@@ -1,15 +1,18 @@
 const urlParams = new URLSearchParams(location.search)
-const pastauctionsDiv =  document.querySelector('#pastauctions')
+const pastauctionsDiv = document.querySelector('#pastauctions')
 const collapseThreeDiv = document.querySelector('#collapseThree')
 const collapseFourDiv = document.querySelector('#collapseFour')
 const auctionHouseId = urlParams.get('ahid')
 const auctionHouseHeaderId = document.querySelector('#auctionHouseHeaderId')
+const forPaginationDivId = document.querySelector('#forPaginationDivId')
 let pastUpcomingStrData = 'past'
 let auctionHouseName = ''
 let passwordShowHideFlag = false
+let start = 0
+let limit = 50
 
 function htmlBinder(recentAuctionData) {
-    htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 auctionData">
+    htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4 auctionData">
                 <div class="latest-artists">
                     <a href="/auction/showauction/?aucid=${recentAuctionData.faac_auction_ID}"
                         class="latest-card">
@@ -29,7 +32,17 @@ function htmlBinder(recentAuctionData) {
     return htmlData
 }
 
-function pastAuctionHousesSetter(queryParams, start, limit) {
+function paginationSetter(reposeBodyLength) {
+    if (reposeBodyLength < limit) {
+        document.querySelector('#paginationNextBtnId').classList.add('disabled')
+    }
+    if (start != 0) {
+        document.querySelector('#paginationPrevBtnId').classList.remove('disabled')
+    }
+    forPaginationDivId.style.display = 'block'
+}
+
+function pastAuctionHousesSetter(queryParams) {
     fetch(`/login/getRecentAuctions/?auctionHouseName=${auctionHouseName}&start=${start}&${queryParams}limit=${limit}`, {
         method: 'GET',
     })
@@ -40,6 +53,7 @@ function pastAuctionHousesSetter(queryParams, start, limit) {
                 htmlData += htmlBinder(auctionData)
             })
             pastauctionsDiv.innerHTML = htmlData
+            paginationSetter(body.length)
         })
 }
 
@@ -55,7 +69,7 @@ function passwordShowHide(elementId) {
     }
 }
 
-function upcomingAuctionHousesSetter(queryParams, start, limit) {
+function upcomingAuctionHousesSetter(queryParams) {
     fetch(`/login/getUpcomingAuctions/?auctionHouseName=${auctionHouseName}&start=${start}&${queryParams}limit=${limit}`, {
         method: 'GET',
     })
@@ -66,6 +80,7 @@ function upcomingAuctionHousesSetter(queryParams, start, limit) {
                 htmlData += htmlBinder(auctionData)
             })
             pastauctionsDiv.innerHTML = htmlData
+            paginationSetter(body.length)
         })
 }
 
@@ -98,14 +113,28 @@ function filterAuction(event) {
     if (locationsStr) {
         queryParams += `locations=${locationsStr}&`
     }
-    let start = document.querySelectorAll('.auctionData').length
-    let limit = document.querySelector('#inputGroupSelect01').value
     if (pastUpcomingStrData === 'past') {
-        pastAuctionHousesSetter(queryParams, start, limit)
+        pastAuctionHousesSetter(queryParams)
     }
     else if (pastUpcomingStrData === 'upcoming') {
-        upcomingAuctionHousesSetter(queryParams, start, limit)
+        upcomingAuctionHousesSetter(queryParams)
     }
+}
+
+function perPageSetter(event) {
+    start = 0
+    limit = document.querySelector('#inputGroupSelect01').value
+    filterAuction(event)
+}
+
+function paginationNextPrevious(event, nextOrPrevStr) {
+    if (nextOrPrevStr === 'next') {
+        start = start + limit
+    }
+    else {
+        start = Math.abs(limit - start)
+    }
+    filterAuction(event)
 }
 
 function pastUpcomingAuction(e, pastUpcomingStr) {
@@ -136,10 +165,10 @@ async function getauctionHouses(e, housesOrLocationsStr) {
         queryParams += `start=${start}&locations=true&`
     }
     const apiData = await fetch(`/auction/getAuctionHousesOrLocations/?${queryParams}limit=10&ahid=${auctionHouseId}`, {
-                        method: 'GET',
-                    })
-                        .then(response => response.json())
-                        .then(body => body)
+        method: 'GET',
+    })
+        .then(response => response.json())
+        .then(body => body)
     if (housesOrLocationsStr === 'locations') {
         locationsSetter(apiData)
     }
@@ -158,6 +187,7 @@ function getAuctionHouseData() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    forPaginationDivId.style.display = 'none'
     getAuctionHouseData()
     // pastTrendingAuctionSetter('', 0, 50)
 })

@@ -10,6 +10,7 @@ import simplejson as json
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 from artists.models import Artist, Artwork
@@ -40,111 +41,152 @@ def advanceSearchPriceDatabase(artistName, artworkTitle, workOnPaper, sculpture,
     andFlag = False
     whereQuery = ""
     if artistName:
-        whereQuery += f"""fa_artist_name = '{artistName}'"""
+        whereQuery += f""" WHERE fa_artist_name = '{artistName}'"""
         andFlag = True
     if artworkTitle:
         if andFlag:
             whereQuery += """ AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_title = '{artworkTitle}'"""
         andFlag = True
     if workOnPaper:
         if andFlag:
             whereQuery += """ AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_category LIKE '%{workOnPaper}%'"""
         andFlag = True
     if sculpture:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_category LIKE '%{sculpture}%'"""
         andFlag = True
     if painting:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_category LIKE '%{painting}%'"""
         andFlag = True
     if installation:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_category LIKE '%{installation}%'"""
         andFlag = True
     if photography:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_category LIKE '%{photography}%'"""
         andFlag = True
     if miniaturesArt:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_category LIKE '%{miniaturesArt}%'"""
         andFlag = True
     if textTilesArt:
         if andFlag:
             whereQuery += """ AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_category LIKE '%{textTilesArt}%'"""
         andFlag = True
     if others:
         if andFlag:
             whereQuery += """ AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_category LIKE '%{others}%'"""
         andFlag = True
     if selArtworkStart:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_start_year = {selArtworkStart}"""
         andFlag = True
     if selArtworkEnd and selArtworkEnd != '':
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faa_artwork_end_year = {selArtworkEnd}"""
         andFlag = True
     if soldCheckId:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""fal_lot_status = '{soldCheckId}'"""
         andFlag = True
     if yetToBeSoldCheckId:
         if andFlag:
             whereQuery += """ AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""fal_lot_status = '{yetToBeSoldCheckId}'"""
     if boughtInCheckId:
         if andFlag:
             whereQuery += """ AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""fal_lot_status = '{boughtInCheckId}'"""
     if withdrawnCheckId:
         if andFlag:
             whereQuery += """ AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""fal_lot_status = '{withdrawnCheckId}'"""
     if selAuctionHouse:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""cah_auction_house_name LIKE '%{selAuctionHouse}%'"""
         andFlag = True
     if auctionLocation:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""cah_auction_house_location LIKE '%{auctionLocation}%'"""
         andFlag = True
     if saleTitle and saleTitle != '':
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faac_auction_title LIKE '%{saleTitle}%'"""
         andFlag = True
     if auctionStartDate:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faac_auction_start_date = '{auctionStartDate}'"""
         andFlag = True
     if auctionEndDate:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faac_auction_end_date = '{auctionEndDate}'"""
         andFlag = True
     if saleCode:
         if andFlag:
             whereQuery += f""" AND """
+        else:
+            whereQuery += """ WHERE """
         whereQuery += f"""faac_auction_sale_code = '{saleCode}'"""
-    selectQuery = """SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM fineart_artworks INNER JOIN fineart_lots ON fineart_lots.fal_artwork_ID = fineart_artworks.faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_auction_calendar ON fineart_auction_calendar.faac_auction_ID = fineart_lots.fal_auction_ID AND faac_auction_published = 'yes' INNER JOIN core_auction_houses ON core_auction_houses.cah_auction_house_ID = fineart_auction_calendar.faac_auction_house_ID WHERE """ + whereQuery + f""" LIMIT {limit} OFFSET {start}"""
-    print(selectQuery)
+    selectQuery = """SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faac_auction_title, faa_artwork_image1, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_ID, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM fineart_artworks INNER JOIN fineart_lots ON fineart_lots.fal_artwork_ID = fineart_artworks.faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN fineart_artists ON faa_artist_ID = fa_artist_ID INNER JOIN fineart_auction_calendar ON fineart_auction_calendar.faac_auction_ID = fineart_lots.fal_auction_ID AND faac_auction_published = 'yes' INNER JOIN core_auction_houses ON core_auction_houses.cah_auction_house_ID = fineart_auction_calendar.faac_auction_house_ID""" + whereQuery + f""" LIMIT {limit} OFFSET {start}"""
     connList = connectToDb()
     connList[1].execute(selectQuery)
     searchData = connList[1].fetchall()
@@ -429,6 +471,24 @@ def searchArtworks(request):
         disconnectDb(connList)
         redis_instance.set(f'searchArtworks{searchKeyword}', pickle.dumps(artworksData))
     return HttpResponse(json.dumps(artworksData))
+
+
+@myLoginRequired
+def priceSuccess(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    userDict = request.session.get('user')
+    context = {'username': userDict['username']}
+    return render(request, '', context)
+
+
+@myLoginRequired
+def priceCancle(request):
+    if request.method != 'GET':
+        return HttpResponse("Invalid method of call")
+    userDict = request.session.get('user')
+    context = {'username': userDict['username']}
+    return render(request, '', context)
 
 
 @myLoginRequired

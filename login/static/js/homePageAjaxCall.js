@@ -2,6 +2,7 @@ const getTrendingArtistDiv = document.querySelector('#getTrendingArtistId')
 const getUpcomingAuctionsDiv = document.querySelector('#getUpcomingAuctionsId')
 const getRecentAuctionsDiv = document.querySelector('#getRecentAuctionsId')
 const myCarousel = document.querySelector('#myCarousel')
+const subscribeFormId = document.querySelector('#subscribeFormId')
 
 let passwordShowHideFlag = false
 
@@ -100,6 +101,25 @@ function upcomingAuctionSlider() {
             owlSlider('#getUpcomingAuctionsId')
         })
 }
+
+subscribeFormId.addEventListener('submit', function(event) {
+    event.preventDefault()
+
+    const subName = event.target.elements['subName'].value
+    const subEmail = event.target.elements['subEmail'].value
+    const formData = new FormData()
+    formData.append('subName', subName)
+    formData.append('subEmail', subEmail)
+
+    fetch(`/login/subcribeContact/`, {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(body => {
+            console.log(body)
+        })
+})
 
 function recentAuctionSlider() {
     fetch('/login/getRecentAuctions/?start=0&limit=6', {

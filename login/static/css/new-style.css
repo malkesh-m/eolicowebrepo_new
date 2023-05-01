@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
 /* @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 @font-face {
@@ -7,26 +8,23 @@
     font-style: normal
 } */
 
+
 body {
-    font-family: 'Poppins', sans-serif !important;
+    font-family: 'limerick-heavy-regular', sans-serif !important;
+    /* font-family: 'GT Super Ds Trial Bd' !important; */
 }
 
 .py--80 {
-    padding: 80px 0; 
+    padding: 80px 0;
 }
 
-.search-bg .input-group {
+/* .search-bg .input-group {
     width: 56% !important;
     margin: auto;
-}
+} */
 
 .search-bg {
     margin-bottom: 0;
-    background: #f9f9f9;
-    padding: 50px 0;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
 }
 
 .search-bg h4 {
@@ -74,9 +72,10 @@ body {
 }
 
 .header-area {
-    background-color: #E7e9f0 !important;
+    background-color: #121344 !important;
     border-bottom: none !important;
     height: auto !important;
+    padding: 0 35px;
 }
 
 .actions-result .owl-carousel .owl-nav.disabled {
@@ -94,19 +93,19 @@ body {
 }
 
 .nav-link:hover {
-    color: #051747 !important;
+    color: #E7e9f0 !important;
 }
 
 .nav-link {
     font-weight: 500;
-    color: #505050 !important;
+    color: #ffffff !important;
     padding: 0 15px;
-    font-size: 20px;
+    font-size: 18px;
     transition: all 0.3s;
 }
 
 .nav-link.active {
-    color: #051747 !important;
+    color: #f8f8f9 !important;
 }
 
 .home-content h6 {
@@ -289,7 +288,7 @@ body {
 }
 
 footer .under-footer a {
-    color: #fff !important;
+    color: #fff;
 }
 
 footer .under-footer a:hover {
@@ -414,18 +413,18 @@ footer .under-footer a:hover {
 
 .latest-artists .down-content {
     /* margin-top: 20px; */
-    padding: 20px 0px 0;
+    /* padding: 20px 0px 0; */
     /*background-color: #fff;*/
     /* border-radius: 5px; */
 }
 
 .latest-card {
-    padding: 20px;
-    border-radius: 10px;
+    padding: 20px 0;
     background-color: #fff;
-    /* border: 1px solid rgb(246 246 246); */
     text-decoration: none !important;
-    box-shadow: 0 2px 10px 3px rgb(0 0 0 / 15%);
+    /* display: block; */
+}
+.down-content a{
     display: block;
 }
 
@@ -522,18 +521,16 @@ footer .under-footer a:hover {
     box-shadow: none;
 }
 
-.subscribe form button {
-    width: 44px;
-    height: 44px;
-    display: inline-block;
-    text-align: center;
-    line-height: 44px;
+.subscribe .main-dark-button{
     background-color: #051747;
-    box-shadow: none;
-    border: 1px solid transparent;
     color: #fff;
-    transition: all 0.3s;
+    padding: 12px 20px;
+    border-radius: 5px;
+    height: unset;
+    width: unset;
+    line-height: unset;
 }
+
 
 ul {
     margin-bottom: 0px;
@@ -753,7 +750,7 @@ li {
 }
 
 .cate-tabs-content {
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
     padding: 20px;
 }
 
@@ -1110,7 +1107,7 @@ li {
 }
 
 .mt--122 {
-    margin-top: 214px;
+    margin-top: 122px;
 }
 
 .lineSplitSetter {
@@ -1180,9 +1177,9 @@ li {
 }
 
 .navbar-nav.sm-icons .btn {
-    background-color: #051747;
-    color: #ffffff;
-    padding: 4px 40px;
+    background-color: #E7e9f0;
+    color: #111045 !important;
+    padding: 7px 40px;
     font-size: 14px;
     font-weight: 600;
     border: 0;
@@ -1597,6 +1594,7 @@ b {
     #myCarousel .carousel-item {
         min-height: 770px;
     }
+    
 }
 
 @media (min-width:768px) and (max-width:1499px) {
@@ -1771,12 +1769,14 @@ b {
 }
 
 .art-database .art-database-text h3{
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 500;
     color: #535f80;
+    width: 75%;
 }
 .art-database .art-database-text img{
     border-radius:10px;
+    width: 75%;
 }
 .art-market {
     padding: 100px 0;
@@ -1789,7 +1789,7 @@ b {
     }
     .art-market .art-market-text ul li,
     .art-market .art-market-text ul {
-        font-size: 20px;
+        font-size: 18px;
         list-style: inside;
         color:#081f62;
     }
@@ -1831,12 +1831,13 @@ b {
         text-transform:uppercase;
     }
     .service-details .service-details-text img{
-        width:250px;
-        height:250px;
+        width:160px;
+        height:160px;
     }
     @media(max-width:767px){
         .art-database .art-database-text h3 {
             font-size: 20px;
+            margin: auto;
         }
         .our-service h3 {
             font-size: 30px;
@@ -1856,6 +1857,9 @@ b {
         .service-details .service-details-text h3 {
             font-size: 18px;
         }
+        .art-database .art-database-text img {
+            width: unset;
+        }
     }
     @media(min-width:768px) and (max-width: 991px){
         .art-database .art-database-text h3 {
@@ -1868,10 +1872,268 @@ b {
         .art-market .art-market-text ul li, .art-market .art-market-text ul {
             font-size: 16px;
         }
-    }footer .logo {
+    }
+    /* footer .logo {
         margin-bottom: 20px;
         height: 110px;
         overflow: hidden;
-    }#gal-Tab .nav-item .nav-link {
+    } */
+    #gal-Tab .nav-item .nav-link {
         font-size: 16px;
     }
+
+/* .blog */
+
+    .margin-top{
+        margin-top: 130px;
+    }
+    .blog .blog-img img{
+        position: relative;
+        width: 100%;
+    }
+    .blog .blog-img .img-contain{
+        position: absolute;
+        padding: 20px;
+        background: #f9f9f9;
+        width: 79%;
+        left: 50px;
+        right: 50px;
+        bottom: -100px;
+        transform: translate(10px, -10px);
+    }
+    .blog .blog-img .img-contain h3{
+        font-size: 24px;
+        font-weight: 600;
+    }
+    .blog .blog-img .img-contain p{
+        font-size: 14px;
+        line-height: 22px;
+        color: #535f80;
+        margin: 10px 0;
+    }
+    .blog .blog-img .img-contain h4{
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .blog .blog-img .img-contain h4 span{
+        font-weight: 600;
+    }
+    .blog-contain .blog-contain-image img{
+        width: 100%;
+    }
+    .blog-contain .blog-contain-text h3{
+        font-size: 32px;
+        font-weight: 600;
+        color: #121212;
+    }
+    .blog-contain .blog-contain-text h3:hover{
+        color: #051747;
+    }
+    .blog-contain .blog-contain-text button{
+        border: 0;
+        color: #fff;
+        background-color: #051747;
+        padding: 5px 30px;
+        boredr-radius: 5px;
+        border-radius: 5px;
+}
+@media(max-width:575px){
+    .blog .blog-img .img-contain {
+        bottom: -155px;
+        margin: 0 20px 0;
+        width: 84%;
+    }
+    .blog .blog-img img {
+        margin-top: 180px;
+    }
+    .margin-top {
+        margin-top: -70px;
+    }
+}
+@media(min-width:768px) and (max-width:991px){
+    .blog .blog-img .img-contain {
+        transform: translate(0px, -0);
+    }
+}
+@media(min-width:992px) and (max-width:1199px){
+    .blog .blog-img .img-contain {
+        bottom: -170px;
+        transform: translate(-10px, -0);
+    }
+}
+button{
+    border: 0;
+    color: #fff;
+    background-color: #051747;
+    padding: 5px 30px;
+    boredr-radius: 5px;
+    border-radius: 5px;
+}
+
+/* .shoping cart */
+.cart_section h3{
+    font-size: 30px;
+    color: #081f62;
+    font-weight: 600;
+}
+.cart_items {
+    background: #f9f9f9;
+    padding: 15px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
+}
+.cart_items img{
+    width: 100px;
+}
+.cart_items h4{
+    font-size: 20px;
+    color: #081f62;
+    font-weight: 500;
+}
+.cart_items .cart-inner h4{
+    font-size: 20px;
+    color: #081f62;
+    font-weight: 500;
+    margin-right: 30px;
+}
+.btn button:first-child{
+    margin-right: 25px;
+}
+
+/* .confirm-order */
+.order_title h2{
+    font-size: 30px;
+    color: #081f62;
+    font-weight: 600;
+}
+.card{
+    background: #f9f9f9;
+    padding: 30px !important;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
+}
+.card h6{
+    color: #081f62;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 17px;
+}
+
+.form-control {
+    border-bottom: 2px solid #eee !important;
+    border: none;
+    font-weight: 600
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #8bbafe;
+    outline: 0;
+    box-shadow: none;
+    border-radius: 0px;
+}
+.inputbox {
+    position: relative;
+    margin-bottom: 20px;
+    width: 100%
+}
+
+.inputbox span {
+    position: absolute;
+    top: 7px;
+    left: 11px;
+    transition: 0.5s
+}
+
+.inputbox i {
+    position: absolute;
+    top: 13px;
+    right: 8px;
+    transition: 0.5s;
+    color: #081f62;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0
+}
+
+.inputbox input:focus~span {
+    transform: translateX(-0px) translateY(-15px);
+    font-size: 12px
+}
+
+.inputbox input:valid~span {
+    transform: translateX(-0px) translateY(-15px);
+    font-size: 12px
+}
+
+.card-blue{
+
+    background-color: #081f62;
+}
+.hightlight{
+    background-color: #1d3785;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.yellow{
+
+    color: #fdcc49; 
+}
+
+.decoration{
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.decoration:hover{
+    text-decoration: none;
+    color: #fdcc49; 
+}
+
+/* .confirmation */
+.card-centent h2{
+    font-size: 32px;
+    font-weight: 600;
+    color: #081f62;
+}
+.card-centent h5{
+    font-size: 22px;
+    font-weight: 400;
+    color: #121212;
+}
+.card-text h4{
+    font-size: 30px;
+    color: #081f62;
+}
+.shhiping h2{
+    font-size: 20px;
+    font-weight: 600;
+    color: #081f62;
+}
+.shhiping h6{
+    font-size: 18px;
+    font-weight: 500;
+    color: #121212;
+}
+@media (min-width:768px) and (max-width:991px){
+    .category-tabs .container, .artists-details .container, .acution-detail .container{
+        max-width: 830px !important;
+    }
+}
+@media (min-width:992px) and (max-width:1399px){
+    .category-tabs .container, .artists-details .container, .acution-detail .container{
+        max-width: 1320px !important;
+    }
+}
+@media (min-width:1400px) and (max-width:2597px){
+    .category-tabs .container, .artists-details .container, .acution-detail .container{
+        max-width: 1700px !important;
+    }
+}

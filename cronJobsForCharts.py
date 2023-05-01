@@ -313,10 +313,11 @@ def topGeographicalLocationsForArtMarket():
     disconnectDb(connList)
 
 
-def sendEmail(htmlData):
+def sendEmail(htmlData, userDetailDict):
     print('email sending')
     recieverEmail = 'umang2in@gmail.com'
-    hostEmail = 'contactus@artbider.com'
+    # print(userDetailDict['username'])
+    hostEmail = 'contact@artbider.com'
     hostEmailPassword = 'Welcome#2023'
     hostEmailHostName = 'smtp.hostinger.com'
     hostEmailPort = 587
@@ -412,7 +413,7 @@ def htmlDataBinderForEmail(allArtistsDataList, userDetailDict):
 </body>
 
 </html>"""
-    sendEmail(htmlData)
+    sendEmail(htmlData, userDetailDict)
 
 
 def emailAlert():

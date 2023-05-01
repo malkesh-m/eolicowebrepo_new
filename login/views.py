@@ -773,18 +773,14 @@ def index(request):
 
 def contactUs(request):
     if request.method == 'POST':
-        hostEmail = 'contactus@artbider.com'
-        hostEmailPassword = 'Welcome#2023'
-        hostEmailHostName = 'smtp.hostinger.com'
-        hostEmailPort = 587
         server = {}
 
         def mailServerStart():
-            server['server'] = SMTP(hostEmailHostName, hostEmailPort)
+            server['server'] = SMTP('smtp.hostinger.com', 587)
             server['server'].ehlo()
             server['server'].starttls()
             server['server'].ehlo()
-            server['server'].login(hostEmail, hostEmailPassword)
+            server['server'].login('contactus@artbider.com', 'Welcome#2023')
 
         mailServerThread = Thread(target=exec("mailServerStart()"))
         mailServerThread.start()
@@ -793,8 +789,8 @@ def contactUs(request):
         subject = request.POST.get('contactUsSubject')
         message = request.POST.get('contactUsMessage').replace('\n', '\n\t\t  ')
         msg = MIMEMultipart()
-        msg['From'] = hostEmail
-        msg['To'] = hostEmail
+        msg['From'] = 'contactus@artbider.com'
+        msg['To'] = 'contactus@artbider.com'
         msg['Subject'] = subject
         message = f"""Name:- {name}\nEmail:- {fromEmail}\nMessage:- {message}"""
         msg.attach(MIMEText(message, 'plain'))
@@ -816,6 +812,37 @@ def contactUs(request):
     if request.method == 'GET':
         template = loader.get_template('contactUs.html')
         return HttpResponse(template.render(context, request))
+
+
+@csrf_exempt
+def subcribeContact(request):
+    if request.method == 'POST':
+        server = {}
+
+        def mailServerStart():
+            server['server'] = SMTP('smtp.hostinger.com', 587)
+            server['server'].ehlo()
+            server['server'].starttls()
+            server['server'].ehlo()
+            server['server'].login('contact@artbider.com', 'Welcome#2023')
+
+        mailServerThread = Thread(target=exec("mailServerStart()"))
+        mailServerThread.start()
+        subName, subEmail = request.POST.get('subName'), request.POST.get('subEmail')
+        msg = MIMEMultipart()
+        msg['From'], msg['To'], msg['Subject'] = 'contact@artbider.com', 'contact@artbider.com', 'For Subcribe Contact'
+        msg.attach(MIMEText(f"""Name:- {subName}\nEmail:- {subEmail}""", 'plain'))
+        print('email sending')
+        try:
+            mailServerThread.join()
+            server['server'].sendmail(msg['From'], msg['To'], msg.as_string())
+            server['server'].quit()
+            print('email sent')
+            return HttpResponse(json.dumps({'success': True}))
+        except Exception as e:
+            print(f'email not sent! error:- {e}')
+            server['server'].quit()
+            return HttpResponse(json.dumps({'success': False}))
 
 
 def getTrendingArtist(request):
@@ -925,15 +952,11 @@ def getUpcomingAuctions(request):
     if toDate:
         whereClause += f""" AND faac_auction_end_date = '{toDate}' """
     if houses:
-        housesList = houses.split(',')
-        for housesName in housesList:
-            if housesName != '':
-                whereClause += f""" AND cah_auction_house_name = "{housesName}" """
+        housesList = tuple((houses.split(',')))
+        whereClause += f""" AND cah_auction_house_name IN {housesList}"""
     if locations:
-        locationsList = locations.split(',')
-        for location in locationsList:
-            if location != '':
-                whereClause += f""" AND cah_auction_house_location = "{location}" """
+        locationsList = tuple(locations.split(','))
+        whereClause += f""" AND cah_auction_house_location IN {locationsList}"""
     upcomingAuctionSelectQuery += whereClause + orderByClause + f"""LIMIT {limit} OFFSET {start};"""
     connList = connectToDb()
     connList[1].execute(upcomingAuctionSelectQuery)
@@ -969,17 +992,13 @@ def getRecentAuctions(request):
     if fromDate:
         whereClause += f""" AND faac_auction_start_date BETWEEN '{fromDate}' AND '{toDate}'"""
     if toDate:
-        whereClause += f""" AND faac_auction_end_date = '{toDate}' """
+        whereClause += f""" AND faac_auction_end_date = '{toDate}'"""
     if houses:
-        housesList = houses.split(',')
-        for housesName in housesList:
-            if housesName != '':
-                whereClause += f""" AND cah_auction_house_name = "{housesName}" """
+        housesList = tuple((houses.split(',')))
+        whereClause += f""" AND cah_auction_house_name IN {housesList}"""
     if locations:
-        locationsList = locations.split(',')
-        for location in locationsList:
-            if location != '':
-                whereClause += f""" AND cah_auction_house_location = "{location}" """
+        locationsList = tuple(locations.split(','))
+        whereClause += f""" AND cah_auction_house_location IN {locationsList}"""
     recentAuctionSelectQuery += whereClause + orderByClause + f"""LIMIT {limit} OFFSET {start};"""
     connList = connectToDb()
     connList[1].execute(recentAuctionSelectQuery)
@@ -1094,7 +1113,10 @@ def getMyArtworksDetails(request):
 def getFollowedArtworks(request):
     if request.method != 'GET':
         return HttpResponse("Invalid method of call")
-    data = pickle.loads(redis_instance.get('followedArtworksData'))
+    try:
+        data = pickle.loads(redis_instance.get('followedArtworksData'))
+    except:
+        data = {}
     if bool(data) == False:
         getFollowedArtworksSelectQuery = f"""SELECT COUNT(DISTINCT(referenced_table_id)) as totalFollowed FROM user_favorites INNER JOIN fineart_artworks ON referenced_table_id = faa_artwork_ID WHERE user_id = {request.session.get('user')['user_id']} AND reference_table = 'fineart_artworks'"""
 
@@ -1722,13 +1744,8 @@ def notifications(request):
 
 @myLoginRequired
 def acctsettings(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/login/index/")
-        # return HttpResponse(json.dumps({'err' : 'Your login session has expired',})) # Operation failed!
     userDict = request.session.get('user')
-    # sessionkey = request.session.session_key
     context = {}
-    # Add page specific code here
     context['username'] = userDict['username']
     if request.method == 'GET':
         template = loader.get_template('account_settings.html')

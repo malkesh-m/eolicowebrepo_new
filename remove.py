@@ -48,73 +48,24 @@ def testing():
 
 
 def auctionImageSetter():
-    nullAuctionImageSelectQuery = f"""SELECT faac_auction_ID FROM fineart_auction_calendar WHERE faac_auction_image IS NULL"""
+    nullAuctionImageSelectQuery = f"""SELECT faac_auction_ID FROM fineart_auction_calendar WHERE faac_auction_image = '3114852522.jpg' OR faac_auction_image IS NULL OR faac_auction_image = 'None' OR faac_auction_image = '' ORDER BY faac_auction_ID DESC"""
     connList = connectToDb()
     connList[1].execute(nullAuctionImageSelectQuery)
     nullAuctionImageDataList = connList[1].fetchall()
     for nullAuctionImageData in nullAuctionImageDataList:
-        imageSelectQuery = f"""SELECT MAX(fal_lot_low_estimate), fal_lot_image1 FROM fineart_lots WHERE fal_auction_ID = {nullAuctionImageData['faac_auction_ID']} AND fal_lot_image1 IS NOT NULL"""
+        imageSelectQuery = f"""SELECT fal_lot_image1 FROM fineart_lots WHERE fal_auction_ID = {nullAuctionImageData['faac_auction_ID']} AND fal_lot_image1 IS NOT NULL AND fal_lot_image1 != '' LIMIT 1"""
         connList[1].execute(imageSelectQuery)
         imageData = connList[1].fetchone()
-        auctionImageUpdateQuery = f"""UPDATE fineart_auction_calendar SET faac_auction_image = '{imageData['fal_lot_image1']}' WHERE faac_auction_ID = {nullAuctionImageData['faac_auction_ID']}"""
-        connList[1].execute(auctionImageUpdateQuery)
+        if imageData:
+            imageSource = imageData['fal_lot_image1']
+        else:
+            imageSource = None
+        auctionImageUpdateQuery = f"""UPDATE fineart_auction_calendar SET faac_auction_image = %s WHERE faac_auction_ID = %s"""
+        print(imageSource, nullAuctionImageData['faac_auction_ID'])
+        connList[1].execute(auctionImageUpdateQuery, (imageSource, nullAuctionImageData['faac_auction_ID']))
         connList[0].commit()
-        print(auctionImageUpdateQuery)
     disconnectDb(connList)
 
-
-def auctionStartDateUpdate():
-    auctionStartDateUpdateQuery1 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=1)}' WHERE faac_auction_ID = 9915"""
-    auctionStartDateUpdateQuery2 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=2)}' WHERE faac_auction_ID = 9918"""
-    auctionStartDateUpdateQuery3 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=3)}' WHERE faac_auction_ID = 9919"""
-    auctionStartDateUpdateQuery4 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=4)}' WHERE faac_auction_ID = 9925"""
-    auctionStartDateUpdateQuery5 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=5)}' WHERE faac_auction_ID = 9931"""
-
-    auctionStartDateUpdateQuery6 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=6)}' WHERE faac_auction_ID = 126330"""
-    auctionStartDateUpdateQuery7 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=7)}' WHERE faac_auction_ID = 126889"""
-    auctionStartDateUpdateQuery8 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=8)}' WHERE faac_auction_ID = 130643"""
-    auctionStartDateUpdateQuery9 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=9)}' WHERE faac_auction_ID = 130940"""
-    auctionStartDateUpdateQuery10 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=10)}' WHERE faac_auction_ID = 132471"""
-
-    auctionStartDateUpdateQuery11 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=11)}' WHERE faac_auction_ID = 49469"""
-    auctionStartDateUpdateQuery12 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=12)}' WHERE faac_auction_ID = 50685"""
-    auctionStartDateUpdateQuery13 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=13)}' WHERE faac_auction_ID = 55467"""
-    auctionStartDateUpdateQuery14 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=14)}' WHERE faac_auction_ID = 56665"""
-    auctionStartDateUpdateQuery15 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=15)}' WHERE faac_auction_ID = 60386"""
-
-    auctionStartDateUpdateQuery16 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=16)}' WHERE faac_auction_ID = 39532"""
-    auctionStartDateUpdateQuery17 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=17)}' WHERE faac_auction_ID = 39782"""
-    auctionStartDateUpdateQuery18 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=18)}' WHERE faac_auction_ID = 40071"""
-    auctionStartDateUpdateQuery19 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=19)}' WHERE faac_auction_ID = 40725"""
-    auctionStartDateUpdateQuery20 = f"""UPDATE fineart_auction_calendar SET faac_auction_start_date = '{datetime.datetime.now().date() + datetime.timedelta(days=20)}' WHERE faac_auction_ID = 41824"""
-
-    connList = connectToDb()
-    connList[1].execute(auctionStartDateUpdateQuery1)
-    connList[1].execute(auctionStartDateUpdateQuery2)
-    connList[1].execute(auctionStartDateUpdateQuery3)
-    connList[1].execute(auctionStartDateUpdateQuery4)
-    connList[1].execute(auctionStartDateUpdateQuery5)
-    connList[1].execute(auctionStartDateUpdateQuery6)
-    connList[1].execute(auctionStartDateUpdateQuery7)
-    connList[1].execute(auctionStartDateUpdateQuery8)
-    connList[1].execute(auctionStartDateUpdateQuery9)
-    connList[1].execute(auctionStartDateUpdateQuery10)
-    connList[1].execute(auctionStartDateUpdateQuery11)
-    connList[1].execute(auctionStartDateUpdateQuery12)
-    connList[1].execute(auctionStartDateUpdateQuery13)
-    connList[1].execute(auctionStartDateUpdateQuery14)
-    connList[1].execute(auctionStartDateUpdateQuery15)
-    connList[1].execute(auctionStartDateUpdateQuery16)
-    connList[1].execute(auctionStartDateUpdateQuery17)
-    connList[1].execute(auctionStartDateUpdateQuery18)
-    connList[1].execute(auctionStartDateUpdateQuery19)
-    connList[1].execute(auctionStartDateUpdateQuery20)
-    connList[0].commit()
-    disconnectDb(connList)
-    print('Done!')
-
-
-# auctionStartDateUpdate()
 
 def auctionStatus():
     with open('auctionId.txt') as f:
@@ -126,6 +77,30 @@ def auctionStatus():
         connList[0].commit()
         print(updateAuctionQuery)
     print('Done')
-        
 
-auctionStatus()
+
+def artistsReportGenerate():
+    artistsSelectQuery = f"""SELECT fa_artist_ID, fa_artist_name, fa_artist_birth_year, fa_artist_death_year, fa_artist_nationality, fa_artist_genre FROM fineart_artists"""
+    connList = connectToDb()
+    connList[1].execute(artistsSelectQuery)
+    artistsDataList = list(connList[1].fetchall())
+    artistsDataFrame = pd.DataFrame(artistsDataList)
+    artistsDataFrame.to_excel('D:\\artistsData.xlsx', index=False)
+
+
+def artworksTesting():
+    getArtworkSelectQuery = f"""SELECT faa_artwork_title, faa_artwork_ID FROM fineart_artworks WHERE faa_artwork_title LIKE '%\t%' OR faa_artwork_title LIKE '%\r%' OR faa_artwork_title LIKE '%\n%'"""
+    connList = connectToDb()
+    connList[1].execute(getArtworkSelectQuery)
+    artworksDataList = connList[1].fetchall()
+    print(artworksDataList)
+    for artworkData in artworksDataList:
+        artworkTitle = artworkData['faa_artwork_title'].replace('\t', '').replace('\n', '').replace('\r', '')
+        updateArtworkQuery = f"""UPDATE fineart_artworks SET faa_artwork_title = %s WHERE faa_artwork_ID = %s"""
+        print(updateArtworkQuery)
+        connList[1].execute(updateArtworkQuery, (artworkTitle, artworkData['faa_artwork_ID']))
+        connList[0].commit()
+    disconnectDb(connList)
+
+
+artworksTesting()

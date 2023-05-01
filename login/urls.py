@@ -44,5 +44,6 @@ urlpatterns = [
     path('topGeographicalLocationsForCharts/', views.topGeographicalLocationsForCharts, name="topGeographicalLocationsForCharts"),
     path('getMyNotificationLogs/', views.getMyNotificationLogs, name='getMyNotificationLogs'),
     path('topUpcomingLotsOfWeek/', views.topUpcomingLotsOfWeek, name='topUpcomingLotsOfWeek'),
-    path('stripeWebhooks/', views.stripeWebhooks, name='stripeWebhooks')
+    path('stripeWebhooks/', views.stripeWebhooks, name='stripeWebhooks'),
+    path('subcribeContact/', views.subcribeContact, name='subcribeContact')
 ]
