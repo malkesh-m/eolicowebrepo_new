@@ -50,7 +50,7 @@ let start = 0
 let limit = 50
 
 function htmlDataBinder(auctionData) {
-    let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 artworkData">
+    let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4 artworkData">
                         <div class="latest-artists">
                             <a href="/auction/details/?lid=${auctionData.fal_lot_ID}" class="latest-card">
                                 <div class="thumb">
