@@ -42,9 +42,12 @@ const auctionsDataDivID = document.querySelector('#pastauctions')
 const upcomingauctions = document.querySelector('#upcomingauctions')
 const artsitFollowUnfollowId = document.querySelector('#artsitFollowUnfollowId')
 const advancedAnalytics = document.querySelector('#advancedAnalytics')
+const forPaginationDivId = document.querySelector('#forPaginationDivId')
 let pastUpcomingStrData = 'past'
 let artistBioStrData = ''
 let passwordShowHideFlag = false
+let start = 0
+let limit = 50
 
 function htmlDataBinder(auctionData) {
     let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-4 mb-4 artworkData">
@@ -98,6 +101,16 @@ function htmlDataBinder(auctionData) {
     return htmlData
 }
 
+function paginationSetter(reposeBodyLength) {
+    if (reposeBodyLength < limit) {
+        document.querySelector('#paginationNextBtnId').classList.add('disabled')
+    }
+    if (start > 0) {
+        document.querySelector('#paginationPrevBtnId').classList.remove('disabled')
+    }
+    forPaginationDivId.style.display = 'block'
+}
+
 function passwordShowHide(elementId) {
     const passwordEle = document.querySelector(elementId)
     if (passwordShowHideFlag) {
@@ -110,8 +123,8 @@ function passwordShowHide(elementId) {
     }
 }
 
-function upcomingAuctionDataSet(queryParams, limit) {
-    fetch(`/artist/getArtistUpcomingAuctions/?aid=${artistId}&${queryParams}limit=${limit}`, {
+function upcomingAuctionDataSet(queryParams) {
+    fetch(`/artist/getArtistUpcomingAuctions/?aid=${artistId}&${queryParams}start=${start}&limit=${limit}`, {
         method: 'GET',
     })
         .then(response => response.json())
@@ -121,11 +134,12 @@ function upcomingAuctionDataSet(queryParams, limit) {
                 htmlData += htmlDataBinder(auctionData)
             })
             auctionsDataDivID.innerHTML = htmlData
+            paginationSetter(body.length)
         })
 }
 
-function pastAuctionDataSet(queryParams, limit) {
-    fetch(`/artist/getArtistPastAuctions/?aid=${artistId}&${queryParams}limit=${limit}`, {
+function pastAuctionDataSet(queryParams) {
+    fetch(`/artist/getArtistPastAuctions/?aid=${artistId}&${queryParams}start=${start}&limit=${limit}`, {
         method: 'GET',
     })
         .then(response => response.json())
@@ -135,30 +149,20 @@ function pastAuctionDataSet(queryParams, limit) {
                 htmlData += htmlDataBinder(auctionData)
             })
             auctionsDataDivID.innerHTML = htmlData
+            paginationSetter(body.length)
         })
 }
 
 function pastUpcomingAuction(e, pastUpcomingStr, queryParams) {
     advancedAnalytics.style.display = 'none'
     pastUpcomingStrData = pastUpcomingStr
-    let limit = document.querySelector('#inputGroupSelect01').value
     if (pastUpcomingStrData === 'past') {
-        pastAuctionDataSet(queryParams, limit)
+        pastAuctionDataSet(queryParams)
     }
     else if (pastUpcomingStrData === 'upcoming') {
-        upcomingAuctionDataSet(queryParams, limit)
+        upcomingAuctionDataSet(queryParams)
     }
     document.querySelector('#inputGroupSelect01').style.display = upcomingauctions.style.display = 'block'
-}
-
-function selectChange(e) {
-    let limit = e.target.value
-    if (pastUpcomingStrData === 'past') {
-        pastAuctionDataSet('', limit)
-    }
-    else if (pastUpcomingStrData === 'upcoming') {
-        upcomingAuctionDataSet('', limit)
-    }
 }
 
 function filterAuction(e) {
@@ -231,6 +235,22 @@ function filterAuction(e) {
     }
 
     pastUpcomingAuction(e, pastUpcomingStrData, queryParams)
+}
+
+function perPageSetter(event) {
+    start = 0
+    limit = document.querySelector('#inputGroupSelect01').value
+    filterAuction(event)
+}
+
+function paginationNextPrevious(event, nextOrPrevStr) {
+    if (nextOrPrevStr === 'next') {
+        start = start + limit
+    }
+    else {
+        start = Math.abs(limit - start)
+    }
+    filterAuction(event)
 }
 
 function abbreviateNumber(value) {
@@ -522,7 +542,6 @@ async function artistPerformancesByRegionChartMaker() {
             let countryCode = await getCountryCode(obj.lotsCountry).then(countryCode => countryCode)
             myDataArray.push({name: obj.lotsCountry, code: countryCode, value: Number(obj.totalSalePrice)})
         })
-        console.log(myDataArray)
         // .then(body => {
         //     let myDataArray = []
             // body.forEach(obj => {
@@ -650,6 +669,7 @@ async function artistPerformancesByRegionChartMaker() {
 
 document.addEventListener('DOMContentLoaded', function () {
     advancedAnalytics.style.display = 'none'
+    forPaginationDivId.style.display = 'none'
     getArtistDetails()
     pastAuctionDataSet('', 50)
     artistAnnualPerformanceChartMaker()

@@ -1,8 +1,10 @@
 const urlParams = new URLSearchParams(location.search)
 const auctionId = urlParams.get('aucid')
+const forPaginationDivId = document.querySelector('#forPaginationDivId')
 const artworkDataDiv = document.querySelector('#pastauctions')
 let passwordShowHideFlag = false
-
+let start = 0
+let limit = 50
 
 function htmlDataBinder(auctionData) {
     let htmlData = `<div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4 artworkData">
@@ -56,7 +58,17 @@ function htmlDataBinder(auctionData) {
     return htmlData
 }
 
-function getAuctionArtworksDataSetter(queryParamas, start, limit) {
+function paginationSetter(reposeBodyLength) {
+    if (reposeBodyLength < limit) {
+        document.querySelector('#paginationNextBtnId').classList.add('disabled')
+    }
+    if (start > 0) {
+        document.querySelector('#paginationPrevBtnId').classList.remove('disabled')
+    }
+    forPaginationDivId.style.display = 'block'
+}
+
+function getAuctionArtworksDataSetter(queryParamas) {
     fetch(`/auction/getAuctionArtworksData/?aucid=${auctionId}&start=${start}&${queryParamas}limit=${limit}`, {
         method: 'GET',
     })
@@ -67,6 +79,7 @@ function getAuctionArtworksDataSetter(queryParamas, start, limit) {
                 htmlData += htmlDataBinder(artworkData)
             })
             artworkDataDiv.innerHTML = htmlData
+            paginationSetter(body.length)
         })
 }
 
@@ -138,8 +151,23 @@ function filterAuction(e) {
     if (toDateTextId.value) {
         queryParams = queryParams + `toDate=${toDateTextId.value}&`
     }
-    let limit = document.querySelector('#inputGroupSelect01').value
-    getAuctionArtworksDataSetter(queryParams, 0, limit)
+    getAuctionArtworksDataSetter(queryParams)
+}
+
+function perPageSetter(event) {
+    start = 0
+    limit = document.querySelector('#inputGroupSelect01').value
+    filterAuction(event)
+}
+
+function paginationNextPrevious(event, nextOrPrevStr) {
+    if (nextOrPrevStr === 'next') {
+        start = start + limit
+    }
+    else {
+        start = Math.abs(limit - start)
+    }
+    filterAuction(event)
 }
 
 function getAuctionDetailsData() {
@@ -158,6 +186,7 @@ function getAuctionDetailsData() {
 
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#lotLowToHighCheckId').checked = true
+    forPaginationDivId.style.display = 'none'
     getAuctionDetailsData()
-    getAuctionArtworksDataSetter('lotLowToHigh=true&', 0, 50)
+    getAuctionArtworksDataSetter('lotLowToHigh=true&')
 })

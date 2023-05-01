@@ -1067,9 +1067,11 @@ def getArtistPastAuctions(request):
     else:
         aId = request.GET.get('aid')
         limit = request.GET.get('limit')
+        start = request.GET.get('start')
+        print(start)
         pastAuctionSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faa_artwork_image1, faac_auction_title, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID AND faac_auction_published = 'yes' INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_start_date  < '{datetime.datetime.now().date()}' AND fa_artist_ID = {aId}"""
         whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
-        pastAuctionSelectQuery = pastAuctionSelectQuery + whereClauseAndOrderBy + f""" LIMIT {limit};"""
+        pastAuctionSelectQuery = pastAuctionSelectQuery + whereClauseAndOrderBy + f""" LIMIT {limit} OFFSET {start};"""
         connList = connectToDb()
         connList[1].execute(pastAuctionSelectQuery)
         pastAuctionData = connList[1].fetchall()
@@ -1083,9 +1085,10 @@ def getArtistUpcomingAuctions(request):
     else:
         aId = request.GET.get('aid')
         limit = request.GET.get('limit')
+        start = request.GET.get('start')
         upcomingAuctionSelectQuery = f"""SELECT fal_lot_ID, fal_lot_no, cah_auction_house_currency_code, fal_lot_high_estimate, fal_lot_low_estimate, fal_lot_sale_price, fal_lot_high_estimate_USD, fal_lot_low_estimate_USD, fal_lot_sale_price_USD, faa_artwork_image1, faac_auction_title, faa_artwork_material, faac_auction_ID, faa_artwork_category, fal_artwork_ID, faa_artwork_title, fa_artist_name, faac_auction_start_date, cah_auction_house_name, cah_auction_house_location FROM `fineart_lots` INNER JOIN `fineart_artworks` ON fal_artwork_ID = faa_artwork_ID AND fal_lot_published = 'yes' INNER JOIN `fineart_auction_calendar` ON fal_auction_ID = faac_auction_ID INNER JOIN `fineart_artists` ON faa_artist_ID = fa_artist_ID INNER JOIN`core_auction_houses` ON faac_auction_house_ID = cah_auction_house_ID WHERE faac_auction_start_date  >= '{datetime.datetime.now().date()}' AND fa_artist_ID = {aId}"""
         whereClauseAndOrderBy = pastUpcomingQueryCreator(request)
-        upcomingAuctionSelectQuery = upcomingAuctionSelectQuery + whereClauseAndOrderBy + f""" LIMIT {limit};"""
+        upcomingAuctionSelectQuery = upcomingAuctionSelectQuery + whereClauseAndOrderBy + f""" LIMIT {limit} OFFSET {start};"""
         connList = connectToDb()
         connList[1].execute(upcomingAuctionSelectQuery)
         upcomingAuctionData = connList[1].fetchall()

@@ -36,7 +36,7 @@ function paginationSetter(reposeBodyLength) {
     if (reposeBodyLength < limit) {
         document.querySelector('#paginationNextBtnId').classList.add('disabled')
     }
-    if (start != 0) {
+    if (start > 0) {
         document.querySelector('#paginationPrevBtnId').classList.remove('disabled')
     }
     forPaginationDivId.style.display = 'block'
