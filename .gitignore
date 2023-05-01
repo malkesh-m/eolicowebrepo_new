@@ -1,6 +1,7 @@
 venv/
+env/
 need/
 .idea/
-env/
+manage.py
 .vs/
 __pycache__
