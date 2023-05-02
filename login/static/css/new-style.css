@@ -155,9 +155,9 @@ body {
     letter-spacing: 2px;
 }
 
-.btn-slider:hover {
+/* .btn-slider:hover {
     background: #f1f0ef;
-}
+} */
 
 #Top-owl-carousel .owl-nav {
     text-align: center;
@@ -429,8 +429,11 @@ footer .under-footer a:hover {
 }
 
 .latest-card .card-img {
-    width: 100%;
+    /* width: 100%; */
     height: 300px;
+    object-fit: cover;
+    /* -webkit-mask-position: top; */
+    background-position: top;
 }
 
 .latest-artists .next-icon,
@@ -2123,17 +2126,17 @@ input::-webkit-inner-spin-button {
     color: #121212;
 }
 @media (min-width:768px) and (max-width:991px){
-    .category-tabs .container, .artists-details .container, .acution-detail .container{
+    .category-tabs .container, .artists-details .container, .acution-detail .container, #featuredartistsdiv .container, #secsearchartist .container{
         max-width: 830px !important;
     }
 }
 @media (min-width:992px) and (max-width:1399px){
-    .category-tabs .container, .artists-details .container, .acution-detail .container{
+    .category-tabs .container, .artists-details .container, .acution-detail .container, #featuredartistsdiv .container, #secsearchartist .container{
         max-width: 1320px !important;
     }
 }
 @media (min-width:1400px) and (max-width:2597px){
-    .category-tabs .container, .artists-details .container, .acution-detail .container{
+    .category-tabs .container, .artists-details .container, .acution-detail .container, #featuredartistsdiv .container, #secsearchartist .container{
         max-width: 1700px !important;
     }
 }

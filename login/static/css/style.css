@@ -2373,7 +2373,8 @@ contact Us Page
 }
 
 .btn-slider:hover {
-    background: #f1f0ef;
+    background: #051747;
+    color: #fff;
 }
 
 #Top-owl-carousel .owl-nav {
@@ -3712,9 +3713,25 @@ responsive
 }
 
 .signup-modal .form-group input {
-    padding: 12px;
+    padding: 12px 35px;
     border-color: #a1a1a1;
     position: relative;
+}
+.signup-modal .form-group i{
+    top: 10px;
+    position: absolute;
+    left: 10px;
+}
+.signup-modal .form-group{
+    margin: 10px 0;
+}
+.signup-modal .form-group .icon-content{
+    border-radius: 50px;
+    border: 1px solid #c6c6c6;
+    padding: 10px;
+}
+.signup-modal .form-group .icon-content img{
+    width: 5%;
 }
 
 .signup-modal .form-group label {
@@ -3727,8 +3744,8 @@ responsive
 
 .signup-modal .form-group .fa-eye {
     position: absolute;
-    right: 12px;
-    top: 43px;
+    left: 355px;
+    top: 10px;
 }
 
 .check-input {
@@ -3740,12 +3757,19 @@ responsive
     color: #2a2a2a;
     text-transform: capitalize;
 }
+.signup-modal .from-group .btn{
+    padding: 12px 164px;
+}
+.signup-modal .from-group .btn:hover{
+    background-color: #051747 !important;
+}
 
 .signup-modal .form-group .btn-slider {
     width: 100%;
     padding: 12px;
     text-transform: capitalize;
     margin: 0;
+    border-radius: 7px;
 }
 
 .signup-modal .form-group p {
